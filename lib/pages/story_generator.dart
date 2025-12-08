@@ -12,8 +12,6 @@ class _StoryGeneratorPageState extends State<StoryGeneratorPage> {
   @override
   Widget build(BuildContext context) {
     double aspectRatio = MediaQuery.of(context).size.aspectRatio;
-    return Column(children: [
-          ],
-        );
+    return Center();
   }
 }
