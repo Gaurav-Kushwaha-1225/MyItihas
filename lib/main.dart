@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:myitihas/config/routes.dart';
 import 'package:myitihas/utils/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sizer/sizer.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,14 +27,18 @@ class MyItihas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    return BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (context, state) {
-        return MaterialApp.router(
-          title: 'UhlLink',
-          themeMode: state.isDark ? ThemeMode.dark : ThemeMode.light,
-          theme: MyItihasTheme.lightTheme,
-          darkTheme: MyItihasTheme.darkTheme,
-          routerConfig: router,
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return BlocBuilder<ThemeBloc, ThemeState>(
+          builder: (context, state) {
+            return MaterialApp.router(
+              title: 'MyItihas',
+              themeMode: state.isDark ? ThemeMode.dark : ThemeMode.light,
+              theme: MyItihasTheme.lightTheme,
+              darkTheme: MyItihasTheme.darkTheme,
+              routerConfig: router,
+            );
+          },
         );
       },
     );

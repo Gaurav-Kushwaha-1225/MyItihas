@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
 import 'package:myitihas/pages/stories_page.dart';
 import 'package:myitihas/pages/story_generator.dart';
 import 'package:myitihas/utils/constants.dart';
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> pages = [
     StoryGeneratorPage(),
-    Center(child: Text("Chats Page")),
+    ChatItihasPage(),
     StoriesPage(),
     Center(child: Text("Maps Page")),
     Center(child: Text("Maps Page")),
@@ -145,7 +146,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: Container(
-        height: height * 0.08,
+        height: height * 0.12,
         decoration: BoxDecoration(
           gradient:
               Theme.of(context).brightness == Brightness.dark
