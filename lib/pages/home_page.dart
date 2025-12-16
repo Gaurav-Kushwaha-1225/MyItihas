@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
 import 'package:myitihas/pages/stories_page.dart';
@@ -79,6 +80,9 @@ class _HomePageState extends State<HomePage> {
                 GestureDetector(
                   onTap: () {
                     context.read<ThemeBloc>().add(ToggleTheme());
+                  },
+                  onLongPress: () {
+                    context.push('/signup');
                   },
                   child: Container(
                     width: aspectRatio > 0.5 ? 46 : 40,

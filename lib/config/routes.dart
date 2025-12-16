@@ -7,6 +7,7 @@ import 'package:myitihas/pages/Chat/Widget/new_contact_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_group_page.dart';
 import 'package:myitihas/pages/Chat/Widget/profile_detail_page.dart';
 import 'package:myitihas/pages/home_page.dart';
+import 'package:myitihas/pages/signup_page.dart';
 import 'package:myitihas/pages/splash.dart';
 
 class MyItihasRouter {
@@ -92,6 +93,16 @@ class MyItihasRouter {
               name: args['name'] ?? "Group",
               avatarColor: args['color'] ?? "0xFF8B5CF6",
             ),
+          );
+        },
+      ),
+      GoRoute(
+        name: "signup",
+        path: '/signup',
+        pageBuilder: (context, state) {
+          return MaterialPage(
+            key: state.pageKey,
+            child: const SignupPage(),
           );
         },
       ),
