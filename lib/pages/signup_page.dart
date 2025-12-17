@@ -74,7 +74,7 @@ class _SignupPageState extends State<SignupPage> {
 
         // Wait a moment before navigating back
         await Future.delayed(const Duration(milliseconds: 500));
-        
+
         if (mounted) {
           context.pop();
         }
@@ -91,10 +91,7 @@ class _SignupPageState extends State<SignupPage> {
                 const Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(
-                    e.message,
-                    style: const TextStyle(fontSize: 14),
-                  ),
+                  child: Text(e.message, style: const TextStyle(fontSize: 14)),
                 ),
               ],
             ),
@@ -163,14 +160,10 @@ class _SignupPageState extends State<SignupPage> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    final backgroundColor =
-        isDark ? DarkColors.bgColor : LightColors.bgColor;
-    final inputBgColor = isDark
-        ? DarkColors.inputBg
-        : LightColors.inputBg;
-    final borderColor = isDark
-        ? DarkColors.glassBorder
-        : LightColors.glassBorder;
+    final backgroundColor = isDark ? DarkColors.bgColor : LightColors.bgColor;
+    final inputBgColor = isDark ? DarkColors.inputBg : LightColors.inputBg;
+    final borderColor =
+        isDark ? DarkColors.glassBorder : LightColors.glassBorder;
 
     // Vibrant green color matching the image
     const signUpButtonColor = Color.fromRGBO(22, 162, 74, 1);
@@ -219,33 +212,21 @@ class _SignupPageState extends State<SignupPage> {
                   const SizedBox(height: 8),
                   TextFormField(
                     controller: _nameController,
-                    style: GoogleFonts.inter(
-                      color: textColor,
-                      fontSize: 16,
-                    ),
+                    style: GoogleFonts.inter(color: textColor, fontSize: 16),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: inputBgColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1.5,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1.5),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -278,33 +259,21 @@ class _SignupPageState extends State<SignupPage> {
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    style: GoogleFonts.inter(
-                      color: textColor,
-                      fontSize: 16,
-                    ),
+                    style: GoogleFonts.inter(color: textColor, fontSize: 16),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: inputBgColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1.5,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1.5),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -340,33 +309,21 @@ class _SignupPageState extends State<SignupPage> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
-                    style: GoogleFonts.inter(
-                      color: textColor,
-                      fontSize: 16,
-                    ),
+                    style: GoogleFonts.inter(color: textColor, fontSize: 16),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: inputBgColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1.5,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1.5),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -415,24 +372,26 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                         elevation: 0,
                       ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                      child:
+                          _isLoading
+                              ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                              : Text(
+                                'Sign Up',
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
                               ),
-                            )
-                          : Text(
-                              'Sign Up',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -475,4 +434,3 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
-

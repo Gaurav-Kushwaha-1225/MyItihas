@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _isGoogleLoading = false;
   bool _obscurePassword = true;
 
   @override
@@ -71,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
 
         // Wait a moment before navigating back
         await Future.delayed(const Duration(milliseconds: 500));
-        
+
         if (mounted) {
           context.pop();
         }
@@ -88,10 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                 const Icon(Icons.error_outline, color: Colors.white),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(
-                    e.message,
-                    style: const TextStyle(fontSize: 14),
-                  ),
+                  child: Text(e.message, style: const TextStyle(fontSize: 14)),
                 ),
               ],
             ),
@@ -156,18 +154,33 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> _handleGoogleLogin() async {
+    setState(() {
+      _isGoogleLoading = true;
+    });
+
+    // Initiate Google OAuth flow
+    // Browser opens, user authenticates, gets redirected back
+    // Supabase handles session creation automatically
+    // GoRouter detects auth state change and redirects to homepage
+    await SupabaseService.authService.signInWithGoogle();
+
+    // Reset loading state after OAuth browser opens
+    if (mounted) {
+      setState(() {
+        _isGoogleLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    final backgroundColor =
-        isDark ? DarkColors.bgColor : LightColors.bgColor;
-    final inputBgColor = isDark
-        ? DarkColors.inputBg
-        : LightColors.inputBg;
-    final borderColor = isDark
-        ? DarkColors.glassBorder
-        : LightColors.glassBorder;
+    final backgroundColor = isDark ? DarkColors.bgColor : LightColors.bgColor;
+    final inputBgColor = isDark ? DarkColors.inputBg : LightColors.inputBg;
+    final borderColor =
+        isDark ? DarkColors.glassBorder : LightColors.glassBorder;
 
     // Login button color as specified
     const loginButtonColor = Color.fromRGBO(38, 98, 235, 1);
@@ -217,33 +230,21 @@ class _LoginPageState extends State<LoginPage> {
                   TextFormField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
-                    style: GoogleFonts.inter(
-                      color: textColor,
-                      fontSize: 16,
-                    ),
+                    style: GoogleFonts.inter(color: textColor, fontSize: 16),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: inputBgColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1.5,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1.5),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -279,33 +280,21 @@ class _LoginPageState extends State<LoginPage> {
                   TextFormField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
-                    style: GoogleFonts.inter(
-                      color: textColor,
-                      fontSize: 16,
-                    ),
+                    style: GoogleFonts.inter(color: textColor, fontSize: 16),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: inputBgColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1.5,
-                        ),
+                        borderSide: BorderSide(color: borderColor, width: 1.5),
                       ),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -351,24 +340,26 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         elevation: 0,
                       ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
+                      child:
+                          _isLoading
+                              ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                              : Text(
+                                'Log In',
+                                style: GoogleFonts.inter(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
                               ),
-                            )
-                          : Text(
-                              'Log In',
-                              style: GoogleFonts.inter(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -408,10 +399,7 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     children: [
                       Expanded(
-                        child: Divider(
-                          color: borderColor,
-                          thickness: 1,
-                        ),
+                        child: Divider(color: borderColor, thickness: 1),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -425,71 +413,69 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       Expanded(
-                        child: Divider(
-                          color: borderColor,
-                          thickness: 1,
-                        ),
+                        child: Divider(color: borderColor, thickness: 1),
                       ),
                     ],
                   ),
                   const SizedBox(height: 32),
 
-                  // Sign in with Google button (UI only for now)
+                  // Sign in with Google button
                   SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: OutlinedButton(
-                      onPressed: () {
-                        // TODO: Implement Google sign-in later
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Google sign-in coming soon!'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                      },
+                      onPressed:
+                          (_isLoading || _isGoogleLoading)
+                              ? null
+                              : _handleGoogleLogin,
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
+                        side: BorderSide(color: borderColor, width: 1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Google icon placeholder (using G text)
-                          Container(
-                            width: 20,
-                            height: 20,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'G',
-                                style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                      child:
+                          _isGoogleLoading
+                              ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
                                 ),
+                              )
+                              : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  // Google icon placeholder (using G text)
+                                  Container(
+                                    width: 20,
+                                    height: 20,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'G',
+                                        style: GoogleFonts.inter(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black87,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    'Sign in with Google',
+                                    style: GoogleFonts.inter(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                      color: textColor,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Sign in with Google',
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: textColor,
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                   ),
                 ],
@@ -501,4 +487,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-

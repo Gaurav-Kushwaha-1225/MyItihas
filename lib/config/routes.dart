@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/config/go_router_refresh.dart';
 import 'package:myitihas/pages/Chat/Widget/chat_detail_page.dart';
 import 'package:myitihas/pages/Chat/Widget/group_profile_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_chat_page.dart';
@@ -10,10 +11,43 @@ import 'package:myitihas/pages/home_page.dart';
 import 'package:myitihas/pages/login_page.dart';
 import 'package:myitihas/pages/signup_page.dart';
 import 'package:myitihas/pages/splash.dart';
+import 'package:myitihas/services/supabase_service.dart';
 
 class MyItihasRouter {
-  GoRouter router = GoRouter(
+  late final GoRouterRefreshStream _refreshStream;
+
+  MyItihasRouter() {
+    _refreshStream = GoRouterRefreshStream();
+  }
+
+  GoRouter get router => GoRouter(
     initialLocation: '/',
+    refreshListenable: _refreshStream,
+    redirect: (context, state) {
+      // Get current authentication state
+      final isAuthenticated = SupabaseService.getCurrentSession() != null;
+      final isOnLoginPage = state.matchedLocation == '/login';
+      final isOnSignupPage = state.matchedLocation == '/signup';
+      final isOnSplash = state.matchedLocation == '/';
+
+      // If user is authenticated and trying to access login/signup, redirect to home
+      if (isAuthenticated && (isOnLoginPage || isOnSignupPage)) {
+        return '/homepage';
+      }
+
+      // Allow splash screen to decide next route based on session
+      // Splash screen will handle the redirect after checking session
+      if (isOnSplash) {
+        return null; // Allow splash to handle routing
+      }
+
+      // If user is not authenticated and trying to access protected routes, redirect to login
+      if (!isAuthenticated && !isOnLoginPage && !isOnSignupPage) {
+        return '/login';
+      }
+
+      return null; // No redirect needed
+    },
     routes: [
       GoRoute(
         name: "splash",
@@ -61,7 +95,6 @@ class MyItihasRouter {
           );
         },
       ),
-
       GoRoute(
         name: "profile_detail",
         path: '/profile_detail',
@@ -101,20 +134,14 @@ class MyItihasRouter {
         name: "signup",
         path: '/signup',
         pageBuilder: (context, state) {
-          return MaterialPage(
-            key: state.pageKey,
-            child: const SignupPage(),
-          );
+          return MaterialPage(key: state.pageKey, child: const SignupPage());
         },
       ),
       GoRoute(
         name: "login",
         path: '/login',
         pageBuilder: (context, state) {
-          return MaterialPage(
-            key: state.pageKey,
-            child: const LoginPage(),
-          );
+          return MaterialPage(key: state.pageKey, child: const LoginPage());
         },
       ),
     ],

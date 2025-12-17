@@ -4,16 +4,16 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 /// Note: Renamed to avoid conflict with Supabase's AuthException
 class AuthServiceException implements Exception {
   final String message;
-  
+
   AuthServiceException(this.message);
-  
+
   @override
   String toString() => message;
 }
 
 /// Backend service for authentication and user management
 /// Uses Supabase Auth for user authentication
-/// 
+///
 /// Schema in Supabase Auth users table:
 /// - uid (uuid, primary key, auto-generated)
 /// - email (text, unique)
@@ -28,12 +28,12 @@ class AuthService {
   AuthService(this._supabase);
 
   /// Sign up a new user using Supabase Auth
-  /// 
+  ///
   /// Parameters:
   /// - email: User's email address
   /// - password: User's password (will be hashed by Supabase)
   /// - fullName: User's full name (stored in user_metadata as display_name)
-  /// 
+  ///
   /// Returns AuthResponse with user session on success
   /// Throws AuthServiceException with user-friendly error messages on failure
   Future<AuthResponse> signUp({
@@ -61,7 +61,9 @@ class AuthService {
 
       // Password strength validation
       if (password.length < 6) {
-        throw AuthServiceException('Password must be at least 6 characters long');
+        throw AuthServiceException(
+          'Password must be at least 6 characters long',
+        );
       }
 
       // Sign up using Supabase Auth
@@ -69,15 +71,14 @@ class AuthService {
       final response = await _supabase.auth.signUp(
         email: email.trim().toLowerCase(),
         password: password,
-        data: {
-          'display_name': fullName.trim(),
-          'full_name': fullName.trim(),
-        },
+        data: {'display_name': fullName.trim(), 'full_name': fullName.trim()},
       );
 
       // Check if signup was successful
       if (response.user == null) {
-        throw AuthServiceException('Failed to create account. Please try again.');
+        throw AuthServiceException(
+          'Failed to create account. Please try again.',
+        );
       }
 
       return response;
@@ -88,7 +89,7 @@ class AuthService {
       // Handle all other errors including Supabase exceptions
       // Supabase throws various exception types, so we catch all and convert to user-friendly messages
       String errorString = e.toString();
-      
+
       // Try to extract a more specific error message if available
       try {
         final dynamic error = e;
@@ -98,18 +99,18 @@ class AuthService {
       } catch (_) {
         // Ignore if we can't extract message
       }
-      
+
       final errorMessage = _getErrorMessage(errorString);
       throw AuthServiceException(errorMessage);
     }
   }
 
   /// Sign in with email and password
-  /// 
+  ///
   /// Parameters:
   /// - email: User's email address
   /// - password: User's password
-  /// 
+  ///
   /// Returns AuthResponse with user session on success
   /// Throws AuthServiceException with user-friendly error messages on failure
   Future<AuthResponse> signIn({
@@ -149,7 +150,7 @@ class AuthService {
     } catch (e) {
       // Handle all other errors including Supabase exceptions
       String errorString = e.toString();
-      
+
       // Try to extract a more specific error message if available
       try {
         final dynamic error = e;
@@ -159,7 +160,7 @@ class AuthService {
       } catch (_) {
         // Ignore if we can't extract message
       }
-      
+
       final errorMessage = _getSignInErrorMessage(errorString);
       throw AuthServiceException(errorMessage);
     }
@@ -183,6 +184,23 @@ class AuthService {
     } catch (e) {
       throw AuthServiceException('Failed to sign out. Please try again.');
     }
+  }
+
+  /// Sign in with Google OAuth
+  ///
+  /// Initiates Google OAuth flow in a web view/browser
+  /// The actual authentication happens via redirect callback
+  /// OAuth completion is handled via Supabase auth state changes (onAuthStateChange)
+  /// and GoRouter redirect logic - do NOT handle success/failure here
+  Future<void> signInWithGoogle() async {
+    // Initiate OAuth flow - opens browser for Google authentication
+    // After user authenticates, they're redirected back via myitihas://login-callback
+    // Supabase handles the session creation automatically
+    await _supabase.auth.signInWithOAuth(
+      OAuthProvider.google,
+      redirectTo: 'myitihas://login-callback',
+      authScreenLaunchMode: LaunchMode.externalApplication,
+    );
   }
 
   /// Convert error messages to user-friendly format
@@ -285,5 +303,3 @@ class AuthService {
     return 'Failed to sign in. Please check your credentials and try again.';
   }
 }
-
-

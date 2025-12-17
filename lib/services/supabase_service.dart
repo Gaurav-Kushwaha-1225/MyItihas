@@ -9,7 +9,7 @@ class SupabaseService {
 
   /// Initialize Supabase with your project URL and anon key
   /// Call this in main() before runApp()
-  /// 
+  ///
   /// Note: Supabase automatically handles session persistence.
   /// User sessions are stored securely and automatically restored on app restart,
   /// so users will remain logged in even after killing and reopening the app.
@@ -27,7 +27,7 @@ class SupabaseService {
     );
     _client = Supabase.instance.client;
     _authService = AuthService(_client!);
-    
+
     // Session is automatically restored - currentUser will be available if session exists
     // You can check authentication state using: SupabaseService.authService.isAuthenticated()
   }
@@ -36,7 +36,8 @@ class SupabaseService {
   static SupabaseClient get client {
     if (_client == null) {
       throw Exception(
-          'Supabase not initialized. Call SupabaseService.initialize() first.');
+        'Supabase not initialized. Call SupabaseService.initialize() first.',
+      );
     }
     return _client!;
   }
@@ -45,9 +46,37 @@ class SupabaseService {
   static AuthService get authService {
     if (_authService == null) {
       throw Exception(
-          'Supabase not initialized. Call SupabaseService.initialize() first.');
+        'Supabase not initialized. Call SupabaseService.initialize() first.',
+      );
     }
     return _authService!;
   }
-}
 
+  /// Get a stream of auth state changes
+  ///
+  /// Emits AuthState events whenever:
+  /// - User signs in (SIGNED_IN)
+  /// - User signs out (SIGNED_OUT)
+  /// - Session is restored (INITIAL_SESSION)
+  ///
+  /// Used for GoRouter refresh integration to update UI on auth changes
+  static Stream<AuthState> get onAuthStateChange {
+    if (_client == null) {
+      throw Exception(
+        'Supabase not initialized. Call SupabaseService.initialize() first.',
+      );
+    }
+    return _client!.auth.onAuthStateChange;
+  }
+
+  /// Get the current user session
+  ///
+  /// Returns null if user is not authenticated
+  /// Safe to call - handles initialization checks
+  static Session? getCurrentSession() {
+    if (_client == null) {
+      return null;
+    }
+    return _client!.auth.currentSession;
+  }
+}
