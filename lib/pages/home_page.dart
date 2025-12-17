@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
 import 'package:myitihas/pages/stories_page.dart';
 import 'package:myitihas/pages/story_generator.dart';
+import 'package:myitihas/services/supabase_service.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:myitihas/utils/theme.dart';
 
@@ -18,6 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentBottomBarIndex = 0;
+  int _tapCount = 0;
+  DateTime? _lastTapTime;
 
   List<String> titles = [
     "Story Generator",
@@ -34,6 +37,132 @@ class _HomePageState extends State<HomePage> {
     Center(child: Text("Maps Page")),
     Center(child: Text("Maps Page")),
   ];
+
+  void _handleUserIconTap() {
+    final now = DateTime.now();
+
+    // Check if this is a double tap (within 300ms)
+    if (_lastTapTime != null &&
+        now.difference(_lastTapTime!) < Duration(milliseconds: 300)) {
+      _tapCount++;
+
+      // Double tap detected
+      if (_tapCount == 2) {
+        _handleDoubleTap();
+        _tapCount = 0;
+        _lastTapTime = null;
+        return;
+      }
+    } else {
+      _tapCount = 1;
+    }
+
+    _lastTapTime = now;
+
+    // Single tap - toggle theme
+    Future.delayed(Duration(milliseconds: 300), () {
+      if (_tapCount == 1) {
+        context.read<ThemeBloc>().add(ToggleTheme());
+      }
+      _tapCount = 0;
+    });
+  }
+
+  void _handleDoubleTap() {
+    final authService = SupabaseService.authService;
+
+    if (authService.isAuthenticated()) {
+      // User is logged in, logout
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: Text('Logout'),
+              content: Text('Are you sure you want to logout?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    try {
+                      await authService.signOut();
+                      if (mounted) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Logged out successfully'),
+                            backgroundColor: Colors.green,
+                          ),
+                        );
+                      }
+                    } catch (e) {
+                      if (mounted) {
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Failed to logout: $e'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  child: Text('Logout', style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            ),
+      );
+    } else {
+      // Not logged in, show message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No user logged in. Long press to sign up!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
+  void _handleLongPress() {
+    final authService = SupabaseService.authService;
+
+    if (authService.isAuthenticated()) {
+      // User is logged in, show their display name
+      final user = authService.getCurrentUser();
+      final displayName =
+          user?.userMetadata?['display_name'] ??
+          user?.userMetadata?['full_name'] ??
+          user?.email ??
+          'User';
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Logged in as: $displayName'),
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.green,
+          action: SnackBarAction(
+            label: 'OK',
+            textColor: Colors.white,
+            onPressed: () {},
+          ),
+        ),
+      );
+    } else {
+      // Not logged in, show message and navigate to signup
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Not logged in. Redirecting to Sign Up...'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      Future.delayed(Duration(milliseconds: 500), () {
+        context.push('/signup');
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,12 +207,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () {
-                    context.read<ThemeBloc>().add(ToggleTheme());
-                  },
-                  onLongPress: () {
-                    context.push('/signup');
-                  },
+                  onTap: _handleUserIconTap,
+                  onLongPress: _handleLongPress,
                   child: Container(
                     width: aspectRatio > 0.5 ? 46 : 40,
                     height: aspectRatio > 0.5 ? 46 : 40,
