@@ -5,16 +5,15 @@ import '../services/auth_service.dart';
 import '../services/supabase_service.dart';
 import '../utils/constants.dart';
 
-class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
@@ -22,13 +21,12 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  Future<void> _handleSignUp() async {
+  Future<void> _handleLogin() async {
     // Validate form
     if (!_formKey.currentState!.validate()) {
       return;
@@ -42,14 +40,13 @@ class _SignupPageState extends State<SignupPage> {
     });
 
     try {
-      // Sign up using Supabase Auth
-      final response = await SupabaseService.authService.signUp(
+      // Sign in using Supabase Auth
+      final response = await SupabaseService.authService.signIn(
         email: _emailController.text.trim(),
         password: _passwordController.text,
-        fullName: _nameController.text.trim(),
       );
 
-      // Check if signup was successful
+      // Check if sign in was successful
       if (response.user != null && mounted) {
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
@@ -60,14 +57,14 @@ class _SignupPageState extends State<SignupPage> {
                 SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Account created successfully! Please check your email to verify your account.',
+                    'Successfully signed in!',
                     style: TextStyle(fontSize: 14),
                   ),
                 ),
               ],
             ),
             backgroundColor: Colors.green,
-            duration: const Duration(seconds: 4),
+            duration: const Duration(seconds: 2),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -79,7 +76,7 @@ class _SignupPageState extends State<SignupPage> {
           context.pop();
         }
       } else {
-        throw Exception('Failed to create account');
+        throw Exception('Failed to sign in');
       }
     } on AuthServiceException catch (e) {
       // Handle authentication-specific errors
@@ -172,8 +169,8 @@ class _SignupPageState extends State<SignupPage> {
         ? DarkColors.glassBorder
         : LightColors.glassBorder;
 
-    // Vibrant green color matching the image
-    const signUpButtonColor = Color.fromRGBO(22, 162, 74, 1);
+    // Login button color as specified
+    const loginButtonColor = Color.fromRGBO(38, 98, 235, 1);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -192,7 +189,7 @@ class _SignupPageState extends State<SignupPage> {
                     children: [
                       const SizedBox(width: 40), // Spacer for centering
                       Text(
-                        'Create Account',
+                        'Log In',
                         style: GoogleFonts.inter(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -206,64 +203,6 @@ class _SignupPageState extends State<SignupPage> {
                     ],
                   ),
                   const SizedBox(height: 48),
-
-                  // Full Name field
-                  Text(
-                    'Full Name',
-                    style: GoogleFonts.inter(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: textColor,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  TextFormField(
-                    controller: _nameController,
-                    style: GoogleFonts.inter(
-                      color: textColor,
-                      fontSize: 16,
-                    ),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: inputBgColor,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(
-                          color: borderColor,
-                          width: 1.5,
-                        ),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 16,
-                      ),
-                      hintText: 'Enter your full name',
-                      hintStyle: GoogleFonts.inter(
-                        color: textColor.withOpacity(0.5),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Please enter your full name';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 24),
 
                   // Email field
                   Text(
@@ -394,22 +333,19 @@ class _SignupPageState extends State<SignupPage> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your password';
                       }
-                      if (value.length < 6) {
-                        return 'Password must be at least 6 characters long';
-                      }
                       return null;
                     },
                   ),
                   const SizedBox(height: 40),
 
-                  // Sign Up button
+                  // Login button
                   SizedBox(
                     width: double.infinity,
                     height: 56,
                     child: ElevatedButton(
-                      onPressed: _isLoading ? null : _handleSignUp,
+                      onPressed: _isLoading ? null : _handleLogin,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: signUpButtonColor,
+                        backgroundColor: loginButtonColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -426,7 +362,7 @@ class _SignupPageState extends State<SignupPage> {
                               ),
                             )
                           : Text(
-                              'Sign Up',
+                              'Log In',
                               style: GoogleFonts.inter(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -435,9 +371,9 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 24),
 
-                  // Already have account text
+                  // Don't have account text
                   Center(
                     child: RichText(
                       text: TextSpan(
@@ -446,20 +382,110 @@ class _SignupPageState extends State<SignupPage> {
                           color: textColor.withOpacity(0.7),
                         ),
                         children: [
-                          const TextSpan(text: 'Already have an account? '),
+                          const TextSpan(text: "Don't have an account? "),
                           WidgetSpan(
                             child: GestureDetector(
                               onTap: () {
-                                context.pushReplacement('/login');
+                                context.pushReplacement('/signup');
                               },
                               child: Text(
-                                'Log in',
+                                'Sign up',
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
-                                  color: signUpButtonColor,
+                                  color: loginButtonColor,
                                 ),
                               ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Divider with "or" text
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: borderColor,
+                          thickness: 1,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          'OR',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                            color: textColor.withOpacity(0.5),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: borderColor,
+                          thickness: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 32),
+
+                  // Sign in with Google button (UI only for now)
+                  SizedBox(
+                    width: double.infinity,
+                    height: 56,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // TODO: Implement Google sign-in later
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Google sign-in coming soon!'),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(
+                          color: borderColor,
+                          width: 1,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Google icon placeholder (using G text)
+                          Container(
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Center(
+                              child: Text(
+                                'G',
+                                style: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Sign in with Google',
+                            style: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: textColor,
                             ),
                           ),
                         ],

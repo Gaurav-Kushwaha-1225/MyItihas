@@ -9,6 +9,10 @@ class SupabaseService {
 
   /// Initialize Supabase with your project URL and anon key
   /// Call this in main() before runApp()
+  /// 
+  /// Note: Supabase automatically handles session persistence.
+  /// User sessions are stored securely and automatically restored on app restart,
+  /// so users will remain logged in even after killing and reopening the app.
   static Future<void> initialize({
     required String url,
     required String anonKey,
@@ -16,9 +20,16 @@ class SupabaseService {
     await Supabase.initialize(
       url: url,
       anonKey: anonKey,
+      // Session persistence is handled automatically by Supabase Flutter
+      // Sessions are stored securely using:
+      // - Hive on mobile (Android/iOS)
+      // - localStorage on web
     );
     _client = Supabase.instance.client;
     _authService = AuthService(_client!);
+    
+    // Session is automatically restored - currentUser will be available if session exists
+    // You can check authentication state using: SupabaseService.authService.isAuthenticated()
   }
 
   /// Get the Supabase client instance
