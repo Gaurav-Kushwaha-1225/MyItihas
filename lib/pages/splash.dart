@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:myitihas/config/routes.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -9,12 +9,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      GoRouter.of(context).go('/homepage');
+    Future.delayed(const Duration(seconds: 1), () {
+      if (mounted) {
+        const HomeRoute().go(context);
+      }
     });
   }
 
@@ -24,11 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
-        child: Image.asset(
-          'assets/logo.png',
-          width: size,
-          height: size,
-        ),
+        child: Image.asset('assets/logo.png', width: size, height: size),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+@Deprecated('Use Material 3 ColorScheme and GradientExtension instead')
 class DarkColors {
   // Base colors
   static const Color bgColor = Color(0xFF020617);
@@ -47,6 +48,7 @@ class DarkColors {
   );
 }
 
+@Deprecated('Use Material 3 ColorScheme and GradientExtension instead')
 class LightColors {
   // Base colors
   static const Color bgColor = Color(0xFFFFFFFF);

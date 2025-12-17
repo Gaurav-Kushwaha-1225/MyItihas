@@ -8,93 +8,131 @@ import 'package:myitihas/pages/Chat/Widget/new_group_page.dart';
 import 'package:myitihas/pages/Chat/Widget/profile_detail_page.dart';
 import 'package:myitihas/pages/home_page.dart';
 import 'package:myitihas/pages/splash.dart';
+import 'package:myitihas/pages/stories_page.dart';
+import 'package:myitihas/pages/story_generator.dart';
+import 'package:myitihas/features/social/presentation/pages/social_feed_page.dart';
+import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
+import 'package:myitihas/features/social/presentation/pages/notification_page.dart';
+import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
+import 'package:myitihas/features/chat/presentation/pages/chat_view_page.dart';
+import 'package:myitihas/features/stories/presentation/pages/story_detail_route_page.dart';
+
+part 'routes.g.dart';
+
+@TypedGoRoute<SplashRoute>(path: '/')
+class SplashRoute extends GoRouteData with $SplashRoute {
+  const SplashRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const SplashScreen();
+  }
+}
+
+@TypedGoRoute<HomeRoute>(
+  path: '/home',
+  routes: [
+    TypedGoRoute<StoriesRoute>(
+      path: 'stories',
+      routes: [TypedGoRoute<StoryDetailRoute>(path: ':id')],
+    ),
+    TypedGoRoute<StoryGeneratorRoute>(path: 'story-generator'),
+  ],
+)
+class HomeRoute extends GoRouteData with $HomeRoute {
+  const HomeRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const HomePage();
+  }
+}
+
+class StoriesRoute extends GoRouteData with $StoriesRoute {
+  const StoriesRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const StoriesPage();
+  }
+}
+
+class StoryDetailRoute extends GoRouteData with $StoryDetailRoute {
+  final String id;
+
+  const StoryDetailRoute({required this.id});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return StoryDetailRoutePage(id: id);
+  }
+}
+
+class StoryGeneratorRoute extends GoRouteData with $StoryGeneratorRoute {
+  const StoryGeneratorRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const StoryGeneratorPage();
+  }
+}
+
+@TypedGoRoute<SocialFeedRoute>(path: '/social-feed')
+class SocialFeedRoute extends GoRouteData with $SocialFeedRoute {
+  const SocialFeedRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const SocialFeedPage();
+  }
+}
+
+@TypedGoRoute<ProfileRoute>(path: '/profile/:userId')
+class ProfileRoute extends GoRouteData with $ProfileRoute {
+  final String userId;
+
+  const ProfileRoute({required this.userId});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ProfilePage(userId: userId);
+  }
+}
+
+@TypedGoRoute<NotificationRoute>(path: '/notifications')
+class NotificationRoute extends GoRouteData with $NotificationRoute {
+  const NotificationRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const NotificationPage();
+  }
+}
+
+@TypedGoRoute<ChatListRoute>(
+  path: '/chat',
+  routes: [TypedGoRoute<ChatViewRoute>(path: ':conversationId')],
+)
+class ChatListRoute extends GoRouteData with $ChatListRoute {
+  const ChatListRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const ChatListPage();
+  }
+}
+
+class ChatViewRoute extends GoRouteData with $ChatViewRoute {
+  final String conversationId;
+
+  const ChatViewRoute({required this.conversationId});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ChatViewPage(conversationId: conversationId);
+  }
+}
 
 class MyItihasRouter {
-  GoRouter router = GoRouter(
-    initialLocation: '/',
-    routes: [
-      GoRoute(
-        name: "splash",
-        path: '/',
-        pageBuilder: (context, state) {
-          return MaterialPage(key: state.pageKey, child: const SplashScreen());
-        },
-      ),
-      GoRoute(
-        name: "homepage",
-        path: '/homepage',
-        pageBuilder: (context, state) {
-          return MaterialPage(key: state.pageKey, child: const HomePage());
-        },
-      ),
-      GoRoute(
-        name: "new_chat",
-        path: '/new_chat',
-        pageBuilder: (context, state) {
-          return MaterialPage(key: state.pageKey, child: const NewChatPage());
-        },
-      ),
-      GoRoute(
-        name: "new_group",
-        path: '/new_group',
-        pageBuilder: (context, state) {
-          return MaterialPage(key: state.pageKey, child: const NewGroupPage());
-        },
-      ),
-      GoRoute(
-        name: "chat_detail",
-        path: '/chat_detail',
-        pageBuilder: (context, state) {
-          final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
-          return MaterialPage(
-            key: state.pageKey,
-            child: ChatDetailPage(
-              name: args['name'] ?? "User",
-              avatarColor:
-                  args['color'] != null
-                      ? "0xFF${(args['color'] as Color).value.toRadixString(16).substring(2)}"
-                      : "0xFF3B82F6",
-              isGroup: args['isGroup'] ?? false, // Check if it is a group
-            ),
-          );
-        },
-      ),
-
-      GoRoute(
-        name: "profile_detail",
-        path: '/profile_detail',
-        pageBuilder: (context, state) {
-          final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
-          return MaterialPage(
-            key: state.pageKey,
-            child: ProfileDetailPage(name: args['name'] ?? "User"),
-          );
-        },
-      ),
-      GoRoute(
-        name: "new_contact",
-        path: '/new_contact',
-        pageBuilder: (context, state) {
-          return MaterialPage(
-            key: state.pageKey,
-            child: const NewContactPage(),
-          );
-        },
-      ),
-      GoRoute(
-        name: "group_profile",
-        path: '/group_profile',
-        pageBuilder: (context, state) {
-          final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
-          return MaterialPage(
-            key: state.pageKey,
-            child: GroupProfilePage(
-              name: args['name'] ?? "Group",
-              avatarColor: args['color'] ?? "0xFF8B5CF6",
-            ),
-          );
-        },
-      ),
-    ],
-  );
+  GoRouter get router => GoRouter(initialLocation: '/', routes: $appRoutes);
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+@Deprecated('Use AppTheme from lib/config/theme/app_theme.dart instead')
 class MyItihasTheme {
   MyItihasTheme._();
 
