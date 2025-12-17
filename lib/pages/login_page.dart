@@ -42,43 +42,14 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       // Sign in using Supabase Auth
-      final response = await SupabaseService.authService.signIn(
+      // When successful, GoRouter detects auth state change and redirects to homepage
+      await SupabaseService.authService.signIn(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
-      // Check if sign in was successful
-      if (response.user != null && mounted) {
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Row(
-              children: [
-                Icon(Icons.check_circle, color: Colors.white),
-                SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Successfully signed in!',
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: Colors.green,
-            duration: const Duration(seconds: 2),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-
-        // Wait a moment before navigating back
-        await Future.delayed(const Duration(milliseconds: 500));
-
-        if (mounted) {
-          context.pop();
-        }
-      } else {
-        throw Exception('Failed to sign in');
-      }
+      // Do NOT show success message or navigate manually
+      // GoRouter handles all navigation based on auth state
     } on AuthServiceException catch (e) {
       // Handle authentication-specific errors
       if (mounted) {
@@ -123,6 +94,10 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
+      // Log unexpected errors to console for debugging
+      print('Login error: $e');
+      print('Error type: ${e.runtimeType}');
+
       // Handle unexpected errors
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -86,28 +86,12 @@ class _HomePageState extends State<HomePage> {
                 ),
                 TextButton(
                   onPressed: () async {
-                    try {
-                      await authService.signOut();
-                      if (mounted) {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Logged out successfully'),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      }
-                    } catch (e) {
-                      if (mounted) {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Failed to logout: $e'),
-                            backgroundColor: Colors.red,
-                          ),
-                        );
-                      }
-                    }
+                    // Close dialog first
+                    Navigator.pop(context);
+
+                    // Call signOut - GoRouter redirect handles navigation
+                    // When session becomes null, GoRouter redirects to /login
+                    await authService.signOut();
                   },
                   child: Text('Logout', style: TextStyle(color: Colors.red)),
                 ),
