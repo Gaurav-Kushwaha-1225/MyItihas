@@ -1,11 +1,13 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'auth_service.dart';
+import '../config/go_router_refresh.dart';
 
 /// Service to initialize and manage Supabase client
 /// This is the main entry point for backend services
 class SupabaseService {
   static SupabaseClient? _client;
   static AuthService? _authService;
+  static GoRouterRefreshStream? _refreshStream;
 
   /// Initialize Supabase with your project URL and anon key
   /// Call this in main() before runApp()
@@ -79,4 +81,18 @@ class SupabaseService {
     }
     return _client!.auth.currentSession;
   }
+
+  /// Set the GoRouter refresh stream
+  ///
+  /// This must be called from MyItihasRouter constructor to allow
+  /// AuthService to access and update recovery state.
+  static void setRefreshStream(GoRouterRefreshStream stream) {
+    _refreshStream = stream;
+  }
+
+  /// Get the GoRouter refresh stream
+  ///
+  /// Used by AuthService to set/clear recovery state.
+  /// Returns null if not initialized.
+  static GoRouterRefreshStream? get refreshStream => _refreshStream;
 }

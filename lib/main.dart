@@ -18,6 +18,9 @@ Future<void> main() async {
     anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtYnlnYWVpeHZ6bHloYnRrYm5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDAzODAsImV4cCI6MjA3NzExNjM4MH0.dqcdiUaixiuFoy5YJ0tmN34M7IBSp8JmiEhYuLKUCKI', // Your Supabase anon/public key
   );
   
+  // Start listening for deep links (password reset, OAuth callbacks, etc.)
+  SupabaseService.authService.startDeepLinkListener();
+  
   final SharedPreferences storage = await SharedPreferences.getInstance();
   final GoRouter router = MyItihasRouter().router;
   runApp(

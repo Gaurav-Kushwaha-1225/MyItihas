@@ -9,6 +9,7 @@ import 'package:myitihas/pages/Chat/Widget/new_group_page.dart';
 import 'package:myitihas/pages/Chat/Widget/profile_detail_page.dart';
 import 'package:myitihas/pages/home_page.dart';
 import 'package:myitihas/pages/login_page.dart';
+import 'package:myitihas/pages/reset_password_page.dart';
 import 'package:myitihas/pages/signup_page.dart';
 import 'package:myitihas/pages/splash.dart';
 import 'package:myitihas/services/supabase_service.dart';
@@ -18,13 +19,44 @@ class MyItihasRouter {
 
   MyItihasRouter() {
     _refreshStream = GoRouterRefreshStream();
+    // Register refresh stream so AuthService can access it for recovery state
+    SupabaseService.setRefreshStream(_refreshStream);
   }
 
   GoRouter get router => GoRouter(
     initialLocation: '/',
     refreshListenable: _refreshStream,
     redirect: (context, state) {
-      // Get current authentication state
+      // CRITICAL: Check recovery state FIRST before any other routing logic
+      // Recovery state has HIGHEST PRIORITY and overrides authentication state.
+      //
+      // Why recovery comes first:
+      // - Supabase PKCE automatically creates a session when reset link is opened
+      // - Without recovery flag, user would be treated as authenticated
+      // - This would allow access to authenticated routes before password reset
+      // - Recovery flag prevents this by forcing navigation to /reset-password
+      final isRecovering = _refreshStream.isRecovering;
+      final isOnResetPasswordPage = state.matchedLocation == '/reset-password';
+
+      // If in recovery mode, FORCE redirect to reset password page
+      // User CANNOT access any other route until password is reset
+      if (isRecovering && !isOnResetPasswordPage) {
+        print(
+          '[Router] Recovery mode active - forcing redirect to /reset-password',
+        );
+        return '/reset-password';
+      }
+
+      // If NOT in recovery mode but on reset password page, redirect away
+      // This prevents accessing reset page outside of recovery flow
+      if (!isRecovering && isOnResetPasswordPage) {
+        print(
+          '[Router] Not in recovery mode - redirecting away from /reset-password',
+        );
+        return '/login';
+      }
+
+      // Normal authentication routing (only applies when NOT in recovery)
       final isAuthenticated = SupabaseService.getCurrentSession() != null;
       final isOnLoginPage = state.matchedLocation == '/login';
       final isOnSignupPage = state.matchedLocation == '/signup';
@@ -142,6 +174,16 @@ class MyItihasRouter {
         path: '/login',
         pageBuilder: (context, state) {
           return MaterialPage(key: state.pageKey, child: const LoginPage());
+        },
+      ),
+      GoRoute(
+        name: "reset_password",
+        path: '/reset-password',
+        pageBuilder: (context, state) {
+          return MaterialPage(
+            key: state.pageKey,
+            child: const ResetPasswordPage(),
+          );
         },
       ),
     ],

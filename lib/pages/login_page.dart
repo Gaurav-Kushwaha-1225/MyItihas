@@ -148,6 +148,218 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  Future<void> _showForgotPasswordDialog() async {
+    final emailController = TextEditingController();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
+    final inputBgColor = isDark ? DarkColors.inputBg : LightColors.inputBg;
+    final borderColor =
+        isDark ? DarkColors.glassBorder : LightColors.glassBorder;
+    const buttonColor = Color.fromRGBO(38, 98, 235, 1);
+
+    return showDialog(
+      context: context,
+      builder:
+          (dialogContext) => AlertDialog(
+            backgroundColor: isDark ? DarkColors.bgColor : LightColors.bgColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: Text(
+              'Reset Password',
+              style: GoogleFonts.inter(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Enter your email address and we\'ll send you a link to reset your password.',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    color: textColor.withOpacity(0.7),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  autofocus: true,
+                  style: GoogleFonts.inter(color: textColor, fontSize: 16),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: inputBgColor,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: borderColor, width: 1),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: borderColor, width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: borderColor, width: 1.5),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 16,
+                    ),
+                    hintText: 'Email address',
+                    hintStyle: GoogleFonts.inter(
+                      color: textColor.withOpacity(0.5),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: Text(
+                  'Cancel',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: textColor.withOpacity(0.7),
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  final email = emailController.text.trim();
+                  if (email.isEmpty || !email.contains('@')) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          children: [
+                            const Icon(
+                              Icons.error_outline,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 12),
+                            const Expanded(
+                              child: Text(
+                                'Please enter a valid email address',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                        backgroundColor: Colors.red,
+                        duration: const Duration(seconds: 3),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                    return;
+                  }
+
+                  Navigator.of(dialogContext).pop();
+
+                  try {
+                    await SupabaseService.authService.resetPasswordForEmail(
+                      email,
+                    );
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              const Icon(
+                                Icons.check_circle_outline,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 12),
+                              const Expanded(
+                                child: Text(
+                                  'Password reset email sent! Check your inbox.',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ],
+                          ),
+                          backgroundColor: Colors.green,
+                          duration: const Duration(seconds: 5),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  } on AuthServiceException catch (e) {
+                    print('Password reset error: ${e.message}');
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Row(
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  e.message,
+                                  style: const TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ],
+                          ),
+                          backgroundColor: Colors.red,
+                          duration: const Duration(seconds: 4),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    print('Unexpected password reset error: $e');
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Row(
+                            children: [
+                              Icon(Icons.error_outline, color: Colors.white),
+                              SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  'An error occurred. Please try again.',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ],
+                          ),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 4),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    }
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: buttonColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  elevation: 0,
+                ),
+                child: Text(
+                  'Send Reset Link',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -300,7 +512,32 @@ class _LoginPageState extends State<LoginPage> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 12),
+
+                  // Forgot password link
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: _isLoading ? null : _showForgotPasswordDialog,
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        'Forgot password?',
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: loginButtonColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 28),
 
                   // Login button
                   SizedBox(
