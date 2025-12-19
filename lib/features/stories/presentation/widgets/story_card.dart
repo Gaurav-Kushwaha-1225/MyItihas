@@ -114,7 +114,7 @@ class StoryCard extends StatelessWidget {
                 child: TextButton.icon(
                   onPressed: onTap,
                   icon: const Icon(Icons.arrow_forward),
-                  label: Text(t.stories.read_more),
+                  label: Text(t.stories.readMore),
                 ),
               ),
             ],

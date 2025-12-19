@@ -69,7 +69,7 @@ class _NotificationViewState extends State<_NotificationView> {
                       const NotificationEvent.markAllAsRead(),
                     );
                   },
-                  child: Text(t.notification.mark_all_read),
+                  child: Text(t.notification.markAllRead),
                 );
               }
               return const SizedBox.shrink();
@@ -84,7 +84,7 @@ class _NotificationViewState extends State<_NotificationView> {
             loading: () => const Center(child: CircularProgressIndicator()),
             loaded: (notifications, unreadCount, hasMore, isLoadingMore) {
               if (notifications.isEmpty) {
-                return Center(child: Text(t.notification.no_notifications));
+                return Center(child: Text(t.notification.noNotifications));
               }
 
               return ListView.separated(
@@ -118,7 +118,7 @@ class _NotificationViewState extends State<_NotificationView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('${t.notification.error_prefix} $message'),
+                  Text('${t.notification.errorPrefix} $message'),
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
@@ -207,15 +207,15 @@ class _NotificationTile extends StatelessWidget {
 
     switch (notification.type) {
       case notif.NotificationType.storyLike:
-        return t.notification.liked_your_story(ActorName: actorName);
+        return t.notification.likedYourStory.replaceAll('{{actorName}}', actorName);
       case notif.NotificationType.storyComment:
-        return t.notification.commented_on_your_story(ActorName: actorName);
+        return t.notification.commentedOnYourStory.replaceAll('{{actorName}}', actorName);
       case notif.NotificationType.commentReply:
-        return t.notification.replied_to_your_comment(ActorName: actorName);
+        return t.notification.repliedToYourComment.replaceAll('{{actorName}}', actorName);
       case notif.NotificationType.follow:
-        return t.notification.started_following_you(ActorName: actorName);
+        return t.notification.startedFollowingYou.replaceAll('{{actorName}}', actorName);
       case notif.NotificationType.directMessage:
-        return t.notification.sent_you_a_message(ActorName: actorName);
+        return t.notification.sentYouAMessage.replaceAll('{{actorName}}', actorName);
     }
   }
 }

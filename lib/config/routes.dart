@@ -22,6 +22,7 @@ import 'package:myitihas/features/social/presentation/pages/notification_page.da
 import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_view_page.dart';
 import 'package:myitihas/features/stories/presentation/pages/story_detail_route_page.dart';
+import 'package:myitihas/services/supabase_service.dart';
 
 part 'routes.g.dart';
 
@@ -56,8 +57,6 @@ class HomeRoute extends GoRouteData with $HomeRoute {
   }
 }
 
-
-<<<<<<< signupLogin
 /// Login
 @TypedGoRoute<LoginRoute>(path: '/login')
 class LoginRoute extends GoRouteData with $LoginRoute {
@@ -68,7 +67,7 @@ class LoginRoute extends GoRouteData with $LoginRoute {
     return const LoginPage();
   }
 }
-}
+
 
 /// Signup
 @TypedGoRoute<SignupRoute>(path: '/signup')
@@ -128,7 +127,7 @@ class NewContactRoute extends GoRouteData with $NewContactRoute {
 
 /// Chat detail page route - requires parameters passed via $extra
 @TypedGoRoute<ChatDetailRoute>(path: '/chat_detail')
-class ChatDetailRoute extends GoRouteData {
+class ChatDetailRoute extends GoRouteData with $ChatDetailRoute {
   const ChatDetailRoute({required this.$extra});
 
   final Map<String, dynamic> $extra;
@@ -139,6 +138,7 @@ class ChatDetailRoute extends GoRouteData {
       name: $extra['name'] ?? "User",
       avatarColor:
           $extra['color'] != null
+              // ignore: deprecated_member_use
               ? "0xFF${($extra['color'] as Color).value.toRadixString(16).substring(2)}"
               : "0xFF3B82F6",
       isGroup: $extra['isGroup'] ?? false,
@@ -148,7 +148,7 @@ class ChatDetailRoute extends GoRouteData {
 
 /// Profile detail page route - requires name parameter via $extra
 @TypedGoRoute<ProfileDetailRoute>(path: '/profile_detail')
-class ProfileDetailRoute extends GoRouteData {
+class ProfileDetailRoute extends GoRouteData with $ProfileDetailRoute {
   const ProfileDetailRoute({required this.$extra});
 
   final Map<String, dynamic> $extra;
@@ -161,7 +161,7 @@ class ProfileDetailRoute extends GoRouteData {
 
 /// Group profile page route - requires parameters via $extra
 @TypedGoRoute<GroupProfileRoute>(path: '/group_profile')
-class GroupProfileRoute extends GoRouteData {
+class GroupProfileRoute extends GoRouteData with $GroupProfileRoute {
   const GroupProfileRoute({required this.$extra});
 
   final Map<String, dynamic> $extra;
@@ -174,54 +174,30 @@ class GroupProfileRoute extends GoRouteData {
     );
   }
 }
+
 // ============================================================================
 // MyItihasRouter - GoRouter Configuration
 // ============================================================================
 
 class MyItihasRouter {
-  late final GoRouterRefreshStream _refreshStream;
-
-  MyItihasRouter() {
-    _refreshStream = GoRouterRefreshStream();
-    // Register refresh stream so AuthService can access it for recovery state
-    SupabaseService.setRefreshStream(_refreshStream);
-  }
-
   GoRouter get router => GoRouter(
         initialLocation: '/',
         routes: $appRoutes,
-        refreshListenable: _refreshStream,
         redirect: (context, state) {
-          // ---- Recovery flow (highest priority) ----
-          final isRecovering = _refreshStream.isRecovering;
-          final isOnResetPasswordPage =
-              state.matchedLocation == '/reset-password';
-
-          if (isRecovering && !isOnResetPasswordPage) {
-            return '/reset-password';
-          }
-
-          if (!isRecovering && isOnResetPasswordPage) {
-            return '/login';
-          }
-
-          // ---- Normal auth flow ----
           final isAuthenticated =
               SupabaseService.getCurrentSession() != null;
 
-          final isOnLoginPage = state.matchedLocation == '/login';
-          final isOnSignupPage = state.matchedLocation == '/signup';
+          final isOnLogin = state.matchedLocation == '/login';
+          final isOnSignup = state.matchedLocation == '/signup';
           final isOnSplash = state.matchedLocation == '/';
 
-          if (isAuthenticated && (isOnLoginPage || isOnSignupPage)) {
-            return '/home'; // IMPORTANT: not /homepage
+          if (isAuthenticated && (isOnLogin || isOnSignup)) {
+            return '/home';
           }
 
-          if (isOnSplash) {
-            return null;
-          }
+          if (isOnSplash) return null;
 
-          if (!isAuthenticated && !isOnLoginPage && !isOnSignupPage) {
+          if (!isAuthenticated && !isOnLogin && !isOnSignup) {
             return '/login';
           }
 
@@ -229,6 +205,8 @@ class MyItihasRouter {
         },
       );
 }
+
+
 
 // ============================================================================
 // Feature Routes (TypedGoRoute – from main branch)

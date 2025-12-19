@@ -2,7 +2,7 @@
 // Do not modify
 // Check in to version control
 
-import 'package:hive_ce/hive.dart';
+import 'package:hive_ce/hive_ce.dart';
 import 'package:myitihas/features/chat/data/models/conversation_model.dart';
 import 'package:myitihas/features/chat/data/models/message_model.dart';
 import 'package:myitihas/features/chat/domain/entities/message.dart';

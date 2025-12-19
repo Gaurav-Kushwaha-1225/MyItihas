@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ProfileDetailPage extends StatelessWidget {
   final String name;
@@ -45,13 +45,13 @@ class ProfileDetailPage extends StatelessWidget {
               // Optional: Show bottom sheet or popup here too
             },
           ),
-          SizedBox(width: 2.w),
+          SizedBox(width: 8.w),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 2.h),
+            SizedBox(height: 16.h),
 
             // Large Avatar
             Center(
@@ -59,8 +59,8 @@ class ProfileDetailPage extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   Container(
-                    width: 42.w,
-                    height: 42.w,
+                    width: 168.w,
+                    height: 168.w,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
@@ -70,8 +70,8 @@ class ProfileDetailPage extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: 38.w,
-                    height: 38.w,
+                    width: 152.w,
+                    height: 152.w,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: accentColor.withOpacity(0.2),
@@ -92,21 +92,21 @@ class ProfileDetailPage extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 2.h),
+            SizedBox(height: 16.h),
 
             // Status
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  width: 2.5.w,
-                  height: 2.5.w,
+                  width: 10.w,
+                  height: 10.w,
                   decoration: BoxDecoration(
                     color: DarkColors.profileGreen,
                     shape: BoxShape.circle,
                   ),
                 ),
-                SizedBox(width: 2.w),
+                SizedBox(width: 8.w),
                 Text(
                   "Active now",
                   style: GoogleFonts.inter(
@@ -117,7 +117,7 @@ class ProfileDetailPage extends StatelessWidget {
               ],
             ),
 
-            SizedBox(height: 2.h),
+            SizedBox(height: 16.h),
 
             // Name
             Row(
@@ -131,12 +131,12 @@ class ProfileDetailPage extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(width: 2.w),
+                SizedBox(width: 8.w),
                 Icon(Icons.edit, color: subTextColor, size: 15.sp),
               ],
             ),
 
-            SizedBox(height: 4.h),
+            SizedBox(height: 32.h),
 
             // Action Buttons
             Row(
@@ -145,18 +145,18 @@ class ProfileDetailPage extends StatelessWidget {
                 _buildActionButton(Icons.chat_bubble, accentColor, () {
                   context.pop();
                 }),
-                SizedBox(width: 8.w),
+                SizedBox(width: 32.w),
                 _buildLargeCallButton(accentColor),
-                SizedBox(width: 8.w),
+                SizedBox(width: 32.w),
                 _buildActionButton(Icons.videocam_rounded, accentColor, () {}),
               ],
             ),
 
-            SizedBox(height: 5.h),
+            SizedBox(height: 40.h),
 
             // Details List
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              padding: EdgeInsets.symmetric(horizontal: 32.w),
               child: Column(
                 children: [
                   _buildDetailRow(
@@ -165,11 +165,11 @@ class ProfileDetailPage extends StatelessWidget {
                     textColor,
                     subTextColor,
                   ),
-                  SizedBox(height: 2.5.h),
+                  SizedBox(height: 20.h),
                   _buildDetailRow(Icons.email, email, textColor, subTextColor),
-                  SizedBox(height: 2.5.h),
+                  SizedBox(height: 20.h),
                   _buildDetailRow(Icons.phone, phone, textColor, subTextColor),
-                  SizedBox(height: 2.5.h),
+                  SizedBox(height: 20.h),
                   _buildDetailRow(
                     Icons.calendar_today,
                     "Joined March 2024",
@@ -180,9 +180,9 @@ class ProfileDetailPage extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 4.h),
+            SizedBox(height: 32.h),
             Divider(color: subTextColor.withOpacity(0.1)),
-            SizedBox(height: 2.h),
+            SizedBox(height: 16.h),
 
             // --- BLOCK & REPORT SECTION ---
             _buildDangerOption(Icons.block, "Block $name", dangerColor),
@@ -192,7 +192,7 @@ class ProfileDetailPage extends StatelessWidget {
               dangerColor,
             ),
 
-            SizedBox(height: 5.h),
+            SizedBox(height: 40.h),
           ],
         ),
       ),
@@ -205,11 +205,11 @@ class ProfileDetailPage extends StatelessWidget {
         // Handle Block/Report Logic
       },
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 1.5.h),
+        padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 12.h),
         child: Row(
           children: [
             Icon(icon, color: color, size: 18.sp),
-            SizedBox(width: 4.w),
+            SizedBox(width: 16.w),
             Text(
               text,
               style: GoogleFonts.inter(
@@ -229,8 +229,8 @@ class ProfileDetailPage extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 14.w,
-        height: 14.w,
+        width: 56.w,
+        height: 56.w,
         decoration: BoxDecoration(
           color: color,
           shape: BoxShape.circle,
@@ -249,8 +249,8 @@ class ProfileDetailPage extends StatelessWidget {
 
   Widget _buildLargeCallButton(Color color) {
     return Container(
-      width: 18.w,
-      height: 18.w,
+      width: 72.w,
+      height: 72.w,
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
@@ -275,7 +275,7 @@ class ProfileDetailPage extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, color: subTextColor, size: 16.sp),
-        SizedBox(width: 4.w),
+        SizedBox(width: 16.w),
         Text(
           text,
           style: GoogleFonts.inter(

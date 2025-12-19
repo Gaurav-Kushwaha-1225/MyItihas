@@ -8,15 +8,13 @@ import 'package:myitihas/config/routes.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
 
 import 'package:myitihas/pages/home_content_page.dart';
+import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
 
-import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/social/presentation/pages/social_feed_page.dart';
 import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
 
 import 'package:myitihas/services/supabase_service.dart';
-import 'package:myitihas/utils/constants.dart';
 import 'package:myitihas/utils/theme.dart';
-
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -40,7 +38,7 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> pages = [
     const HomeContentPage(),
-    const ChatListPage(),
+    const ChatItihasPage(),
     // const StoryGeneratorPage(),
     const SocialFeedPage(),
     const ProfilePage(userId: 'user_001'),
@@ -83,28 +81,27 @@ class _HomePageState extends State<HomePage> {
       // User is logged in, logout
       showDialog(
         context: context,
-        builder:
-            (context) => AlertDialog(
-              title: Text('Logout'),
-              content: Text('Are you sure you want to logout?'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    // Close dialog first
-                    Navigator.pop(context);
-
-                    // Call signOut - GoRouter redirect handles navigation
-                    // When session becomes null, GoRouter redirects to /login
-                    await authService.signOut();
-                  },
-                  child: Text('Logout', style: TextStyle(color: Colors.red)),
-                ),
-              ],
+        builder: (context) => AlertDialog(
+          title: Text('Logout'),
+          content: Text('Are you sure you want to logout?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text('Cancel'),
             ),
+            TextButton(
+              onPressed: () async {
+                // Close dialog first
+                Navigator.pop(context);
+
+                // Call signOut - GoRouter redirect handles navigation
+                // When session becomes null, GoRouter redirects to /login
+                await authService.signOut();
+              },
+              child: Text('Logout', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        ),
       );
     } else {
       // Not logged in, show message

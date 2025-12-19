@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 
 class ChatDetailPage extends StatefulWidget {
@@ -81,7 +81,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       backgroundColor: isDark ? DarkColors.bgColor : LightColors.bgColor,
 
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(8.h),
+        preferredSize: Size.fromHeight(80.h),
         child: AnimatedSwitcher(
           duration: Duration(milliseconds: 200),
           child:
@@ -107,7 +107,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
           children: [
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(vertical: 2.h),
+                padding: EdgeInsets.symmetric(vertical: 16.h),
                 itemCount: _messages.length,
                 itemBuilder: (context, index) {
                   final msg = _messages[index];
@@ -125,8 +125,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     child: Container(
                       color: isSelected ? highlightColor : Colors.transparent,
                       padding: EdgeInsets.symmetric(
-                        horizontal: 4.w,
-                        vertical: 1.h,
+                        horizontal: 16.w,
+                        vertical: 8.h,
                       ),
                       child: Row(
                         mainAxisAlignment:
@@ -140,7 +140,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               backgroundColor: Color(
                                 int.parse(widget.avatarColor),
                               ).withOpacity(0.2),
-                              radius: 15.sp,
+                              radius: 20.sp,
                               child: Text(
                                 widget.name[0],
                                 style: GoogleFonts.inter(
@@ -150,7 +150,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 2.w),
+                            SizedBox(width: 8.w),
                           ],
                           Column(
                             crossAxisAlignment:
@@ -159,10 +159,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                     : CrossAxisAlignment.start,
                             children: [
                               Container(
-                                constraints: BoxConstraints(maxWidth: 70.w),
+                                constraints: BoxConstraints(maxWidth: 280.w),
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w,
-                                  vertical: 1.5.h,
+                                  horizontal: 16.w,
+                                  vertical: 12.h,
                                 ),
                                 decoration: BoxDecoration(
                                   color:
@@ -172,16 +172,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                               ? DarkColors.glassBg
                                               : Colors.white),
                                   borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15.sp),
-                                    topRight: Radius.circular(15.sp),
+                                    topLeft: Radius.circular(18.r),
+                                    topRight: Radius.circular(18.r),
                                     bottomLeft:
                                         isMe
-                                            ? Radius.circular(15.sp)
+                                            ? Radius.circular(18.r)
                                             : Radius.circular(0),
                                     bottomRight:
                                         isMe
                                             ? Radius.circular(0)
-                                            : Radius.circular(15.sp),
+                                            : Radius.circular(18.r),
                                   ),
                                   boxShadow:
                                       isMe
@@ -206,7 +206,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 0.5.h),
+                              SizedBox(height: 4.h),
 
                               // --- UPDATED: Time + Status Icon ---
                               Row(
@@ -220,7 +220,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                     ),
                                   ),
                                   if (isMe) ...[
-                                    SizedBox(width: 1.5.w),
+                                    SizedBox(width: 6.w),
                                     // Added Helper function call
                                     _buildStatusIcon(msg['status'] ?? 0),
                                   ],
@@ -238,7 +238,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
             if (!_isSelectionMode)
               Container(
-                padding: EdgeInsets.all(4.w),
+                padding: EdgeInsets.all(16.w),
                 decoration: BoxDecoration(
                   color: isDark ? DarkColors.glassBg : Colors.white,
                   border: Border(
@@ -250,10 +250,10 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 child: Row(
                   children: [
                     Icon(Icons.add, color: subTextColor, size: 20.sp),
-                    SizedBox(width: 3.w),
+                    SizedBox(width: 12.w),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 4.w),
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
                         decoration: BoxDecoration(
                           color: isDark ? Colors.white10 : Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(30),
@@ -269,7 +269,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 3.w),
+                    SizedBox(width: 12.w),
                     Icon(Icons.mic, color: subTextColor, size: 20.sp),
                   ],
                 ),
@@ -295,7 +295,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 2.w),
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Row(
             children: [
               IconButton(
@@ -306,7 +306,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 ),
                 onPressed: () => context.pop(),
               ),
-              SizedBox(width: 2.w),
+              SizedBox(width: 8.w),
 
               GestureDetector(
                 onTap: _navigateToProfile,
@@ -314,7 +314,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   backgroundColor: Color(
                     int.parse(widget.avatarColor),
                   ).withOpacity(0.2),
-                  radius: 18.sp,
+                  radius: 20.sp,
                   child: Text(
                     widget.name[0],
                     style: GoogleFonts.inter(
@@ -325,7 +325,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ),
                 ),
               ),
-              SizedBox(width: 3.w),
+              SizedBox(width: 12.w),
 
               Expanded(
                 child: GestureDetector(
@@ -336,6 +336,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     children: [
                       Text(
                         widget.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.inter(
                           color: textColor,
                           fontSize: 16.sp,
@@ -345,14 +347,14 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       Row(
                         children: [
                           Container(
-                            width: 2.w,
-                            height: 2.w,
+                            width: 8.w,
+                            height: 8.w,
                             decoration: BoxDecoration(
                               color: DarkColors.profileGreen,
                               shape: BoxShape.circle,
                             ),
                           ),
-                          SizedBox(width: 1.5.w),
+                          SizedBox(width: 6.w),
                           Text(
                             "Online",
                             style: GoogleFonts.inter(
@@ -439,7 +441,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       color: selectionBg,
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 2.w),
+          padding: EdgeInsets.symmetric(horizontal: 12.w),
           child: Row(
             children: [
               IconButton(
