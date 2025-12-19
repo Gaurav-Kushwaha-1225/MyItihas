@@ -23,6 +23,7 @@ import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_view_page.dart';
 import 'package:myitihas/features/stories/presentation/pages/story_detail_route_page.dart';
 import 'package:myitihas/services/supabase_service.dart';
+import 'package:myitihas/config/go_router_refresh.dart';
 
 part 'routes.g.dart';
 
@@ -180,24 +181,59 @@ class GroupProfileRoute extends GoRouteData with $GroupProfileRoute {
 // ============================================================================
 
 class MyItihasRouter {
+  final GoRouterRefreshStream _refreshStream = GoRouterRefreshStream();
+
+  MyItihasRouter() {
+    // Register refresh stream with SupabaseService so AuthService can access it
+    SupabaseService.setRefreshStream(_refreshStream);
+  }
+
   GoRouter get router => GoRouter(
         initialLocation: '/',
         routes: $appRoutes,
+        refreshListenable: _refreshStream,
         redirect: (context, state) {
           final isAuthenticated =
               SupabaseService.getCurrentSession() != null;
+          final isRecovering = _refreshStream.isRecovering;
 
-          final isOnLogin = state.matchedLocation == '/login';
-          final isOnSignup = state.matchedLocation == '/signup';
-          final isOnSplash = state.matchedLocation == '/';
+          final currentPath = state.matchedLocation;
+          final isOnLogin = currentPath == '/login';
+          final isOnSignup = currentPath == '/signup';
+          final isOnSplash = currentPath == '/';
+          final isOnResetPassword = currentPath == '/reset-password';
 
+          print('[Router] Path: $currentPath, Auth: $isAuthenticated, Recovering: $isRecovering');
+
+          // HIGHEST PRIORITY: Password recovery flow
+          // If user is in recovery mode, FORCE them to /reset-password
+          // This overrides normal authentication state
+          if (isRecovering) {
+            if (!isOnResetPassword) {
+              print('[Router] Recovery mode - redirecting to /reset-password');
+              return '/reset-password';
+            }
+            return null; // Already on reset-password, stay there
+          }
+
+          // Normal auth flow: authenticated user trying to access login/signup
           if (isAuthenticated && (isOnLogin || isOnSignup)) {
+            print('[Router] Authenticated user on auth page - redirecting to /home');
             return '/home';
           }
 
+          // Splash screen - let it handle its own logic
           if (isOnSplash) return null;
 
-          if (!isAuthenticated && !isOnLogin && !isOnSignup) {
+          // Reset password page without recovery mode - redirect to login
+          if (isOnResetPassword && !isRecovering) {
+            print('[Router] On reset-password without recovery mode - redirecting to /login');
+            return '/login';
+          }
+
+          // Unauthenticated user trying to access protected route
+          if (!isAuthenticated && !isOnLogin && !isOnSignup && !isOnResetPassword) {
+            print('[Router] Unauthenticated - redirecting to /login');
             return '/login';
           }
 

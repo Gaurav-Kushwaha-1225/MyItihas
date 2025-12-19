@@ -37,11 +37,14 @@ Future<void> main() async {
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtYnlnYWVpeHZ6bHloYnRrYm5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDAzODAsImV4cCI6MjA3NzExNjM4MH0.dqcdiUaixiuFoy5YJ0tmN34M7IBSp8JmiEhYuLKUCKI',
   );
 
-  // Deep links / reset-password / OAuth
-  SupabaseService.authService.startDeepLinkListener();
-
   final SharedPreferences storage = await SharedPreferences.getInstance();
+  
+  // IMPORTANT: Create router FIRST to register refreshStream
+  // This must happen before starting deep link listener
   final GoRouter router = MyItihasRouter().router;
+  
+  // Now start deep link listener - refreshStream is available
+  SupabaseService.authService.startDeepLinkListener();
 
   runApp(
     TranslationProvider(
