@@ -16,20 +16,23 @@ class _NewContactPageState extends State<NewContactPage> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
-  String _selectedCountryCode = "+91";
+  final String _selectedCountryCode = "+91";
 
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     Color textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    Color subTextColor =
-        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
+    Color subTextColor = isDark
+        ? DarkColors.textSecondary
+        : LightColors.textSecondary;
     Color inputBg = isDark ? DarkColors.inputBg : LightColors.inputBg;
-    Color borderColor =
-        isDark ? DarkColors.glassBorder : LightColors.glassBorder;
+    Color borderColor = isDark
+        ? DarkColors.glassBorder
+        : LightColors.glassBorder;
 
-    final accentColor =
-        isDark ? DarkColors.accentPrimary : LightColors.accentPrimary;
+    final accentColor = isDark
+        ? DarkColors.accentPrimary
+        : LightColors.accentPrimary;
 
     return Scaffold(
       backgroundColor: isDark ? DarkColors.bgColor : LightColors.bgColor,
@@ -39,10 +42,9 @@ class _NewContactPageState extends State<NewContactPage> {
         preferredSize: Size.fromHeight(6.h),
         child: Container(
           decoration: BoxDecoration(
-            gradient:
-                isDark
-                    ? DarkColors.featureCardGradient
-                    : LightColors.featureCardGradient,
+            gradient: isDark
+                ? DarkColors.featureCardGradient
+                : LightColors.featureCardGradient,
             boxShadow: [
               BoxShadow(
                 color: Theme.of(context).secondaryHeaderColor.withAlpha(50),
@@ -69,9 +71,9 @@ class _NewContactPageState extends State<NewContactPage> {
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w700,
                             fontSize: 18.sp,
-                            foreground:
-                                Paint()
-                                  ..shader = (isDark
+                            foreground: Paint()
+                              ..shader =
+                                  (isDark
                                           ? DarkColors.messageUserGradient
                                           : LightColors.messageUserGradient)
                                       .createShader(
@@ -151,9 +153,8 @@ class _NewContactPageState extends State<NewContactPage> {
               _buildTextField(
                 controller: _lastNameController,
                 label: "Last name",
-                icon:
-                    Icons
-                        .person_outline, // Optional: hide icon if you prefer cleaner look like image
+                icon: Icons
+                    .person_outline, // Optional: hide icon if you prefer cleaner look like image
                 isDark: isDark,
                 inputBg: inputBg,
                 borderColor: borderColor,
@@ -175,10 +176,9 @@ class _NewContactPageState extends State<NewContactPage> {
                       color: inputBg.withOpacity(0.4),
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(
-                        color:
-                            isDark
-                                ? DarkColors.glassBorder
-                                : LightColors.glassBorder,
+                        color: isDark
+                            ? DarkColors.glassBorder
+                            : LightColors.glassBorder,
                       ),
                     ),
                     child: Row(
@@ -234,10 +234,9 @@ class _NewContactPageState extends State<NewContactPage> {
                   ),
                   decoration: BoxDecoration(
                     // Use your theme's gradient
-                    gradient:
-                        isDark
-                            ? DarkColors.messageUserGradient
-                            : LightColors.messageUserGradient,
+                    gradient: isDark
+                        ? DarkColors.messageUserGradient
+                        : LightColors.messageUserGradient,
                     borderRadius: BorderRadius.circular(
                       30,
                     ), // Fully rounded corners
@@ -297,10 +296,9 @@ class _NewContactPageState extends State<NewContactPage> {
           hintText: label,
           hintStyle: TextStyle(color: subTextColor, fontSize: 15.sp),
           border: InputBorder.none,
-          prefixIcon:
-              icon != null
-                  ? Icon(icon, color: subTextColor, size: 16.sp)
-                  : null,
+          prefixIcon: icon != null
+              ? Icon(icon, color: subTextColor, size: 16.sp)
+              : null,
           contentPadding: EdgeInsets.symmetric(
             horizontal: 4.w,
             vertical: 2.h, // Centers text vertically

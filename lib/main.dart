@@ -11,7 +11,6 @@ import 'package:myitihas/core/storage/hive_service.dart';
 import 'package:myitihas/i18n/strings.g.dart';
 import 'package:myitihas/utils/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sizer/sizer.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

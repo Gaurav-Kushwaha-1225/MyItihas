@@ -14,8 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Story {
 
- String get id; String get title; String get scripture; String get story; String get quotes; String get trivia; String get activity; String get lesson; StoryAttributes get attributes; String? get imageUrl; String? get author; DateTime? get publishedAt; int get likes; int get views; bool get isFavorite;// Social fields
- String? get authorId; User? get authorUser; int get commentCount; int get shareCount; bool get isLikedByCurrentUser;
+ String get id; String get title; String get scripture; String get story; String get quotes; String get trivia; String get activity; String get lesson; StoryAttributes get attributes; String? get imageUrl; String? get author; DateTime? get publishedAt; int get likes; int get views; bool get isFavorite; String? get authorId; User? get authorUser; int get commentCount; int get shareCount; bool get isLikedByCurrentUser;
 /// Create a copy of Story
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -265,7 +264,6 @@ class _Story extends Story {
 @override@JsonKey() final  int likes;
 @override@JsonKey() final  int views;
 @override@JsonKey() final  bool isFavorite;
-// Social fields
 @override final  String? authorId;
 @override final  User? authorUser;
 @override@JsonKey() final  int commentCount;

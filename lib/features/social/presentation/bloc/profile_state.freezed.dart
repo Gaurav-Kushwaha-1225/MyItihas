@@ -87,10 +87,7 @@ case ProfileInitial():
 return initial(_that);case ProfileLoading():
 return loading(_that);case ProfileLoaded():
 return loaded(_that);case ProfileError():
-return error(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return error(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -158,10 +155,7 @@ case ProfileInitial():
 return initial();case ProfileLoading():
 return loading();case ProfileLoaded():
 return loaded(_that.user,_that.followers,_that.following,_that.isLoadingFollowers,_that.isLoadingFollowing);case ProfileError():
-return error(_that.message);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return error(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

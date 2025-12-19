@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:myitihas/pages/Chat/Widget/chat_detail_page.dart';
-import 'package:myitihas/pages/Chat/Widget/group_profile_page.dart';
-import 'package:myitihas/pages/Chat/Widget/new_chat_page.dart';
-import 'package:myitihas/pages/Chat/Widget/new_contact_page.dart';
-import 'package:myitihas/pages/Chat/Widget/new_group_page.dart';
-import 'package:myitihas/pages/Chat/Widget/profile_detail_page.dart';
 import 'package:myitihas/pages/home_page.dart';
 import 'package:myitihas/pages/splash.dart';
 import 'package:myitihas/pages/stories_page.dart';

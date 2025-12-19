@@ -95,10 +95,7 @@ return filterByType(_that);case _FilterByTheme():
 return filterByTheme(_that);case _ToggleFavorite():
 return toggleFavorite(_that);case _LoadTrendingStories():
 return loadTrendingStories(_that);case _RefreshStories():
-return refreshStories(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return refreshStories(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -178,10 +175,7 @@ return filterByType(_that.type);case _FilterByTheme():
 return filterByTheme(_that.theme);case _ToggleFavorite():
 return toggleFavorite(_that.storyId);case _LoadTrendingStories():
 return loadTrendingStories();case _RefreshStories():
-return refreshStories();case _:
-  throw StateError('Unexpected subclass');
-
-}
+return refreshStories();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
