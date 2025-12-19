@@ -36,7 +36,7 @@ class _NewChatPageState extends State<NewChatPage> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(6.h),
+        preferredSize: Size.fromHeight(70.h),
         child: _buildAppBar(context, isDark),
       ),
       body: _buildBody(context, isDark),
@@ -62,7 +62,7 @@ class _NewChatPageState extends State<NewChatPage> {
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 8),
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
       child: SafeArea(
         child: Row(
           children: [
