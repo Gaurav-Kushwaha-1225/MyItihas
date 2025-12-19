@@ -18,6 +18,7 @@ List<RouteBase> get $appRoutes => [
   $chatDetailRoute,
   $profileDetailRoute,
   $groupProfileRoute,
+  $settingsRoute,
   $socialFeedRoute,
   $profileRoute,
   $notificationRoute,
@@ -382,6 +383,29 @@ mixin $GroupProfileRoute on GoRouteData {
   @override
   void replace(BuildContext context) =>
       context.replace(location, extra: _self.$extra);
+}
+
+RouteBase get $settingsRoute =>
+    GoRouteData.$route(path: '/settings', factory: $SettingsRoute._fromState);
+
+mixin $SettingsRoute on GoRouteData {
+  static SettingsRoute _fromState(GoRouterState state) => const SettingsRoute();
+
+  @override
+  String get location => GoRouteData.$location('/settings');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
 }
 
 RouteBase get $socialFeedRoute => GoRouteData.$route(
