@@ -14,6 +14,153 @@ import 'package:myitihas/pages/signup_page.dart';
 import 'package:myitihas/pages/splash.dart';
 import 'package:myitihas/services/supabase_service.dart';
 
+part 'routes.g.dart';
+
+// ============================================================================
+// TypedGoRoute Definitions
+// ============================================================================
+
+/// Splash screen route - initial route that checks auth state
+@TypedGoRoute<SplashRoute>(path: '/')
+class SplashRoute extends GoRouteData {
+  const SplashRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const SplashScreen();
+  }
+}
+
+/// Home page route - main authenticated page
+@TypedGoRoute<HomeRoute>(path: '/homepage')
+class HomeRoute extends GoRouteData {
+  const HomeRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const HomePage();
+  }
+}
+
+/// Login page route
+@TypedGoRoute<LoginRoute>(path: '/login')
+class LoginRoute extends GoRouteData {
+  const LoginRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const LoginPage();
+  }
+}
+
+/// Signup page route
+@TypedGoRoute<SignupRoute>(path: '/signup')
+class SignupRoute extends GoRouteData {
+  const SignupRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const SignupPage();
+  }
+}
+
+/// Password reset page route - only accessible during recovery flow
+@TypedGoRoute<ResetPasswordRoute>(path: '/reset-password')
+class ResetPasswordRoute extends GoRouteData {
+  const ResetPasswordRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const ResetPasswordPage();
+  }
+}
+
+/// New chat page route
+@TypedGoRoute<NewChatRoute>(path: '/new_chat')
+class NewChatRoute extends GoRouteData {
+  const NewChatRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const NewChatPage();
+  }
+}
+
+/// New group page route
+@TypedGoRoute<NewGroupRoute>(path: '/new_group')
+class NewGroupRoute extends GoRouteData {
+  const NewGroupRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const NewGroupPage();
+  }
+}
+
+/// New contact page route
+@TypedGoRoute<NewContactRoute>(path: '/new_contact')
+class NewContactRoute extends GoRouteData {
+  const NewContactRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const NewContactPage();
+  }
+}
+
+/// Chat detail page route - requires parameters passed via $extra
+@TypedGoRoute<ChatDetailRoute>(path: '/chat_detail')
+class ChatDetailRoute extends GoRouteData {
+  const ChatDetailRoute({required this.$extra});
+
+  final Map<String, dynamic> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ChatDetailPage(
+      name: $extra['name'] ?? "User",
+      avatarColor:
+          $extra['color'] != null
+              ? "0xFF${($extra['color'] as Color).value.toRadixString(16).substring(2)}"
+              : "0xFF3B82F6",
+      isGroup: $extra['isGroup'] ?? false,
+    );
+  }
+}
+
+/// Profile detail page route - requires name parameter via $extra
+@TypedGoRoute<ProfileDetailRoute>(path: '/profile_detail')
+class ProfileDetailRoute extends GoRouteData {
+  const ProfileDetailRoute({required this.$extra});
+
+  final Map<String, dynamic> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ProfileDetailPage(name: $extra['name'] ?? "User");
+  }
+}
+
+/// Group profile page route - requires parameters via $extra
+@TypedGoRoute<GroupProfileRoute>(path: '/group_profile')
+class GroupProfileRoute extends GoRouteData {
+  const GroupProfileRoute({required this.$extra});
+
+  final Map<String, dynamic> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return GroupProfilePage(
+      name: $extra['name'] ?? "Group",
+      avatarColor: $extra['color'] ?? "0xFF8B5CF6",
+    );
+  }
+}
+
+// ============================================================================
+// MyItihasRouter - GoRouter Configuration
+// ============================================================================
+
 class MyItihasRouter {
   late final GoRouterRefreshStream _refreshStream;
 
@@ -80,112 +227,6 @@ class MyItihasRouter {
 
       return null; // No redirect needed
     },
-    routes: [
-      GoRoute(
-        name: "splash",
-        path: '/',
-        pageBuilder: (context, state) {
-          return MaterialPage(key: state.pageKey, child: const SplashScreen());
-        },
-      ),
-      GoRoute(
-        name: "homepage",
-        path: '/homepage',
-        pageBuilder: (context, state) {
-          return MaterialPage(key: state.pageKey, child: const HomePage());
-        },
-      ),
-      GoRoute(
-        name: "new_chat",
-        path: '/new_chat',
-        pageBuilder: (context, state) {
-          return MaterialPage(key: state.pageKey, child: const NewChatPage());
-        },
-      ),
-      GoRoute(
-        name: "new_group",
-        path: '/new_group',
-        pageBuilder: (context, state) {
-          return MaterialPage(key: state.pageKey, child: const NewGroupPage());
-        },
-      ),
-      GoRoute(
-        name: "chat_detail",
-        path: '/chat_detail',
-        pageBuilder: (context, state) {
-          final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
-          return MaterialPage(
-            key: state.pageKey,
-            child: ChatDetailPage(
-              name: args['name'] ?? "User",
-              avatarColor:
-                  args['color'] != null
-                      ? "0xFF${(args['color'] as Color).value.toRadixString(16).substring(2)}"
-                      : "0xFF3B82F6",
-              isGroup: args['isGroup'] ?? false, // Check if it is a group
-            ),
-          );
-        },
-      ),
-      GoRoute(
-        name: "profile_detail",
-        path: '/profile_detail',
-        pageBuilder: (context, state) {
-          final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
-          return MaterialPage(
-            key: state.pageKey,
-            child: ProfileDetailPage(name: args['name'] ?? "User"),
-          );
-        },
-      ),
-      GoRoute(
-        name: "new_contact",
-        path: '/new_contact',
-        pageBuilder: (context, state) {
-          return MaterialPage(
-            key: state.pageKey,
-            child: const NewContactPage(),
-          );
-        },
-      ),
-      GoRoute(
-        name: "group_profile",
-        path: '/group_profile',
-        pageBuilder: (context, state) {
-          final Map<String, dynamic> args = state.extra as Map<String, dynamic>;
-          return MaterialPage(
-            key: state.pageKey,
-            child: GroupProfilePage(
-              name: args['name'] ?? "Group",
-              avatarColor: args['color'] ?? "0xFF8B5CF6",
-            ),
-          );
-        },
-      ),
-      GoRoute(
-        name: "signup",
-        path: '/signup',
-        pageBuilder: (context, state) {
-          return MaterialPage(key: state.pageKey, child: const SignupPage());
-        },
-      ),
-      GoRoute(
-        name: "login",
-        path: '/login',
-        pageBuilder: (context, state) {
-          return MaterialPage(key: state.pageKey, child: const LoginPage());
-        },
-      ),
-      GoRoute(
-        name: "reset_password",
-        path: '/reset-password',
-        pageBuilder: (context, state) {
-          return MaterialPage(
-            key: state.pageKey,
-            child: const ResetPasswordPage(),
-          );
-        },
-      ),
-    ],
+    routes: $appRoutes,
   );
 }
