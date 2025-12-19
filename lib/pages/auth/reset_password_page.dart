@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../services/auth_service.dart';
-import '../services/supabase_service.dart';
-import '../utils/constants.dart';
+import '../../services/auth_service.dart';
+import '../../services/supabase_service.dart';
+import '../../utils/constants.dart';
 
 /// Page for resetting password after clicking password reset deep link
 ///

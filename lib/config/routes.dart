@@ -3,9 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import 'package:myitihas/pages/splash.dart';
 import 'package:myitihas/pages/home_page.dart';
-import 'package:myitihas/pages/login_page.dart';
-import 'package:myitihas/pages/signup_page.dart';
-import 'package:myitihas/pages/reset_password_page.dart';
+import 'package:myitihas/pages/auth/login_page.dart';
+import 'package:myitihas/pages/auth/signup_page.dart';
+import 'package:myitihas/pages/auth/reset_password_page.dart';
 
 import 'package:myitihas/pages/Chat/Widget/chat_detail_page.dart';
 import 'package:myitihas/pages/Chat/Widget/group_profile_page.dart';

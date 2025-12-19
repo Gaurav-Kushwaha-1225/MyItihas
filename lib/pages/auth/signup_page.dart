@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../services/auth_service.dart';
-import '../services/supabase_service.dart';
-import '../utils/constants.dart';
+import '../../services/auth_service.dart';
+import '../../services/supabase_service.dart';
+import '../../utils/constants.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
