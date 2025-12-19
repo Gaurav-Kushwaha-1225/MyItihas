@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class StoryGeneratorPage extends StatefulWidget {
   const StoryGeneratorPage({super.key});
@@ -11,7 +10,6 @@ class StoryGeneratorPage extends StatefulWidget {
 class _StoryGeneratorPageState extends State<StoryGeneratorPage> {
   @override
   Widget build(BuildContext context) {
-    double aspectRatio = MediaQuery.of(context).size.aspectRatio;
-    return Center();
+    return Scaffold(body: const Center());
   }
 }
