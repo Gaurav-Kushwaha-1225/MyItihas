@@ -3,9 +3,9 @@ import 'package:go_router/go_router.dart';
 
 import 'package:myitihas/pages/splash.dart';
 import 'package:myitihas/pages/home_page.dart';
-import 'package:myitihas/pages/login_page.dart';
-import 'package:myitihas/pages/signup_page.dart';
-import 'package:myitihas/pages/reset_password_page.dart';
+import 'package:myitihas/pages/auth/login_page.dart';
+import 'package:myitihas/pages/auth/signup_page.dart';
+import 'package:myitihas/pages/auth/reset_password_page.dart';
 
 import 'package:myitihas/pages/Chat/Widget/chat_detail_page.dart';
 import 'package:myitihas/pages/Chat/Widget/group_profile_page.dart';
@@ -16,6 +16,7 @@ import 'package:myitihas/pages/Chat/Widget/profile_detail_page.dart';
 
 import 'package:myitihas/pages/stories_page.dart';
 import 'package:myitihas/pages/story_generator.dart';
+import 'package:myitihas/pages/settings_page.dart';
 import 'package:myitihas/features/social/presentation/pages/social_feed_page.dart';
 import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
 import 'package:myitihas/features/social/presentation/pages/notification_page.dart';
@@ -173,6 +174,17 @@ class GroupProfileRoute extends GoRouteData with $GroupProfileRoute {
       name: $extra['name'] ?? "Group",
       avatarColor: $extra['color'] ?? "0xFF8B5CF6",
     );
+  }
+}
+
+/// Settings page
+@TypedGoRoute<SettingsRoute>(path: '/settings')
+class SettingsRoute extends GoRouteData with $SettingsRoute {
+  const SettingsRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const SettingsPage();
   }
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../widgets/svg_avatar.dart';
 import 'package:myitihas/core/di/injection_container.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
@@ -44,49 +45,45 @@ class _ProfileView extends StatelessWidget {
                 ) {
                   return CustomScrollView(
                     slivers: [
-                      SliverAppBar(
-                        expandedHeight: 200,
-                        pinned: false,
-                        backgroundColor: Colors.transparent,
-                        flexibleSpace: FlexibleSpaceBar(
-                          background: Container(
-                            decoration: BoxDecoration(
-                              gradient: Theme.of(context)
-                                  .extension<GradientExtension>()!
-                                  .primaryButtonGradient,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const SizedBox(height: 20),
-                                SvgAvatar(
-                                  imageUrl: user.avatarUrl,
-                                  radius: 50,
-                                  fallbackText: user.displayName,
+                      // Profile header
+                      SliverToBoxAdapter(
+                        child: Container(
+                          height: 200,
+                          decoration: BoxDecoration(
+                            gradient: Theme.of(context)
+                                .extension<GradientExtension>()!
+                                .primaryButtonGradient,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgAvatar(
+                                imageUrl: user.avatarUrl,
+                                radius: 50,
+                                fallbackText: user.displayName,
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                user.displayName,
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onPrimary,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  user.displayName,
-                                  style: TextStyle(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onPrimary,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              ),
+                              Text(
+                                '@${user.username}',
+                                style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimary
+                                      .withValues(alpha: 0.7),
+                                  fontSize: 16,
                                 ),
-                                Text(
-                                  '@${user.username}',
-                                  style: TextStyle(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onPrimary
-                                        .withValues(alpha: 0.7),
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
