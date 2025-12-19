@@ -11,7 +11,7 @@ import 'package:slang/generated.dart';
 import 'strings.g.dart';
 
 // Path: <root>
-class TranslationsHi extends Translations with BaseTranslations<AppLocale, Translations> {
+class TranslationsHi with BaseTranslations<AppLocale, Translations> implements Translations {
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
 	TranslationsHi({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
@@ -21,11 +21,15 @@ class TranslationsHi extends Translations with BaseTranslations<AppLocale, Trans
 		    overrides: overrides ?? {},
 		    cardinalResolver: cardinalResolver,
 		    ordinalResolver: ordinalResolver,
-		  ),
-		  super(cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
+		  ) {
+		$meta.setFlatMapFunction(_flatMapFunction);
+	}
 
 	/// Metadata for the translations of <hi>.
 	@override final TranslationMetadata<AppLocale, Translations> $meta;
+
+	/// Access flat map
+	@override dynamic operator[](String key) => $meta.getTranslation(key);
 
 	late final TranslationsHi _root = this; // ignore: unused_field
 
@@ -38,7 +42,7 @@ class TranslationsHi extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _TranslationsNavigationHi navigation = _TranslationsNavigationHi._(_root);
 	@override late final _TranslationsHomeHi home = _TranslationsHomeHi._(_root);
 	@override late final _TranslationsStoriesHi stories = _TranslationsStoriesHi._(_root);
-	@override late final _TranslationsStoryGeneratorHi story_generator = _TranslationsStoryGeneratorHi._(_root);
+	@override late final _TranslationsStoryGeneratorHi storyGenerator = _TranslationsStoryGeneratorHi._(_root);
 	@override late final _TranslationsChatHi chat = _TranslationsChatHi._(_root);
 	@override late final _TranslationsMapHi map = _TranslationsMapHi._(_root);
 	@override late final _TranslationsCommunityHi community = _TranslationsCommunityHi._(_root);
@@ -52,8 +56,8 @@ class TranslationsHi extends Translations with BaseTranslations<AppLocale, Trans
 }
 
 // Path: app
-class _TranslationsAppHi extends TranslationsAppEn {
-	_TranslationsAppHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsAppHi implements TranslationsAppEn {
+	_TranslationsAppHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
@@ -63,8 +67,8 @@ class _TranslationsAppHi extends TranslationsAppEn {
 }
 
 // Path: common
-class _TranslationsCommonHi extends TranslationsCommonEn {
-	_TranslationsCommonHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsCommonHi implements TranslationsCommonEn {
+	_TranslationsCommonHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
@@ -90,8 +94,8 @@ class _TranslationsCommonHi extends TranslationsCommonEn {
 }
 
 // Path: navigation
-class _TranslationsNavigationHi extends TranslationsNavigationEn {
-	_TranslationsNavigationHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsNavigationHi implements TranslationsNavigationEn {
+	_TranslationsNavigationHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
@@ -106,114 +110,114 @@ class _TranslationsNavigationHi extends TranslationsNavigationEn {
 }
 
 // Path: home
-class _TranslationsHomeHi extends TranslationsHomeEn {
-	_TranslationsHomeHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsHomeHi implements TranslationsHomeEn {
+	_TranslationsHomeHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'मायइतिहास';
-	@override String get story_generator => 'कहानी जनरेटर';
-	@override String get chat_itihas => 'चैटइतिहास';
-	@override String get community_stories => 'सामुदायिक कहानियां';
+	@override String get storyGenerator => 'कहानी जनरेटर';
+	@override String get chatItihas => 'चैटइतिहास';
+	@override String get communityStories => 'सामुदायिक कहानियां';
 	@override String get maps => 'मानचित्र';
-	@override String get greeting_morning => 'सुप्रभात';
-	@override String get continue_reading => 'पढ़ना जारी रखें';
-	@override String get greeting_afternoon => 'नमस्कार';
-	@override String get greeting_evening => 'शुभ संध्या';
-	@override String get explore_stories => 'कहानियां खोजें';
-	@override String get generate_story => 'कहानी बनाएं';
+	@override String get greetingMorning => 'सुप्रभात';
+	@override String get continueReading => 'पढ़ना जारी रखें';
+	@override String get greetingAfternoon => 'नमस्कार';
+	@override String get greetingEvening => 'शुभ संध्या';
+	@override String get exploreStories => 'कहानियां खोजें';
+	@override String get generateStory => 'कहानी बनाएं';
 	@override String get content => 'होम सामग्री';
 }
 
 // Path: stories
-class _TranslationsStoriesHi extends TranslationsStoriesEn {
-	_TranslationsStoriesHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsStoriesHi implements TranslationsStoriesEn {
+	_TranslationsStoriesHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'कहानियां';
-	@override String get search_hint => 'शीर्षक या लेखक से खोजें...';
-	@override String get sort_by => 'क्रमबद्ध करें';
-	@override String get sort_newest => 'नवीनतम पहले';
-	@override String get sort_oldest => 'पुरानी पहले';
-	@override String get sort_popular => 'सबसे लोकप्रिय';
-	@override String get no_stories => 'कोई कहानी नहीं मिली';
-	@override String get loading_stories => 'कहानियां लोड हो रही हैं...';
-	@override String get error_loading_stories => 'कहानियां लोड करने में विफल';
-	@override String get story_details => 'कहानी विवरण';
-	@override String get continue_reading => 'पढ़ना जारी रखें';
-	@override String get read_more => 'और पढ़ें';
-	@override String get read_less => 'कम पढ़ें';
+	@override String get searchHint => 'शीर्षक या लेखक से खोजें...';
+	@override String get sortBy => 'क्रमबद्ध करें';
+	@override String get sortNewest => 'नवीनतम पहले';
+	@override String get sortOldest => 'पुरानी पहले';
+	@override String get sortPopular => 'सबसे लोकप्रिय';
+	@override String get noStories => 'कोई कहानी नहीं मिली';
+	@override String get loadingStories => 'कहानियां लोड हो रही हैं...';
+	@override String get errorLoadingStories => 'कहानियां लोड करने में विफल';
+	@override String get storyDetails => 'कहानी विवरण';
+	@override String get continueReading => 'पढ़ना जारी रखें';
+	@override String get readMore => 'और पढ़ें';
+	@override String get readLess => 'कम पढ़ें';
 	@override String get author => 'लेखक';
-	@override String get published_on => 'प्रकाशित';
+	@override String get publishedOn => 'प्रकाशित';
 	@override String get category => 'श्रेणी';
 	@override String get tags => 'टैग';
 	@override String get failed_to_load => 'कहानी लोड करने में विफल';
 }
 
-// Path: story_generator
-class _TranslationsStoryGeneratorHi extends TranslationsStoryGeneratorEn {
-	_TranslationsStoryGeneratorHi._(TranslationsHi root) : this._root = root, super.internal(root);
+// Path: storyGenerator
+class _TranslationsStoryGeneratorHi implements TranslationsStoryGeneratorEn {
+	_TranslationsStoryGeneratorHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'कहानी जनरेटर';
 	@override String get subtitle => 'अपनी पौराणिक कहानी बनाएं';
-	@override String get select_character => 'पात्र चुनें';
-	@override String get select_theme => 'विषय चुनें';
-	@override String get select_language => 'भाषा चुनें';
-	@override String get select_length => 'कहानी की लंबाई';
+	@override String get selectCharacter => 'पात्र चुनें';
+	@override String get selectTheme => 'विषय चुनें';
+	@override String get selectLanguage => 'भाषा चुनें';
+	@override String get selectLength => 'कहानी की लंबाई';
 	@override String get generate => 'कहानी बनाएं';
 	@override String get generating => 'आपकी कहानी बन रही है...';
-	@override String get generated_story => 'आपकी बनाई कहानी';
+	@override String get generatedStory => 'आपकी बनाई कहानी';
 	@override String get regenerate => 'फिर से बनाएं';
-	@override String get save_story => 'कहानी सहेजें';
-	@override String get share_story => 'कहानी साझा करें';
-	@override late final _TranslationsStoryGeneratorStoryLengthHi story_length = _TranslationsStoryGeneratorStoryLengthHi._(_root);
+	@override String get saveStory => 'कहानी सहेजें';
+	@override String get shareStory => 'कहानी साझा करें';
+	@override late final _TranslationsStoryGeneratorStoryLengthHi storyLength = _TranslationsStoryGeneratorStoryLengthHi._(_root);
 }
 
 // Path: chat
-class _TranslationsChatHi extends TranslationsChatEn {
-	_TranslationsChatHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsChatHi implements TranslationsChatEn {
+	_TranslationsChatHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'चैटइतिहास';
 	@override String get subtitle => 'पौराणिक कथाओं के बारे में AI से चैट करें';
-	@override String get friend_mode => 'मित्र मोड';
-	@override String get philosophical_mode => 'दार्शनिक मोड';
-	@override String get type_message => 'अपना संदेश लिखें...';
+	@override String get friendMode => 'मित्र मोड';
+	@override String get philosophicalMode => 'दार्शनिक मोड';
+	@override String get typeMessage => 'अपना संदेश लिखें...';
 	@override String get send => 'भेजें';
-	@override String get new_chat => 'नई चैट';
-	@override String get chat_history => 'चैट इतिहास';
-	@override String get clear_chat => 'चैट साफ़ करें';
-	@override String get no_messages => 'अभी तक कोई संदेश नहीं। बातचीत शुरू करें!';
+	@override String get newChat => 'नई चैट';
+	@override String get chatHistory => 'चैट इतिहास';
+	@override String get clearChat => 'चैट साफ़ करें';
+	@override String get noMessages => 'अभी तक कोई संदेश नहीं। बातचीत शुरू करें!';
 	@override String get list_page => 'चैट सूची पृष्ठ';
 }
 
 // Path: map
-class _TranslationsMapHi extends TranslationsMapEn {
-	_TranslationsMapHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsMapHi implements TranslationsMapEn {
+	_TranslationsMapHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'अखंड भारत';
 	@override String get subtitle => 'ऐतिहासिक स्थानों का अन्वेषण करें';
-	@override String get search_location => 'स्थान खोजें...';
-	@override String get view_details => 'विवरण देखें';
-	@override String get show_route => 'मार्ग दिखाएं';
-	@override String get historical_info => 'ऐतिहासिक जानकारी';
-	@override String get nearby_places => 'निकटवर्ती स्थान';
+	@override String get searchLocation => 'स्थान खोजें...';
+	@override String get viewDetails => 'विवरण देखें';
+	@override String get showRoute => 'मार्ग दिखाएं';
+	@override String get historicalInfo => 'ऐतिहासिक जानकारी';
+	@override String get nearbyPlaces => 'निकटवर्ती स्थान';
 }
 
 // Path: community
-class _TranslationsCommunityHi extends TranslationsCommunityEn {
-	_TranslationsCommunityHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsCommunityHi implements TranslationsCommunityEn {
+	_TranslationsCommunityHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
@@ -225,17 +229,17 @@ class _TranslationsCommunityHi extends TranslationsCommunityEn {
 	@override String get posts => 'पोस्ट';
 	@override String get follow => 'फॉलो करें';
 	@override String get unfollow => 'अनफॉलो करें';
-	@override String get share_your_story => 'अपनी कहानी साझा करें...';
+	@override String get shareYourStory => 'अपनी कहानी साझा करें...';
 	@override String get post => 'पोस्ट करें';
 	@override String get like => 'पसंद';
 	@override String get comment => 'टिप्पणी';
 	@override String get comments => 'टिप्पणियां';
-	@override String get no_posts_yet => 'अभी तक कोई पोस्ट नहीं';
+	@override String get noPostsYet => 'अभी तक कोई पोस्ट नहीं';
 }
 
 // Path: settings
-class _TranslationsSettingsHi extends TranslationsSettingsEn {
-	_TranslationsSettingsHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsSettingsHi implements TranslationsSettingsEn {
+	_TranslationsSettingsHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
@@ -243,9 +247,9 @@ class _TranslationsSettingsHi extends TranslationsSettingsEn {
 	@override String get title => 'सेटिंग्स';
 	@override String get language => 'भाषा';
 	@override String get theme => 'थीम';
-	@override String get theme_light => 'लाइट';
-	@override String get theme_dark => 'डार्क';
-	@override String get theme_system => 'सिस्टम डिफ़ॉल्ट';
+	@override String get themeLight => 'लाइट';
+	@override String get themeDark => 'डार्क';
+	@override String get themeSystem => 'सिस्टम डिफ़ॉल्ट';
 	@override String get notifications => 'सूचनाएं';
 	@override String get account => 'खाता';
 	@override String get privacy => 'गोपनीयता';
@@ -255,8 +259,8 @@ class _TranslationsSettingsHi extends TranslationsSettingsEn {
 }
 
 // Path: auth
-class _TranslationsAuthHi extends TranslationsAuthEn {
-	_TranslationsAuthHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsAuthHi implements TranslationsAuthEn {
+	_TranslationsAuthHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
@@ -265,20 +269,20 @@ class _TranslationsAuthHi extends TranslationsAuthEn {
 	@override String get signup => 'साइन अप';
 	@override String get email => 'ईमेल';
 	@override String get password => 'पासवर्ड';
-	@override String get confirm_password => 'पासवर्ड की पुष्टि करें';
-	@override String get forgot_password => 'पासवर्ड भूल गए?';
-	@override String get reset_password => 'पासवर्ड रीसेट करें';
-	@override String get dont_have_account => 'खाता नहीं है?';
-	@override String get already_have_account => 'पहले से खाता है?';
-	@override String get login_success => 'लॉगिन सफल';
-	@override String get signup_success => 'साइन अप सफल';
-	@override String get login_error => 'लॉगिन विफल';
-	@override String get signup_error => 'साइन अप विफल';
+	@override String get confirmPassword => 'पासवर्ड की पुष्टि करें';
+	@override String get forgotPassword => 'पासवर्ड भूल गए?';
+	@override String get resetPassword => 'पासवर्ड रीसेट करें';
+	@override String get dontHaveAccount => 'खाता नहीं है?';
+	@override String get alreadyHaveAccount => 'पहले से खाता है?';
+	@override String get loginSuccess => 'लॉगिन सफल';
+	@override String get signupSuccess => 'साइन अप सफल';
+	@override String get loginError => 'लॉगिन विफल';
+	@override String get signupError => 'साइन अप विफल';
 }
 
 // Path: error
-class _TranslationsErrorHi extends TranslationsErrorEn {
-	_TranslationsErrorHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsErrorHi implements TranslationsErrorEn {
+	_TranslationsErrorHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
@@ -287,15 +291,15 @@ class _TranslationsErrorHi extends TranslationsErrorEn {
 	@override String get server => 'सर्वर त्रुटि हुई';
 	@override String get cache => 'कैश्ड डेटा लोड करने में विफल';
 	@override String get timeout => 'अनुरोध समय समाप्त';
-	@override String get not_found => 'संसाधन नहीं मिला';
+	@override String get notFound => 'संसाधन नहीं मिला';
 	@override String get validation => 'सत्यापन विफल';
 	@override String get unexpected => 'एक अप्रत्याशित त्रुटि हुई';
-	@override String get try_again => 'कृपया पुनः प्रयास करें';
+	@override String get tryAgain => 'कृपया पुनः प्रयास करें';
 }
 
 // Path: subscription
-class _TranslationsSubscriptionHi extends TranslationsSubscriptionEn {
-	_TranslationsSubscriptionHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsSubscriptionHi implements TranslationsSubscriptionEn {
+	_TranslationsSubscriptionHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
@@ -303,35 +307,35 @@ class _TranslationsSubscriptionHi extends TranslationsSubscriptionEn {
 	@override String get free => 'मुफ़्त';
 	@override String get plus => 'प्लस';
 	@override String get pro => 'प्रो';
-	@override String get upgrade_to_pro => 'प्रो में अपग्रेड करें';
+	@override String get upgradeToPro => 'प्रो में अपग्रेड करें';
 	@override String get features => 'सुविधाएँ';
 	@override String get subscribe => 'सदस्यता लें';
-	@override String get current_plan => 'वर्तमान योजना';
-	@override String get manage_plan => 'योजना प्रबंधित करें';
+	@override String get currentPlan => 'वर्तमान योजना';
+	@override String get managePlan => 'योजना प्रबंधित करें';
 }
 
 // Path: notification
-class _TranslationsNotificationHi extends TranslationsNotificationEn {
-	_TranslationsNotificationHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsNotificationHi implements TranslationsNotificationEn {
+	_TranslationsNotificationHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
 	// Translations
 	@override String get title => 'सूचनाएं';
-	@override String get mark_all_read => 'सभी को पढ़ा हुआ मार्क करें';
-	@override String get no_notifications => 'अभी तक कोई सूचना नहीं';
-	@override String get error_prefix => 'त्रुटि:';
+	@override String get markAllRead => 'सभी को पढ़ा हुआ मार्क करें';
+	@override String get noNotifications => 'अभी तक कोई सूचना नहीं';
+	@override String get errorPrefix => 'त्रुटि:';
 	@override String get retry => 'पुनः प्रयास करें';
-	@override String liked_your_story({required Object ActorName}) => '${ActorName} ने आपकी कहानी को लाइक किया';
-	@override String commented_on_your_story({required Object ActorName}) => '${ActorName} ने आपकी कहानी पर टिप्पणी की';
-	@override String replied_to_your_comment({required Object ActorName}) => '${ActorName} ने आपके कमेंट का जवाब दिया';
-	@override String started_following_you({required Object ActorName}) => '${ActorName} ने आपको फॉलो करना शुरू किया';
-	@override String sent_you_a_message({required Object ActorName}) => '${ActorName} ने आपको एक संदेश भेजा';
+	@override String get likedYourStory => '{{actorName}} ने आपकी कहानी को लाइक किया';
+	@override String get commentedOnYourStory => '{{actorName}} ने आपकी कहानी पर टिप्पणी की';
+	@override String get repliedToYourComment => '{{actorName}} ने आपके कमेंट का जवाब दिया';
+	@override String get startedFollowingYou => '{{actorName}} ने आपको फॉलो करना शुरू किया';
+	@override String get sentYouAMessage => '{{actorName}} ने आपको एक संदेश भेजा';
 }
 
 // Path: profile
-class _TranslationsProfileHi extends TranslationsProfileEn {
-	_TranslationsProfileHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsProfileHi implements TranslationsProfileEn {
+	_TranslationsProfileHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
@@ -345,53 +349,53 @@ class _TranslationsProfileHi extends TranslationsProfileEn {
 }
 
 // Path: feed
-class _TranslationsFeedHi extends TranslationsFeedEn {
-	_TranslationsFeedHi._(TranslationsHi root) : this._root = root, super.internal(root);
+class _TranslationsFeedHi implements TranslationsFeedEn {
+	_TranslationsFeedHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
 	// Translations
 	@override String get loading => 'कहानियाँ लोड हो रही हैं...';
-	@override String get error_title => 'अरे! कुछ गलत हो गया';
-	@override String get try_again => 'फिर से प्रयास करें';
-	@override String get no_stories_available => 'कोई कहानी उपलब्ध नहीं';
+	@override String get errorTitle => 'अरे! कुछ गलत हो गया';
+	@override String get tryAgain => 'फिर से प्रयास करें';
+	@override String get noStoriesAvailable => 'कोई कहानी उपलब्ध नहीं';
 	@override String get refresh => 'रिफ्रेश';
 	@override String get comments => 'टिप्पणियाँ';
-	@override String get comments_coming_soon => 'टिप्पणियाँ जल्द ही आ रही हैं';
-	@override String get add_comment_hint => 'टिप्पणी जोड़ें...';
-	@override String get share_story => 'कहानी साझा करें';
-	@override String get share_as_image => 'चित्र के रूप में साझा करें';
-	@override String get share_as_image_subtitle => 'एक सुंदर पूर्वावलोकन कार्ड बनाएं';
-	@override String get share_link => 'लिंक साझा करें';
-	@override String get share_link_subtitle => 'कहानी लिंक कॉपी या साझा करें';
-	@override String get share_as_text => 'पाठ के रूप में साझा करें';
-	@override String get share_as_text_subtitle => 'कहानी के अंश साझा करें';
-	@override String get send_to_user => 'उपयोगकर्ता को भेजें';
-	@override String get send_to_user_subtitle => 'सीधे मित्र के साथ साझा करें';
-	@override String get choose_format => 'प्रारूप चुनें';
-	@override String get link_preview => 'लिंक पूर्वावलोकन';
-	@override String get link_preview_size => '1200 × 630';
-	@override String get story_format => 'स्टोरी प्रारूप';
-	@override String get story_format_size => '1080 × 1920 (Instagram/Stories)';
-	@override String get generating_preview => 'पूर्वावलोकन तैयार किया जा रहा है...';
+	@override String get commentsComingSoon => 'टिप्पणियाँ जल्द ही आ रही हैं';
+	@override String get addCommentHint => 'टिप्पणी जोड़ें...';
+	@override String get shareStory => 'कहानी साझा करें';
+	@override String get shareAsImage => 'चित्र के रूप में साझा करें';
+	@override String get shareAsImageSubtitle => 'एक सुंदर पूर्वावलोकन कार्ड बनाएं';
+	@override String get shareLink => 'लिंक साझा करें';
+	@override String get shareLinkSubtitle => 'कहानी लिंक कॉपी या साझा करें';
+	@override String get shareAsText => 'पाठ के रूप में साझा करें';
+	@override String get shareAsTextSubtitle => 'कहानी के अंश साझा करें';
+	@override String get sendToUser => 'उपयोगकर्ता को भेजें';
+	@override String get sendToUserSubtitle => 'सीधे मित्र के साथ साझा करें';
+	@override String get chooseFormat => 'प्रारूप चुनें';
+	@override String get linkPreview => 'लिंक पूर्वावलोकन';
+	@override String get linkPreviewSize => '1200 × 630';
+	@override String get storyFormat => 'स्टोरी प्रारूप';
+	@override String get storyFormatSize => '1080 × 1920 (Instagram/Stories)';
+	@override String get generatingPreview => 'पूर्वावलोकन तैयार किया जा रहा है...';
 	@override String get bookmarked => 'बुकमार्क किया गया';
-	@override String get removed_from_bookmarks => 'बुकमार्क से हटाया गया';
-	@override String unlike({required Object Count}) => 'Unlike, ${Count} likes';
-	@override String like({required Object Count}) => 'Like, ${Count} likes';
-	@override String comment_count({required Object Count}) => '${Count} comments';
-	@override String share_count({required Object Count}) => 'Share, ${Count} shares';
-	@override String get remove_bookmark => 'Remove bookmark';
-	@override String get add_bookmark => 'Bookmark';
+	@override String get removedFromBookmarks => 'बुकमार्क से हटाया गया';
+	@override String get unlike => 'Unlike, {{count}} likes';
+	@override String get like => 'Like, {{count}} likes';
+	@override String get commentCount => '{{count}} comments';
+	@override String get shareCount => 'Share, {{count}} shares';
+	@override String get removeBookmark => 'Remove bookmark';
+	@override String get addBookmark => 'Bookmark';
 	@override String get quote => 'Quote';
-	@override String get quote_copied => 'Quote copied to clipboard';
+	@override String get quoteCopied => 'Quote copied to clipboard';
 	@override String get copy => 'Copy';
-	@override String get tap_to_view_full_quote => 'Tap to view full quote';
-	@override String get quote_from_myitihas => 'Quote from MyItihas';
+	@override String get tapToViewFullQuote => 'Tap to view full quote';
+	@override String get quoteFromMyitihas => 'Quote from MyItihas';
 }
 
-// Path: story_generator.story_length
-class _TranslationsStoryGeneratorStoryLengthHi extends TranslationsStoryGeneratorStoryLengthEn {
-	_TranslationsStoryGeneratorStoryLengthHi._(TranslationsHi root) : this._root = root, super.internal(root);
+// Path: storyGenerator.storyLength
+class _TranslationsStoryGeneratorStoryLengthHi implements TranslationsStoryGeneratorStoryLengthEn {
+	_TranslationsStoryGeneratorStoryLengthHi._(this._root);
 
 	final TranslationsHi _root; // ignore: unused_field
 
@@ -399,4 +403,213 @@ class _TranslationsStoryGeneratorStoryLengthHi extends TranslationsStoryGenerato
 	@override String get short => 'छोटी';
 	@override String get medium => 'मध्यम';
 	@override String get long => 'लंबी';
+}
+
+/// The flat map containing all translations for locale <hi>.
+/// Only for edge cases! For simple maps, use the map function of this library.
+///
+/// The Dart AOT compiler has issues with very large switch statements,
+/// so the map is split into smaller functions (512 entries each).
+extension on TranslationsHi {
+	dynamic _flatMapFunction(String path) {
+		return switch (path) {
+			'app.name' => 'मायइतिहास',
+			'app.tagline' => 'भारतीय पौराणिक कथाएं खोजें',
+			'common.ok' => 'ठीक है',
+			'common.cancel' => 'रद्द करें',
+			'common.confirm' => 'पुष्टि करें',
+			'common.delete' => 'हटाएं',
+			'common.edit' => 'संपादित करें',
+			'common.save' => 'सहेजें',
+			'common.share' => 'साझा करें',
+			'common.search' => 'खोजें',
+			'common.loading' => 'लोड हो रहा है...',
+			'common.error' => 'त्रुटि',
+			'common.retry' => 'पुनः प्रयास करें',
+			'common.back' => 'वापस',
+			'common.next' => 'अगला',
+			'common.finish' => 'समाप्त',
+			'common.skip' => 'छोड़ें',
+			'common.yes' => 'हां',
+			'common.no' => 'नहीं',
+			'common.read_full_story' => 'पूरी कहानी पढ़ें',
+			'navigation.home' => 'होम',
+			'navigation.stories' => 'कहानियां',
+			'navigation.chat' => 'चैट',
+			'navigation.map' => 'मानचित्र',
+			'navigation.community' => 'समुदाय',
+			'navigation.settings' => 'सेटिंग्स',
+			'navigation.profile' => 'प्रोफाइल',
+			'home.title' => 'मायइतिहास',
+			'home.storyGenerator' => 'कहानी जनरेटर',
+			'home.chatItihas' => 'चैटइतिहास',
+			'home.communityStories' => 'सामुदायिक कहानियां',
+			'home.maps' => 'मानचित्र',
+			'home.greetingMorning' => 'सुप्रभात',
+			'home.continueReading' => 'पढ़ना जारी रखें',
+			'home.greetingAfternoon' => 'नमस्कार',
+			'home.greetingEvening' => 'शुभ संध्या',
+			'home.exploreStories' => 'कहानियां खोजें',
+			'home.generateStory' => 'कहानी बनाएं',
+			'home.content' => 'होम सामग्री',
+			'stories.title' => 'कहानियां',
+			'stories.searchHint' => 'शीर्षक या लेखक से खोजें...',
+			'stories.sortBy' => 'क्रमबद्ध करें',
+			'stories.sortNewest' => 'नवीनतम पहले',
+			'stories.sortOldest' => 'पुरानी पहले',
+			'stories.sortPopular' => 'सबसे लोकप्रिय',
+			'stories.noStories' => 'कोई कहानी नहीं मिली',
+			'stories.loadingStories' => 'कहानियां लोड हो रही हैं...',
+			'stories.errorLoadingStories' => 'कहानियां लोड करने में विफल',
+			'stories.storyDetails' => 'कहानी विवरण',
+			'stories.continueReading' => 'पढ़ना जारी रखें',
+			'stories.readMore' => 'और पढ़ें',
+			'stories.readLess' => 'कम पढ़ें',
+			'stories.author' => 'लेखक',
+			'stories.publishedOn' => 'प्रकाशित',
+			'stories.category' => 'श्रेणी',
+			'stories.tags' => 'टैग',
+			'stories.failed_to_load' => 'कहानी लोड करने में विफल',
+			'storyGenerator.title' => 'कहानी जनरेटर',
+			'storyGenerator.subtitle' => 'अपनी पौराणिक कहानी बनाएं',
+			'storyGenerator.selectCharacter' => 'पात्र चुनें',
+			'storyGenerator.selectTheme' => 'विषय चुनें',
+			'storyGenerator.selectLanguage' => 'भाषा चुनें',
+			'storyGenerator.selectLength' => 'कहानी की लंबाई',
+			'storyGenerator.generate' => 'कहानी बनाएं',
+			'storyGenerator.generating' => 'आपकी कहानी बन रही है...',
+			'storyGenerator.generatedStory' => 'आपकी बनाई कहानी',
+			'storyGenerator.regenerate' => 'फिर से बनाएं',
+			'storyGenerator.saveStory' => 'कहानी सहेजें',
+			'storyGenerator.shareStory' => 'कहानी साझा करें',
+			'storyGenerator.storyLength.short' => 'छोटी',
+			'storyGenerator.storyLength.medium' => 'मध्यम',
+			'storyGenerator.storyLength.long' => 'लंबी',
+			'chat.title' => 'चैटइतिहास',
+			'chat.subtitle' => 'पौराणिक कथाओं के बारे में AI से चैट करें',
+			'chat.friendMode' => 'मित्र मोड',
+			'chat.philosophicalMode' => 'दार्शनिक मोड',
+			'chat.typeMessage' => 'अपना संदेश लिखें...',
+			'chat.send' => 'भेजें',
+			'chat.newChat' => 'नई चैट',
+			'chat.chatHistory' => 'चैट इतिहास',
+			'chat.clearChat' => 'चैट साफ़ करें',
+			'chat.noMessages' => 'अभी तक कोई संदेश नहीं। बातचीत शुरू करें!',
+			'chat.list_page' => 'चैट सूची पृष्ठ',
+			'map.title' => 'अखंड भारत',
+			'map.subtitle' => 'ऐतिहासिक स्थानों का अन्वेषण करें',
+			'map.searchLocation' => 'स्थान खोजें...',
+			'map.viewDetails' => 'विवरण देखें',
+			'map.showRoute' => 'मार्ग दिखाएं',
+			'map.historicalInfo' => 'ऐतिहासिक जानकारी',
+			'map.nearbyPlaces' => 'निकटवर्ती स्थान',
+			'community.title' => 'समुदाय',
+			'community.trending' => 'ट्रेंडिंग',
+			'community.following' => 'फॉलोइंग',
+			'community.followers' => 'फॉलोवर्स',
+			'community.posts' => 'पोस्ट',
+			'community.follow' => 'फॉलो करें',
+			'community.unfollow' => 'अनफॉलो करें',
+			'community.shareYourStory' => 'अपनी कहानी साझा करें...',
+			'community.post' => 'पोस्ट करें',
+			'community.like' => 'पसंद',
+			'community.comment' => 'टिप्पणी',
+			'community.comments' => 'टिप्पणियां',
+			'community.noPostsYet' => 'अभी तक कोई पोस्ट नहीं',
+			'settings.title' => 'सेटिंग्स',
+			'settings.language' => 'भाषा',
+			'settings.theme' => 'थीम',
+			'settings.themeLight' => 'लाइट',
+			'settings.themeDark' => 'डार्क',
+			'settings.themeSystem' => 'सिस्टम डिफ़ॉल्ट',
+			'settings.notifications' => 'सूचनाएं',
+			'settings.account' => 'खाता',
+			'settings.privacy' => 'गोपनीयता',
+			'settings.about' => 'हमारे बारे में',
+			'settings.version' => 'संस्करण',
+			'settings.logout' => 'लॉग आउट',
+			'auth.login' => 'लॉगिन',
+			'auth.signup' => 'साइन अप',
+			'auth.email' => 'ईमेल',
+			'auth.password' => 'पासवर्ड',
+			'auth.confirmPassword' => 'पासवर्ड की पुष्टि करें',
+			'auth.forgotPassword' => 'पासवर्ड भूल गए?',
+			'auth.resetPassword' => 'पासवर्ड रीसेट करें',
+			'auth.dontHaveAccount' => 'खाता नहीं है?',
+			'auth.alreadyHaveAccount' => 'पहले से खाता है?',
+			'auth.loginSuccess' => 'लॉगिन सफल',
+			'auth.signupSuccess' => 'साइन अप सफल',
+			'auth.loginError' => 'लॉगिन विफल',
+			'auth.signupError' => 'साइन अप विफल',
+			'error.network' => 'इंटरनेट कनेक्शन नहीं है',
+			'error.server' => 'सर्वर त्रुटि हुई',
+			'error.cache' => 'कैश्ड डेटा लोड करने में विफल',
+			'error.timeout' => 'अनुरोध समय समाप्त',
+			'error.notFound' => 'संसाधन नहीं मिला',
+			'error.validation' => 'सत्यापन विफल',
+			'error.unexpected' => 'एक अप्रत्याशित त्रुटि हुई',
+			'error.tryAgain' => 'कृपया पुनः प्रयास करें',
+			'subscription.free' => 'मुफ़्त',
+			'subscription.plus' => 'प्लस',
+			'subscription.pro' => 'प्रो',
+			'subscription.upgradeToPro' => 'प्रो में अपग्रेड करें',
+			'subscription.features' => 'सुविधाएँ',
+			'subscription.subscribe' => 'सदस्यता लें',
+			'subscription.currentPlan' => 'वर्तमान योजना',
+			'subscription.managePlan' => 'योजना प्रबंधित करें',
+			'notification.title' => 'सूचनाएं',
+			'notification.markAllRead' => 'सभी को पढ़ा हुआ मार्क करें',
+			'notification.noNotifications' => 'अभी तक कोई सूचना नहीं',
+			'notification.errorPrefix' => 'त्रुटि:',
+			'notification.retry' => 'पुनः प्रयास करें',
+			'notification.likedYourStory' => '{{actorName}} ने आपकी कहानी को लाइक किया',
+			'notification.commentedOnYourStory' => '{{actorName}} ने आपकी कहानी पर टिप्पणी की',
+			'notification.repliedToYourComment' => '{{actorName}} ने आपके कमेंट का जवाब दिया',
+			'notification.startedFollowingYou' => '{{actorName}} ने आपको फॉलो करना शुरू किया',
+			'notification.sentYouAMessage' => '{{actorName}} ने आपको एक संदेश भेजा',
+			'profile.followers' => 'फॉलोअर्स',
+			'profile.following' => 'फॉलोइंग',
+			'profile.unfollow' => 'अनफॉलो करें',
+			'profile.follow' => 'फॉलो करें',
+			'profile.about' => 'के बारे में',
+			'profile.stories' => 'कहानियाँ',
+			'feed.loading' => 'कहानियाँ लोड हो रही हैं...',
+			'feed.errorTitle' => 'अरे! कुछ गलत हो गया',
+			'feed.tryAgain' => 'फिर से प्रयास करें',
+			'feed.noStoriesAvailable' => 'कोई कहानी उपलब्ध नहीं',
+			'feed.refresh' => 'रिफ्रेश',
+			'feed.comments' => 'टिप्पणियाँ',
+			'feed.commentsComingSoon' => 'टिप्पणियाँ जल्द ही आ रही हैं',
+			'feed.addCommentHint' => 'टिप्पणी जोड़ें...',
+			'feed.shareStory' => 'कहानी साझा करें',
+			'feed.shareAsImage' => 'चित्र के रूप में साझा करें',
+			'feed.shareAsImageSubtitle' => 'एक सुंदर पूर्वावलोकन कार्ड बनाएं',
+			'feed.shareLink' => 'लिंक साझा करें',
+			'feed.shareLinkSubtitle' => 'कहानी लिंक कॉपी या साझा करें',
+			'feed.shareAsText' => 'पाठ के रूप में साझा करें',
+			'feed.shareAsTextSubtitle' => 'कहानी के अंश साझा करें',
+			'feed.sendToUser' => 'उपयोगकर्ता को भेजें',
+			'feed.sendToUserSubtitle' => 'सीधे मित्र के साथ साझा करें',
+			'feed.chooseFormat' => 'प्रारूप चुनें',
+			'feed.linkPreview' => 'लिंक पूर्वावलोकन',
+			'feed.linkPreviewSize' => '1200 × 630',
+			'feed.storyFormat' => 'स्टोरी प्रारूप',
+			'feed.storyFormatSize' => '1080 × 1920 (Instagram/Stories)',
+			'feed.generatingPreview' => 'पूर्वावलोकन तैयार किया जा रहा है...',
+			'feed.bookmarked' => 'बुकमार्क किया गया',
+			'feed.removedFromBookmarks' => 'बुकमार्क से हटाया गया',
+			'feed.unlike' => 'Unlike, {{count}} likes',
+			'feed.like' => 'Like, {{count}} likes',
+			'feed.commentCount' => '{{count}} comments',
+			'feed.shareCount' => 'Share, {{count}} shares',
+			'feed.removeBookmark' => 'Remove bookmark',
+			'feed.addBookmark' => 'Bookmark',
+			'feed.quote' => 'Quote',
+			'feed.quoteCopied' => 'Quote copied to clipboard',
+			'feed.copy' => 'Copy',
+			'feed.tapToViewFullQuote' => 'Tap to view full quote',
+			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
+			_ => null,
+		};
+	}
 }

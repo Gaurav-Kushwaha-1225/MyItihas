@@ -59,7 +59,7 @@ class _StoriesPageContentState extends State<_StoriesPageContent> {
                   );
                 },
                 decoration: InputDecoration(
-                  hintText: t.stories.search_hint,
+                  hintText: t.stories.searchHint,
                   prefixIcon: Icon(
                     Icons.search,
                     color: Theme.of(context).primaryColor,
@@ -115,15 +115,15 @@ class _StoriesPageContentState extends State<_StoriesPageContent> {
                 itemBuilder: (context) => [
                   PopupMenuItem(
                     value: "newest",
-                    child: Text(t.stories.sort_newest),
+                    child: Text(t.stories.sortNewest),
                   ),
                   PopupMenuItem(
                     value: "oldest",
-                    child: Text(t.stories.sort_oldest),
+                    child: Text(t.stories.sortOldest),
                   ),
                   PopupMenuItem(
                     value: "popular",
-                    child: Text(t.stories.sort_popular),
+                    child: Text(t.stories.sortPopular),
                   ),
                 ],
                 offset: const Offset(0, 40),
@@ -159,7 +159,7 @@ class _StoriesPageContentState extends State<_StoriesPageContent> {
           child: BlocBuilder<StoriesBloc, StoriesState>(
             builder: (context, state) {
               return state.when(
-                initial: () => Center(child: Text(t.stories.loading_stories)),
+                initial: () => Center(child: Text(t.stories.loadingStories)),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 loaded:
                     (stories, searchQuery, sortBy, filterType, filterTheme) {
@@ -175,7 +175,7 @@ class _StoriesPageContentState extends State<_StoriesPageContent> {
                               ),
                               SizedBox(height: 16.h),
                               Text(
-                                t.stories.no_stories,
+                                t.stories.noStories,
                                 style: Theme.of(context).textTheme.titleMedium,
                               ),
                             ],
@@ -231,7 +231,7 @@ class _StoriesPageContentState extends State<_StoriesPageContent> {
                       ),
                       SizedBox(height: 16.h),
                       Text(
-                        t.stories.error_loading_stories,
+                        t.stories.errorLoadingStories,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       SizedBox(height: 8.h),

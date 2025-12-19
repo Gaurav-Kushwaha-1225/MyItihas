@@ -67,7 +67,7 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(t.stories.story_details),
+        title: Text(t.stories.storyDetails),
         actions: [
           if (widget.onFavorite != null)
             IconButton(

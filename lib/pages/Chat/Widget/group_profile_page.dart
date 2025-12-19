@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
-import 'package:sizer/sizer.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GroupProfilePage extends StatelessWidget {
   final String name;
@@ -58,13 +58,13 @@ class GroupProfilePage extends StatelessWidget {
             icon: Icon(Icons.more_horiz, color: subTextColor, size: 20.sp),
             onPressed: () {},
           ),
-          SizedBox(width: 2.w),
+          SizedBox(width: 8.w),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: 2.h),
+            SizedBox(height: 16.h),
 
             // Large Group Avatar
             Center(
@@ -72,8 +72,8 @@ class GroupProfilePage extends StatelessWidget {
                 alignment: Alignment.center,
                 children: [
                   Container(
-                    width: 42.w,
-                    height: 42.w,
+                    width: 168.w,
+                    height: 168.w,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(
@@ -83,8 +83,8 @@ class GroupProfilePage extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    width: 38.w,
-                    height: 38.w,
+                    width: 152.w,
+                    height: 152.w,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: groupColor.withOpacity(0.2),
@@ -105,7 +105,7 @@ class GroupProfilePage extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 2.h),
+            SizedBox(height: 16.h),
 
             // Group Name
             Text(
@@ -116,13 +116,13 @@ class GroupProfilePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 0.5.h),
+            SizedBox(height: 4.h),
             Text(
               "Group · ${participants.length} members",
               style: GoogleFonts.inter(color: subTextColor, fontSize: 14.sp),
             ),
 
-            SizedBox(height: 4.h),
+            SizedBox(height: 32.h),
 
             // --- ACTION BUTTONS (Updated Layout) ---
             Row(
@@ -132,35 +132,35 @@ class GroupProfilePage extends StatelessWidget {
                 _buildActionButton(
                   Icons.chat_bubble,
                   accentColor,
-                  14.w,
+                  56.w,
                   18.sp,
                   () => context.pop(),
                 ),
 
-                SizedBox(width: 6.w),
+                SizedBox(width: 24.w),
 
                 // Large Call Button (Center)
-                _buildActionButton(Icons.call, accentColor, 18.w, 24.sp, () {}),
+                _buildActionButton(Icons.call, accentColor, 72.w, 24.sp, () {}),
 
-                SizedBox(width: 6.w),
+                SizedBox(width: 24.w),
 
                 // Video Button
                 _buildActionButton(
                   Icons.videocam_rounded,
                   accentColor,
-                  14.w,
+                  56.w,
                   18.sp,
                   () {},
                 ),
               ],
             ),
 
-            SizedBox(height: 4.h),
+            SizedBox(height: 32.h),
             Divider(color: subTextColor.withOpacity(0.1), thickness: 1),
 
             // Description Section
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -172,7 +172,7 @@ class GroupProfilePage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 1.h),
+                  SizedBox(height: 8.h),
                   Text(
                     "Official group for daily updates and discussions. Please maintain decorum.",
                     style: GoogleFonts.inter(color: textColor, fontSize: 14.sp),
@@ -185,7 +185,7 @@ class GroupProfilePage extends StatelessWidget {
 
             // Participants List Header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+              padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -212,8 +212,8 @@ class GroupProfilePage extends StatelessWidget {
                 final user = participants[index];
                 return ListTile(
                   contentPadding: EdgeInsets.symmetric(
-                    horizontal: 6.w,
-                    vertical: 0.5.h,
+                    horizontal: 24.w,
+                    vertical: 4.h,
                   ),
                   leading: CircleAvatar(
                     backgroundColor: Color(
@@ -246,8 +246,8 @@ class GroupProfilePage extends StatelessWidget {
                       user['status'] == "Admin"
                           ? Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 2.w,
-                              vertical: 0.5.h,
+                              horizontal: 8.w,
+                              vertical: 4.h,
                             ),
                             decoration: BoxDecoration(
                               color: accentColor.withOpacity(0.1),
@@ -274,7 +274,7 @@ class GroupProfilePage extends StatelessWidget {
 
             // Exit Group
             ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 6.w),
+              contentPadding: EdgeInsets.symmetric(horizontal: 24.w),
               leading: Icon(Icons.exit_to_app, color: dangerColor),
               title: Text(
                 "Exit Group",
@@ -289,7 +289,7 @@ class GroupProfilePage extends StatelessWidget {
 
             // Report Group
             ListTile(
-              contentPadding: EdgeInsets.symmetric(horizontal: 6.w),
+              contentPadding: EdgeInsets.symmetric(horizontal: 24.w),
               leading: Icon(Icons.thumb_down_alt_outlined, color: dangerColor),
               title: Text(
                 "Report Group",
@@ -302,7 +302,7 @@ class GroupProfilePage extends StatelessWidget {
               onTap: () {},
             ),
 
-            SizedBox(height: 5.h),
+            SizedBox(height: 40.h),
           ],
         ),
       ),

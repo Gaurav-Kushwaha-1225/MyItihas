@@ -171,7 +171,7 @@ class QuoteCallout extends StatelessWidget {
                           Clipboard.setData(ClipboardData(text: quoteText));
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text(t.feed.quote_copied),
+                              content: Text(t.feed.quoteCopied),
                               behavior: SnackBarBehavior.floating,
                               duration: const Duration(seconds: 2),
                             ),
@@ -194,7 +194,7 @@ class QuoteCallout extends StatelessWidget {
                               : '"$quote"';
                           SharePlus.instance.share(
                             ShareParams(
-                              subject: t.feed.quote_from_myitihas,
+                              subject: t.feed.quoteFromMyitihas,
                               text: quoteText,
                             ),
                           );

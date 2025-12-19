@@ -91,7 +91,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
           CircularProgressIndicator(color: colorScheme.primary),
           const SizedBox(height: 16),
           Text(
-            t.feed.loading,
+            Translations.of(context).feed.loading,
             style: TextStyle(color: colorScheme.onSurfaceVariant),
           ),
         ],
@@ -104,6 +104,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
     String message,
     ColorScheme colorScheme,
   ) {
+    final t = Translations.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -113,7 +114,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
             Icon(Icons.error_outline, size: 64, color: colorScheme.error),
             const SizedBox(height: 16),
             Text(
-              t.feed.error_title,
+              t.feed.errorTitle,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(color: colorScheme.onSurface),
@@ -131,7 +132,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
                 context.read<FeedBloc>().add(const FeedEvent.loadFeed());
               },
               icon: const Icon(Icons.refresh),
-              label: Text(t.feed.try_again),
+              label: Text(t.feed.tryAgain),
             ),
           ],
         ),
@@ -145,6 +146,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
     required bool hasMore,
     bool isLoadingMore = false,
   }) {
+    final t = Translations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
     if (stories.isEmpty) {
@@ -159,7 +161,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
             ),
             const SizedBox(height: 16),
             Text(
-              t.feed.no_stories_available,
+              t.feed.noStoriesAvailable,
               style: TextStyle(color: colorScheme.onSurfaceVariant),
             ),
             const SizedBox(height: 16),
@@ -231,8 +233,9 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
   }
 
   void _announceBookmark(BuildContext context, Story story) {
+    final t = Translations.of(context);
     final message = story.isFavorite
-        ? t.feed.removed_from_bookmarks
+        ? t.feed.removedFromBookmarks
         : t.feed.bookmarked;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -244,6 +247,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
   }
 
   void _showCommentSheet(BuildContext context, Story story) {
+    final t = Translations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
@@ -318,7 +322,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      t.feed.comments_coming_soon,
+                      t.feed.commentsComingSoon,
                       style: TextStyle(color: colorScheme.onSurfaceVariant),
                     ),
                   ],
@@ -344,7 +348,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
                   Expanded(
                     child: TextField(
                       decoration: InputDecoration(
-                        hintText: t.feed.add_comment_hint,
+                        hintText: t.feed.addCommentHint,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(24),
                           borderSide: BorderSide.none,
@@ -375,6 +379,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
   }
 
   void _showEnhancedShareDialog(BuildContext context, Story story) {
+    final t = Translations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final gradients = theme.extension<GradientExtension>();
@@ -407,7 +412,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
                 ),
               ),
               Text(
-                t.feed.share_story,
+                t.feed.shareStory,
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
@@ -425,8 +430,8 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
 
               _ShareOption(
                 icon: Icons.image_outlined,
-                title: t.feed.share_as_image,
-                subtitle: t.feed.share_as_image_subtitle,
+                title: t.feed.shareAsImage,
+                subtitle: t.feed.shareAsImageSubtitle,
                 gradients: gradients,
                 colorScheme: colorScheme,
                 onTap: () async {
@@ -437,8 +442,8 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
               const SizedBox(height: 12),
               _ShareOption(
                 icon: Icons.link,
-                title: t.feed.share_link,
-                subtitle: t.feed.share_link_subtitle,
+                title: t.feed.shareLink,
+                subtitle: t.feed.shareLinkSubtitle,
                 gradients: gradients,
                 colorScheme: colorScheme,
                 onTap: () {
@@ -455,8 +460,8 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
               const SizedBox(height: 12),
               _ShareOption(
                 icon: Icons.text_fields,
-                title: t.feed.share_as_text,
-                subtitle: t.feed.share_as_text_subtitle,
+                title: t.feed.shareAsText,
+                subtitle: t.feed.shareAsTextSubtitle,
                 gradients: gradients,
                 colorScheme: colorScheme,
                 onTap: () {
@@ -470,8 +475,8 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
               const SizedBox(height: 12),
               _ShareOption(
                 icon: Icons.send,
-                title: t.feed.send_to_user,
-                subtitle: t.feed.send_to_user_subtitle,
+                title: t.feed.sendToUser,
+                subtitle: t.feed.sendToUserSubtitle,
                 gradients: gradients,
                 colorScheme: colorScheme,
                 onTap: () {
@@ -488,17 +493,18 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
   }
 
   void _showShareFormatPicker(BuildContext context, Story story) {
+    final t = Translations.of(context);
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: Text(t.feed.choose_format),
+        title: Text(t.feed.chooseFormat),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
               leading: const Icon(Icons.web),
-              title: Text(t.feed.link_preview),
-              subtitle: Text(t.feed.link_preview_size),
+              title: Text(t.feed.linkPreview),
+              subtitle: Text(t.feed.linkPreviewSize),
               onTap: () async {
                 Navigator.pop(dialogContext);
                 _generateAndShare(context, story, SharePreviewFormat.openGraph);
@@ -506,8 +512,8 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
             ),
             ListTile(
               leading: const Icon(Icons.smartphone),
-              title: Text(t.feed.story_format),
-              subtitle: Text(t.feed.story_format_size),
+              title: Text(t.feed.storyFormat),
+              subtitle: Text(t.feed.storyFormatSize),
               onTap: () async {
                 Navigator.pop(dialogContext);
                 _generateAndShare(context, story, SharePreviewFormat.story);
@@ -524,6 +530,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
     Story story,
     SharePreviewFormat format,
   ) async {
+    final t = Translations.of(context);
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -536,7 +543,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
               children: [
                 const CircularProgressIndicator(),
                 const SizedBox(height: 16),
-                Text(t.feed.generating_preview),
+                Text(t.feed.generatingPreview),
               ],
             ),
           ),

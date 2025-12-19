@@ -3,32 +3,48 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:myitihas/config/routes.dart';
 import 'package:myitihas/config/theme/app_theme.dart';
 import 'package:myitihas/core/di/injection_container.dart';
 import 'package:myitihas/core/logging/talker_setup.dart';
 import 'package:myitihas/core/storage/hive_service.dart';
 import 'package:myitihas/i18n/strings.g.dart';
+import 'package:myitihas/services/supabase_service.dart';
 import 'package:myitihas/utils/theme.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // -------- Infra (main branch) --------
   initTalker();
   talker.info('Starting MyItihas app...');
 
   Bloc.observer = createBlocObserver();
 
   await initHive();
-
   await configureDependencies();
   talker.info('Dependencies configured');
 
   LocaleSettings.useDeviceLocale();
 
+  // -------- Auth (your branch) --------
+  await SupabaseService.initialize(
+    url: 'https://xmbygaeixvzlyhbtkbnp.supabase.co',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtYnlnYWVpeHZ6bHloYnRrYm5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDAzODAsImV4cCI6MjA3NzExNjM4MH0.dqcdiUaixiuFoy5YJ0tmN34M7IBSp8JmiEhYuLKUCKI',
+  );
+
   final SharedPreferences storage = await SharedPreferences.getInstance();
+  
+  // IMPORTANT: Create router FIRST to register refreshStream
+  // This must happen before starting deep link listener
   final GoRouter router = MyItihasRouter().router;
+  
+  // Now start deep link listener - refreshStream is available
+  SupabaseService.authService.startDeepLinkListener();
 
   runApp(
     TranslationProvider(

@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:myitihas/pages/home_page.dart';
+
 import 'package:myitihas/pages/splash.dart';
+import 'package:myitihas/pages/home_page.dart';
+import 'package:myitihas/pages/login_page.dart';
+import 'package:myitihas/pages/signup_page.dart';
+import 'package:myitihas/pages/reset_password_page.dart';
+
+import 'package:myitihas/pages/Chat/Widget/chat_detail_page.dart';
+import 'package:myitihas/pages/Chat/Widget/group_profile_page.dart';
+import 'package:myitihas/pages/Chat/Widget/new_chat_page.dart';
+import 'package:myitihas/pages/Chat/Widget/new_contact_page.dart';
+import 'package:myitihas/pages/Chat/Widget/new_group_page.dart';
+import 'package:myitihas/pages/Chat/Widget/profile_detail_page.dart';
+
 import 'package:myitihas/pages/stories_page.dart';
 import 'package:myitihas/pages/story_generator.dart';
 import 'package:myitihas/features/social/presentation/pages/social_feed_page.dart';
@@ -10,6 +22,8 @@ import 'package:myitihas/features/social/presentation/pages/notification_page.da
 import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_view_page.dart';
 import 'package:myitihas/features/stories/presentation/pages/story_detail_route_page.dart';
+import 'package:myitihas/services/supabase_service.dart';
+import 'package:myitihas/config/go_router_refresh.dart';
 
 part 'routes.g.dart';
 
@@ -28,7 +42,9 @@ class SplashRoute extends GoRouteData with $SplashRoute {
   routes: [
     TypedGoRoute<StoriesRoute>(
       path: 'stories',
-      routes: [TypedGoRoute<StoryDetailRoute>(path: ':id')],
+      routes: [
+        TypedGoRoute<StoryDetailRoute>(path: ':id'),
+      ],
     ),
     TypedGoRoute<StoryGeneratorRoute>(path: 'story-generator'),
   ],
@@ -41,6 +57,196 @@ class HomeRoute extends GoRouteData with $HomeRoute {
     return const HomePage();
   }
 }
+
+/// Login
+@TypedGoRoute<LoginRoute>(path: '/login')
+class LoginRoute extends GoRouteData with $LoginRoute {
+  const LoginRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const LoginPage();
+  }
+}
+
+
+/// Signup
+@TypedGoRoute<SignupRoute>(path: '/signup')
+class SignupRoute extends GoRouteData with $SignupRoute {
+  const SignupRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const SignupPage();
+  }
+}
+
+/// Reset password
+@TypedGoRoute<ResetPasswordRoute>(path: '/reset-password')
+class ResetPasswordRoute extends GoRouteData with $ResetPasswordRoute {
+  const ResetPasswordRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const ResetPasswordPage();
+  }
+}
+
+/// New chat
+@TypedGoRoute<NewChatRoute>(path: '/new-chat')
+class NewChatRoute extends GoRouteData with $NewChatRoute {
+  const NewChatRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const NewChatPage();
+  }
+}
+
+/// New group
+@TypedGoRoute<NewGroupRoute>(path: '/new-group')
+class NewGroupRoute extends GoRouteData with $NewGroupRoute {
+  const NewGroupRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const NewGroupPage();
+  }
+}
+
+/// New contact
+@TypedGoRoute<NewContactRoute>(path: '/new-contact')
+class NewContactRoute extends GoRouteData with $NewContactRoute {
+  const NewContactRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const NewContactPage();
+  }
+}
+
+
+/// Chat detail page route - requires parameters passed via $extra
+@TypedGoRoute<ChatDetailRoute>(path: '/chat_detail')
+class ChatDetailRoute extends GoRouteData with $ChatDetailRoute {
+  const ChatDetailRoute({required this.$extra});
+
+  final Map<String, dynamic> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ChatDetailPage(
+      name: $extra['name'] ?? "User",
+      avatarColor:
+          $extra['color'] != null
+              // ignore: deprecated_member_use
+              ? "0xFF${($extra['color'] as Color).value.toRadixString(16).substring(2)}"
+              : "0xFF3B82F6",
+      isGroup: $extra['isGroup'] ?? false,
+    );
+  }
+}
+
+/// Profile detail page route - requires name parameter via $extra
+@TypedGoRoute<ProfileDetailRoute>(path: '/profile_detail')
+class ProfileDetailRoute extends GoRouteData with $ProfileDetailRoute {
+  const ProfileDetailRoute({required this.$extra});
+
+  final Map<String, dynamic> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return ProfileDetailPage(name: $extra['name'] ?? "User");
+  }
+}
+
+/// Group profile page route - requires parameters via $extra
+@TypedGoRoute<GroupProfileRoute>(path: '/group_profile')
+class GroupProfileRoute extends GoRouteData with $GroupProfileRoute {
+  const GroupProfileRoute({required this.$extra});
+
+  final Map<String, dynamic> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return GroupProfilePage(
+      name: $extra['name'] ?? "Group",
+      avatarColor: $extra['color'] ?? "0xFF8B5CF6",
+    );
+  }
+}
+
+// ============================================================================
+// MyItihasRouter - GoRouter Configuration
+// ============================================================================
+
+class MyItihasRouter {
+  final GoRouterRefreshStream _refreshStream = GoRouterRefreshStream();
+
+  MyItihasRouter() {
+    // Register refresh stream with SupabaseService so AuthService can access it
+    SupabaseService.setRefreshStream(_refreshStream);
+  }
+
+  GoRouter get router => GoRouter(
+        initialLocation: '/',
+        routes: $appRoutes,
+        refreshListenable: _refreshStream,
+        redirect: (context, state) {
+          final isAuthenticated =
+              SupabaseService.getCurrentSession() != null;
+          final isRecovering = _refreshStream.isRecovering;
+
+          final currentPath = state.matchedLocation;
+          final isOnLogin = currentPath == '/login';
+          final isOnSignup = currentPath == '/signup';
+          final isOnSplash = currentPath == '/';
+          final isOnResetPassword = currentPath == '/reset-password';
+
+          print('[Router] Path: $currentPath, Auth: $isAuthenticated, Recovering: $isRecovering');
+
+          // HIGHEST PRIORITY: Password recovery flow
+          // If user is in recovery mode, FORCE them to /reset-password
+          // This overrides normal authentication state
+          if (isRecovering) {
+            if (!isOnResetPassword) {
+              print('[Router] Recovery mode - redirecting to /reset-password');
+              return '/reset-password';
+            }
+            return null; // Already on reset-password, stay there
+          }
+
+          // Normal auth flow: authenticated user trying to access login/signup
+          if (isAuthenticated && (isOnLogin || isOnSignup)) {
+            print('[Router] Authenticated user on auth page - redirecting to /home');
+            return '/home';
+          }
+
+          // Splash screen - let it handle its own logic
+          if (isOnSplash) return null;
+
+          // Reset password page without recovery mode - redirect to login
+          if (isOnResetPassword && !isRecovering) {
+            print('[Router] On reset-password without recovery mode - redirecting to /login');
+            return '/login';
+          }
+
+          // Unauthenticated user trying to access protected route
+          if (!isAuthenticated && !isOnLogin && !isOnSignup && !isOnResetPassword) {
+            print('[Router] Unauthenticated - redirecting to /login');
+            return '/login';
+          }
+
+          return null;
+        },
+      );
+}
+
+
+
+// ============================================================================
+// Feature Routes (TypedGoRoute – from main branch)
+// ============================================================================
 
 class StoriesRoute extends GoRouteData with $StoriesRoute {
   const StoriesRoute();
@@ -125,8 +331,4 @@ class ChatViewRoute extends GoRouteData with $ChatViewRoute {
   Widget build(BuildContext context, GoRouterState state) {
     return ChatViewPage(conversationId: conversationId);
   }
-}
-
-class MyItihasRouter {
-  GoRouter get router => GoRouter(initialLocation: '/', routes: $appRoutes);
 }

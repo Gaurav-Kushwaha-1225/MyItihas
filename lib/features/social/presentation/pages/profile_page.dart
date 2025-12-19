@@ -278,7 +278,7 @@ class _ProfileView extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    '${t.notification.error_prefix} $message',
+                    '${t.notification.errorPrefix} $message',
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.onSurface,
                     ),

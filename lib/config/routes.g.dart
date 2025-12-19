@@ -9,6 +9,15 @@ part of 'routes.dart';
 List<RouteBase> get $appRoutes => [
   $splashRoute,
   $homeRoute,
+  $loginRoute,
+  $signupRoute,
+  $resetPasswordRoute,
+  $newChatRoute,
+  $newGroupRoute,
+  $newContactRoute,
+  $chatDetailRoute,
+  $profileDetailRoute,
+  $groupProfileRoute,
   $socialFeedRoute,
   $profileRoute,
   $notificationRoute,
@@ -139,6 +148,240 @@ mixin $StoryGeneratorRoute on GoRouteData {
 
   @override
   void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $loginRoute =>
+    GoRouteData.$route(path: '/login', factory: $LoginRoute._fromState);
+
+mixin $LoginRoute on GoRouteData {
+  static LoginRoute _fromState(GoRouterState state) => const LoginRoute();
+
+  @override
+  String get location => GoRouteData.$location('/login');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $signupRoute =>
+    GoRouteData.$route(path: '/signup', factory: $SignupRoute._fromState);
+
+mixin $SignupRoute on GoRouteData {
+  static SignupRoute _fromState(GoRouterState state) => const SignupRoute();
+
+  @override
+  String get location => GoRouteData.$location('/signup');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $resetPasswordRoute => GoRouteData.$route(
+  path: '/reset-password',
+  factory: $ResetPasswordRoute._fromState,
+);
+
+mixin $ResetPasswordRoute on GoRouteData {
+  static ResetPasswordRoute _fromState(GoRouterState state) =>
+      const ResetPasswordRoute();
+
+  @override
+  String get location => GoRouteData.$location('/reset-password');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $newChatRoute =>
+    GoRouteData.$route(path: '/new-chat', factory: $NewChatRoute._fromState);
+
+mixin $NewChatRoute on GoRouteData {
+  static NewChatRoute _fromState(GoRouterState state) => const NewChatRoute();
+
+  @override
+  String get location => GoRouteData.$location('/new-chat');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $newGroupRoute =>
+    GoRouteData.$route(path: '/new-group', factory: $NewGroupRoute._fromState);
+
+mixin $NewGroupRoute on GoRouteData {
+  static NewGroupRoute _fromState(GoRouterState state) => const NewGroupRoute();
+
+  @override
+  String get location => GoRouteData.$location('/new-group');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $newContactRoute => GoRouteData.$route(
+  path: '/new-contact',
+  factory: $NewContactRoute._fromState,
+);
+
+mixin $NewContactRoute on GoRouteData {
+  static NewContactRoute _fromState(GoRouterState state) =>
+      const NewContactRoute();
+
+  @override
+  String get location => GoRouteData.$location('/new-contact');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $chatDetailRoute => GoRouteData.$route(
+  path: '/chat_detail',
+  factory: $ChatDetailRoute._fromState,
+);
+
+mixin $ChatDetailRoute on GoRouteData {
+  static ChatDetailRoute _fromState(GoRouterState state) =>
+      ChatDetailRoute($extra: state.extra as Map<String, dynamic>);
+
+  ChatDetailRoute get _self => this as ChatDetailRoute;
+
+  @override
+  String get location => GoRouteData.$location('/chat_detail');
+
+  @override
+  void go(BuildContext context) => context.go(location, extra: _self.$extra);
+
+  @override
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: _self.$extra);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location, extra: _self.$extra);
+
+  @override
+  void replace(BuildContext context) =>
+      context.replace(location, extra: _self.$extra);
+}
+
+RouteBase get $profileDetailRoute => GoRouteData.$route(
+  path: '/profile_detail',
+  factory: $ProfileDetailRoute._fromState,
+);
+
+mixin $ProfileDetailRoute on GoRouteData {
+  static ProfileDetailRoute _fromState(GoRouterState state) =>
+      ProfileDetailRoute($extra: state.extra as Map<String, dynamic>);
+
+  ProfileDetailRoute get _self => this as ProfileDetailRoute;
+
+  @override
+  String get location => GoRouteData.$location('/profile_detail');
+
+  @override
+  void go(BuildContext context) => context.go(location, extra: _self.$extra);
+
+  @override
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: _self.$extra);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location, extra: _self.$extra);
+
+  @override
+  void replace(BuildContext context) =>
+      context.replace(location, extra: _self.$extra);
+}
+
+RouteBase get $groupProfileRoute => GoRouteData.$route(
+  path: '/group_profile',
+  factory: $GroupProfileRoute._fromState,
+);
+
+mixin $GroupProfileRoute on GoRouteData {
+  static GroupProfileRoute _fromState(GoRouterState state) =>
+      GroupProfileRoute($extra: state.extra as Map<String, dynamic>);
+
+  GroupProfileRoute get _self => this as GroupProfileRoute;
+
+  @override
+  String get location => GoRouteData.$location('/group_profile');
+
+  @override
+  void go(BuildContext context) => context.go(location, extra: _self.$extra);
+
+  @override
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: _self.$extra);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location, extra: _self.$extra);
+
+  @override
+  void replace(BuildContext context) =>
+      context.replace(location, extra: _self.$extra);
 }
 
 RouteBase get $socialFeedRoute => GoRouteData.$route(

@@ -27,6 +27,8 @@ class _StoryDetailRoutePageState extends State<StoryDetailRoutePage> {
 
   @override
   Widget build(BuildContext context) {
+    final t = Translations.of(context);
+
     return FutureBuilder<Either<Failure, Story>>(
       future: _future,
       builder: (context, snapshot) {
