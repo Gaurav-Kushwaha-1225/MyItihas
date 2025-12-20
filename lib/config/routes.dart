@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
 import 'package:myitihas/pages/home_page.dart';
 import 'package:myitihas/pages/splash.dart';
 import 'package:myitihas/pages/stories_page.dart';
@@ -124,6 +125,16 @@ class ChatViewRoute extends GoRouteData with $ChatViewRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ChatViewPage(conversationId: conversationId);
+  }
+}
+
+@TypedGoRoute<MapRoute>(path: '/map')
+class MapRoute extends GoRouteData {
+  const MapRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AkhandaBharatMapPage();
   }
 }
 
