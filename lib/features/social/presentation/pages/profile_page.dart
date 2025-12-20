@@ -45,46 +45,77 @@ class _ProfileView extends StatelessWidget {
                 ) {
                   return CustomScrollView(
                     slivers: [
-                      // Profile header
+                      // Profile header card
                       SliverToBoxAdapter(
-                        child: Container(
-                          height: 200,
-                          decoration: BoxDecoration(
-                            gradient: Theme.of(context)
-                                .extension<GradientExtension>()!
-                                .primaryButtonGradient,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgAvatar(
-                                key: ValueKey('avatar_${user.id}_${user.avatarUrl}'),
-                                imageUrl: user.avatarUrl,
-                                radius: 50,
-                                fallbackText: user.displayName,
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                user.displayName,
-                                style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimary,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 40, 16, 24),
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
                                 ),
-                              ),
-                              Text(
-                                '@${user.username}',
-                                style: TextStyle(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onPrimary
-                                      .withValues(alpha: 0.7),
-                                  fontSize: 16,
+                              ],
+                            ),
+                            child: Row(
+                              children: [
+                                // Avatar on left
+                                Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Theme.of(context).colorScheme.surface,
+                                      width: 3,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(alpha: 0.1),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: SvgAvatar(
+                                    key: ValueKey('avatar_${user.id}_${user.avatarUrl}'),
+                                    imageUrl: user.avatarUrl,
+                                    radius: 50,
+                                    fallbackText: user.displayName,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 20),
+                                // Name and username on right
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        user.displayName,
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onSurface,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        '@${user.username}',
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -92,58 +123,83 @@ class _ProfileView extends StatelessWidget {
                       // Profile info
                       SliverToBoxAdapter(
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // Stats row
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  _StatItem(
-                                    label: t.profile.followers,
-                                    count: user.followerCount,
-                                    onTap: () {
-                                      context.read<ProfileBloc>().add(
-                                        ProfileEvent.loadFollowers(user.id),
-                                      );
-                                      _showFollowersSheet(
-                                        context,
-                                        followers,
-                                        isLoadingFollowers,
-                                      );
-                                    },
-                                  ),
-                                  _StatItem(
-                                    label: t.profile.following,
-                                    count: user.followingCount,
-                                    onTap: () {
-                                      context.read<ProfileBloc>().add(
-                                        ProfileEvent.loadFollowing(user.id),
-                                      );
-                                      _showFollowingSheet(
-                                        context,
-                                        following,
-                                        isLoadingFollowing,
-                                      );
-                                    },
-                                  ),
-                                ],
+                              // Modern stats card
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(alpha: 0.05),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    _ModernStatItem(
+                                      label: t.profile.followers,
+                                      count: user.followerCount,
+                                      onTap: () {
+                                        context.read<ProfileBloc>().add(
+                                          ProfileEvent.loadFollowers(user.id),
+                                        );
+                                        _showFollowersSheet(
+                                          context,
+                                          followers,
+                                          isLoadingFollowers,
+                                        );
+                                      },
+                                    ),
+                                    Container(
+                                      width: 1,
+                                      height: 40,
+                                      color: Theme.of(context).colorScheme.outlineVariant,
+                                    ),
+                                    _ModernStatItem(
+                                      label: t.profile.following,
+                                      count: user.followingCount,
+                                      onTap: () {
+                                        context.read<ProfileBloc>().add(
+                                          ProfileEvent.loadFollowing(user.id),
+                                        );
+                                        _showFollowingSheet(
+                                          context,
+                                          following,
+                                          isLoadingFollowing,
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
 
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 24),
 
                               // Edit Profile button for current user
                               if (user.isCurrentUser)
                                 Container(
                                   width: double.infinity,
-                                  height: 48,
+                                  height: 52,
                                   decoration: BoxDecoration(
                                     gradient: Theme.of(context)
                                           .extension<GradientExtension>()!
                                           .primaryButtonGradient,
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(16),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 6),
+                                      ),
+                                    ],
                                   ),
                                   child: ElevatedButton.icon(
                                     onPressed: () async {
@@ -165,19 +221,18 @@ class _ProfileView extends StatelessWidget {
                                       backgroundColor: Colors.transparent,
                                       shadowColor: Colors.transparent,
                                       foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 12,
-                                      ),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(16),
                                       ),
+                                      elevation: 0,
                                     ),
-                                    icon: const Icon(Icons.edit, size: 20),
+                                    icon: const Icon(Icons.edit_rounded, size: 22),
                                     label: const Text(
                                       'Edit Profile',
                                       style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 0.5,
                                       ),
                                     ),
                                   ),
@@ -187,7 +242,7 @@ class _ProfileView extends StatelessWidget {
                               if (!user.isCurrentUser)
                                 Container(
                                   width: double.infinity,
-                                  height: 48,
+                                  height: 52,
                                   decoration: BoxDecoration(
                                     gradient: user.isFollowing
                                         ? null
@@ -195,11 +250,24 @@ class _ProfileView extends StatelessWidget {
                                               .extension<GradientExtension>()!
                                               .primaryButtonGradient,
                                     color: user.isFollowing
-                                        ? Theme.of(
-                                            context,
-                                          ).colorScheme.surfaceContainerHighest
+                                        ? Theme.of(context).colorScheme.surfaceContainerHighest
                                         : null,
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: user.isFollowing
+                                        ? Border.all(
+                                            color: Theme.of(context).colorScheme.outline,
+                                            width: 1.5,
+                                          )
+                                        : null,
+                                    boxShadow: !user.isFollowing
+                                        ? [
+                                            BoxShadow(
+                                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                                              blurRadius: 12,
+                                              offset: const Offset(0, 6),
+                                            ),
+                                          ]
+                                        : null,
                                   ),
                                   child: ElevatedButton(
                                     onPressed: () {
@@ -211,82 +279,116 @@ class _ProfileView extends StatelessWidget {
                                       backgroundColor: Colors.transparent,
                                       shadowColor: Colors.transparent,
                                       foregroundColor: user.isFollowing
-                                          ? Theme.of(
-                                              context,
-                                            ).colorScheme.onSurface
+                                          ? Theme.of(context).colorScheme.onSurface
                                           : Colors.white,
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 12,
-                                      ),
                                       shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(16),
                                       ),
+                                      elevation: 0,
                                     ),
-                                    child: Text(
-                                      user.isFollowing
-                                          ? t.profile.unfollow
-                                          : t.profile.follow,
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          user.isFollowing ? Icons.person_remove_rounded : Icons.person_add_rounded,
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          user.isFollowing
+                                              ? t.profile.unfollow
+                                              : t.profile.follow,
+                                          style: const TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w600,
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
 
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 24),
 
                               if (user.bio.isNotEmpty) ...[
-                                Text(
-                                  t.profile.about,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurface,
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.info_outline_rounded,
+                                            size: 20,
+                                            color: Theme.of(context).colorScheme.primary,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            t.profile.about,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                              color: Theme.of(context).colorScheme.onSurface,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        user.bio,
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          height: 1.5,
+                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  user.bio,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurfaceVariant,
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
+                                const SizedBox(height: 24),
                               ],
 
-                              const Divider(),
-
-                              const SizedBox(height: 16),
-
-                              Text(
-                                t.profile.stories,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurface,
-                                ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.auto_stories_rounded,
+                                    size: 20,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    t.profile.stories,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(context).colorScheme.onSurface,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
                               ),
+                              const SizedBox(height: 16),
                             ],
                           ),
                         ),
                       ),
 
                       SliverPadding(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         sliver: SliverGrid(
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 3,
-                                crossAxisSpacing: 8,
-                                mainAxisSpacing: 8,
+                                crossAxisSpacing: 12,
+                                mainAxisSpacing: 12,
                               ),
                           delegate: SliverChildBuilderDelegate((
                             context,
@@ -294,18 +396,28 @@ class _ProfileView extends StatelessWidget {
                           ) {
                             return Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surfaceContainerHighest,
-                                borderRadius: BorderRadius.circular(8),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Theme.of(context).colorScheme.surfaceContainerHighest,
+                                    Theme.of(context).colorScheme.surfaceContainer,
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
                               ),
                               child: Center(
                                 child: Icon(
-                                  Icons.auto_stories,
+                                  Icons.auto_stories_rounded,
                                   size: 40,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
                                 ),
                               ),
                             );
@@ -440,12 +552,12 @@ class _ProfileView extends StatelessWidget {
   }
 }
 
-class _StatItem extends StatelessWidget {
+class _ModernStatItem extends StatelessWidget {
   final String label;
   final int count;
   final VoidCallback onTap;
 
-  const _StatItem({
+  const _ModernStatItem({
     required this.label,
     required this.count,
     required this.onTap,
@@ -455,24 +567,28 @@ class _StatItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
         child: Column(
           children: [
             Text(
               _formatCount(count),
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.onSurface,
+                letterSpacing: 0.5,
               ),
             ),
+            const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
+                letterSpacing: 0.5,
               ),
             ),
           ],
