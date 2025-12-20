@@ -19,6 +19,7 @@ import 'package:myitihas/pages/story_generator.dart';
 import 'package:myitihas/pages/settings_page.dart';
 import 'package:myitihas/features/social/presentation/pages/social_feed_page.dart';
 import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
+import 'package:myitihas/features/social/presentation/pages/edit_profile_page.dart';
 import 'package:myitihas/features/social/presentation/pages/notification_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_view_page.dart';
@@ -185,6 +186,32 @@ class SettingsRoute extends GoRouteData with $SettingsRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const SettingsPage();
+  }
+}
+
+/// Edit Profile page
+@TypedGoRoute<EditProfileRoute>(path: '/edit-profile/:userId')
+class EditProfileRoute extends GoRouteData with $EditProfileRoute {
+  final String userId;
+  final String displayName;
+  final String bio;
+  final String avatarUrl;
+
+  const EditProfileRoute({
+    required this.userId,
+    required this.displayName,
+    this.bio = '',
+    this.avatarUrl = '',
+  });
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return EditProfilePage(
+      userId: userId,
+      currentDisplayName: displayName,
+      currentBio: bio,
+      currentAvatarUrl: avatarUrl,
+    );
   }
 }
 

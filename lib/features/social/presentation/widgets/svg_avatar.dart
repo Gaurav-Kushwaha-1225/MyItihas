@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class SvgAvatar extends StatelessWidget {
@@ -16,42 +15,58 @@ class SvgAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isSvg =
-        imageUrl.toLowerCase().endsWith('.svg') ||
-        imageUrl.contains('/svg?') ||
-        imageUrl.contains('.svg?');
-
+    debugPrint('🖼️ [SvgAvatar] imageUrl: "$imageUrl", isEmpty: ${imageUrl.isEmpty}');
+    
+    // If no URL, show first letter
     if (imageUrl.isEmpty) {
+      debugPrint('🖼️ [SvgAvatar] Showing fallback letter');
       return CircleAvatar(
         radius: radius,
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
         child: fallbackText != null && fallbackText!.isNotEmpty
-            ? Text(fallbackText![0].toUpperCase())
-            : const Icon(Icons.person),
+            ? Text(
+                fallbackText![0].toUpperCase(),
+                style: TextStyle(
+                  fontSize: radius * 0.8,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
+                ),
+              )
+            : Icon(Icons.person, size: radius),
       );
     }
 
-    if (isSvg) {
-      return CircleAvatar(
-        radius: radius,
-        backgroundColor: Colors.grey[200],
-        child: ClipOval(
-          child: SvgPicture.network(
-            imageUrl,
-            width: radius * 2,
-            height: radius * 2,
-            fit: BoxFit.cover,
-            placeholderBuilder: (context) =>
-                Center(child: CircularProgressIndicator(strokeWidth: 2)),
+    debugPrint('🖼️ [SvgAvatar] Loading image from URL');
+    // Show image from URL with caching
+    return ClipOval(
+      child: CachedNetworkImage(
+        imageUrl: imageUrl,
+        width: radius * 2,
+        height: radius * 2,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Container(
+          width: radius * 2,
+          height: radius * 2,
+          color: Colors.grey[300],
+          child: Center(
+            child: CircularProgressIndicator(strokeWidth: 2),
           ),
         ),
-      );
-    }
-
-    return CircleAvatar(
-      radius: radius,
-      backgroundImage: CachedNetworkImageProvider(imageUrl),
-      onBackgroundImageError: (_, _) {},
-      child: null,
+        errorWidget: (context, url, error) => CircleAvatar(
+          radius: radius,
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+          child: fallbackText != null && fallbackText!.isNotEmpty
+              ? Text(
+                  fallbackText![0].toUpperCase(),
+                  style: TextStyle(
+                    fontSize: radius * 0.8,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+                )
+              : Icon(Icons.person, size: radius),
+        ),
+      ),
     );
   }
 }

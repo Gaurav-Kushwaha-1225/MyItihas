@@ -1,5 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:talker_flutter/talker_flutter.dart';
+import 'package:myitihas/core/di/injection_container.dart';
 import 'package:myitihas/features/social/domain/repositories/user_repository.dart';
 import 'profile_event.dart';
 import 'profile_state.dart';
@@ -21,13 +23,24 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     LoadProfileEvent event,
     Emitter<ProfileState> emit,
   ) async {
+    final logger = getIt<Talker>();
+    logger.info('📱 [ProfileBloc] Loading profile for user: ${event.userId}');
+    
     emit(const ProfileState.loading());
 
     final result = await userRepository.getUserProfile(event.userId);
 
     result.fold(
-      (failure) => emit(ProfileState.error(failure.message)),
-      (user) => emit(ProfileState.loaded(user: user)),
+      (failure) {
+        logger.error('❌ [ProfileBloc] Failed to load profile: ${failure.message}');
+        emit(ProfileState.error(failure.message));
+      },
+      (user) {
+        logger.info('✅ [ProfileBloc] Profile loaded successfully');
+        logger.info('👤 [ProfileBloc] User: ${user.displayName}');
+        logger.info('🖼️ [ProfileBloc] Avatar URL: "${user.avatarUrl}"');
+        emit(ProfileState.loaded(user: user));
+      },
     );
   }
 

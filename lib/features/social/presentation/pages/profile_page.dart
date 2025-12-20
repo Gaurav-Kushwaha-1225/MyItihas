@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import '../widgets/svg_avatar.dart';
 import 'package:myitihas/core/di/injection_container.dart';
+import 'package:myitihas/config/routes.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
 import 'package:myitihas/features/social/presentation/bloc/profile_bloc.dart';
 import 'package:myitihas/features/social/presentation/bloc/profile_event.dart';
@@ -58,6 +58,7 @@ class _ProfileView extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SvgAvatar(
+                                key: ValueKey('avatar_${user.id}_${user.avatarUrl}'),
                                 imageUrl: user.avatarUrl,
                                 radius: 50,
                                 fallbackText: user.displayName,
@@ -133,6 +134,56 @@ class _ProfileView extends StatelessWidget {
 
                               const SizedBox(height: 20),
 
+                              // Edit Profile button for current user
+                              if (user.isCurrentUser)
+                                Container(
+                                  width: double.infinity,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    gradient: Theme.of(context)
+                                          .extension<GradientExtension>()!
+                                          .primaryButtonGradient,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: ElevatedButton.icon(
+                                    onPressed: () async {
+                                      final result = await EditProfileRoute(
+                                        userId: user.id,
+                                        displayName: user.displayName,
+                                        bio: user.bio,
+                                        avatarUrl: user.avatarUrl,
+                                      ).push<bool>(context);
+                                      
+                                      // Reload profile if changes were saved
+                                      if (result == true && context.mounted) {
+                                        context.read<ProfileBloc>().add(
+                                          ProfileEvent.loadProfile(user.id),
+                                        );
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
+                                      foregroundColor: Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                    ),
+                                    icon: const Icon(Icons.edit, size: 20),
+                                    label: const Text(
+                                      'Edit Profile',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                              // Follow/Unfollow button for other users
                               if (!user.isCurrentUser)
                                 Container(
                                   width: double.infinity,

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:fpdart/fpdart.dart';
 import 'package:myitihas/core/errors/failures.dart';
 import '../entities/user.dart';
@@ -29,4 +30,21 @@ abstract class UserRepository {
   });
 
   Future<Either<Failure, List<User>>> getAllUsers();
+
+  Future<Either<Failure, void>> updateUserProfile({
+    required String userId,
+    String? displayName,
+    String? bio,
+    String? avatarUrl,
+  });
+
+  /// Uploads profile photo to storage and updates user's avatar_url
+  /// 
+  /// - Only authenticated user can upload their own photo
+  /// - Compresses and optimizes image before upload
+  /// - Returns updated User entity with new avatar URL
+  Future<Either<Failure, String>> uploadProfilePhoto({
+    required String userId,
+    required File imageFile,
+  });
 }

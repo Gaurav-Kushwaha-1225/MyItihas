@@ -19,6 +19,7 @@ List<RouteBase> get $appRoutes => [
   $profileDetailRoute,
   $groupProfileRoute,
   $settingsRoute,
+  $editProfileRoute,
   $socialFeedRoute,
   $profileRoute,
   $notificationRoute,
@@ -393,6 +394,45 @@ mixin $SettingsRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/settings');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $editProfileRoute => GoRouteData.$route(
+  path: '/edit-profile/:userId',
+  factory: $EditProfileRoute._fromState,
+);
+
+mixin $EditProfileRoute on GoRouteData {
+  static EditProfileRoute _fromState(GoRouterState state) => EditProfileRoute(
+    userId: state.pathParameters['userId']!,
+    displayName: state.uri.queryParameters['display-name']!,
+    bio: state.uri.queryParameters['bio'] ?? '',
+    avatarUrl: state.uri.queryParameters['avatar-url'] ?? '',
+  );
+
+  EditProfileRoute get _self => this as EditProfileRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/edit-profile/${Uri.encodeComponent(_self.userId)}',
+    queryParams: {
+      'display-name': _self.displayName,
+      if (_self.bio != '') 'bio': _self.bio,
+      if (_self.avatarUrl != '') 'avatar-url': _self.avatarUrl,
+    },
+  );
 
   @override
   void go(BuildContext context) => context.go(location);

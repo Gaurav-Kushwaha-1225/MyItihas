@@ -293,6 +293,30 @@ class AuthService {
         );
       }
 
+      // Insert user into public.users table
+      // UUID is automatically taken from auth.users.id (Supabase generates it)
+      try {
+        final userId = response.user!.id;
+        final username = _generateUsername(email, fullName);
+        
+        await _supabase.from('users').insert({
+          'id': userId, // Same UUID as auth.users.id
+          'email': email.trim().toLowerCase(),
+          'full_name': fullName.trim(),
+          'username': username,
+          'avatar_url': 'https://api.dicebear.com/7.x/avataaars/svg?seed=$username',
+          'bio': '',
+          'is_online': true,
+          'last_seen': DateTime.now().toIso8601String(),
+        });
+        
+        print('[Signup] User added to public.users table with id: $userId');
+      } catch (e) {
+        print('[Signup] Warning: Failed to add user to public.users table: $e');
+        // Don't throw - auth user was created successfully
+        // This can be handled later or retried
+      }
+
       return response;
     } on AuthServiceException {
       // Re-throw our custom AuthServiceException as-is (already user-friendly)
@@ -527,6 +551,21 @@ class AuthService {
 
     // Generic error message
     return 'Failed to create account. Please check your information and try again.';
+  }
+
+  /// Generate a unique username from email or full name
+  String _generateUsername(String email, String fullName) {
+    // Try to use part before @ in email
+    String username = email.split('@')[0];
+    
+    // Remove special characters and make lowercase
+    username = username.replaceAll(RegExp(r'[^a-zA-Z0-9_]'), '_').toLowerCase();
+    
+    // Add random suffix to ensure uniqueness
+    final timestamp = DateTime.now().millisecondsSinceEpoch.toString().substring(8);
+    username = '${username}_$timestamp';
+    
+    return username;
   }
 
   /// Convert sign-in error messages to user-friendly format
