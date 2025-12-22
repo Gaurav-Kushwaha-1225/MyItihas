@@ -210,14 +210,7 @@ class _ProfileView extends StatelessWidget {
                                       label: t.profile.followers,
                                       count: user.followerCount,
                                       onTap: () {
-                                        context.read<ProfileBloc>().add(
-                                          ProfileEvent.loadFollowers(user.id),
-                                        );
-                                        _showFollowersSheet(
-                                          context,
-                                          followers,
-                                          isLoadingFollowers,
-                                        );
+                                        FollowersRoute(userId: user.id).push(context);
                                       },
                                     ),
                                     Container(
@@ -229,14 +222,7 @@ class _ProfileView extends StatelessWidget {
                                       label: t.profile.following,
                                       count: user.followingCount,
                                       onTap: () {
-                                        context.read<ProfileBloc>().add(
-                                          ProfileEvent.loadFollowing(user.id),
-                                        );
-                                        _showFollowingSheet(
-                                          context,
-                                          following,
-                                          isLoadingFollowing,
-                                        );
+                                        FollowingRoute(userId: user.id).push(context);
                                       },
                                     ),
                                   ],

@@ -22,6 +22,8 @@ import 'package:myitihas/features/social/presentation/pages/social_feed_page.dar
 import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
 import 'package:myitihas/features/social/presentation/pages/edit_profile_page.dart';
 import 'package:myitihas/features/social/presentation/pages/notification_page.dart';
+import 'package:myitihas/features/social/presentation/pages/followers_page.dart';
+import 'package:myitihas/features/social/presentation/pages/following_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_view_page.dart';
 import 'package:myitihas/features/stories/presentation/pages/story_detail_route_page.dart';
@@ -341,6 +343,30 @@ class ProfileRoute extends GoRouteData with $ProfileRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ProfilePage(userId: userId);
+  }
+}
+
+@TypedGoRoute<FollowersRoute>(path: '/followers/:userId')
+class FollowersRoute extends GoRouteData with $FollowersRoute {
+  final String userId;
+
+  const FollowersRoute({required this.userId});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return FollowersPage(userId: userId);
+  }
+}
+
+@TypedGoRoute<FollowingRoute>(path: '/following/:userId')
+class FollowingRoute extends GoRouteData with $FollowingRoute {
+  final String userId;
+
+  const FollowingRoute({required this.userId});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return FollowingPage(userId: userId);
   }
 }
 

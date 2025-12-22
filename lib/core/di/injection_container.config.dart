@@ -58,6 +58,7 @@ import '../../features/stories/domain/usecases/get_stories.dart' as _i596;
 import '../../features/stories/domain/usecases/get_story_by_id.dart' as _i494;
 import '../../features/stories/domain/usecases/toggle_favorite.dart' as _i53;
 import '../../features/stories/presentation/bloc/stories_bloc.dart' as _i790;
+import '../../services/follow_service.dart' as _i545;
 import '../../services/profile_service.dart' as _i637;
 import '../../services/profile_storage_service.dart' as _i743;
 import '../network/api_client.dart' as _i557;
@@ -100,6 +101,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i51.StoryRemoteDataSource>(
       () => _i51.StoryRemoteDataSourceImpl(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i545.FollowService>(
+      () => _i545.FollowService(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i637.ProfileService>(
       () => _i637.ProfileService(gh<_i454.SupabaseClient>()),
     );
@@ -140,35 +144,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i2.ChatListBloc>(
       () => _i2.ChatListBloc(chatRepository: gh<_i420.ChatRepository>()),
     );
-    gh.lazySingleton<_i799.ChatDataSource>(
-      () => _i799.ChatDataSourceImpl(gh<_i773.UserDataSource>()),
-    );
-    gh.lazySingleton<_i596.GetStories>(
-      () => _i596.GetStories(gh<_i909.StoryRepository>()),
-    );
-    gh.lazySingleton<_i494.GetStoryById>(
-      () => _i494.GetStoryById(gh<_i909.StoryRepository>()),
-    );
-    gh.lazySingleton<_i53.ToggleFavorite>(
-      () => _i53.ToggleFavorite(gh<_i909.StoryRepository>()),
-    );
     gh.lazySingleton<_i721.UserRepository>(
       () => _i910.UserRepositoryImpl(
         dataSource: gh<_i210.UserRemoteDataSource>(),
         storageService: gh<_i743.ProfileStorageService>(),
+        followService: gh<_i545.FollowService>(),
       ),
     );
-    gh.factory<_i790.StoriesBloc>(
-      () => _i790.StoriesBloc(
-        getStories: gh<_i596.GetStories>(),
-        toggleFavorite: gh<_i53.ToggleFavorite>(),
-      ),
-    );
-    gh.factory<_i506.NotificationBloc>(
-      () => _i506.NotificationBloc(
-        notificationRepository: gh<_i367.NotificationRepository>(),
-        userRepository: gh<_i721.UserRepository>(),
-      ),
+    gh.lazySingleton<_i799.ChatDataSource>(
+      () => _i799.ChatDataSourceImpl(gh<_i773.UserDataSource>()),
     );
     gh.lazySingleton<_i640.SocialRepository>(
       () => _i5.SocialRepositoryImpl(
@@ -182,10 +166,31 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i62.CommentBloc>(
       () => _i62.CommentBloc(socialRepository: gh<_i640.SocialRepository>()),
     );
+    gh.lazySingleton<_i596.GetStories>(
+      () => _i596.GetStories(gh<_i909.StoryRepository>()),
+    );
+    gh.lazySingleton<_i494.GetStoryById>(
+      () => _i494.GetStoryById(gh<_i909.StoryRepository>()),
+    );
+    gh.lazySingleton<_i53.ToggleFavorite>(
+      () => _i53.ToggleFavorite(gh<_i909.StoryRepository>()),
+    );
     gh.factory<_i420.FeedBloc>(
       () => _i420.FeedBloc(
         storyRepository: gh<_i909.StoryRepository>(),
         socialRepository: gh<_i640.SocialRepository>(),
+        userRepository: gh<_i721.UserRepository>(),
+      ),
+    );
+    gh.factory<_i790.StoriesBloc>(
+      () => _i790.StoriesBloc(
+        getStories: gh<_i596.GetStories>(),
+        toggleFavorite: gh<_i53.ToggleFavorite>(),
+      ),
+    );
+    gh.factory<_i506.NotificationBloc>(
+      () => _i506.NotificationBloc(
+        notificationRepository: gh<_i367.NotificationRepository>(),
         userRepository: gh<_i721.UserRepository>(),
       ),
     );
