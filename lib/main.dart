@@ -14,6 +14,7 @@ import 'package:myitihas/services/supabase_service.dart';
 import 'package:myitihas/utils/theme.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sizer/sizer.dart'; // Import sizer
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,20 +71,25 @@ class MyItihas extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-        return BlocBuilder<ThemeBloc, ThemeState>(
-          builder: (context, state) {
-            return MaterialApp.router(
-              title: 'MyItihas',
-              debugShowCheckedModeBanner: false,
+        // Initialize Sizer here
+        return Sizer(
+          builder: (context, orientation, deviceType) {
+            return BlocBuilder<ThemeBloc, ThemeState>(
+              builder: (context, state) {
+                return MaterialApp.router(
+                  title: 'MyItihas',
+                  debugShowCheckedModeBanner: false,
 
-              locale: TranslationProvider.of(context).flutterLocale,
-              supportedLocales: AppLocaleUtils.supportedLocales,
+                  locale: TranslationProvider.of(context).flutterLocale,
+                  supportedLocales: AppLocaleUtils.supportedLocales,
 
-              themeMode: state.isDark ? ThemeMode.dark : ThemeMode.light,
-              theme: AppTheme.lightTheme,
-              darkTheme: AppTheme.darkTheme,
+                  themeMode: state.isDark ? ThemeMode.dark : ThemeMode.light,
+                  theme: AppTheme.lightTheme,
+                  darkTheme: AppTheme.darkTheme,
 
-              routerConfig: router,
+                  routerConfig: router,
+                );
+              },
             );
           },
         );

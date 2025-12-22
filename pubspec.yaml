@@ -81,4 +81,5 @@ flutter:
 
   assets:
     - assets/
+    - assets/images/
     - docs/dataset.json

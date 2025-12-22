@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:myitihas/pages/splash.dart';
+import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
 import 'package:myitihas/pages/home_page.dart';
+import 'package:myitihas/pages/splash.dart';
 import 'package:myitihas/pages/auth/login_page.dart';
 import 'package:myitihas/pages/auth/signup_page.dart';
 import 'package:myitihas/pages/auth/reset_password_page.dart';
@@ -44,9 +45,7 @@ class SplashRoute extends GoRouteData with $SplashRoute {
   routes: [
     TypedGoRoute<StoriesRoute>(
       path: 'stories',
-      routes: [
-        TypedGoRoute<StoryDetailRoute>(path: ':id'),
-      ],
+      routes: [TypedGoRoute<StoryDetailRoute>(path: ':id')],
     ),
     TypedGoRoute<StoryGeneratorRoute>(path: 'story-generator'),
   ],
@@ -70,7 +69,6 @@ class LoginRoute extends GoRouteData with $LoginRoute {
     return const LoginPage();
   }
 }
-
 
 /// Signup
 @TypedGoRoute<SignupRoute>(path: '/signup')
@@ -127,7 +125,6 @@ class NewContactRoute extends GoRouteData with $NewContactRoute {
   }
 }
 
-
 /// Chat detail page route - requires parameters passed via $extra
 @TypedGoRoute<ChatDetailRoute>(path: '/chat_detail')
 class ChatDetailRoute extends GoRouteData with $ChatDetailRoute {
@@ -139,11 +136,10 @@ class ChatDetailRoute extends GoRouteData with $ChatDetailRoute {
   Widget build(BuildContext context, GoRouterState state) {
     return ChatDetailPage(
       name: $extra['name'] ?? "User",
-      avatarColor:
-          $extra['color'] != null
-              // ignore: deprecated_member_use
-              ? "0xFF${($extra['color'] as Color).value.toRadixString(16).substring(2)}"
-              : "0xFF3B82F6",
+      avatarColor: $extra['color'] != null
+          // ignore: deprecated_member_use
+          ? "0xFF${($extra['color'] as Color).value.toRadixString(16).substring(2)}"
+          : "0xFF3B82F6",
       isGroup: $extra['isGroup'] ?? false,
     );
   }
@@ -228,60 +224,63 @@ class MyItihasRouter {
   }
 
   GoRouter get router => GoRouter(
-        initialLocation: '/',
-        routes: $appRoutes,
-        refreshListenable: _refreshStream,
-        redirect: (context, state) {
-          final isAuthenticated =
-              SupabaseService.getCurrentSession() != null;
-          final isRecovering = _refreshStream.isRecovering;
+    initialLocation: '/',
+    routes: $appRoutes,
+    refreshListenable: _refreshStream,
+    redirect: (context, state) {
+      final isAuthenticated = SupabaseService.getCurrentSession() != null;
+      final isRecovering = _refreshStream.isRecovering;
 
-          final currentPath = state.matchedLocation;
-          final isOnLogin = currentPath == '/login';
-          final isOnSignup = currentPath == '/signup';
-          final isOnSplash = currentPath == '/';
-          final isOnResetPassword = currentPath == '/reset-password';
+      final currentPath = state.matchedLocation;
+      final isOnLogin = currentPath == '/login';
+      final isOnSignup = currentPath == '/signup';
+      final isOnSplash = currentPath == '/';
+      final isOnResetPassword = currentPath == '/reset-password';
 
-          print('[Router] Path: $currentPath, Auth: $isAuthenticated, Recovering: $isRecovering');
-
-          // HIGHEST PRIORITY: Password recovery flow
-          // If user is in recovery mode, FORCE them to /reset-password
-          // This overrides normal authentication state
-          if (isRecovering) {
-            if (!isOnResetPassword) {
-              print('[Router] Recovery mode - redirecting to /reset-password');
-              return '/reset-password';
-            }
-            return null; // Already on reset-password, stay there
-          }
-
-          // Normal auth flow: authenticated user trying to access login/signup
-          if (isAuthenticated && (isOnLogin || isOnSignup)) {
-            print('[Router] Authenticated user on auth page - redirecting to /home');
-            return '/home';
-          }
-
-          // Splash screen - let it handle its own logic
-          if (isOnSplash) return null;
-
-          // Reset password page without recovery mode - redirect to login
-          if (isOnResetPassword && !isRecovering) {
-            print('[Router] On reset-password without recovery mode - redirecting to /login');
-            return '/login';
-          }
-
-          // Unauthenticated user trying to access protected route
-          if (!isAuthenticated && !isOnLogin && !isOnSignup && !isOnResetPassword) {
-            print('[Router] Unauthenticated - redirecting to /login');
-            return '/login';
-          }
-
-          return null;
-        },
+      print(
+        '[Router] Path: $currentPath, Auth: $isAuthenticated, Recovering: $isRecovering',
       );
+
+      // HIGHEST PRIORITY: Password recovery flow
+      // If user is in recovery mode, FORCE them to /reset-password
+      // This overrides normal authentication state
+      if (isRecovering) {
+        if (!isOnResetPassword) {
+          print('[Router] Recovery mode - redirecting to /reset-password');
+          return '/reset-password';
+        }
+        return null; // Already on reset-password, stay there
+      }
+
+      // Normal auth flow: authenticated user trying to access login/signup
+      if (isAuthenticated && (isOnLogin || isOnSignup)) {
+        print(
+          '[Router] Authenticated user on auth page - redirecting to /home',
+        );
+        return '/home';
+      }
+
+      // Splash screen - let it handle its own logic
+      if (isOnSplash) return null;
+
+      // Reset password page without recovery mode - redirect to login
+      if (isOnResetPassword && !isRecovering) {
+        print(
+          '[Router] On reset-password without recovery mode - redirecting to /login',
+        );
+        return '/login';
+      }
+
+      // Unauthenticated user trying to access protected route
+      if (!isAuthenticated && !isOnLogin && !isOnSignup && !isOnResetPassword) {
+        print('[Router] Unauthenticated - redirecting to /login');
+        return '/login';
+      }
+
+      return null;
+    },
+  );
 }
-
-
 
 // ============================================================================
 // Feature Routes (TypedGoRoute – from main branch)
@@ -369,5 +368,15 @@ class ChatViewRoute extends GoRouteData with $ChatViewRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ChatViewPage(conversationId: conversationId);
+  }
+}
+
+@TypedGoRoute<MapRoute>(path: '/map')
+class MapRoute extends GoRouteData {
+  const MapRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AkhandaBharatMapPage();
   }
 }
