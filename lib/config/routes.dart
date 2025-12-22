@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
 import 'package:myitihas/pages/home_page.dart';
+import 'package:myitihas/pages/discover_page.dart';
 import 'package:myitihas/pages/splash.dart';
 import 'package:myitihas/pages/auth/login_page.dart';
 import 'package:myitihas/pages/auth/signup_page.dart';
@@ -22,6 +23,8 @@ import 'package:myitihas/features/social/presentation/pages/social_feed_page.dar
 import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
 import 'package:myitihas/features/social/presentation/pages/edit_profile_page.dart';
 import 'package:myitihas/features/social/presentation/pages/notification_page.dart';
+import 'package:myitihas/features/social/presentation/pages/followers_page.dart';
+import 'package:myitihas/features/social/presentation/pages/following_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_view_page.dart';
 import 'package:myitihas/features/stories/presentation/pages/story_detail_route_page.dart';
@@ -56,6 +59,17 @@ class HomeRoute extends GoRouteData with $HomeRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const HomePage();
+  }
+}
+
+/// Discover
+@TypedGoRoute<DiscoverRoute>(path: '/discover')
+class DiscoverRoute extends GoRouteData with $DiscoverRoute {
+  const DiscoverRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const DiscoverPage();
   }
 }
 
@@ -214,7 +228,6 @@ class EditProfileRoute extends GoRouteData with $EditProfileRoute {
 // ============================================================================
 // MyItihasRouter - GoRouter Configuration
 // ============================================================================
-
 class MyItihasRouter {
   final GoRouterRefreshStream _refreshStream = GoRouterRefreshStream();
 
@@ -224,63 +237,55 @@ class MyItihasRouter {
   }
 
   GoRouter get router => GoRouter(
-    initialLocation: '/',
-    routes: $appRoutes,
-    refreshListenable: _refreshStream,
-    redirect: (context, state) {
-      final isAuthenticated = SupabaseService.getCurrentSession() != null;
-      final isRecovering = _refreshStream.isRecovering;
+        initialLocation: '/',
+        routes: $appRoutes,
+        refreshListenable: _refreshStream,
+        redirect: (context, state) {
+          final isAuthenticated =
+              SupabaseService.getCurrentSession() != null;
+          final isRecovering = _refreshStream.isRecovering;
 
-      final currentPath = state.matchedLocation;
-      final isOnLogin = currentPath == '/login';
-      final isOnSignup = currentPath == '/signup';
-      final isOnSplash = currentPath == '/';
-      final isOnResetPassword = currentPath == '/reset-password';
+          final currentPath = state.matchedLocation;
+          final isOnLogin = currentPath == '/login';
+          final isOnSignup = currentPath == '/signup';
+          final isOnSplash = currentPath == '/';
+          final isOnResetPassword = currentPath == '/reset-password';
 
-      print(
-        '[Router] Path: $currentPath, Auth: $isAuthenticated, Recovering: $isRecovering',
+          // HIGHEST PRIORITY: Password recovery flow
+          // If user is in recovery mode, FORCE them to /reset-password
+          if (isRecovering) {
+            if (!isOnResetPassword) {
+              return '/reset-password';
+            }
+            return null;
+          }
+
+          // Authenticated user trying to access login/signup
+          if (isAuthenticated && (isOnLogin || isOnSignup)) {
+            return '/home';
+          }
+
+          // Splash screen handles its own logic
+          if (isOnSplash) return null;
+
+          // Reset password page without recovery mode
+          if (isOnResetPassword && !isRecovering) {
+            return '/login';
+          }
+
+          // Unauthenticated access to protected routes
+          if (!isAuthenticated &&
+              !isOnLogin &&
+              !isOnSignup &&
+              !isOnResetPassword) {
+            return '/login';
+          }
+
+          return null;
+        },
       );
-
-      // HIGHEST PRIORITY: Password recovery flow
-      // If user is in recovery mode, FORCE them to /reset-password
-      // This overrides normal authentication state
-      if (isRecovering) {
-        if (!isOnResetPassword) {
-          print('[Router] Recovery mode - redirecting to /reset-password');
-          return '/reset-password';
-        }
-        return null; // Already on reset-password, stay there
-      }
-
-      // Normal auth flow: authenticated user trying to access login/signup
-      if (isAuthenticated && (isOnLogin || isOnSignup)) {
-        print(
-          '[Router] Authenticated user on auth page - redirecting to /home',
-        );
-        return '/home';
-      }
-
-      // Splash screen - let it handle its own logic
-      if (isOnSplash) return null;
-
-      // Reset password page without recovery mode - redirect to login
-      if (isOnResetPassword && !isRecovering) {
-        print(
-          '[Router] On reset-password without recovery mode - redirecting to /login',
-        );
-        return '/login';
-      }
-
-      // Unauthenticated user trying to access protected route
-      if (!isAuthenticated && !isOnLogin && !isOnSignup && !isOnResetPassword) {
-        print('[Router] Unauthenticated - redirecting to /login');
-        return '/login';
-      }
-
-      return null;
-    },
-  );
 }
+
 
 // ============================================================================
 // Feature Routes (TypedGoRoute – from main branch)
@@ -334,6 +339,30 @@ class ProfileRoute extends GoRouteData with $ProfileRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ProfilePage(userId: userId);
+  }
+}
+
+@TypedGoRoute<FollowersRoute>(path: '/followers/:userId')
+class FollowersRoute extends GoRouteData with $FollowersRoute {
+  final String userId;
+
+  const FollowersRoute({required this.userId});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return FollowersPage(userId: userId);
+  }
+}
+
+@TypedGoRoute<FollowingRoute>(path: '/following/:userId')
+class FollowingRoute extends GoRouteData with $FollowingRoute {
+  final String userId;
+
+  const FollowingRoute({required this.userId});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return FollowingPage(userId: userId);
   }
 }
 

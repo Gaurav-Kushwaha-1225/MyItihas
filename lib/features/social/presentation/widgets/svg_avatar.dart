@@ -15,28 +15,11 @@ class SvgAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('🖼️ [SvgAvatar] imageUrl: "$imageUrl", isEmpty: ${imageUrl.isEmpty}');
-    
-    // If no URL, show first letter
+    // If no URL, show fallback avatar
     if (imageUrl.isEmpty) {
-      debugPrint('🖼️ [SvgAvatar] Showing fallback letter');
-      return CircleAvatar(
-        radius: radius,
-        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-        child: fallbackText != null && fallbackText!.isNotEmpty
-            ? Text(
-                fallbackText![0].toUpperCase(),
-                style: TextStyle(
-                  fontSize: radius * 0.8,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onPrimaryContainer,
-                ),
-              )
-            : Icon(Icons.person, size: radius),
-      );
+      return _buildFallbackAvatar(context);
     }
 
-    debugPrint('🖼️ [SvgAvatar] Loading image from URL');
     // Show image from URL with caching
     return ClipOval(
       child: CachedNetworkImage(
@@ -48,25 +31,27 @@ class SvgAvatar extends StatelessWidget {
           width: radius * 2,
           height: radius * 2,
           color: Colors.grey[300],
-          child: Center(
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
+          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
         ),
-        errorWidget: (context, url, error) => CircleAvatar(
-          radius: radius,
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          child: fallbackText != null && fallbackText!.isNotEmpty
-              ? Text(
-                  fallbackText![0].toUpperCase(),
-                  style: TextStyle(
-                    fontSize: radius * 0.8,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  ),
-                )
-              : Icon(Icons.person, size: radius),
-        ),
+        errorWidget: (context, url, error) => _buildFallbackAvatar(context),
       ),
+    );
+  }
+
+  Widget _buildFallbackAvatar(BuildContext context) {
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+      child: fallbackText != null && fallbackText!.isNotEmpty
+          ? Text(
+              fallbackText![0].toUpperCase(),
+              style: TextStyle(
+                fontSize: radius * 0.8,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+            )
+          : Icon(Icons.person, size: radius),
     );
   }
 }

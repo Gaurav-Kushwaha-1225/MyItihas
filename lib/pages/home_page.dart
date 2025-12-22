@@ -29,12 +29,18 @@ class _HomePageState extends State<HomePage> {
     "Profile",
   ];
 
-  final List<Widget> pages = [
-    const StoryGeneratorPage(),
-    const ChatListPage(),
-    const SocialFeedPage(),
-    const AkhandaBharatMapPage(),
-    const ProfilePage(userId: 'user_001'),
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  List<Widget> get pages => [
+      const HomeContentPage(),
+      const ChatItihasPage(),
+      const SocialFeedPage(),
+      const AkhandaBharatMapPage(),
+      const ProfilePage(), // current user's profile
   ];
   final Gradient selectedGradient = const LinearGradient(
     colors: [
@@ -55,61 +61,83 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(10.h),
-      child: SafeArea(
-        child: Container(
-          height: 8.h,
-          padding: EdgeInsets.symmetric(horizontal: 5.w),
-          decoration: BoxDecoration(
-            gradient: Theme.of(
-              context,
-            ).extension<GradientExtension>()!.heroBackgroundGradient,
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurfaceVariant.withValues(alpha: 0.47),
-                blurRadius: 200,
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  titles[currentBottomBarIndex],
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18.sp,
-                    foreground: Paint()
-                      ..shader = selectedGradient.createShader(
-                        Rect.fromLTWH(0, 0, 60.w, 8.h),
-                      ),
-                  ),
+PreferredSizeWidget _buildAppBar(BuildContext context) {
+  return PreferredSize(
+    preferredSize: Size.fromHeight(10.h),
+    child: SafeArea(
+      child: Container(
+        height: 8.h,
+        padding: EdgeInsets.symmetric(horizontal: 5.w),
+        decoration: BoxDecoration(
+          gradient: Theme.of(context)
+              .extension<GradientExtension>()!
+              .heroBackgroundGradient,
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context)
+                  .colorScheme
+                  .onSurfaceVariant
+                  .withValues(alpha: 0.47),
+              blurRadius: 200,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                titles[currentBottomBarIndex],
+                style: GoogleFonts.inter(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18.sp,
+                  foreground: Paint()
+                    ..shader = selectedGradient.createShader(
+                      Rect.fromLTWH(0, 0, 60.w, 8.h),
+                    ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  context.read<ThemeBloc>().add(ToggleTheme());
-                },
-                child: Container(
-                  width: 11.w,
-                  height: 11.w,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.person, color: Colors.white, size: 16.sp),
+            ),
+
+            // Search (Home tab)
+            if (currentBottomBarIndex == 0)
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () => context.push('/discover'),
+                tooltip: 'Search',
+              ),
+
+            // Settings (Map tab or whichever you want)
+            if (currentBottomBarIndex == 3)
+              IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () => context.push('/settings'),
+                tooltip: 'Settings',
+              ),
+
+            // User avatar
+            GestureDetector(
+              onTap: _handleUserIconTap,
+              child: Container(
+                width: aspectRatio > 0.5 ? 46 : 40,
+                height: aspectRatio > 0.5 ? 46 : 40,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.person,
+                  color: Colors.white,
+                  size: 20,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildBody(BuildContext context) {
     return AnimatedSwitcher(
@@ -255,7 +283,7 @@ class _HomePageState extends State<HomePage> {
               shape: BoxShape.circle,
               gradient: isSelected ? selectedGradient : null,
             ),
-            child: Icon(
+            child:a Icon(
               icon,
               size: isSelected ? 20.sp : 18.sp,
               color: isSelected

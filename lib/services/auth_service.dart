@@ -311,6 +311,14 @@ class AuthService {
         });
         
         print('[Signup] User added to public.users table with id: $userId');
+
+        // Create corresponding profile after successful signup
+        // This is done separately because profiles table has different RLS policies
+        await createProfileAfterSignup(
+          userId: userId,
+          username: username,
+          fullName: fullName.trim(),
+        );
       } catch (e) {
         print('[Signup] Warning: Failed to add user to public.users table: $e');
         // Don't throw - auth user was created successfully
@@ -496,6 +504,77 @@ class AuthService {
 
       throw AuthServiceException(
         'Failed to send password reset email. Please try again.',
+      );
+    }
+  }
+
+  /// Create a profile record after successful signup
+  ///
+  /// This method is called after Supabase auth.signUp() succeeds to create
+  /// a corresponding row in the profiles table. This is done separately because:
+  /// - Auth user creation and profile creation have different failure modes
+  /// - Profiles table may have stricter validation or RLS policies
+  /// - Allows retry logic if profile creation fails without re-creating auth user
+  ///
+  /// Parameters:
+  /// - userId: UUID from authenticated user (auth.uid())
+  /// - username: Generated or provided unique username
+  /// - fullName: User's full display name
+  ///
+  /// Throws AuthServiceException if profile creation fails
+  Future<void> createProfileAfterSignup({
+    required String userId,
+    required String username,
+    required String fullName,
+  }) async {
+    try {
+      // Verify we have an authenticated user
+      final currentUser = _supabase.auth.currentUser;
+      if (currentUser == null || currentUser.id != userId) {
+        throw AuthServiceException(
+          'Cannot create profile: user not authenticated',
+        );
+      }
+
+      print('[Profile Creation] Creating profile for user: $userId');
+
+      // Insert into profiles table
+      // RLS policy ensures auth.uid() = id, so this will only work for the authenticated user
+      await _supabase.from('profiles').insert({
+        'id': userId, // Must match auth.uid() for RLS
+        'username': username,
+        'full_name': fullName,
+        'avatar_url': null, // Nullable - can be set later
+        'bio': null, // Nullable - can be set later
+        'is_private': false, // Default value
+      });
+
+      print('[Profile Creation] Profile created successfully for user: $userId');
+    } on PostgrestException catch (e) {
+      print('[Profile Creation] Postgres error: ${e.message}');
+
+      // Handle duplicate username error specifically
+      if (e.code == '23505' && e.message.toLowerCase().contains('username')) {
+        throw AuthServiceException(
+          'Username already taken. Please try again.',
+        );
+      }
+
+      // Handle other database errors
+      throw AuthServiceException(
+        'Failed to create user profile. Please contact support.',
+      );
+    } catch (e) {
+      print('[Profile Creation] Error: $e');
+
+      // Don't rethrow AuthServiceException - already handled above
+      if (e is AuthServiceException) {
+        rethrow;
+      }
+
+      // Generic error
+      throw AuthServiceException(
+        'Failed to create user profile. Please try again.',
       );
     }
   }
