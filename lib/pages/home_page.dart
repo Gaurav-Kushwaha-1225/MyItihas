@@ -29,7 +29,6 @@ class _HomePageState extends State<HomePage> {
   int currentBottomBarIndex = 0;
   int _tapCount = 0;
   DateTime? _lastTapTime;
-  String? _currentUserId;
 
   List<String> titles = [
     "Home",
@@ -42,22 +41,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _loadCurrentUser();
-  }
-
-  Future<void> _loadCurrentUser() async {
-    final userRepository = getIt<UserRepository>();
-    final result = await userRepository.getCurrentUser();
-    result.fold(
-      (failure) => null,
-      (user) {
-        if (mounted) {
-          setState(() {
-            _currentUserId = user.id;
-          });
-        }
-      },
-    );
   }
 
   List<Widget> get pages => [
@@ -65,7 +48,7 @@ class _HomePageState extends State<HomePage> {
     const ChatItihasPage(),
     // const StoryGeneratorPage(),
     const SocialFeedPage(),
-    ProfilePage(userId: _currentUserId ?? 'user_001'),
+    const ProfilePage(), // userId is null, so it will load current user's profile
   ];
 
   void _handleUserIconTap() {
@@ -119,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                     onPressed: () => context.push('/discover'),
                     tooltip: 'Search',
                   ),
-                if (currentBottomBarIndex == 3 && _currentUserId != null)
+                if (currentBottomBarIndex == 3)
                   IconButton(
                     icon: const Icon(Icons.settings),
                     onPressed: () => context.push('/settings'),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:myitihas/core/di/injection_container.dart';
 import 'package:myitihas/services/profile_service.dart';
 import 'package:myitihas/features/social/presentation/widgets/svg_avatar.dart';
+import 'package:myitihas/config/routes.dart';
 
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({super.key});
@@ -223,6 +224,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemBuilder: (context, index) {
         final profile = _profiles[index];
+        final userId = profile['id'] as String;
         final displayName = profile['full_name'] as String? ?? 'Unknown';
         final username = profile['username'] as String? ?? '';
         final avatarUrl = profile['avatar_url'] as String?;
@@ -255,7 +257,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 : null,
             trailing: const Icon(Icons.arrow_forward_ios, size: 16),
             onTap: () {
-              // TODO: Navigate to profile page in next phase
+              // Navigate to other user's profile
+              ProfileRoute(userId: userId).push(context);
             },
           ),
         );
