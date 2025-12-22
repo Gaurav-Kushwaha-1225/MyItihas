@@ -57,6 +57,15 @@ class ProfilePage extends StatelessWidget {
         icon: const Icon(Icons.arrow_back),
         onPressed: () => Navigator.of(context).pop(),
       ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.person_search_rounded),
+          onPressed: () {
+            const DiscoverRoute().push(context);
+          },
+          tooltip: 'Search Users',
+        ),
+      ],
     );
   }
 
@@ -91,7 +100,27 @@ class _ProfileView extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-      ) : null,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_search_rounded),
+            onPressed: () {
+              const DiscoverRoute().push(context);
+            },
+            tooltip: 'Search Users',
+          ),
+        ],
+      ) : AppBar(
+        title: const Text('My Profile'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_search_rounded),
+            onPressed: () {
+              const DiscoverRoute().push(context);
+            },
+            tooltip: 'Search Users',
+          ),
+        ],
+      ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
           return state.when(
