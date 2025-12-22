@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:myitihas/pages/splash.dart';
 import 'package:myitihas/pages/home_page.dart';
+import 'package:myitihas/pages/discover_page.dart';
 import 'package:myitihas/pages/auth/login_page.dart';
 import 'package:myitihas/pages/auth/signup_page.dart';
 import 'package:myitihas/pages/auth/reset_password_page.dart';
@@ -57,6 +58,17 @@ class HomeRoute extends GoRouteData with $HomeRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const HomePage();
+  }
+}
+
+/// Discover
+@TypedGoRoute<DiscoverRoute>(path: '/discover')
+class DiscoverRoute extends GoRouteData with $DiscoverRoute {
+  const DiscoverRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const DiscoverPage();
   }
 }
 

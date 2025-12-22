@@ -9,6 +9,7 @@ part of 'routes.dart';
 List<RouteBase> get $appRoutes => [
   $splashRoute,
   $homeRoute,
+  $discoverRoute,
   $loginRoute,
   $signupRoute,
   $resetPasswordRoute,
@@ -137,6 +138,29 @@ mixin $StoryGeneratorRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/home/story-generator');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $discoverRoute =>
+    GoRouteData.$route(path: '/discover', factory: $DiscoverRoute._fromState);
+
+mixin $DiscoverRoute on GoRouteData {
+  static DiscoverRoute _fromState(GoRouterState state) => const DiscoverRoute();
+
+  @override
+  String get location => GoRouteData.$location('/discover');
 
   @override
   void go(BuildContext context) => context.go(location);

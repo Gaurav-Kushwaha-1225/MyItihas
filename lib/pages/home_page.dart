@@ -113,6 +113,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                if (currentBottomBarIndex == 0)
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () => context.push('/discover'),
+                    tooltip: 'Search',
+                  ),
                 if (currentBottomBarIndex == 3 && _currentUserId != null)
                   IconButton(
                     icon: const Icon(Icons.settings),

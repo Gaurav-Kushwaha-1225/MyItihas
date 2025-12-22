@@ -58,6 +58,7 @@ import '../../features/stories/domain/usecases/get_stories.dart' as _i596;
 import '../../features/stories/domain/usecases/get_story_by_id.dart' as _i494;
 import '../../features/stories/domain/usecases/toggle_favorite.dart' as _i53;
 import '../../features/stories/presentation/bloc/stories_bloc.dart' as _i790;
+import '../../services/profile_service.dart' as _i637;
 import '../../services/profile_storage_service.dart' as _i743;
 import '../network/api_client.dart' as _i557;
 import '../network/mock_websocket_service.dart' as _i817;
@@ -98,6 +99,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i51.StoryRemoteDataSource>(
       () => _i51.StoryRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i637.ProfileService>(
+      () => _i637.ProfileService(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i743.ProfileStorageService>(
       () => _i743.ProfileStorageService(gh<_i454.SupabaseClient>()),
