@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:myitihas/pages/splash.dart';
+import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
 import 'package:myitihas/pages/home_page.dart';
 import 'package:myitihas/pages/discover_page.dart';
+import 'package:myitihas/pages/splash.dart';
 import 'package:myitihas/pages/auth/login_page.dart';
 import 'package:myitihas/pages/auth/signup_page.dart';
 import 'package:myitihas/pages/auth/reset_password_page.dart';
@@ -47,9 +48,7 @@ class SplashRoute extends GoRouteData with $SplashRoute {
   routes: [
     TypedGoRoute<StoriesRoute>(
       path: 'stories',
-      routes: [
-        TypedGoRoute<StoryDetailRoute>(path: ':id'),
-      ],
+      routes: [TypedGoRoute<StoryDetailRoute>(path: ':id')],
     ),
     TypedGoRoute<StoryGeneratorRoute>(path: 'story-generator'),
   ],
@@ -84,7 +83,6 @@ class LoginRoute extends GoRouteData with $LoginRoute {
     return const LoginPage();
   }
 }
-
 
 /// Signup
 @TypedGoRoute<SignupRoute>(path: '/signup')
@@ -141,7 +139,6 @@ class NewContactRoute extends GoRouteData with $NewContactRoute {
   }
 }
 
-
 /// Chat detail page route - requires parameters passed via $extra
 @TypedGoRoute<ChatDetailRoute>(path: '/chat_detail')
 class ChatDetailRoute extends GoRouteData with $ChatDetailRoute {
@@ -153,11 +150,10 @@ class ChatDetailRoute extends GoRouteData with $ChatDetailRoute {
   Widget build(BuildContext context, GoRouterState state) {
     return ChatDetailPage(
       name: $extra['name'] ?? "User",
-      avatarColor:
-          $extra['color'] != null
-              // ignore: deprecated_member_use
-              ? "0xFF${($extra['color'] as Color).value.toRadixString(16).substring(2)}"
-              : "0xFF3B82F6",
+      avatarColor: $extra['color'] != null
+          // ignore: deprecated_member_use
+          ? "0xFF${($extra['color'] as Color).value.toRadixString(16).substring(2)}"
+          : "0xFF3B82F6",
       isGroup: $extra['isGroup'] ?? false,
     );
   }
@@ -232,7 +228,6 @@ class EditProfileRoute extends GoRouteData with $EditProfileRoute {
 // ============================================================================
 // MyItihasRouter - GoRouter Configuration
 // ============================================================================
-
 class MyItihasRouter {
   final GoRouterRefreshStream _refreshStream = GoRouterRefreshStream();
 
@@ -258,29 +253,31 @@ class MyItihasRouter {
 
           // HIGHEST PRIORITY: Password recovery flow
           // If user is in recovery mode, FORCE them to /reset-password
-          // This overrides normal authentication state
           if (isRecovering) {
             if (!isOnResetPassword) {
               return '/reset-password';
             }
-            return null; // Already on reset-password, stay there
+            return null;
           }
 
-          // Normal auth flow: authenticated user trying to access login/signup
+          // Authenticated user trying to access login/signup
           if (isAuthenticated && (isOnLogin || isOnSignup)) {
             return '/home';
           }
 
-          // Splash screen - let it handle its own logic
+          // Splash screen handles its own logic
           if (isOnSplash) return null;
 
-          // Reset password page without recovery mode - redirect to login
+          // Reset password page without recovery mode
           if (isOnResetPassword && !isRecovering) {
             return '/login';
           }
 
-          // Unauthenticated user trying to access protected route
-          if (!isAuthenticated && !isOnLogin && !isOnSignup && !isOnResetPassword) {
+          // Unauthenticated access to protected routes
+          if (!isAuthenticated &&
+              !isOnLogin &&
+              !isOnSignup &&
+              !isOnResetPassword) {
             return '/login';
           }
 
@@ -288,7 +285,6 @@ class MyItihasRouter {
         },
       );
 }
-
 
 
 // ============================================================================
@@ -401,5 +397,15 @@ class ChatViewRoute extends GoRouteData with $ChatViewRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ChatViewPage(conversationId: conversationId);
+  }
+}
+
+@TypedGoRoute<MapRoute>(path: '/map')
+class MapRoute extends GoRouteData {
+  const MapRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const AkhandaBharatMapPage();
   }
 }
