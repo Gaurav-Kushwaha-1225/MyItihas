@@ -401,7 +401,7 @@ class ChatViewRoute extends GoRouteData with $ChatViewRoute {
 }
 
 @TypedGoRoute<MapRoute>(path: '/map')
-class MapRoute extends GoRouteData {
+class MapRoute extends GoRouteData with $MapRoute {
   const MapRoute();
 
   @override

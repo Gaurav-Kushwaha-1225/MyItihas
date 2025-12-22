@@ -1,14 +1,13 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
 import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
+import 'package:myitihas/pages/home_content_page.dart';
 import 'package:sizer/sizer.dart';
-import 'package:myitihas/config/theme/gradient_extension.dart';
-import 'package:myitihas/pages/story_generator.dart';
-import 'package:myitihas/utils/theme.dart';
 import 'package:myitihas/features/social/presentation/pages/social_feed_page.dart';
-import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -61,82 +60,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-PreferredSizeWidget _buildAppBar(BuildContext context) {
-  return PreferredSize(
-    preferredSize: Size.fromHeight(10.h),
-    child: SafeArea(
-      child: Container(
-        height: 8.h,
-        padding: EdgeInsets.symmetric(horizontal: 5.w),
-        decoration: BoxDecoration(
-          gradient: Theme.of(context)
-              .extension<GradientExtension>()!
-              .heroBackgroundGradient,
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurfaceVariant
-                  .withValues(alpha: 0.47),
-              blurRadius: 200,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                titles[currentBottomBarIndex],
-                style: GoogleFonts.inter(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18.sp,
-                  foreground: Paint()
-                    ..shader = selectedGradient.createShader(
-                      Rect.fromLTWH(0, 0, 60.w, 8.h),
-                    ),
-                ),
-              ),
-            ),
-
-            // Search (Home tab)
-            if (currentBottomBarIndex == 0)
-              IconButton(
-                icon: const Icon(Icons.search),
-                onPressed: () => context.push('/discover'),
-                tooltip: 'Search',
-              ),
-
-            // Settings (Map tab or whichever you want)
-            if (currentBottomBarIndex == 3)
-              IconButton(
-                icon: const Icon(Icons.settings),
-                onPressed: () => context.push('/settings'),
-                tooltip: 'Settings',
-              ),
-
-            // User avatar
-            GestureDetector(
-              onTap: _handleUserIconTap,
-              child: Container(
-                width: aspectRatio > 0.5 ? 46 : 40,
-                height: aspectRatio > 0.5 ? 46 : 40,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.person,
-                  color: Colors.white,
-                  size: 20,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
 
 
   Widget _buildBody(BuildContext context) {
@@ -283,7 +206,7 @@ PreferredSizeWidget _buildAppBar(BuildContext context) {
               shape: BoxShape.circle,
               gradient: isSelected ? selectedGradient : null,
             ),
-            child:a Icon(
+            child: Icon(
               icon,
               size: isSelected ? 20.sp : 18.sp,
               color: isSelected
