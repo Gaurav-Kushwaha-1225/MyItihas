@@ -171,6 +171,54 @@ class ProfileService {
     }
   }
 
+  /// Fetches public user profiles from the profiles table with pagination.
+  /// 
+  /// Excludes the current authenticated user.
+  /// Returns a list of profiles with basic information.
+  /// 
+  /// Parameters:
+  /// - limit: Maximum number of profiles to fetch
+  /// - offset: Number of profiles to skip (for pagination)
+  /// 
+  /// Data source: profiles table (NOT users table)
+  Future<List<Map<String, dynamic>>> fetchPublicProfiles({
+    required int limit,
+    required int offset,
+  }) async {
+    final logger = getIt<Talker>();
+    logger.info('🔍 [ProfileService] Fetching public profiles (limit: $limit, offset: $offset)');
+    
+    try {
+      // Get authenticated user ID to exclude from results
+      final userId = _supabase.auth.currentUser?.id;
+      
+      // Query profiles table - canonical source for profile data
+      final query = _supabase
+          .from('profiles')
+          .select('id, username, full_name, avatar_url')
+          .order('created_at', ascending: false)
+          .range(offset, offset + limit - 1);
+
+      final response = await query;
+      
+      // Filter out current user if authenticated
+      List<Map<String, dynamic>> profiles = List<Map<String, dynamic>>.from(response);
+      if (userId != null) {
+        profiles = profiles.where((profile) => profile['id'] != userId).toList();
+      }
+
+      logger.info('✅ [ProfileService] Fetched ${profiles.length} public profiles');
+      
+      return profiles;
+    } catch (e) {
+      logger.error('❌ [ProfileService] Error fetching public profiles: $e');
+      throw ServerException(
+        'Failed to fetch public profiles: ${e.toString()}',
+        'FETCH_PUBLIC_PROFILES_ERROR',
+      );
+    }
+  }
+
   /// Searches for profiles by username or full name in the profiles table.
   /// 
   /// Data source: profiles table (NOT users table)
