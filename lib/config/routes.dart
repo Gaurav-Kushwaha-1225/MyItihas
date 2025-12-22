@@ -254,14 +254,11 @@ class MyItihasRouter {
           final isOnSplash = currentPath == '/';
           final isOnResetPassword = currentPath == '/reset-password';
 
-          print('[Router] Path: $currentPath, Auth: $isAuthenticated, Recovering: $isRecovering');
-
           // HIGHEST PRIORITY: Password recovery flow
           // If user is in recovery mode, FORCE them to /reset-password
           // This overrides normal authentication state
           if (isRecovering) {
             if (!isOnResetPassword) {
-              print('[Router] Recovery mode - redirecting to /reset-password');
               return '/reset-password';
             }
             return null; // Already on reset-password, stay there
@@ -269,7 +266,6 @@ class MyItihasRouter {
 
           // Normal auth flow: authenticated user trying to access login/signup
           if (isAuthenticated && (isOnLogin || isOnSignup)) {
-            print('[Router] Authenticated user on auth page - redirecting to /home');
             return '/home';
           }
 
@@ -278,13 +274,11 @@ class MyItihasRouter {
 
           // Reset password page without recovery mode - redirect to login
           if (isOnResetPassword && !isRecovering) {
-            print('[Router] On reset-password without recovery mode - redirecting to /login');
             return '/login';
           }
 
           // Unauthenticated user trying to access protected route
           if (!isAuthenticated && !isOnLogin && !isOnSignup && !isOnResetPassword) {
-            print('[Router] Unauthenticated - redirecting to /login');
             return '/login';
           }
 

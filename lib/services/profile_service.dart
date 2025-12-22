@@ -34,11 +34,8 @@ class ProfileService {
       // Get authenticated user ID
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        logger.warning('⚠️ [ProfileService] No authenticated user found');
         return null;
       }
-
-      logger.info('🔍 [ProfileService] Fetching profile for user: $userId');
 
       // Query profiles table using auth.uid()
       // profiles table is the canonical source for profile data
@@ -49,16 +46,12 @@ class ProfileService {
           .maybeSingle(); // Returns null if no row found instead of throwing
 
       if (response == null) {
-        logger.warning('⚠️ [ProfileService] Profile not found for user: $userId');
         return null; // Gracefully handle missing profile
       }
-
-      logger.info('✅ [ProfileService] Profile fetched successfully');
-      logger.debug('📦 [ProfileService] Profile data: $response');
       
       return response;
     } catch (e) {
-      logger.error('❌ [ProfileService] Error fetching profile: $e');
+      logger.error('[ProfileService] Error fetching profile: $e');
       throw ServerException(
         'Failed to fetch user profile: ${e.toString()}',
         'FETCH_PROFILE_ERROR',
@@ -72,7 +65,6 @@ class ProfileService {
   /// Throws NotFoundException if profile doesn't exist.
   Future<Map<String, dynamic>> getProfileById(String userId) async {
     final logger = getIt<Talker>();
-    logger.info('🔍 [ProfileService] Fetching profile for user: $userId');
     
     try {
       // Query profiles table - canonical source for profile data
@@ -81,13 +73,10 @@ class ProfileService {
           .select('id, username, full_name, avatar_url, bio, is_private')
           .eq('id', userId)
           .single(); // Throws if not found
-
-      logger.info('✅ [ProfileService] Profile fetched successfully');
-      logger.debug('📦 [ProfileService] Profile data: $response');
       
       return response;
     } catch (e) {
-      logger.error('❌ [ProfileService] Error fetching profile: $e');
+      logger.error('[ProfileService] Error fetching profile: $e');
       if (e.toString().contains('406') || e.toString().contains('not found')) {
         throw NotFoundException(
           'Profile not found',
@@ -120,11 +109,8 @@ class ProfileService {
       // Get authenticated user ID
       final userId = _supabase.auth.currentUser?.id;
       if (userId == null) {
-        logger.error('❌ [ProfileService] No authenticated user found');
         throw Exception('Not authenticated');
       }
-
-      logger.info('📝 [ProfileService] Updating profile for user: $userId');
 
       // Build update map with only provided fields
       final updates = <String, dynamic>{};
@@ -146,13 +132,10 @@ class ProfileService {
       }
 
       if (updates.isEmpty) {
-        logger.info('ℹ️ [ProfileService] No fields to update');
         return; // Nothing to update
       }
 
       updates['updated_at'] = DateTime.now().toIso8601String();
-
-      logger.debug('📦 [ProfileService] Update payload: $updates');
 
       // Update profiles table ONLY - canonical source for profile data
       // Do NOT update users table anymore
@@ -160,10 +143,8 @@ class ProfileService {
           .from('profiles')
           .update(updates)
           .eq('id', userId);
-
-      logger.info('✅ [ProfileService] Profile updated successfully');
     } catch (e) {
-      logger.error('❌ [ProfileService] Error updating profile: $e');
+      logger.error('[ProfileService] Error updating profile: $e');
       throw ServerException(
         'Failed to update profile: ${e.toString()}',
         'UPDATE_PROFILE_ERROR',
@@ -186,7 +167,6 @@ class ProfileService {
     required int offset,
   }) async {
     final logger = getIt<Talker>();
-    logger.info('🔍 [ProfileService] Fetching public profiles (limit: $limit, offset: $offset)');
     
     try {
       // Get authenticated user ID to exclude from results
@@ -206,12 +186,10 @@ class ProfileService {
       if (userId != null) {
         profiles = profiles.where((profile) => profile['id'] != userId).toList();
       }
-
-      logger.info('✅ [ProfileService] Fetched ${profiles.length} public profiles');
       
       return profiles;
     } catch (e) {
-      logger.error('❌ [ProfileService] Error fetching public profiles: $e');
+      logger.error('[ProfileService] Error fetching public profiles: $e');
       throw ServerException(
         'Failed to fetch public profiles: ${e.toString()}',
         'FETCH_PUBLIC_PROFILES_ERROR',
@@ -224,7 +202,6 @@ class ProfileService {
   /// Data source: profiles table (NOT users table)
   Future<List<Map<String, dynamic>>> searchProfiles(String query) async {
     final logger = getIt<Talker>();
-    logger.info('🔍 [ProfileService] Searching profiles with query: $query');
     
     try {
       // Query profiles table - canonical source for profile data
@@ -233,12 +210,10 @@ class ProfileService {
           .select('id, username, full_name, avatar_url, bio, is_private')
           .or('username.ilike.%$query%,full_name.ilike.%$query%')
           .limit(20);
-
-      logger.info('✅ [ProfileService] Found ${(response as List).length} profiles');
       
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
-      logger.error('❌ [ProfileService] Error searching profiles: $e');
+      logger.error('[ProfileService] Error searching profiles: $e');
       throw ServerException(
         'Failed to search profiles: ${e.toString()}',
         'SEARCH_PROFILES_ERROR',

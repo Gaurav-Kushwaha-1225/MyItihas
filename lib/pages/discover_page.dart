@@ -164,31 +164,32 @@ class _DiscoverPageState extends State<DiscoverPage> {
           children: [
             Icon(
               Icons.error_outline,
-              size: 80,
+              size: 64,
               color: Theme.of(context).colorScheme.error.withOpacity(0.5),
             ),
             const SizedBox(height: 16),
             Text(
-              'Error',
+              'Something went wrong',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.error,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
             ),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32),
               child: Text(
-                _errorMessage!,
+                'Unable to load profiles. Please try again.',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(
+            const SizedBox(height: 24),
+            ElevatedButton.icon(
               onPressed: _loadProfiles,
-              child: const Text('Retry'),
+              icon: const Icon(Icons.refresh),
+              label: const Text('Try Again'),
             ),
           ],
         ),
@@ -196,22 +197,36 @@ class _DiscoverPageState extends State<DiscoverPage> {
     }
 
     if (_profiles.isEmpty) {
-      // Empty state
+      // Empty state - different message based on search
+      final isSearching = _searchController.text.isNotEmpty;
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.people_outline,
-              size: 80,
-              color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.3),
+              isSearching ? Icons.search_off : Icons.people_outline,
+              size: 64,
+              color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.4),
             ),
             const SizedBox(height: 16),
             Text(
-              'No profiles found',
+              isSearching ? 'No results found' : 'No profiles yet',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 48),
+              child: Text(
+                isSearching 
+                    ? 'Try searching with different keywords'
+                    : 'Be the first to discover new people!',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.7),
+                    ),
+              ),
             ),
           ],
         ),
