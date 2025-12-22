@@ -31,6 +31,7 @@ class UserRepositoryImpl implements UserRepository {
         return Left(AuthFailure('Not authenticated', 'NOT_AUTH'));
       }
 
+      // Fetch from profiles table - canonical source for profile data
       final userModel = await dataSource.getUserById(authUser.id);
       return Right(userModel.copyWith(isCurrentUser: true).toEntity());
     } on NotFoundException catch (e) {
@@ -43,7 +44,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Either<Failure, void>> setCurrentUser(String userId) async {
     try {
-      // Verify user exists
+      // Verify user exists in profiles table
       await dataSource.getUserById(userId);
       // Note: Current user is managed by Supabase Auth, not manually set
       return const Right(null);
@@ -61,6 +62,7 @@ class UserRepositoryImpl implements UserRepository {
       String? currentUserId;
       currentUserResult.fold((l) => null, (user) => currentUserId = user.id);
 
+      // Fetch from profiles table - canonical source for profile data
       final userModel = await dataSource.getUserById(userId);
 
       return Right(
@@ -83,6 +85,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Either<Failure, List<User>>> searchUsers(String query) async {
     try {
+      // Search in profiles table - canonical source for profile data
       final users = await dataSource.searchUsers(query);
       return Right(users.map((model) => model.toEntity()).toList());
     } catch (e) {
@@ -125,6 +128,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Either<Failure, List<User>>> getAllUsers() async {
     try {
+      // Fetch from profiles table - canonical source for profile data
       final users = await dataSource.getAllUsers();
       return Right(users.map((model) => model.toEntity()).toList());
     } catch (e) {
@@ -140,6 +144,8 @@ class UserRepositoryImpl implements UserRepository {
     String? avatarUrl,
   }) async {
     try {
+      // Update profiles table ONLY - canonical source for profile data
+      // Do NOT update users table anymore
       await dataSource.updateUser(
         userId: userId,
         displayName: displayName,
@@ -171,8 +177,8 @@ class UserRepositoryImpl implements UserRepository {
       );
       logger.info('✅ [Repository] Storage upload successful. URL: $publicUrl');
 
-      // Update user's avatar_url in database
-      logger.info('💾 [Repository] Updating user record in database...');
+      // Update user's avatar_url in profiles table - canonical source for profile data
+      logger.info('💾 [Repository] Updating profile record in database...');
       await dataSource.updateUser(
         userId: userId,
         avatarUrl: publicUrl,
