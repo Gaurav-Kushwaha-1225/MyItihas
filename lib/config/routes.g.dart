@@ -24,6 +24,8 @@ List<RouteBase> get $appRoutes => [
   $profileRoute,
   $notificationRoute,
   $chatListRoute,
+  $mapRoute,
+  $shaktiPeethaRoute,
 ];
 
 RouteBase get $splashRoute =>
@@ -570,6 +572,55 @@ mixin $ChatViewRoute on GoRouteData {
   String get location => GoRouteData.$location(
     '/chat/${Uri.encodeComponent(_self.conversationId)}',
   );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $mapRoute =>
+    GoRouteData.$route(path: '/map', factory: $MapRoute._fromState);
+
+mixin $MapRoute on GoRouteData {
+  static MapRoute _fromState(GoRouterState state) => const MapRoute();
+
+  @override
+  String get location => GoRouteData.$location('/map');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $shaktiPeethaRoute => GoRouteData.$route(
+  path: '/shakti-peetha',
+  factory: $ShaktiPeethaRoute._fromState,
+);
+
+mixin $ShaktiPeethaRoute on GoRouteData {
+  static ShaktiPeethaRoute _fromState(GoRouterState state) =>
+      const ShaktiPeethaRoute();
+
+  @override
+  String get location => GoRouteData.$location('/shakti-peetha');
 
   @override
   void go(BuildContext context) => context.go(location);

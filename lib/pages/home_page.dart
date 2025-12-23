@@ -1,7 +1,11 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myitihas/core/di/injection_container.dart';
+import 'package:myitihas/features/social/domain/repositories/user_repository.dart';
+import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
 import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
 import 'package:sizer/sizer.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
@@ -20,6 +24,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentBottomBarIndex = 0;
+  int _tapCount = 0;
+  DateTime? _lastTapTime;
+  String? _currentUserId;
 
   final List<String> titles = [
     "Story Generator",
@@ -28,14 +35,36 @@ class _HomePageState extends State<HomePage> {
     "Map",
     "Profile",
   ];
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser();
+  }
 
-  final List<Widget> pages = [
+  Future<void> _loadCurrentUser() async {
+    final userRepository = getIt<UserRepository>();
+    final result = await userRepository.getCurrentUser();
+    result.fold((failure) => null, (user) {
+      if (mounted) {
+        setState(() {
+          _currentUserId = user.id;
+        });
+      }
+    });
+  }
+
+  List<Widget> get pages => [
     const StoryGeneratorPage(),
-    const ChatListPage(),
+    const ChatItihasPage(),
     const SocialFeedPage(),
     const AkhandaBharatMapPage(),
-    const ProfilePage(userId: 'user_001'),
+    ProfilePage(userId: _currentUserId ?? 'user_001'),
   ];
+
+  void _handleUserIconTap() {
+    // Single tap - do nothing or navigate to profile
+  }
+
   final Gradient selectedGradient = const LinearGradient(
     colors: [
       Color(0xFF4FC3F7), // light blue
@@ -90,8 +119,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
+              if (currentBottomBarIndex == 3 && _currentUserId != null)
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () => context.push('/settings'),
+                  tooltip: 'Settings',
+                ),
               GestureDetector(
                 onTap: () {
+                  _handleUserIconTap();
                   context.read<ThemeBloc>().add(ToggleTheme());
                 },
                 child: Container(

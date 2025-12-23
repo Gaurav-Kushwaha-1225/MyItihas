@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/utils/theme.dart';
 
 class ChatItihasPage extends StatefulWidget {
   const ChatItihasPage({super.key});
@@ -90,6 +92,19 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
 
+    final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
+    final glassBg = isDark ? DarkColors.glassBg : Colors.white.withOpacity(0.9);
+    final accentColor = isDark
+        ? DarkColors.accentPrimary
+        : LightColors.accentPrimary;
+    final Gradient selectedGradient = LinearGradient(
+      colors: isDark
+          ? [Colors.white, DarkColors.accentPrimary]
+          : [textColor, textColor],
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+    );
+
     // Filter Logic based on selected tab
     List<Map<String, dynamic>> displayedChats = [];
     if (_selectedTabIndex == 0) {
@@ -102,6 +117,37 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
 
     return Column(
       children: [
+        SizedBox(height: 20.h),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "Map",
+                  style: GoogleFonts.inter(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18.sp,
+                    foreground: Paint()
+                      ..shader = selectedGradient.createShader(
+                        Rect.fromLTWH(0, 0, 60.w, 8.h),
+                      ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  context.read<ThemeBloc>().add(ToggleTheme());
+                },
+                child: Icon(
+                  Icons.dark_mode,
+                  color: isDark ? Colors.white : Colors.black,
+                  size: 18.sp,
+                ),
+              ),
+            ],
+          ),
+        ),
         if (_isSelectionMode)
           _buildSelectionHeader(isDark)
         else
