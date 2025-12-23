@@ -128,13 +128,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Story> stories,  User currentUser,  bool hasMore,  bool isLoadingMore)?  loaded,TResult Function( List<Story> stories,  User currentUser,  bool hasMore)?  refreshing,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<FeedItem> feedItems,  User currentUser,  bool hasMore,  FeedType currentFeedType,  bool isLoadingMore)?  loaded,TResult Function( List<FeedItem> feedItems,  User currentUser,  bool hasMore,  FeedType currentFeedType)?  refreshing,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case FeedInitial() when initial != null:
 return initial();case FeedLoading() when loading != null:
 return loading();case FeedLoaded() when loaded != null:
-return loaded(_that.stories,_that.currentUser,_that.hasMore,_that.isLoadingMore);case FeedRefreshing() when refreshing != null:
-return refreshing(_that.stories,_that.currentUser,_that.hasMore);case FeedError() when error != null:
+return loaded(_that.feedItems,_that.currentUser,_that.hasMore,_that.currentFeedType,_that.isLoadingMore);case FeedRefreshing() when refreshing != null:
+return refreshing(_that.feedItems,_that.currentUser,_that.hasMore,_that.currentFeedType);case FeedError() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -153,13 +153,13 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Story> stories,  User currentUser,  bool hasMore,  bool isLoadingMore)  loaded,required TResult Function( List<Story> stories,  User currentUser,  bool hasMore)  refreshing,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<FeedItem> feedItems,  User currentUser,  bool hasMore,  FeedType currentFeedType,  bool isLoadingMore)  loaded,required TResult Function( List<FeedItem> feedItems,  User currentUser,  bool hasMore,  FeedType currentFeedType)  refreshing,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case FeedInitial():
 return initial();case FeedLoading():
 return loading();case FeedLoaded():
-return loaded(_that.stories,_that.currentUser,_that.hasMore,_that.isLoadingMore);case FeedRefreshing():
-return refreshing(_that.stories,_that.currentUser,_that.hasMore);case FeedError():
+return loaded(_that.feedItems,_that.currentUser,_that.hasMore,_that.currentFeedType,_that.isLoadingMore);case FeedRefreshing():
+return refreshing(_that.feedItems,_that.currentUser,_that.hasMore,_that.currentFeedType);case FeedError():
 return error(_that.message);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -174,13 +174,13 @@ return error(_that.message);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Story> stories,  User currentUser,  bool hasMore,  bool isLoadingMore)?  loaded,TResult? Function( List<Story> stories,  User currentUser,  bool hasMore)?  refreshing,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<FeedItem> feedItems,  User currentUser,  bool hasMore,  FeedType currentFeedType,  bool isLoadingMore)?  loaded,TResult? Function( List<FeedItem> feedItems,  User currentUser,  bool hasMore,  FeedType currentFeedType)?  refreshing,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case FeedInitial() when initial != null:
 return initial();case FeedLoading() when loading != null:
 return loading();case FeedLoaded() when loaded != null:
-return loaded(_that.stories,_that.currentUser,_that.hasMore,_that.isLoadingMore);case FeedRefreshing() when refreshing != null:
-return refreshing(_that.stories,_that.currentUser,_that.hasMore);case FeedError() when error != null:
+return loaded(_that.feedItems,_that.currentUser,_that.hasMore,_that.currentFeedType,_that.isLoadingMore);case FeedRefreshing() when refreshing != null:
+return refreshing(_that.feedItems,_that.currentUser,_that.hasMore,_that.currentFeedType);case FeedError() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -257,18 +257,19 @@ String toString() {
 
 
 class FeedLoaded extends FeedState {
-  const FeedLoaded({required final  List<Story> stories, required this.currentUser, required this.hasMore, this.isLoadingMore = false}): _stories = stories,super._();
+  const FeedLoaded({required final  List<FeedItem> feedItems, required this.currentUser, required this.hasMore, this.currentFeedType = FeedType.all, this.isLoadingMore = false}): _feedItems = feedItems,super._();
   
 
- final  List<Story> _stories;
- List<Story> get stories {
-  if (_stories is EqualUnmodifiableListView) return _stories;
+ final  List<FeedItem> _feedItems;
+ List<FeedItem> get feedItems {
+  if (_feedItems is EqualUnmodifiableListView) return _feedItems;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_stories);
+  return EqualUnmodifiableListView(_feedItems);
 }
 
  final  User currentUser;
  final  bool hasMore;
+@JsonKey() final  FeedType currentFeedType;
 @JsonKey() final  bool isLoadingMore;
 
 /// Create a copy of FeedState
@@ -281,16 +282,16 @@ $FeedLoadedCopyWith<FeedLoaded> get copyWith => _$FeedLoadedCopyWithImpl<FeedLoa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedLoaded&&const DeepCollectionEquality().equals(other._stories, _stories)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedLoaded&&const DeepCollectionEquality().equals(other._feedItems, _feedItems)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.currentFeedType, currentFeedType) || other.currentFeedType == currentFeedType)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_stories),currentUser,hasMore,isLoadingMore);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_feedItems),currentUser,hasMore,currentFeedType,isLoadingMore);
 
 @override
 String toString() {
-  return 'FeedState.loaded(stories: $stories, currentUser: $currentUser, hasMore: $hasMore, isLoadingMore: $isLoadingMore)';
+  return 'FeedState.loaded(feedItems: $feedItems, currentUser: $currentUser, hasMore: $hasMore, currentFeedType: $currentFeedType, isLoadingMore: $isLoadingMore)';
 }
 
 
@@ -301,7 +302,7 @@ abstract mixin class $FeedLoadedCopyWith<$Res> implements $FeedStateCopyWith<$Re
   factory $FeedLoadedCopyWith(FeedLoaded value, $Res Function(FeedLoaded) _then) = _$FeedLoadedCopyWithImpl;
 @useResult
 $Res call({
- List<Story> stories, User currentUser, bool hasMore, bool isLoadingMore
+ List<FeedItem> feedItems, User currentUser, bool hasMore, FeedType currentFeedType, bool isLoadingMore
 });
 
 
@@ -318,12 +319,13 @@ class _$FeedLoadedCopyWithImpl<$Res>
 
 /// Create a copy of FeedState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? stories = null,Object? currentUser = null,Object? hasMore = null,Object? isLoadingMore = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? feedItems = null,Object? currentUser = null,Object? hasMore = null,Object? currentFeedType = null,Object? isLoadingMore = null,}) {
   return _then(FeedLoaded(
-stories: null == stories ? _self._stories : stories // ignore: cast_nullable_to_non_nullable
-as List<Story>,currentUser: null == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
+feedItems: null == feedItems ? _self._feedItems : feedItems // ignore: cast_nullable_to_non_nullable
+as List<FeedItem>,currentUser: null == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
 as User,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
-as bool,isLoadingMore: null == isLoadingMore ? _self.isLoadingMore : isLoadingMore // ignore: cast_nullable_to_non_nullable
+as bool,currentFeedType: null == currentFeedType ? _self.currentFeedType : currentFeedType // ignore: cast_nullable_to_non_nullable
+as FeedType,isLoadingMore: null == isLoadingMore ? _self.isLoadingMore : isLoadingMore // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -344,18 +346,19 @@ $UserCopyWith<$Res> get currentUser {
 
 
 class FeedRefreshing extends FeedState {
-  const FeedRefreshing({required final  List<Story> stories, required this.currentUser, required this.hasMore}): _stories = stories,super._();
+  const FeedRefreshing({required final  List<FeedItem> feedItems, required this.currentUser, required this.hasMore, this.currentFeedType = FeedType.all}): _feedItems = feedItems,super._();
   
 
- final  List<Story> _stories;
- List<Story> get stories {
-  if (_stories is EqualUnmodifiableListView) return _stories;
+ final  List<FeedItem> _feedItems;
+ List<FeedItem> get feedItems {
+  if (_feedItems is EqualUnmodifiableListView) return _feedItems;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_stories);
+  return EqualUnmodifiableListView(_feedItems);
 }
 
  final  User currentUser;
  final  bool hasMore;
+@JsonKey() final  FeedType currentFeedType;
 
 /// Create a copy of FeedState
 /// with the given fields replaced by the non-null parameter values.
@@ -367,16 +370,16 @@ $FeedRefreshingCopyWith<FeedRefreshing> get copyWith => _$FeedRefreshingCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedRefreshing&&const DeepCollectionEquality().equals(other._stories, _stories)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FeedRefreshing&&const DeepCollectionEquality().equals(other._feedItems, _feedItems)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.currentFeedType, currentFeedType) || other.currentFeedType == currentFeedType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_stories),currentUser,hasMore);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_feedItems),currentUser,hasMore,currentFeedType);
 
 @override
 String toString() {
-  return 'FeedState.refreshing(stories: $stories, currentUser: $currentUser, hasMore: $hasMore)';
+  return 'FeedState.refreshing(feedItems: $feedItems, currentUser: $currentUser, hasMore: $hasMore, currentFeedType: $currentFeedType)';
 }
 
 
@@ -387,7 +390,7 @@ abstract mixin class $FeedRefreshingCopyWith<$Res> implements $FeedStateCopyWith
   factory $FeedRefreshingCopyWith(FeedRefreshing value, $Res Function(FeedRefreshing) _then) = _$FeedRefreshingCopyWithImpl;
 @useResult
 $Res call({
- List<Story> stories, User currentUser, bool hasMore
+ List<FeedItem> feedItems, User currentUser, bool hasMore, FeedType currentFeedType
 });
 
 
@@ -404,12 +407,13 @@ class _$FeedRefreshingCopyWithImpl<$Res>
 
 /// Create a copy of FeedState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? stories = null,Object? currentUser = null,Object? hasMore = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? feedItems = null,Object? currentUser = null,Object? hasMore = null,Object? currentFeedType = null,}) {
   return _then(FeedRefreshing(
-stories: null == stories ? _self._stories : stories // ignore: cast_nullable_to_non_nullable
-as List<Story>,currentUser: null == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
+feedItems: null == feedItems ? _self._feedItems : feedItems // ignore: cast_nullable_to_non_nullable
+as List<FeedItem>,currentUser: null == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
 as User,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,currentFeedType: null == currentFeedType ? _self.currentFeedType : currentFeedType // ignore: cast_nullable_to_non_nullable
+as FeedType,
   ));
 }
 

@@ -359,17 +359,34 @@ class _TranslationsFeedTa implements TranslationsFeedEn {
 	@override String get errorTitle => 'அப்பா! ஏதோ தவறு நடந்தது';
 	@override String get tryAgain => 'மீண்டும் முயற்சிக்கவும்';
 	@override String get noStoriesAvailable => 'கதைகள் எதுவும் இல்லை';
+	@override String get noImagesAvailable => 'படப் பதிவுகள் எதுவும் இல்லை';
+	@override String get noTextPostsAvailable => 'சிந்தனை பதிவுகள் எதுவும் இல்லை';
+	@override String get noContentAvailable => 'உள்ளடக்கம் எதுவும் இல்லை';
 	@override String get refresh => 'புதுப்பிக்க';
 	@override String get comments => 'கருத்துகள்';
 	@override String get commentsComingSoon => 'கருத்துகள் விரைவில் வருகிறது';
 	@override String get addCommentHint => 'கருத்தைச் சேர்க்கவும்...';
 	@override String get shareStory => 'கதையை பகிரவும்';
+	@override String get sharePost => 'பதிவை பகிரவும்';
+	@override String get shareThought => 'சிந்தனையை பகிரவும்';
 	@override String get shareAsImage => 'படமாக பகிரவும்';
 	@override String get shareAsImageSubtitle => 'அழகான முன்னோட்ட அட்டையை உருவாக்கவும்';
 	@override String get shareLink => 'இணைப்பை பகிரவும்';
 	@override String get shareLinkSubtitle => 'கதை இணைப்பை நகலெடுக்க அல்லது பகிரவும்';
+	@override String get shareImageLinkSubtitle => 'பதிவு இணைப்பை நகலெடுக்க அல்லது பகிரவும்';
+	@override String get shareTextLinkSubtitle => 'சிந்தனை இணைப்பை நகலெடுக்க அல்லது பகிரவும்';
 	@override String get shareAsText => 'உரையாக பகிரவும்';
 	@override String get shareAsTextSubtitle => 'கதையின் சுருக்கத்தை பகிரவும்';
+	@override String get shareQuote => 'மேற்கோளை பகிரவும்';
+	@override String get shareQuoteSubtitle => 'மேற்கோள் உரையாக பகிரவும்';
+	@override String get shareWithImage => 'படத்துடன் பகிரவும்';
+	@override String get shareWithImageSubtitle => 'தலைப்புடன் படத்தை பகிரவும்';
+	@override String get copyLink => 'இணைப்பை நகலெடு';
+	@override String get copyLinkSubtitle => 'கிளிப்போர்டுக்கு இணைப்பை நகலெடுக்கவும்';
+	@override String get copyText => 'உரையை நகலெடு';
+	@override String get copyTextSubtitle => 'கிளிப்போர்டுக்கு மேற்கோளை நகலெடுக்கவும்';
+	@override String get linkCopied => 'இணைப்பு கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது';
+	@override String get textCopied => 'உரை கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது';
 	@override String get sendToUser => 'பயனருக்கு அனுப்பவும்';
 	@override String get sendToUserSubtitle => 'நண்பருடன் நேரடியாக பகிரவும்';
 	@override String get chooseFormat => 'வடிவத்தைத் தேர்ந்தெடுக்கவும்';
@@ -391,6 +408,7 @@ class _TranslationsFeedTa implements TranslationsFeedEn {
 	@override String get copy => 'Copy';
 	@override String get tapToViewFullQuote => 'Tap to view full quote';
 	@override String get quoteFromMyitihas => 'Quote from MyItihas';
+	@override late final _TranslationsFeedTabsTa tabs = _TranslationsFeedTabsTa._(_root);
 }
 
 // Path: storyGenerator.storyLength
@@ -403,6 +421,19 @@ class _TranslationsStoryGeneratorStoryLengthTa implements TranslationsStoryGener
 	@override String get short => 'குறுகிய';
 	@override String get medium => 'நடுத்தர';
 	@override String get long => 'நீண்ட';
+}
+
+// Path: feed.tabs
+class _TranslationsFeedTabsTa implements TranslationsFeedTabsEn {
+	_TranslationsFeedTabsTa._(this._root);
+
+	final TranslationsTa _root; // ignore: unused_field
+
+	// Translations
+	@override String get all => 'அனைத்தும்';
+	@override String get stories => 'கதைகள்';
+	@override String get images => 'படங்கள்';
+	@override String get text => 'சிந்தனைகள்';
 }
 
 /// The flat map containing all translations for locale <ta>.
@@ -577,17 +608,34 @@ extension on TranslationsTa {
 			'feed.errorTitle' => 'அப்பா! ஏதோ தவறு நடந்தது',
 			'feed.tryAgain' => 'மீண்டும் முயற்சிக்கவும்',
 			'feed.noStoriesAvailable' => 'கதைகள் எதுவும் இல்லை',
+			'feed.noImagesAvailable' => 'படப் பதிவுகள் எதுவும் இல்லை',
+			'feed.noTextPostsAvailable' => 'சிந்தனை பதிவுகள் எதுவும் இல்லை',
+			'feed.noContentAvailable' => 'உள்ளடக்கம் எதுவும் இல்லை',
 			'feed.refresh' => 'புதுப்பிக்க',
 			'feed.comments' => 'கருத்துகள்',
 			'feed.commentsComingSoon' => 'கருத்துகள் விரைவில் வருகிறது',
 			'feed.addCommentHint' => 'கருத்தைச் சேர்க்கவும்...',
 			'feed.shareStory' => 'கதையை பகிரவும்',
+			'feed.sharePost' => 'பதிவை பகிரவும்',
+			'feed.shareThought' => 'சிந்தனையை பகிரவும்',
 			'feed.shareAsImage' => 'படமாக பகிரவும்',
 			'feed.shareAsImageSubtitle' => 'அழகான முன்னோட்ட அட்டையை உருவாக்கவும்',
 			'feed.shareLink' => 'இணைப்பை பகிரவும்',
 			'feed.shareLinkSubtitle' => 'கதை இணைப்பை நகலெடுக்க அல்லது பகிரவும்',
+			'feed.shareImageLinkSubtitle' => 'பதிவு இணைப்பை நகலெடுக்க அல்லது பகிரவும்',
+			'feed.shareTextLinkSubtitle' => 'சிந்தனை இணைப்பை நகலெடுக்க அல்லது பகிரவும்',
 			'feed.shareAsText' => 'உரையாக பகிரவும்',
 			'feed.shareAsTextSubtitle' => 'கதையின் சுருக்கத்தை பகிரவும்',
+			'feed.shareQuote' => 'மேற்கோளை பகிரவும்',
+			'feed.shareQuoteSubtitle' => 'மேற்கோள் உரையாக பகிரவும்',
+			'feed.shareWithImage' => 'படத்துடன் பகிரவும்',
+			'feed.shareWithImageSubtitle' => 'தலைப்புடன் படத்தை பகிரவும்',
+			'feed.copyLink' => 'இணைப்பை நகலெடு',
+			'feed.copyLinkSubtitle' => 'கிளிப்போர்டுக்கு இணைப்பை நகலெடுக்கவும்',
+			'feed.copyText' => 'உரையை நகலெடு',
+			'feed.copyTextSubtitle' => 'கிளிப்போர்டுக்கு மேற்கோளை நகலெடுக்கவும்',
+			'feed.linkCopied' => 'இணைப்பு கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது',
+			'feed.textCopied' => 'உரை கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது',
 			'feed.sendToUser' => 'பயனருக்கு அனுப்பவும்',
 			'feed.sendToUserSubtitle' => 'நண்பருடன் நேரடியாக பகிரவும்',
 			'feed.chooseFormat' => 'வடிவத்தைத் தேர்ந்தெடுக்கவும்',
@@ -609,6 +657,10 @@ extension on TranslationsTa {
 			'feed.copy' => 'Copy',
 			'feed.tapToViewFullQuote' => 'Tap to view full quote',
 			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
+			'feed.tabs.all' => 'அனைத்தும்',
+			'feed.tabs.stories' => 'கதைகள்',
+			'feed.tabs.images' => 'படங்கள்',
+			'feed.tabs.text' => 'சிந்தனைகள்',
 			_ => null,
 		};
 	}
