@@ -359,17 +359,34 @@ class _TranslationsFeedTe implements TranslationsFeedEn {
 	@override String get errorTitle => 'అయ్యో! ఏదో తప్పు జరిగింది';
 	@override String get tryAgain => 'మళ్లీ ప్రయత్నించు';
 	@override String get noStoriesAvailable => 'కథలు అందుబాటులో లేవు';
+	@override String get noImagesAvailable => 'చిత్ర పోస్ట్‌లు అందుబాటులో లేవు';
+	@override String get noTextPostsAvailable => 'ఆలోచన పోస్ట్‌లు అందుబాటులో లేవు';
+	@override String get noContentAvailable => 'కంటెంట్ అందుబాటులో లేదు';
 	@override String get refresh => 'రిఫ్రెష్';
 	@override String get comments => 'వ్యాఖ్యలు';
 	@override String get commentsComingSoon => 'వ్యాఖ్యలు త్వరలో వస్తాయి';
 	@override String get addCommentHint => 'వ్యాఖ్యను జోడించండి...';
 	@override String get shareStory => 'కథను పంచుకోండి';
+	@override String get sharePost => 'పోస్ట్‌ను పంచుకోండి';
+	@override String get shareThought => 'ఆలోచనను పంచుకోండి';
 	@override String get shareAsImage => 'చిత్రంగా పంచుకోండి';
 	@override String get shareAsImageSubtitle => 'అందమైన ప్రివ్యూ కార్డ్‌ను సృష్టించండి';
 	@override String get shareLink => 'లింక్ పంచుకోండి';
 	@override String get shareLinkSubtitle => 'కథ లింక్‌ను కాపీ చేయండి లేదా పంచుకోండి';
+	@override String get shareImageLinkSubtitle => 'పోస్ట్ లింక్‌ను కాపీ చేయండి లేదా పంచుకోండి';
+	@override String get shareTextLinkSubtitle => 'ఆలోచన లింక్‌ను కాపీ చేయండి లేదా పంచుకోండి';
 	@override String get shareAsText => 'పాఠ్యంగా పంచుకోండి';
 	@override String get shareAsTextSubtitle => 'కథ సారాంశాన్ని పంచుకోండి';
+	@override String get shareQuote => 'ఉల్లేఖనాన్ని పంచుకోండి';
+	@override String get shareQuoteSubtitle => 'ఉల్లేఖన పాఠ్యంగా పంచుకోండి';
+	@override String get shareWithImage => 'చిత్రంతో పంచుకోండి';
+	@override String get shareWithImageSubtitle => 'క్యాప్షన్‌తో చిత్రాన్ని పంచుకోండి';
+	@override String get copyLink => 'లింక్ కాపీ చేయండి';
+	@override String get copyLinkSubtitle => 'క్లిప్‌బోర్డ్‌కు లింక్ కాపీ చేయండి';
+	@override String get copyText => 'పాఠ్యం కాపీ చేయండి';
+	@override String get copyTextSubtitle => 'క్లిప్‌బోర్డ్‌కు ఉల్లేఖనాన్ని కాపీ చేయండి';
+	@override String get linkCopied => 'లింక్ క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది';
+	@override String get textCopied => 'పాఠ్యం క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది';
 	@override String get sendToUser => 'వినియోగదారునికి పంపండి';
 	@override String get sendToUserSubtitle => 'స్నేహితుడితో నేరుగా పంచుకోండి';
 	@override String get chooseFormat => 'ఫార్మాట్ ఎంచుకోండి';
@@ -391,6 +408,7 @@ class _TranslationsFeedTe implements TranslationsFeedEn {
 	@override String get copy => 'Copy';
 	@override String get tapToViewFullQuote => 'Tap to view full quote';
 	@override String get quoteFromMyitihas => 'Quote from MyItihas';
+	@override late final _TranslationsFeedTabsTe tabs = _TranslationsFeedTabsTe._(_root);
 }
 
 // Path: storyGenerator.storyLength
@@ -403,6 +421,19 @@ class _TranslationsStoryGeneratorStoryLengthTe implements TranslationsStoryGener
 	@override String get short => 'చిన్నది';
 	@override String get medium => 'మధ్యస్థం';
 	@override String get long => 'పొడవైనది';
+}
+
+// Path: feed.tabs
+class _TranslationsFeedTabsTe implements TranslationsFeedTabsEn {
+	_TranslationsFeedTabsTe._(this._root);
+
+	final TranslationsTe _root; // ignore: unused_field
+
+	// Translations
+	@override String get all => 'అన్నీ';
+	@override String get stories => 'కథలు';
+	@override String get images => 'చిత్రాలు';
+	@override String get text => 'ఆలోచనలు';
 }
 
 /// The flat map containing all translations for locale <te>.
@@ -577,17 +608,34 @@ extension on TranslationsTe {
 			'feed.errorTitle' => 'అయ్యో! ఏదో తప్పు జరిగింది',
 			'feed.tryAgain' => 'మళ్లీ ప్రయత్నించు',
 			'feed.noStoriesAvailable' => 'కథలు అందుబాటులో లేవు',
+			'feed.noImagesAvailable' => 'చిత్ర పోస్ట్‌లు అందుబాటులో లేవు',
+			'feed.noTextPostsAvailable' => 'ఆలోచన పోస్ట్‌లు అందుబాటులో లేవు',
+			'feed.noContentAvailable' => 'కంటెంట్ అందుబాటులో లేదు',
 			'feed.refresh' => 'రిఫ్రెష్',
 			'feed.comments' => 'వ్యాఖ్యలు',
 			'feed.commentsComingSoon' => 'వ్యాఖ్యలు త్వరలో వస్తాయి',
 			'feed.addCommentHint' => 'వ్యాఖ్యను జోడించండి...',
 			'feed.shareStory' => 'కథను పంచుకోండి',
+			'feed.sharePost' => 'పోస్ట్‌ను పంచుకోండి',
+			'feed.shareThought' => 'ఆలోచనను పంచుకోండి',
 			'feed.shareAsImage' => 'చిత్రంగా పంచుకోండి',
 			'feed.shareAsImageSubtitle' => 'అందమైన ప్రివ్యూ కార్డ్‌ను సృష్టించండి',
 			'feed.shareLink' => 'లింక్ పంచుకోండి',
 			'feed.shareLinkSubtitle' => 'కథ లింక్‌ను కాపీ చేయండి లేదా పంచుకోండి',
+			'feed.shareImageLinkSubtitle' => 'పోస్ట్ లింక్‌ను కాపీ చేయండి లేదా పంచుకోండి',
+			'feed.shareTextLinkSubtitle' => 'ఆలోచన లింక్‌ను కాపీ చేయండి లేదా పంచుకోండి',
 			'feed.shareAsText' => 'పాఠ్యంగా పంచుకోండి',
 			'feed.shareAsTextSubtitle' => 'కథ సారాంశాన్ని పంచుకోండి',
+			'feed.shareQuote' => 'ఉల్లేఖనాన్ని పంచుకోండి',
+			'feed.shareQuoteSubtitle' => 'ఉల్లేఖన పాఠ్యంగా పంచుకోండి',
+			'feed.shareWithImage' => 'చిత్రంతో పంచుకోండి',
+			'feed.shareWithImageSubtitle' => 'క్యాప్షన్‌తో చిత్రాన్ని పంచుకోండి',
+			'feed.copyLink' => 'లింక్ కాపీ చేయండి',
+			'feed.copyLinkSubtitle' => 'క్లిప్‌బోర్డ్‌కు లింక్ కాపీ చేయండి',
+			'feed.copyText' => 'పాఠ్యం కాపీ చేయండి',
+			'feed.copyTextSubtitle' => 'క్లిప్‌బోర్డ్‌కు ఉల్లేఖనాన్ని కాపీ చేయండి',
+			'feed.linkCopied' => 'లింక్ క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది',
+			'feed.textCopied' => 'పాఠ్యం క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది',
 			'feed.sendToUser' => 'వినియోగదారునికి పంపండి',
 			'feed.sendToUserSubtitle' => 'స్నేహితుడితో నేరుగా పంచుకోండి',
 			'feed.chooseFormat' => 'ఫార్మాట్ ఎంచుకోండి',
@@ -609,6 +657,10 @@ extension on TranslationsTe {
 			'feed.copy' => 'Copy',
 			'feed.tapToViewFullQuote' => 'Tap to view full quote',
 			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
+			'feed.tabs.all' => 'అన్నీ',
+			'feed.tabs.stories' => 'కథలు',
+			'feed.tabs.images' => 'చిత్రాలు',
+			'feed.tabs.text' => 'ఆలోచనలు',
 			_ => null,
 		};
 	}

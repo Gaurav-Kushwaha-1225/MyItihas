@@ -31,10 +31,14 @@ import '../../features/social/data/datasources/social_data_source.dart'
 import '../../features/social/data/datasources/user_data_source.dart' as _i773;
 import '../../features/social/data/datasources/user_remote_data_source.dart'
     as _i210;
+import '../../features/social/data/repositories/post_repository_impl.dart'
+    as _i141;
 import '../../features/social/data/repositories/social_repository_impl.dart'
     as _i5;
 import '../../features/social/data/repositories/user_repository_impl.dart'
     as _i910;
+import '../../features/social/domain/repositories/post_repository.dart'
+    as _i545;
 import '../../features/social/domain/repositories/social_repository.dart'
     as _i640;
 import '../../features/social/domain/repositories/user_repository.dart'
@@ -175,11 +179,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i53.ToggleFavorite>(
       () => _i53.ToggleFavorite(gh<_i909.StoryRepository>()),
     );
-    gh.factory<_i420.FeedBloc>(
-      () => _i420.FeedBloc(
-        storyRepository: gh<_i909.StoryRepository>(),
-        socialRepository: gh<_i640.SocialRepository>(),
+    gh.lazySingleton<_i545.PostRepository>(
+      () => _i141.PostRepositoryImpl(
         userRepository: gh<_i721.UserRepository>(),
+        storyRepository: gh<_i909.StoryRepository>(),
       ),
     );
     gh.factory<_i790.StoriesBloc>(
@@ -192,6 +195,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i506.NotificationBloc(
         notificationRepository: gh<_i367.NotificationRepository>(),
         userRepository: gh<_i721.UserRepository>(),
+      ),
+    );
+    gh.factory<_i420.FeedBloc>(
+      () => _i420.FeedBloc(
+        storyRepository: gh<_i909.StoryRepository>(),
+        socialRepository: gh<_i640.SocialRepository>(),
+        userRepository: gh<_i721.UserRepository>(),
+        postRepository: gh<_i545.PostRepository>(),
       ),
     );
     return this;

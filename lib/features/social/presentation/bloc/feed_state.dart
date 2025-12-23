@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:myitihas/features/stories/domain/entities/story.dart';
+import 'package:myitihas/features/social/domain/entities/feed_item.dart';
 import 'package:myitihas/features/social/domain/entities/user.dart';
+import 'package:myitihas/features/social/presentation/bloc/feed_event.dart';
 
 part 'feed_state.freezed.dart';
 
@@ -11,16 +12,18 @@ sealed class FeedState with _$FeedState {
   const factory FeedState.loading() = FeedLoading;
 
   const factory FeedState.loaded({
-    required List<Story> stories,
+    required List<FeedItem> feedItems,
     required User currentUser,
     required bool hasMore,
+    @Default(FeedType.all) FeedType currentFeedType,
     @Default(false) bool isLoadingMore,
   }) = FeedLoaded;
 
   const factory FeedState.refreshing({
-    required List<Story> stories,
+    required List<FeedItem> feedItems,
     required User currentUser,
     required bool hasMore,
+    @Default(FeedType.all) FeedType currentFeedType,
   }) = FeedRefreshing;
 
   const factory FeedState.error(String message) = FeedError;
@@ -33,9 +36,9 @@ sealed class FeedState with _$FeedState {
       initial: (_) => 'FeedState.initial()',
       loading: (_) => 'FeedState.loading()',
       loaded: (state) =>
-          'FeedState.loaded(stories: ${state.stories.length}, hasMore: ${state.hasMore})',
+          'FeedState.loaded(feedItems: ${state.feedItems.length}, feedType: ${state.currentFeedType}, hasMore: ${state.hasMore})',
       refreshing: (state) =>
-          'FeedState.refreshing(stories: ${state.stories.length})',
+          'FeedState.refreshing(feedItems: ${state.feedItems.length})',
       error: (state) => 'FeedState.error(message: "${state.message}")',
     );
   }

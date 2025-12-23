@@ -4,9 +4,12 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
+import 'package:myitihas/features/social/domain/entities/image_post.dart';
+import 'package:myitihas/features/social/domain/entities/text_post.dart';
 import 'package:myitihas/features/social/presentation/widgets/share_preview_card.dart';
 
 /// Utility class for generating shareable preview images from stories
@@ -150,6 +153,122 @@ Read the full story on MyItihas''';
   static String _truncate(String text, int maxLength) {
     if (text.length <= maxLength) return text;
     return '${text.substring(0, maxLength - 3)}...';
+  }
+
+  // ============ Image Post Sharing ============
+
+  static Future<void> shareImagePost({
+    required ImagePost post,
+    String? customMessage,
+  }) async {
+    final authorName = post.authorUser?.displayName ?? 'MyItihas User';
+    final message =
+        customMessage ??
+        '''${post.caption ?? 'Beautiful image'}
+
+📍 ${post.location ?? 'India'}
+
+Shared by $authorName on MyItihas
+
+#MyItihas ${post.tags.map((t) => '#$t').join(' ')}''';
+
+    await SharePlus.instance.share(
+      ShareParams(text: message, subject: post.caption ?? 'MyItihas Post'),
+    );
+  }
+
+  static Future<void> shareImagePostLink({
+    required ImagePost post,
+    required String baseUrl,
+  }) async {
+    final url = '$baseUrl/posts/image/${post.id}';
+    final message = '${post.caption ?? 'Check out this post'}\n\n$url';
+
+    await SharePlus.instance.share(
+      ShareParams(text: message, subject: post.caption ?? 'MyItihas Post'),
+    );
+  }
+
+  static Future<void> shareImagePostImage({required ImagePost post}) async {
+    // Share the image URL directly - in a real app you'd download and share
+    final message =
+        '''${post.caption ?? ''}
+
+📍 ${post.location ?? 'India'}
+
+${post.imageUrl}
+
+Shared via MyItihas''';
+
+    await SharePlus.instance.share(
+      ShareParams(text: message, subject: post.caption ?? 'MyItihas Image'),
+    );
+  }
+
+  static Future<void> copyImagePostLink({
+    required ImagePost post,
+    required String baseUrl,
+  }) async {
+    final url = '$baseUrl/posts/image/${post.id}';
+    await Clipboard.setData(ClipboardData(text: url));
+  }
+
+  // ============ Text Post Sharing ============
+
+  static Future<void> shareTextPost({
+    required TextPost post,
+    String? customMessage,
+  }) async {
+    final authorName = post.authorUser?.displayName ?? 'MyItihas';
+    final message =
+        customMessage ??
+        '''"${post.body}"
+
+— $authorName
+
+Shared via MyItihas
+
+#MyItihas ${post.tags.map((t) => '#$t').join(' ')}''';
+
+    await SharePlus.instance.share(
+      ShareParams(text: message, subject: 'Thought from MyItihas'),
+    );
+  }
+
+  static Future<void> shareTextPostLink({
+    required TextPost post,
+    required String baseUrl,
+  }) async {
+    final url = '$baseUrl/posts/text/${post.id}';
+    final message = '"${_truncate(post.body, 100)}"\n\n$url';
+
+    await SharePlus.instance.share(
+      ShareParams(text: message, subject: 'Thought from MyItihas'),
+    );
+  }
+
+  static Future<void> copyTextPostLink({
+    required TextPost post,
+    required String baseUrl,
+  }) async {
+    final url = '$baseUrl/posts/text/${post.id}';
+    await Clipboard.setData(ClipboardData(text: url));
+  }
+
+  static Future<void> copyTextPostContent({required TextPost post}) async {
+    final authorName = post.authorUser?.displayName ?? 'MyItihas';
+    final text = '"${post.body}"\n\n— $authorName';
+    await Clipboard.setData(ClipboardData(text: text));
+  }
+
+  // ============ Story Link Copy ============
+
+  static Future<void> copyStoryLink({
+    required Story story,
+    required String baseUrl,
+  }) async {
+    final url = '$baseUrl/stories/${story.id}';
+    await Clipboard.setData(ClipboardData(text: url));
   }
 }
 

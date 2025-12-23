@@ -55,17 +55,18 @@ extension FeedEventPatterns on FeedEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadFeedEvent value)?  loadFeed,TResult Function( LoadMoreFeedEvent value)?  loadMore,TResult Function( RefreshFeedEvent value)?  refreshFeed,TResult Function( ToggleLikeEvent value)?  toggleLike,TResult Function( ToggleBookmarkEvent value)?  toggleBookmark,TResult Function( AddCommentEvent value)?  addComment,TResult Function( ShareStoryEvent value)?  shareStory,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadFeedEvent value)?  loadFeed,TResult Function( LoadMoreFeedEvent value)?  loadMore,TResult Function( RefreshFeedEvent value)?  refreshFeed,TResult Function( ChangeFeedTypeEvent value)?  changeFeedType,TResult Function( ToggleLikeEvent value)?  toggleLike,TResult Function( ToggleBookmarkEvent value)?  toggleBookmark,TResult Function( AddCommentEvent value)?  addComment,TResult Function( ShareContentEvent value)?  shareContent,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadFeedEvent() when loadFeed != null:
 return loadFeed(_that);case LoadMoreFeedEvent() when loadMore != null:
 return loadMore(_that);case RefreshFeedEvent() when refreshFeed != null:
-return refreshFeed(_that);case ToggleLikeEvent() when toggleLike != null:
+return refreshFeed(_that);case ChangeFeedTypeEvent() when changeFeedType != null:
+return changeFeedType(_that);case ToggleLikeEvent() when toggleLike != null:
 return toggleLike(_that);case ToggleBookmarkEvent() when toggleBookmark != null:
 return toggleBookmark(_that);case AddCommentEvent() when addComment != null:
-return addComment(_that);case ShareStoryEvent() when shareStory != null:
-return shareStory(_that);case _:
+return addComment(_that);case ShareContentEvent() when shareContent != null:
+return shareContent(_that);case _:
   return orElse();
 
 }
@@ -83,17 +84,18 @@ return shareStory(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadFeedEvent value)  loadFeed,required TResult Function( LoadMoreFeedEvent value)  loadMore,required TResult Function( RefreshFeedEvent value)  refreshFeed,required TResult Function( ToggleLikeEvent value)  toggleLike,required TResult Function( ToggleBookmarkEvent value)  toggleBookmark,required TResult Function( AddCommentEvent value)  addComment,required TResult Function( ShareStoryEvent value)  shareStory,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadFeedEvent value)  loadFeed,required TResult Function( LoadMoreFeedEvent value)  loadMore,required TResult Function( RefreshFeedEvent value)  refreshFeed,required TResult Function( ChangeFeedTypeEvent value)  changeFeedType,required TResult Function( ToggleLikeEvent value)  toggleLike,required TResult Function( ToggleBookmarkEvent value)  toggleBookmark,required TResult Function( AddCommentEvent value)  addComment,required TResult Function( ShareContentEvent value)  shareContent,}){
 final _that = this;
 switch (_that) {
 case LoadFeedEvent():
 return loadFeed(_that);case LoadMoreFeedEvent():
 return loadMore(_that);case RefreshFeedEvent():
-return refreshFeed(_that);case ToggleLikeEvent():
+return refreshFeed(_that);case ChangeFeedTypeEvent():
+return changeFeedType(_that);case ToggleLikeEvent():
 return toggleLike(_that);case ToggleBookmarkEvent():
 return toggleBookmark(_that);case AddCommentEvent():
-return addComment(_that);case ShareStoryEvent():
-return shareStory(_that);}
+return addComment(_that);case ShareContentEvent():
+return shareContent(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -107,17 +109,18 @@ return shareStory(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadFeedEvent value)?  loadFeed,TResult? Function( LoadMoreFeedEvent value)?  loadMore,TResult? Function( RefreshFeedEvent value)?  refreshFeed,TResult? Function( ToggleLikeEvent value)?  toggleLike,TResult? Function( ToggleBookmarkEvent value)?  toggleBookmark,TResult? Function( AddCommentEvent value)?  addComment,TResult? Function( ShareStoryEvent value)?  shareStory,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadFeedEvent value)?  loadFeed,TResult? Function( LoadMoreFeedEvent value)?  loadMore,TResult? Function( RefreshFeedEvent value)?  refreshFeed,TResult? Function( ChangeFeedTypeEvent value)?  changeFeedType,TResult? Function( ToggleLikeEvent value)?  toggleLike,TResult? Function( ToggleBookmarkEvent value)?  toggleBookmark,TResult? Function( AddCommentEvent value)?  addComment,TResult? Function( ShareContentEvent value)?  shareContent,}){
 final _that = this;
 switch (_that) {
 case LoadFeedEvent() when loadFeed != null:
 return loadFeed(_that);case LoadMoreFeedEvent() when loadMore != null:
 return loadMore(_that);case RefreshFeedEvent() when refreshFeed != null:
-return refreshFeed(_that);case ToggleLikeEvent() when toggleLike != null:
+return refreshFeed(_that);case ChangeFeedTypeEvent() when changeFeedType != null:
+return changeFeedType(_that);case ToggleLikeEvent() when toggleLike != null:
 return toggleLike(_that);case ToggleBookmarkEvent() when toggleBookmark != null:
 return toggleBookmark(_that);case AddCommentEvent() when addComment != null:
-return addComment(_that);case ShareStoryEvent() when shareStory != null:
-return shareStory(_that);case _:
+return addComment(_that);case ShareContentEvent() when shareContent != null:
+return shareContent(_that);case _:
   return null;
 
 }
@@ -134,16 +137,17 @@ return shareStory(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadFeed,TResult Function()?  loadMore,TResult Function()?  refreshFeed,TResult Function( String storyId)?  toggleLike,TResult Function( String storyId)?  toggleBookmark,TResult Function( String storyId,  String text,  String? parentCommentId)?  addComment,TResult Function( String storyId,  bool isDirect,  String? recipientId)?  shareStory,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadFeed,TResult Function()?  loadMore,TResult Function()?  refreshFeed,TResult Function( FeedType feedType)?  changeFeedType,TResult Function( String contentId,  ContentType contentType)?  toggleLike,TResult Function( String contentId,  ContentType contentType)?  toggleBookmark,TResult Function( String contentId,  ContentType contentType,  String text,  String? parentCommentId)?  addComment,TResult Function( String contentId,  ContentType contentType,  bool isDirect,  String? recipientId)?  shareContent,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadFeedEvent() when loadFeed != null:
 return loadFeed();case LoadMoreFeedEvent() when loadMore != null:
 return loadMore();case RefreshFeedEvent() when refreshFeed != null:
-return refreshFeed();case ToggleLikeEvent() when toggleLike != null:
-return toggleLike(_that.storyId);case ToggleBookmarkEvent() when toggleBookmark != null:
-return toggleBookmark(_that.storyId);case AddCommentEvent() when addComment != null:
-return addComment(_that.storyId,_that.text,_that.parentCommentId);case ShareStoryEvent() when shareStory != null:
-return shareStory(_that.storyId,_that.isDirect,_that.recipientId);case _:
+return refreshFeed();case ChangeFeedTypeEvent() when changeFeedType != null:
+return changeFeedType(_that.feedType);case ToggleLikeEvent() when toggleLike != null:
+return toggleLike(_that.contentId,_that.contentType);case ToggleBookmarkEvent() when toggleBookmark != null:
+return toggleBookmark(_that.contentId,_that.contentType);case AddCommentEvent() when addComment != null:
+return addComment(_that.contentId,_that.contentType,_that.text,_that.parentCommentId);case ShareContentEvent() when shareContent != null:
+return shareContent(_that.contentId,_that.contentType,_that.isDirect,_that.recipientId);case _:
   return orElse();
 
 }
@@ -161,16 +165,17 @@ return shareStory(_that.storyId,_that.isDirect,_that.recipientId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadFeed,required TResult Function()  loadMore,required TResult Function()  refreshFeed,required TResult Function( String storyId)  toggleLike,required TResult Function( String storyId)  toggleBookmark,required TResult Function( String storyId,  String text,  String? parentCommentId)  addComment,required TResult Function( String storyId,  bool isDirect,  String? recipientId)  shareStory,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadFeed,required TResult Function()  loadMore,required TResult Function()  refreshFeed,required TResult Function( FeedType feedType)  changeFeedType,required TResult Function( String contentId,  ContentType contentType)  toggleLike,required TResult Function( String contentId,  ContentType contentType)  toggleBookmark,required TResult Function( String contentId,  ContentType contentType,  String text,  String? parentCommentId)  addComment,required TResult Function( String contentId,  ContentType contentType,  bool isDirect,  String? recipientId)  shareContent,}) {final _that = this;
 switch (_that) {
 case LoadFeedEvent():
 return loadFeed();case LoadMoreFeedEvent():
 return loadMore();case RefreshFeedEvent():
-return refreshFeed();case ToggleLikeEvent():
-return toggleLike(_that.storyId);case ToggleBookmarkEvent():
-return toggleBookmark(_that.storyId);case AddCommentEvent():
-return addComment(_that.storyId,_that.text,_that.parentCommentId);case ShareStoryEvent():
-return shareStory(_that.storyId,_that.isDirect,_that.recipientId);}
+return refreshFeed();case ChangeFeedTypeEvent():
+return changeFeedType(_that.feedType);case ToggleLikeEvent():
+return toggleLike(_that.contentId,_that.contentType);case ToggleBookmarkEvent():
+return toggleBookmark(_that.contentId,_that.contentType);case AddCommentEvent():
+return addComment(_that.contentId,_that.contentType,_that.text,_that.parentCommentId);case ShareContentEvent():
+return shareContent(_that.contentId,_that.contentType,_that.isDirect,_that.recipientId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -184,16 +189,17 @@ return shareStory(_that.storyId,_that.isDirect,_that.recipientId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadFeed,TResult? Function()?  loadMore,TResult? Function()?  refreshFeed,TResult? Function( String storyId)?  toggleLike,TResult? Function( String storyId)?  toggleBookmark,TResult? Function( String storyId,  String text,  String? parentCommentId)?  addComment,TResult? Function( String storyId,  bool isDirect,  String? recipientId)?  shareStory,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadFeed,TResult? Function()?  loadMore,TResult? Function()?  refreshFeed,TResult? Function( FeedType feedType)?  changeFeedType,TResult? Function( String contentId,  ContentType contentType)?  toggleLike,TResult? Function( String contentId,  ContentType contentType)?  toggleBookmark,TResult? Function( String contentId,  ContentType contentType,  String text,  String? parentCommentId)?  addComment,TResult? Function( String contentId,  ContentType contentType,  bool isDirect,  String? recipientId)?  shareContent,}) {final _that = this;
 switch (_that) {
 case LoadFeedEvent() when loadFeed != null:
 return loadFeed();case LoadMoreFeedEvent() when loadMore != null:
 return loadMore();case RefreshFeedEvent() when refreshFeed != null:
-return refreshFeed();case ToggleLikeEvent() when toggleLike != null:
-return toggleLike(_that.storyId);case ToggleBookmarkEvent() when toggleBookmark != null:
-return toggleBookmark(_that.storyId);case AddCommentEvent() when addComment != null:
-return addComment(_that.storyId,_that.text,_that.parentCommentId);case ShareStoryEvent() when shareStory != null:
-return shareStory(_that.storyId,_that.isDirect,_that.recipientId);case _:
+return refreshFeed();case ChangeFeedTypeEvent() when changeFeedType != null:
+return changeFeedType(_that.feedType);case ToggleLikeEvent() when toggleLike != null:
+return toggleLike(_that.contentId,_that.contentType);case ToggleBookmarkEvent() when toggleBookmark != null:
+return toggleBookmark(_that.contentId,_that.contentType);case AddCommentEvent() when addComment != null:
+return addComment(_that.contentId,_that.contentType,_that.text,_that.parentCommentId);case ShareContentEvent() when shareContent != null:
+return shareContent(_that.contentId,_that.contentType,_that.isDirect,_that.recipientId);case _:
   return null;
 
 }
@@ -300,11 +306,78 @@ String toString() {
 /// @nodoc
 
 
-class ToggleLikeEvent implements FeedEvent {
-  const ToggleLikeEvent(this.storyId);
+class ChangeFeedTypeEvent implements FeedEvent {
+  const ChangeFeedTypeEvent(this.feedType);
   
 
- final  String storyId;
+ final  FeedType feedType;
+
+/// Create a copy of FeedEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ChangeFeedTypeEventCopyWith<ChangeFeedTypeEvent> get copyWith => _$ChangeFeedTypeEventCopyWithImpl<ChangeFeedTypeEvent>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChangeFeedTypeEvent&&(identical(other.feedType, feedType) || other.feedType == feedType));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,feedType);
+
+@override
+String toString() {
+  return 'FeedEvent.changeFeedType(feedType: $feedType)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ChangeFeedTypeEventCopyWith<$Res> implements $FeedEventCopyWith<$Res> {
+  factory $ChangeFeedTypeEventCopyWith(ChangeFeedTypeEvent value, $Res Function(ChangeFeedTypeEvent) _then) = _$ChangeFeedTypeEventCopyWithImpl;
+@useResult
+$Res call({
+ FeedType feedType
+});
+
+
+
+
+}
+/// @nodoc
+class _$ChangeFeedTypeEventCopyWithImpl<$Res>
+    implements $ChangeFeedTypeEventCopyWith<$Res> {
+  _$ChangeFeedTypeEventCopyWithImpl(this._self, this._then);
+
+  final ChangeFeedTypeEvent _self;
+  final $Res Function(ChangeFeedTypeEvent) _then;
+
+/// Create a copy of FeedEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? feedType = null,}) {
+  return _then(ChangeFeedTypeEvent(
+null == feedType ? _self.feedType : feedType // ignore: cast_nullable_to_non_nullable
+as FeedType,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ToggleLikeEvent implements FeedEvent {
+  const ToggleLikeEvent({required this.contentId, required this.contentType});
+  
+
+ final  String contentId;
+ final  ContentType contentType;
 
 /// Create a copy of FeedEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -316,16 +389,16 @@ $ToggleLikeEventCopyWith<ToggleLikeEvent> get copyWith => _$ToggleLikeEventCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleLikeEvent&&(identical(other.storyId, storyId) || other.storyId == storyId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleLikeEvent&&(identical(other.contentId, contentId) || other.contentId == contentId)&&(identical(other.contentType, contentType) || other.contentType == contentType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,storyId);
+int get hashCode => Object.hash(runtimeType,contentId,contentType);
 
 @override
 String toString() {
-  return 'FeedEvent.toggleLike(storyId: $storyId)';
+  return 'FeedEvent.toggleLike(contentId: $contentId, contentType: $contentType)';
 }
 
 
@@ -336,7 +409,7 @@ abstract mixin class $ToggleLikeEventCopyWith<$Res> implements $FeedEventCopyWit
   factory $ToggleLikeEventCopyWith(ToggleLikeEvent value, $Res Function(ToggleLikeEvent) _then) = _$ToggleLikeEventCopyWithImpl;
 @useResult
 $Res call({
- String storyId
+ String contentId, ContentType contentType
 });
 
 
@@ -353,10 +426,11 @@ class _$ToggleLikeEventCopyWithImpl<$Res>
 
 /// Create a copy of FeedEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? storyId = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? contentId = null,Object? contentType = null,}) {
   return _then(ToggleLikeEvent(
-null == storyId ? _self.storyId : storyId // ignore: cast_nullable_to_non_nullable
-as String,
+contentId: null == contentId ? _self.contentId : contentId // ignore: cast_nullable_to_non_nullable
+as String,contentType: null == contentType ? _self.contentType : contentType // ignore: cast_nullable_to_non_nullable
+as ContentType,
   ));
 }
 
@@ -367,10 +441,11 @@ as String,
 
 
 class ToggleBookmarkEvent implements FeedEvent {
-  const ToggleBookmarkEvent(this.storyId);
+  const ToggleBookmarkEvent({required this.contentId, required this.contentType});
   
 
- final  String storyId;
+ final  String contentId;
+ final  ContentType contentType;
 
 /// Create a copy of FeedEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -382,16 +457,16 @@ $ToggleBookmarkEventCopyWith<ToggleBookmarkEvent> get copyWith => _$ToggleBookma
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleBookmarkEvent&&(identical(other.storyId, storyId) || other.storyId == storyId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleBookmarkEvent&&(identical(other.contentId, contentId) || other.contentId == contentId)&&(identical(other.contentType, contentType) || other.contentType == contentType));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,storyId);
+int get hashCode => Object.hash(runtimeType,contentId,contentType);
 
 @override
 String toString() {
-  return 'FeedEvent.toggleBookmark(storyId: $storyId)';
+  return 'FeedEvent.toggleBookmark(contentId: $contentId, contentType: $contentType)';
 }
 
 
@@ -402,7 +477,7 @@ abstract mixin class $ToggleBookmarkEventCopyWith<$Res> implements $FeedEventCop
   factory $ToggleBookmarkEventCopyWith(ToggleBookmarkEvent value, $Res Function(ToggleBookmarkEvent) _then) = _$ToggleBookmarkEventCopyWithImpl;
 @useResult
 $Res call({
- String storyId
+ String contentId, ContentType contentType
 });
 
 
@@ -419,10 +494,11 @@ class _$ToggleBookmarkEventCopyWithImpl<$Res>
 
 /// Create a copy of FeedEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? storyId = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? contentId = null,Object? contentType = null,}) {
   return _then(ToggleBookmarkEvent(
-null == storyId ? _self.storyId : storyId // ignore: cast_nullable_to_non_nullable
-as String,
+contentId: null == contentId ? _self.contentId : contentId // ignore: cast_nullable_to_non_nullable
+as String,contentType: null == contentType ? _self.contentType : contentType // ignore: cast_nullable_to_non_nullable
+as ContentType,
   ));
 }
 
@@ -433,10 +509,11 @@ as String,
 
 
 class AddCommentEvent implements FeedEvent {
-  const AddCommentEvent({required this.storyId, required this.text, this.parentCommentId});
+  const AddCommentEvent({required this.contentId, required this.contentType, required this.text, this.parentCommentId});
   
 
- final  String storyId;
+ final  String contentId;
+ final  ContentType contentType;
  final  String text;
  final  String? parentCommentId;
 
@@ -450,16 +527,16 @@ $AddCommentEventCopyWith<AddCommentEvent> get copyWith => _$AddCommentEventCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddCommentEvent&&(identical(other.storyId, storyId) || other.storyId == storyId)&&(identical(other.text, text) || other.text == text)&&(identical(other.parentCommentId, parentCommentId) || other.parentCommentId == parentCommentId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddCommentEvent&&(identical(other.contentId, contentId) || other.contentId == contentId)&&(identical(other.contentType, contentType) || other.contentType == contentType)&&(identical(other.text, text) || other.text == text)&&(identical(other.parentCommentId, parentCommentId) || other.parentCommentId == parentCommentId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,storyId,text,parentCommentId);
+int get hashCode => Object.hash(runtimeType,contentId,contentType,text,parentCommentId);
 
 @override
 String toString() {
-  return 'FeedEvent.addComment(storyId: $storyId, text: $text, parentCommentId: $parentCommentId)';
+  return 'FeedEvent.addComment(contentId: $contentId, contentType: $contentType, text: $text, parentCommentId: $parentCommentId)';
 }
 
 
@@ -470,7 +547,7 @@ abstract mixin class $AddCommentEventCopyWith<$Res> implements $FeedEventCopyWit
   factory $AddCommentEventCopyWith(AddCommentEvent value, $Res Function(AddCommentEvent) _then) = _$AddCommentEventCopyWithImpl;
 @useResult
 $Res call({
- String storyId, String text, String? parentCommentId
+ String contentId, ContentType contentType, String text, String? parentCommentId
 });
 
 
@@ -487,10 +564,11 @@ class _$AddCommentEventCopyWithImpl<$Res>
 
 /// Create a copy of FeedEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? storyId = null,Object? text = null,Object? parentCommentId = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? contentId = null,Object? contentType = null,Object? text = null,Object? parentCommentId = freezed,}) {
   return _then(AddCommentEvent(
-storyId: null == storyId ? _self.storyId : storyId // ignore: cast_nullable_to_non_nullable
-as String,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+contentId: null == contentId ? _self.contentId : contentId // ignore: cast_nullable_to_non_nullable
+as String,contentType: null == contentType ? _self.contentType : contentType // ignore: cast_nullable_to_non_nullable
+as ContentType,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,parentCommentId: freezed == parentCommentId ? _self.parentCommentId : parentCommentId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -502,11 +580,12 @@ as String?,
 /// @nodoc
 
 
-class ShareStoryEvent implements FeedEvent {
-  const ShareStoryEvent({required this.storyId, required this.isDirect, this.recipientId});
+class ShareContentEvent implements FeedEvent {
+  const ShareContentEvent({required this.contentId, required this.contentType, required this.isDirect, this.recipientId});
   
 
- final  String storyId;
+ final  String contentId;
+ final  ContentType contentType;
  final  bool isDirect;
  final  String? recipientId;
 
@@ -514,33 +593,33 @@ class ShareStoryEvent implements FeedEvent {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ShareStoryEventCopyWith<ShareStoryEvent> get copyWith => _$ShareStoryEventCopyWithImpl<ShareStoryEvent>(this, _$identity);
+$ShareContentEventCopyWith<ShareContentEvent> get copyWith => _$ShareContentEventCopyWithImpl<ShareContentEvent>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShareStoryEvent&&(identical(other.storyId, storyId) || other.storyId == storyId)&&(identical(other.isDirect, isDirect) || other.isDirect == isDirect)&&(identical(other.recipientId, recipientId) || other.recipientId == recipientId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ShareContentEvent&&(identical(other.contentId, contentId) || other.contentId == contentId)&&(identical(other.contentType, contentType) || other.contentType == contentType)&&(identical(other.isDirect, isDirect) || other.isDirect == isDirect)&&(identical(other.recipientId, recipientId) || other.recipientId == recipientId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,storyId,isDirect,recipientId);
+int get hashCode => Object.hash(runtimeType,contentId,contentType,isDirect,recipientId);
 
 @override
 String toString() {
-  return 'FeedEvent.shareStory(storyId: $storyId, isDirect: $isDirect, recipientId: $recipientId)';
+  return 'FeedEvent.shareContent(contentId: $contentId, contentType: $contentType, isDirect: $isDirect, recipientId: $recipientId)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ShareStoryEventCopyWith<$Res> implements $FeedEventCopyWith<$Res> {
-  factory $ShareStoryEventCopyWith(ShareStoryEvent value, $Res Function(ShareStoryEvent) _then) = _$ShareStoryEventCopyWithImpl;
+abstract mixin class $ShareContentEventCopyWith<$Res> implements $FeedEventCopyWith<$Res> {
+  factory $ShareContentEventCopyWith(ShareContentEvent value, $Res Function(ShareContentEvent) _then) = _$ShareContentEventCopyWithImpl;
 @useResult
 $Res call({
- String storyId, bool isDirect, String? recipientId
+ String contentId, ContentType contentType, bool isDirect, String? recipientId
 });
 
 
@@ -548,19 +627,20 @@ $Res call({
 
 }
 /// @nodoc
-class _$ShareStoryEventCopyWithImpl<$Res>
-    implements $ShareStoryEventCopyWith<$Res> {
-  _$ShareStoryEventCopyWithImpl(this._self, this._then);
+class _$ShareContentEventCopyWithImpl<$Res>
+    implements $ShareContentEventCopyWith<$Res> {
+  _$ShareContentEventCopyWithImpl(this._self, this._then);
 
-  final ShareStoryEvent _self;
-  final $Res Function(ShareStoryEvent) _then;
+  final ShareContentEvent _self;
+  final $Res Function(ShareContentEvent) _then;
 
 /// Create a copy of FeedEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? storyId = null,Object? isDirect = null,Object? recipientId = freezed,}) {
-  return _then(ShareStoryEvent(
-storyId: null == storyId ? _self.storyId : storyId // ignore: cast_nullable_to_non_nullable
-as String,isDirect: null == isDirect ? _self.isDirect : isDirect // ignore: cast_nullable_to_non_nullable
+@pragma('vm:prefer-inline') $Res call({Object? contentId = null,Object? contentType = null,Object? isDirect = null,Object? recipientId = freezed,}) {
+  return _then(ShareContentEvent(
+contentId: null == contentId ? _self.contentId : contentId // ignore: cast_nullable_to_non_nullable
+as String,contentType: null == contentType ? _self.contentType : contentType // ignore: cast_nullable_to_non_nullable
+as ContentType,isDirect: null == isDirect ? _self.isDirect : isDirect // ignore: cast_nullable_to_non_nullable
 as bool,recipientId: freezed == recipientId ? _self.recipientId : recipientId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

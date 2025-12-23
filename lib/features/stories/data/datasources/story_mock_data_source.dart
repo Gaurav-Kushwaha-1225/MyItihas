@@ -10,6 +10,22 @@ class StoryMockDataSource {
   List<StoryModel>? _cachedStories;
   final Random _random = Random();
 
+  // Mock image URLs for story backgrounds
+  static const List<String> _storyImageUrls = [
+    'https://images.unsplash.com/photo-1609619385002-f40f8e7c8945?w=800', // Temple
+    'https://images.unsplash.com/photo-1545126178-862cdb469409?w=800', // Ganges
+    'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800', // Taj Mahal
+    'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800', // Hindu temple
+    'https://images.unsplash.com/photo-1544006659-f0b21884ce1d?w=800', // Varanasi
+    'https://images.unsplash.com/photo-1590077428593-a55bb07c4665?w=800', // Diya lamps
+    'https://images.unsplash.com/photo-1600093463592-8e36ae95ef56?w=800', // Temple interior
+    'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=800', // Hampi
+    'https://images.unsplash.com/photo-1593693397690-362cb9666fc2?w=800', // Temple at sunset
+    'https://images.unsplash.com/photo-1604508155216-b0e0f0a02911?w=800', // Khajuraho
+    'https://images.unsplash.com/photo-1548013146-72479768bada?w=800', // Indian architecture
+    'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800', // Sacred place
+  ];
+
   Future<List<StoryModel>> getStoriesFromAssets() async {
     if (_cachedStories != null) {
       return _cachedStories!;
@@ -43,7 +59,7 @@ class StoryMockDataSource {
           activity: json['activity'] ?? '',
           lesson: json['lesson'] ?? '',
           attributes: attributes,
-          imageUrl: null,
+          imageUrl: _storyImageUrls[_random.nextInt(_storyImageUrls.length)],
           author: null,
           publishedAt: publishedAt,
           likes: likes,
