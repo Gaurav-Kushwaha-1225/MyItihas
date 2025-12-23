@@ -65,6 +65,13 @@ class ProfilePage extends StatelessWidget {
           },
           tooltip: 'Search Users',
         ),
+        IconButton(
+          icon: const Icon(Icons.settings_rounded),
+          onPressed: () {
+            const SettingsRoute().push(context);
+          },
+          tooltip: 'Settings',
+        ),
       ],
     );
   }
@@ -108,6 +115,13 @@ class _ProfileView extends StatelessWidget {
             },
             tooltip: 'Search Users',
           ),
+          IconButton(
+            icon: const Icon(Icons.settings_rounded),
+            onPressed: () {
+              const SettingsRoute().push(context);
+            },
+            tooltip: 'Settings',
+          ),
         ],
       ) : AppBar(
         title: const Text('My Profile'),
@@ -118,6 +132,13 @@ class _ProfileView extends StatelessWidget {
               const DiscoverRoute().push(context);
             },
             tooltip: 'Search Users',
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_rounded),
+            onPressed: () {
+              const SettingsRoute().push(context);
+            },
+            tooltip: 'Settings',
           ),
         ],
       ),
