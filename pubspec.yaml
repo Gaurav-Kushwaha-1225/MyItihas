@@ -50,7 +50,7 @@ dependencies:
   getwidget: ^7.0.0
   sqflite: ^2.4.2
   supabase_flutter: ^2.5.6
-  app_links: ^6.3.2
+  app_links: ^6.4.1
 
 dev_dependencies:
   flutter_test:
@@ -69,7 +69,7 @@ dev_dependencies:
       url: https://github.com/AmanSikarwar/freezed.git
       path: packages/freezed
   json_serializable: ^6.11.3
-  injectable_generator: ^2.11.1
+  injectable_generator: ^2.12.0
 
   # i18n + storage
   slang_build_runner: ^4.11.0
