@@ -1,11 +1,13 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:myitihas/utils/theme.dart';
+import 'package:sizer/sizer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
-import 'package:myitihas/utils/theme.dart';
 
 class ChatItihasPage extends StatefulWidget {
   const ChatItihasPage({super.key});
@@ -91,12 +93,12 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
-
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
     final glassBg = isDark ? DarkColors.glassBg : Colors.white.withOpacity(0.9);
     final accentColor = isDark
         ? DarkColors.accentPrimary
         : LightColors.accentPrimary;
+
     final Gradient selectedGradient = LinearGradient(
       colors: isDark
           ? [Colors.white, DarkColors.accentPrimary]
@@ -115,89 +117,99 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
       displayedChats = []; // Status not implemented yet
     }
 
-    return Column(
-      children: [
-        SizedBox(height: 20.h),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  "Map",
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 2.5.w),
+      child: Column(
+        children: [
+          SizedBox(height: 6.h),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 4.w),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    "Map",
+                    style: GoogleFonts.inter(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18.sp,
+                      foreground: Paint()
+                        ..shader = selectedGradient.createShader(
+                          Rect.fromLTWH(0, 0, 60.w, 8.h),
+                        ),
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    context.read<ThemeBloc>().add(ToggleTheme());
+                  },
+                  child: Icon(
+                    Icons.dark_mode,
+                    color: isDark ? Colors.white : Colors.black,
+                    size: 18.sp,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          if (_isSelectionMode)
+            _buildSelectionHeader(isDark)
+          else
+            SizedBox(height: 2.h),
+
+          // Search Bar
+          ClipRRect(
+            borderRadius: BorderRadius.circular(30),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+              child: Container(
+                height: 6.5.h,
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.black.withOpacity(0.35) : Colors.white,
+                  borderRadius: BorderRadius.circular(30.sp),
+                  border: Border.all(
+                    color: isDark
+                        ? Colors.white.withOpacity(0.25)
+                        : Colors.grey.withOpacity(0.45),
+                  ),
+                ),
+                child: TextField(
                   style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18.sp,
-                    foreground: Paint()
-                      ..shader = selectedGradient.createShader(
-                        Rect.fromLTWH(0, 0, 60.w, 8.h),
-                      ),
+                    color: isDark
+                        ? DarkColors.textPrimary
+                        : LightColors.textPrimary,
+                    fontSize: 13.sp,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: _selectedTabIndex == 1
+                        ? "Search groups..."
+                        : "Search conversations...",
+                    hintStyle: TextStyle(
+                      color: isDark
+                          ? DarkColors.textSecondary
+                          : LightColors.textSecondary,
+                      fontSize: 15.sp,
+                    ),
+                    prefixIcon: Icon(
+                      Icons.search_rounded,
+                      color: Theme.of(context).primaryColor,
+                      size: 20.sp,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(vertical: 2.h),
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  context.read<ThemeBloc>().add(ToggleTheme());
-                },
-                child: Icon(
-                  Icons.dark_mode,
-                  color: isDark ? Colors.white : Colors.black,
-                  size: 18.sp,
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (_isSelectionMode)
-          _buildSelectionHeader(isDark)
-        else
-          SizedBox(height: 16.h),
-
-        // Search Bar
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 16.w),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(30.r),
-            border: Border.all(
-              color: isDark ? DarkColors.glassBorder : LightColors.glassBorder,
-              width: 1.5,
             ),
           ),
-          child: TextField(
-            style: GoogleFonts.inter(
-              color: isDark ? DarkColors.textPrimary : LightColors.textPrimary,
-              fontSize: 13.sp,
-            ),
-            decoration: InputDecoration(
-              hintText: _selectedTabIndex == 1
-                  ? "Search groups..."
-                  : "Search conversations...",
-              hintStyle: TextStyle(
-                color: isDark
-                    ? DarkColors.textSecondary
-                    : LightColors.textSecondary,
-                fontSize: 15.sp,
-              ),
-              prefixIcon: Icon(
-                Icons.search_rounded,
-                color: Theme.of(context).primaryColor,
-                size: 20.sp,
-              ),
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(vertical: 16.h),
-            ),
-          ),
-        ),
 
-        SizedBox(height: 20.h),
+          SizedBox(height: 2.5.h),
 
-        // Tabs
-        Row(
-          children: [
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(left: 16.w),
+          // Tabs
+          Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 1.5.w),
                 child: Row(
                   children: List.generate(_tabs.length, (index) {
                     bool isSelected = _selectedTabIndex == index;
@@ -209,10 +221,10 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                         });
                       },
                       child: Container(
-                        margin: EdgeInsets.only(right: 12.w),
+                        margin: EdgeInsets.only(right: 3.w),
                         padding: EdgeInsets.symmetric(
-                          horizontal: 20.w,
-                          vertical: 10.h,
+                          horizontal: 5.w,
+                          vertical: 1.2.h,
                         ),
                         decoration: BoxDecoration(
                           gradient: isSelected
@@ -242,215 +254,220 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                   }),
                 ),
               ),
-            ),
-            _buildHeaderActionButton(
-              isDark,
-              Icons.add,
-              () => context.push('/new-chat'),
-            ),
-            SizedBox(width: 16.w),
-          ],
-        ),
+              _buildHeaderActionButton(
+                isDark,
+                Icons.add,
+                () => context.push('/new_chat'),
+              ),
+              SizedBox(width: 3.w),
+              _buildHeaderActionButton(
+                isDark,
+                CupertinoIcons.camera_fill,
+                () {},
+              ),
+            ],
+          ),
 
-        SizedBox(height: 20.h),
+          SizedBox(height: 2.5.h),
 
-        // List
-        Expanded(
-          child: displayedChats.isEmpty
-              ? Center(
-                  child: Text(
-                    "No ${_tabs[_selectedTabIndex]} found",
-                    style: TextStyle(
-                      color: isDark ? Colors.grey : Colors.black54,
+          // List
+          Expanded(
+            child: displayedChats.isEmpty
+                ? Center(
+                    child: Text(
+                      "No ${_tabs[_selectedTabIndex]} found",
+                      style: TextStyle(
+                        color: isDark ? Colors.grey : Colors.black54,
+                      ),
                     ),
-                  ),
-                )
-              : ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  itemCount: displayedChats.length,
-                  itemBuilder: (context, index) {
-                    final chat = displayedChats[index];
-                    final isSelected = _selectedIndices.contains(index);
+                  )
+                : ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 1.w),
+                    itemCount: displayedChats.length,
+                    itemBuilder: (context, index) {
+                      final chat = displayedChats[index];
+                      final isSelected = _selectedIndices.contains(index);
 
-                    return GestureDetector(
-                      onLongPress: () => _toggleSelection(index),
-                      onTap: () {
-                        if (_isSelectionMode) {
-                          _toggleSelection(index);
-                        } else {
-                          context.push(
-                            '/chat_detail',
-                            extra: {
-                              'name': chat['name'],
-                              'color': chat['color'],
-                              'isGroup':
-                                  chat['type'] == 'group', // Pass group flag
-                            },
-                          );
-                        }
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 200),
-                        margin: EdgeInsets.only(bottom: 4.h),
-                        padding: EdgeInsets.symmetric(
-                          vertical: 12.h,
-                          horizontal: 8.w,
-                        ),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? (isDark
-                                    ? Colors.white.withOpacity(0.05)
-                                    : Colors.blue.withOpacity(0.05))
-                              : Colors.transparent,
-                          borderRadius: BorderRadius.circular(18.r),
-                        ),
-                        child: Row(
-                          children: [
-                            Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Container(
-                                  width: 56.w,
-                                  height: 56.w,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: chat['color'].withOpacity(0.2),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      chat['name'][0],
-                                      style: GoogleFonts.inter(
-                                        fontSize: 18.sp,
-                                        fontWeight: FontWeight.bold,
-                                        color: chat['color'],
-                                      ),
+                      return GestureDetector(
+                        onLongPress: () => _toggleSelection(index),
+                        onTap: () {
+                          if (_isSelectionMode) {
+                            _toggleSelection(index);
+                          } else {
+                            context.push(
+                              '/chat_detail',
+                              extra: {
+                                'name': chat['name'],
+                                'color': chat['color'],
+                                'isGroup':
+                                    chat['type'] == 'group', // Pass group flag
+                              },
+                            );
+                          }
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          margin: EdgeInsets.only(bottom: 0.5.h),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 1.5.h,
+                            horizontal: 1.w,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? (isDark
+                                      ? Colors.white.withOpacity(0.05)
+                                      : Colors.blue.withOpacity(0.05))
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(15.sp),
+                          ),
+                          child: Row(
+                            children: [
+                              Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Container(
+                                    width: 14.w,
+                                    height: 14.w,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: chat['color'].withOpacity(0.2),
                                     ),
-                                  ),
-                                ),
-                                if (isSelected)
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: Container(
-                                      width: 20.w,
-                                      height: 20.w,
-                                      decoration: BoxDecoration(
-                                        color: DarkColors.profileGreen,
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: isDark
-                                              ? DarkColors.bgColor
-                                              : Colors.white,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Icons.check,
-                                        size: 12.sp,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  )
-                                else if (chat['isOnline'] == true)
-                                  Positioned(
-                                    right: 0,
-                                    bottom: 0,
-                                    child: Container(
-                                      width: 16.w,
-                                      height: 16.w,
-                                      decoration: BoxDecoration(
-                                        color: DarkColors.profileGreen,
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: isDark
-                                              ? DarkColors.bgColor
-                                              : Colors.white,
-                                          width: 2.5,
+                                    child: Center(
+                                      child: Text(
+                                        chat['name'][0],
+                                        style: GoogleFonts.inter(
+                                          fontSize: 18.sp,
+                                          fontWeight: FontWeight.bold,
+                                          color: chat['color'],
                                         ),
                                       ),
                                     ),
                                   ),
-                              ],
-                            ),
-                            SizedBox(width: 16.w),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    chat['name'],
-                                    style: GoogleFonts.inter(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w700,
-                                      color: isDark
-                                          ? DarkColors.textPrimary
-                                          : LightColors.textPrimary,
-                                    ),
-                                  ),
-                                  SizedBox(height: 4.h),
-                                  Text(
-                                    chat['msg'],
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.inter(
-                                      fontSize: 14.sp,
-                                      color: chat['isTyping'] == true
-                                          ? Theme.of(context).primaryColor
-                                          : (isDark
-                                                ? DarkColors.textSecondary
-                                                : LightColors.textSecondary),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (!isSelected)
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    chat['time'],
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12.sp,
-                                      color: isDark
-                                          ? DarkColors.textSecondary
-                                          : LightColors.textSecondary,
-                                    ),
-                                  ),
-                                  if (chat['unread'] > 0) ...[
-                                    SizedBox(height: 4.h),
-                                    Container(
-                                      height: 24.h,
-                                      width: 24.h,
-                                      padding: EdgeInsets.all(4.h),
-                                      decoration: BoxDecoration(
-                                        gradient: isDark
-                                            ? DarkColors.messageUserGradient
-                                            : LightColors.messageUserGradient,
-                                        shape: BoxShape.circle,
+                                  if (isSelected)
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: Container(
+                                        width: 5.w,
+                                        height: 5.w,
+                                        decoration: BoxDecoration(
+                                          color: DarkColors.profileGreen,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: isDark
+                                                ? DarkColors.bgColor
+                                                : Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          Icons.check,
+                                          size: 10.sp,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          chat['unread'].toString(),
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.bold,
+                                    )
+                                  else if (chat['isOnline'] == true)
+                                    Positioned(
+                                      right: 0,
+                                      bottom: 0,
+                                      child: Container(
+                                        width: 4.w,
+                                        height: 4.w,
+                                        decoration: BoxDecoration(
+                                          color: DarkColors.profileGreen,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: isDark
+                                                ? DarkColors.bgColor
+                                                : Colors.white,
+                                            width: 2.5,
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ],
                                 ],
                               ),
-                          ],
+                              SizedBox(width: 4.w),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      chat['name'],
+                                      style: GoogleFonts.inter(
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: isDark
+                                            ? DarkColors.textPrimary
+                                            : LightColors.textPrimary,
+                                      ),
+                                    ),
+                                    SizedBox(height: 0.5.h),
+                                    Text(
+                                      chat['msg'],
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.inter(
+                                        fontSize: 14.sp,
+                                        color: chat['isTyping'] == true
+                                            ? Theme.of(context).primaryColor
+                                            : (isDark
+                                                  ? DarkColors.textSecondary
+                                                  : LightColors.textSecondary),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (!isSelected)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      chat['time'],
+                                      style: GoogleFonts.inter(
+                                        fontSize: 12.sp,
+                                        color: isDark
+                                            ? DarkColors.textSecondary
+                                            : LightColors.textSecondary,
+                                      ),
+                                    ),
+                                    if (chat['unread'] > 0) ...[
+                                      SizedBox(height: 0.5.h),
+                                      Container(
+                                        height: 2.5.h,
+                                        width: 2.5.h,
+                                        padding: EdgeInsets.all(0.5.h),
+                                        decoration: BoxDecoration(
+                                          gradient: isDark
+                                              ? DarkColors.messageUserGradient
+                                              : LightColors.messageUserGradient,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            chat['unread'].toString(),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-        ),
-      ],
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -507,15 +524,15 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 40.w,
-        height: 40.w,
+        width: 8.w,
+        height: 8.w,
         decoration: BoxDecoration(
           color: isDark ? DarkColors.glassBg : Colors.grey.shade200,
           shape: BoxShape.circle,
         ),
         child: Icon(
           icon,
-          size: 20.sp,
+          size: 18.sp,
           color: isDark ? DarkColors.accentPrimary : LightColors.accentPrimary,
         ),
       ),

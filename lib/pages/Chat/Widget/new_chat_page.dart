@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sizer/sizer.dart';
 
 class NewChatPage extends StatefulWidget {
   const NewChatPage({super.key});
@@ -36,7 +36,7 @@ class _NewChatPageState extends State<NewChatPage> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.h),
+        preferredSize: Size.fromHeight(6.h),
         child: _buildAppBar(context, isDark),
       ),
       body: _buildBody(context, isDark),
@@ -51,9 +51,10 @@ class _NewChatPageState extends State<NewChatPage> {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: isDark
-            ? DarkColors.featureCardGradient
-            : LightColors.featureCardGradient,
+        gradient:
+            isDark
+                ? DarkColors.featureCardGradient
+                : LightColors.featureCardGradient,
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).secondaryHeaderColor.withAlpha(120),
@@ -62,7 +63,7 @@ class _NewChatPageState extends State<NewChatPage> {
           ),
         ],
       ),
-      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: SafeArea(
         child: Row(
           children: [
@@ -76,9 +77,9 @@ class _NewChatPageState extends State<NewChatPage> {
                 style: GoogleFonts.inter(
                   fontWeight: FontWeight.w700,
                   fontSize: 18.sp,
-                  foreground: Paint()
-                    ..shader =
-                        (isDark
+                  foreground:
+                      Paint()
+                        ..shader = (isDark
                                 ? DarkColors.messageUserGradient
                                 : LightColors.messageUserGradient)
                             .createShader(const Rect.fromLTWH(0, 0, 200, 70)),
@@ -129,9 +130,8 @@ class _NewChatPageState extends State<NewChatPage> {
 
   Widget _buildSearchBar(bool isDark) {
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    final secondaryTextColor = isDark
-        ? DarkColors.textSecondary
-        : LightColors.textSecondary;
+    final secondaryTextColor =
+        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
     final inputBg = isDark ? DarkColors.inputBg : LightColors.inputBg;
 
     return Padding(
@@ -166,12 +166,10 @@ class _NewChatPageState extends State<NewChatPage> {
 
   Widget _buildTopOptions(BuildContext context, bool isDark) {
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    final secondaryTextColor = isDark
-        ? DarkColors.textSecondary
-        : LightColors.textSecondary;
-    final accentColor = isDark
-        ? DarkColors.accentPrimary
-        : LightColors.accentPrimary;
+    final secondaryTextColor =
+        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
+    final accentColor =
+        isDark ? DarkColors.accentPrimary : LightColors.accentPrimary;
 
     return Column(
       children: [
@@ -180,14 +178,14 @@ class _NewChatPageState extends State<NewChatPage> {
           title: "New group",
           textColor: textColor,
           accentColor: accentColor,
-          onTap: () => context.push('/new-group'),
+          onTap: () => context.push('/new_group'),
         ),
         _buildOptionTile(
           icon: Icons.person_add,
           title: "New contact",
           textColor: textColor,
           accentColor: accentColor,
-          onTap: () => context.push('/new-contact'),
+          onTap: () => context.push('/new_contact'),
         ),
         Divider(color: secondaryTextColor.withOpacity(0.2)),
       ],
@@ -219,12 +217,10 @@ class _NewChatPageState extends State<NewChatPage> {
 
   Widget _buildContactLists(bool isDark) {
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    final secondaryTextColor = isDark
-        ? DarkColors.textSecondary
-        : LightColors.textSecondary;
-    final accentColor = isDark
-        ? DarkColors.accentPrimary
-        : LightColors.accentPrimary;
+    final secondaryTextColor =
+        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
+    final accentColor =
+        isDark ? DarkColors.accentPrimary : LightColors.accentPrimary;
 
     return Expanded(
       child: ListView(

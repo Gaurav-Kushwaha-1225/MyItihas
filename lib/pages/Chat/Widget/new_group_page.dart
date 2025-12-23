@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sizer/sizer.dart';
 
 class NewGroupPage extends StatefulWidget {
   const NewGroupPage({super.key});
@@ -57,7 +57,7 @@ class _NewGroupPageState extends State<NewGroupPage> {
     return Scaffold(
       // 1. App Bar
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.h),
+        preferredSize: Size.fromHeight(6.h),
         child: Container(
           decoration: BoxDecoration(
             gradient:
@@ -73,7 +73,7 @@ class _NewGroupPageState extends State<NewGroupPage> {
           ),
           child: SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              padding: EdgeInsets.symmetric(horizontal: 2.w),
               child: Row(
                 children: [
                   IconButton(
@@ -135,11 +135,11 @@ class _NewGroupPageState extends State<NewGroupPage> {
           ),
         ),
         child: ListView(
-          padding: EdgeInsets.symmetric(vertical: 16.h),
+          padding: EdgeInsets.symmetric(vertical: 2.h),
           children: [
             // Frequently Contacted Header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
               child: Text(
                 "Frequently contacted",
                 style: TextStyle(
@@ -163,11 +163,11 @@ class _NewGroupPageState extends State<NewGroupPage> {
               ),
             ),
 
-            SizedBox(height: 16.h),
+            SizedBox(height: 2.h),
 
             // All Contacts Header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
               child: Text(
                 "Contacts on MyItihas",
                 style: TextStyle(
@@ -192,7 +192,7 @@ class _NewGroupPageState extends State<NewGroupPage> {
             ),
 
             // Padding for FAB
-            SizedBox(height: 80.h),
+            SizedBox(height: 10.h),
           ],
         ),
       ),
@@ -201,7 +201,7 @@ class _NewGroupPageState extends State<NewGroupPage> {
       floatingActionButton:
           _selectedContacts.isNotEmpty
               ? Container(
-                margin: EdgeInsets.only(bottom: 16.h, right: 16.w),
+                margin: EdgeInsets.only(bottom: 2.h, right: 2.w),
                 child: FloatingActionButton(
                   onPressed: () {
                     // Navigate to next step (Group Name, etc.)
@@ -228,15 +228,15 @@ class _NewGroupPageState extends State<NewGroupPage> {
     return InkWell(
       onTap: () => _toggleSelection(contact['name']),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
         child: Row(
           children: [
             // Avatar Stack
             Stack(
               children: [
                 Container(
-                  width: 48.w,
-                  height: 48.w,
+                  width: 12.w,
+                  height: 12.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     // Placeholder color or image
@@ -248,7 +248,7 @@ class _NewGroupPageState extends State<NewGroupPage> {
                   ),
                   child:
                       contact['img'] == null
-                          ? Icon(Icons.person, color: accentColor, size: 24.sp)
+                          ? Icon(Icons.person, color: accentColor, size: 20.sp)
                           : null,
                 ),
                 // Selection Checkmark (if selected)
@@ -266,12 +266,12 @@ class _NewGroupPageState extends State<NewGroupPage> {
                           width: 2,
                         ),
                       ),
-                      child: Icon(Icons.check, size: 12.sp, color: Colors.white),
+                      child: Icon(Icons.check, size: 8.sp, color: Colors.white),
                     ),
                   ),
               ],
             ),
-            SizedBox(width: 16.w),
+            SizedBox(width: 4.w),
 
             // Name and Status
             Expanded(
