@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
 import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
-import 'package:myitihas/pages/home_content_page.dart';
+import 'package:myitihas/pages/story_generator.dart';
 import 'package:sizer/sizer.dart';
 import 'package:myitihas/features/social/presentation/pages/social_feed_page.dart';
 import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
@@ -35,7 +35,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> get pages => [
-      const HomeContentPage(),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: const StoryGeneratorPage(),
+      ),
       const ChatItihasPage(),
       const SocialFeedPage(),
       const AkhandaBharatMapPage(),
