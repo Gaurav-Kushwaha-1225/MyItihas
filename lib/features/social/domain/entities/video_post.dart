@@ -1,28 +1,29 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:myitihas/features/social/domain/entities/user.dart';
 
-part 'text_post.freezed.dart';
+part 'video_post.freezed.dart';
 
 @freezed
-abstract class TextPost with _$TextPost {
-  const factory TextPost({
+abstract class VideoPost with _$VideoPost {
+  const factory VideoPost({
     required String id,
-    required String body,
-    String? imageUrl,
-    @Default(0xFF1E3A5F) int backgroundColor,
-    @Default(0xFFFFFFFF) int textColor,
-    @Default(18.0) double fontSize,
-    String? fontFamily,
+    required String videoUrl,
+    String? thumbnailUrl,
+    String? caption,
+    String? location,
+    @Default(9 / 16) double aspectRatio,
+    @Default(0) int durationSeconds,
     DateTime? createdAt,
     String? authorId,
     User? authorUser,
     @Default(0) int likes,
     @Default(0) int commentCount,
     @Default(0) int shareCount,
+    @Default(0) int viewCount,
     @Default(false) bool isLikedByCurrentUser,
     @Default(false) bool isFavorite,
     @Default([]) List<String> tags,
-  }) = _TextPost;
+  }) = _VideoPost;
 
-  const TextPost._();
+  const VideoPost._();
 }

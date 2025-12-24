@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TextPost {
 
- String get id; String get body; int get backgroundColor; int get textColor; double get fontSize; String? get fontFamily; DateTime? get createdAt; String? get authorId; User? get authorUser; int get likes; int get commentCount; int get shareCount; bool get isLikedByCurrentUser; bool get isFavorite; List<String> get tags;
+ String get id; String get body; String? get imageUrl; int get backgroundColor; int get textColor; double get fontSize; String? get fontFamily; DateTime? get createdAt; String? get authorId; User? get authorUser; int get likes; int get commentCount; int get shareCount; bool get isLikedByCurrentUser; bool get isFavorite; List<String> get tags;
 /// Create a copy of TextPost
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $TextPostCopyWith<TextPost> get copyWith => _$TextPostCopyWithImpl<TextPost>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TextPost&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.textColor, textColor) || other.textColor == textColor)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize)&&(identical(other.fontFamily, fontFamily) || other.fontFamily == fontFamily)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&(identical(other.authorUser, authorUser) || other.authorUser == authorUser)&&(identical(other.likes, likes) || other.likes == likes)&&(identical(other.commentCount, commentCount) || other.commentCount == commentCount)&&(identical(other.shareCount, shareCount) || other.shareCount == shareCount)&&(identical(other.isLikedByCurrentUser, isLikedByCurrentUser) || other.isLikedByCurrentUser == isLikedByCurrentUser)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&const DeepCollectionEquality().equals(other.tags, tags));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TextPost&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.textColor, textColor) || other.textColor == textColor)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize)&&(identical(other.fontFamily, fontFamily) || other.fontFamily == fontFamily)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&(identical(other.authorUser, authorUser) || other.authorUser == authorUser)&&(identical(other.likes, likes) || other.likes == likes)&&(identical(other.commentCount, commentCount) || other.commentCount == commentCount)&&(identical(other.shareCount, shareCount) || other.shareCount == shareCount)&&(identical(other.isLikedByCurrentUser, isLikedByCurrentUser) || other.isLikedByCurrentUser == isLikedByCurrentUser)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&const DeepCollectionEquality().equals(other.tags, tags));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,body,backgroundColor,textColor,fontSize,fontFamily,createdAt,authorId,authorUser,likes,commentCount,shareCount,isLikedByCurrentUser,isFavorite,const DeepCollectionEquality().hash(tags));
+int get hashCode => Object.hash(runtimeType,id,body,imageUrl,backgroundColor,textColor,fontSize,fontFamily,createdAt,authorId,authorUser,likes,commentCount,shareCount,isLikedByCurrentUser,isFavorite,const DeepCollectionEquality().hash(tags));
 
 @override
 String toString() {
-  return 'TextPost(id: $id, body: $body, backgroundColor: $backgroundColor, textColor: $textColor, fontSize: $fontSize, fontFamily: $fontFamily, createdAt: $createdAt, authorId: $authorId, authorUser: $authorUser, likes: $likes, commentCount: $commentCount, shareCount: $shareCount, isLikedByCurrentUser: $isLikedByCurrentUser, isFavorite: $isFavorite, tags: $tags)';
+  return 'TextPost(id: $id, body: $body, imageUrl: $imageUrl, backgroundColor: $backgroundColor, textColor: $textColor, fontSize: $fontSize, fontFamily: $fontFamily, createdAt: $createdAt, authorId: $authorId, authorUser: $authorUser, likes: $likes, commentCount: $commentCount, shareCount: $shareCount, isLikedByCurrentUser: $isLikedByCurrentUser, isFavorite: $isFavorite, tags: $tags)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $TextPostCopyWith<$Res>  {
   factory $TextPostCopyWith(TextPost value, $Res Function(TextPost) _then) = _$TextPostCopyWithImpl;
 @useResult
 $Res call({
- String id, String body, int backgroundColor, int textColor, double fontSize, String? fontFamily, DateTime? createdAt, String? authorId, User? authorUser, int likes, int commentCount, int shareCount, bool isLikedByCurrentUser, bool isFavorite, List<String> tags
+ String id, String body, String? imageUrl, int backgroundColor, int textColor, double fontSize, String? fontFamily, DateTime? createdAt, String? authorId, User? authorUser, int likes, int commentCount, int shareCount, bool isLikedByCurrentUser, bool isFavorite, List<String> tags
 });
 
 
@@ -62,11 +62,12 @@ class _$TextPostCopyWithImpl<$Res>
 
 /// Create a copy of TextPost
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? body = null,Object? backgroundColor = null,Object? textColor = null,Object? fontSize = null,Object? fontFamily = freezed,Object? createdAt = freezed,Object? authorId = freezed,Object? authorUser = freezed,Object? likes = null,Object? commentCount = null,Object? shareCount = null,Object? isLikedByCurrentUser = null,Object? isFavorite = null,Object? tags = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? body = null,Object? imageUrl = freezed,Object? backgroundColor = null,Object? textColor = null,Object? fontSize = null,Object? fontFamily = freezed,Object? createdAt = freezed,Object? authorId = freezed,Object? authorUser = freezed,Object? likes = null,Object? commentCount = null,Object? shareCount = null,Object? isLikedByCurrentUser = null,Object? isFavorite = null,Object? tags = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
-as String,backgroundColor: null == backgroundColor ? _self.backgroundColor : backgroundColor // ignore: cast_nullable_to_non_nullable
+as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as String?,backgroundColor: null == backgroundColor ? _self.backgroundColor : backgroundColor // ignore: cast_nullable_to_non_nullable
 as int,textColor: null == textColor ? _self.textColor : textColor // ignore: cast_nullable_to_non_nullable
 as int,fontSize: null == fontSize ? _self.fontSize : fontSize // ignore: cast_nullable_to_non_nullable
 as double,fontFamily: freezed == fontFamily ? _self.fontFamily : fontFamily // ignore: cast_nullable_to_non_nullable
@@ -176,10 +177,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String body,  int backgroundColor,  int textColor,  double fontSize,  String? fontFamily,  DateTime? createdAt,  String? authorId,  User? authorUser,  int likes,  int commentCount,  int shareCount,  bool isLikedByCurrentUser,  bool isFavorite,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String body,  String? imageUrl,  int backgroundColor,  int textColor,  double fontSize,  String? fontFamily,  DateTime? createdAt,  String? authorId,  User? authorUser,  int likes,  int commentCount,  int shareCount,  bool isLikedByCurrentUser,  bool isFavorite,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TextPost() when $default != null:
-return $default(_that.id,_that.body,_that.backgroundColor,_that.textColor,_that.fontSize,_that.fontFamily,_that.createdAt,_that.authorId,_that.authorUser,_that.likes,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser,_that.isFavorite,_that.tags);case _:
+return $default(_that.id,_that.body,_that.imageUrl,_that.backgroundColor,_that.textColor,_that.fontSize,_that.fontFamily,_that.createdAt,_that.authorId,_that.authorUser,_that.likes,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser,_that.isFavorite,_that.tags);case _:
   return orElse();
 
 }
@@ -197,10 +198,10 @@ return $default(_that.id,_that.body,_that.backgroundColor,_that.textColor,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String body,  int backgroundColor,  int textColor,  double fontSize,  String? fontFamily,  DateTime? createdAt,  String? authorId,  User? authorUser,  int likes,  int commentCount,  int shareCount,  bool isLikedByCurrentUser,  bool isFavorite,  List<String> tags)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String body,  String? imageUrl,  int backgroundColor,  int textColor,  double fontSize,  String? fontFamily,  DateTime? createdAt,  String? authorId,  User? authorUser,  int likes,  int commentCount,  int shareCount,  bool isLikedByCurrentUser,  bool isFavorite,  List<String> tags)  $default,) {final _that = this;
 switch (_that) {
 case _TextPost():
-return $default(_that.id,_that.body,_that.backgroundColor,_that.textColor,_that.fontSize,_that.fontFamily,_that.createdAt,_that.authorId,_that.authorUser,_that.likes,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser,_that.isFavorite,_that.tags);case _:
+return $default(_that.id,_that.body,_that.imageUrl,_that.backgroundColor,_that.textColor,_that.fontSize,_that.fontFamily,_that.createdAt,_that.authorId,_that.authorUser,_that.likes,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser,_that.isFavorite,_that.tags);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -217,10 +218,10 @@ return $default(_that.id,_that.body,_that.backgroundColor,_that.textColor,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String body,  int backgroundColor,  int textColor,  double fontSize,  String? fontFamily,  DateTime? createdAt,  String? authorId,  User? authorUser,  int likes,  int commentCount,  int shareCount,  bool isLikedByCurrentUser,  bool isFavorite,  List<String> tags)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String body,  String? imageUrl,  int backgroundColor,  int textColor,  double fontSize,  String? fontFamily,  DateTime? createdAt,  String? authorId,  User? authorUser,  int likes,  int commentCount,  int shareCount,  bool isLikedByCurrentUser,  bool isFavorite,  List<String> tags)?  $default,) {final _that = this;
 switch (_that) {
 case _TextPost() when $default != null:
-return $default(_that.id,_that.body,_that.backgroundColor,_that.textColor,_that.fontSize,_that.fontFamily,_that.createdAt,_that.authorId,_that.authorUser,_that.likes,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser,_that.isFavorite,_that.tags);case _:
+return $default(_that.id,_that.body,_that.imageUrl,_that.backgroundColor,_that.textColor,_that.fontSize,_that.fontFamily,_that.createdAt,_that.authorId,_that.authorUser,_that.likes,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser,_that.isFavorite,_that.tags);case _:
   return null;
 
 }
@@ -232,11 +233,12 @@ return $default(_that.id,_that.body,_that.backgroundColor,_that.textColor,_that.
 
 
 class _TextPost extends TextPost {
-  const _TextPost({required this.id, required this.body, this.backgroundColor = 0xFF1E3A5F, this.textColor = 0xFFFFFFFF, this.fontSize = 18.0, this.fontFamily, this.createdAt, this.authorId, this.authorUser, this.likes = 0, this.commentCount = 0, this.shareCount = 0, this.isLikedByCurrentUser = false, this.isFavorite = false, final  List<String> tags = const []}): _tags = tags,super._();
+  const _TextPost({required this.id, required this.body, this.imageUrl, this.backgroundColor = 0xFF1E3A5F, this.textColor = 0xFFFFFFFF, this.fontSize = 18.0, this.fontFamily, this.createdAt, this.authorId, this.authorUser, this.likes = 0, this.commentCount = 0, this.shareCount = 0, this.isLikedByCurrentUser = false, this.isFavorite = false, final  List<String> tags = const []}): _tags = tags,super._();
   
 
 @override final  String id;
 @override final  String body;
+@override final  String? imageUrl;
 @override@JsonKey() final  int backgroundColor;
 @override@JsonKey() final  int textColor;
 @override@JsonKey() final  double fontSize;
@@ -267,16 +269,16 @@ _$TextPostCopyWith<_TextPost> get copyWith => __$TextPostCopyWithImpl<_TextPost>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TextPost&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.textColor, textColor) || other.textColor == textColor)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize)&&(identical(other.fontFamily, fontFamily) || other.fontFamily == fontFamily)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&(identical(other.authorUser, authorUser) || other.authorUser == authorUser)&&(identical(other.likes, likes) || other.likes == likes)&&(identical(other.commentCount, commentCount) || other.commentCount == commentCount)&&(identical(other.shareCount, shareCount) || other.shareCount == shareCount)&&(identical(other.isLikedByCurrentUser, isLikedByCurrentUser) || other.isLikedByCurrentUser == isLikedByCurrentUser)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&const DeepCollectionEquality().equals(other._tags, _tags));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TextPost&&(identical(other.id, id) || other.id == id)&&(identical(other.body, body) || other.body == body)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.textColor, textColor) || other.textColor == textColor)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize)&&(identical(other.fontFamily, fontFamily) || other.fontFamily == fontFamily)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&(identical(other.authorUser, authorUser) || other.authorUser == authorUser)&&(identical(other.likes, likes) || other.likes == likes)&&(identical(other.commentCount, commentCount) || other.commentCount == commentCount)&&(identical(other.shareCount, shareCount) || other.shareCount == shareCount)&&(identical(other.isLikedByCurrentUser, isLikedByCurrentUser) || other.isLikedByCurrentUser == isLikedByCurrentUser)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&const DeepCollectionEquality().equals(other._tags, _tags));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,body,backgroundColor,textColor,fontSize,fontFamily,createdAt,authorId,authorUser,likes,commentCount,shareCount,isLikedByCurrentUser,isFavorite,const DeepCollectionEquality().hash(_tags));
+int get hashCode => Object.hash(runtimeType,id,body,imageUrl,backgroundColor,textColor,fontSize,fontFamily,createdAt,authorId,authorUser,likes,commentCount,shareCount,isLikedByCurrentUser,isFavorite,const DeepCollectionEquality().hash(_tags));
 
 @override
 String toString() {
-  return 'TextPost(id: $id, body: $body, backgroundColor: $backgroundColor, textColor: $textColor, fontSize: $fontSize, fontFamily: $fontFamily, createdAt: $createdAt, authorId: $authorId, authorUser: $authorUser, likes: $likes, commentCount: $commentCount, shareCount: $shareCount, isLikedByCurrentUser: $isLikedByCurrentUser, isFavorite: $isFavorite, tags: $tags)';
+  return 'TextPost(id: $id, body: $body, imageUrl: $imageUrl, backgroundColor: $backgroundColor, textColor: $textColor, fontSize: $fontSize, fontFamily: $fontFamily, createdAt: $createdAt, authorId: $authorId, authorUser: $authorUser, likes: $likes, commentCount: $commentCount, shareCount: $shareCount, isLikedByCurrentUser: $isLikedByCurrentUser, isFavorite: $isFavorite, tags: $tags)';
 }
 
 
@@ -287,7 +289,7 @@ abstract mixin class _$TextPostCopyWith<$Res> implements $TextPostCopyWith<$Res>
   factory _$TextPostCopyWith(_TextPost value, $Res Function(_TextPost) _then) = __$TextPostCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String body, int backgroundColor, int textColor, double fontSize, String? fontFamily, DateTime? createdAt, String? authorId, User? authorUser, int likes, int commentCount, int shareCount, bool isLikedByCurrentUser, bool isFavorite, List<String> tags
+ String id, String body, String? imageUrl, int backgroundColor, int textColor, double fontSize, String? fontFamily, DateTime? createdAt, String? authorId, User? authorUser, int likes, int commentCount, int shareCount, bool isLikedByCurrentUser, bool isFavorite, List<String> tags
 });
 
 
@@ -304,11 +306,12 @@ class __$TextPostCopyWithImpl<$Res>
 
 /// Create a copy of TextPost
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? body = null,Object? backgroundColor = null,Object? textColor = null,Object? fontSize = null,Object? fontFamily = freezed,Object? createdAt = freezed,Object? authorId = freezed,Object? authorUser = freezed,Object? likes = null,Object? commentCount = null,Object? shareCount = null,Object? isLikedByCurrentUser = null,Object? isFavorite = null,Object? tags = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? body = null,Object? imageUrl = freezed,Object? backgroundColor = null,Object? textColor = null,Object? fontSize = null,Object? fontFamily = freezed,Object? createdAt = freezed,Object? authorId = freezed,Object? authorUser = freezed,Object? likes = null,Object? commentCount = null,Object? shareCount = null,Object? isLikedByCurrentUser = null,Object? isFavorite = null,Object? tags = null,}) {
   return _then(_TextPost(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,body: null == body ? _self.body : body // ignore: cast_nullable_to_non_nullable
-as String,backgroundColor: null == backgroundColor ? _self.backgroundColor : backgroundColor // ignore: cast_nullable_to_non_nullable
+as String,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
+as String?,backgroundColor: null == backgroundColor ? _self.backgroundColor : backgroundColor // ignore: cast_nullable_to_non_nullable
 as int,textColor: null == textColor ? _self.textColor : textColor // ignore: cast_nullable_to_non_nullable
 as int,fontSize: null == fontSize ? _self.fontSize : fontSize // ignore: cast_nullable_to_non_nullable
 as double,fontFamily: freezed == fontFamily ? _self.fontFamily : fontFamily // ignore: cast_nullable_to_non_nullable

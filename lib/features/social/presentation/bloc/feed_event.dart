@@ -7,8 +7,8 @@ part 'feed_event.freezed.dart';
 enum FeedType {
   all,
   stories,
-  images,
-  text;
+  posts,
+  videos;
 
   ContentType? get toContentType {
     switch (this) {
@@ -16,10 +16,10 @@ enum FeedType {
         return null;
       case FeedType.stories:
         return ContentType.story;
-      case FeedType.images:
-        return ContentType.imagePost;
-      case FeedType.text:
-        return ContentType.textPost;
+      case FeedType.posts:
+        return null;
+      case FeedType.videos:
+        return ContentType.videoPost;
     }
   }
 }

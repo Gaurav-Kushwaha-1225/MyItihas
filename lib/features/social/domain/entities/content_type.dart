@@ -2,7 +2,8 @@
 enum ContentType {
   story,
   imagePost,
-  textPost;
+  textPost,
+  videoPost;
 
   String get displayName {
     switch (this) {
@@ -12,6 +13,8 @@ enum ContentType {
         return 'Image';
       case ContentType.textPost:
         return 'Text';
+      case ContentType.videoPost:
+        return 'Video';
     }
   }
 }

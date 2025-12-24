@@ -249,8 +249,12 @@
         "tabs": {
             "all": "सभी",
             "stories": "कहानियाँ",
+            "posts": "पोस्ट",
+            "videos": "वीडियो",
             "images": "चित्र",
             "text": "विचार"
-        }
+        },
+        "tapToShowCaption": "कैप्शन देखने के लिए टैप करें",
+        "noVideosAvailable": "कोई वीडियो उपलब्ध नहीं"
     }
 }
