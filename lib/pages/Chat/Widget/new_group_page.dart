@@ -44,15 +44,19 @@ class _NewGroupPageState extends State<NewGroupPage> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    final subTextColor =
-        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
+    final subTextColor = isDark
+        ? DarkColors.textSecondary
+        : LightColors.textSecondary;
     final glassBg = isDark ? DarkColors.glassBg : LightColors.cardBg;
-    final glassBorder =
-        isDark ? DarkColors.glassBorder : LightColors.glassBorder;
-    final accentColor =
-        isDark ? DarkColors.accentPrimary : LightColors.accentPrimary;
-    final secondaryTextColor =
-        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
+    final glassBorder = isDark
+        ? DarkColors.glassBorder
+        : LightColors.glassBorder;
+    final accentColor = isDark
+        ? DarkColors.accentPrimary
+        : LightColors.accentPrimary;
+    final secondaryTextColor = isDark
+        ? DarkColors.textSecondary
+        : LightColors.textSecondary;
 
     return Scaffold(
       // 1. App Bar
@@ -60,10 +64,9 @@ class _NewGroupPageState extends State<NewGroupPage> {
         preferredSize: Size.fromHeight(6.h),
         child: Container(
           decoration: BoxDecoration(
-            gradient:
-                isDark
-                    ? DarkColors.featureCardGradient
-                    : LightColors.featureCardGradient,
+            gradient: isDark
+                ? DarkColors.featureCardGradient
+                : LightColors.featureCardGradient,
             boxShadow: [
               BoxShadow(
                 color: Theme.of(context).secondaryHeaderColor.withAlpha(50),
@@ -90,9 +93,9 @@ class _NewGroupPageState extends State<NewGroupPage> {
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w700,
                             fontSize: 18.sp,
-                            foreground:
-                                Paint()
-                                  ..shader = (isDark
+                            foreground: Paint()
+                              ..shader =
+                                  (isDark
                                           ? DarkColors.messageUserGradient
                                           : LightColors.messageUserGradient)
                                       .createShader(
@@ -129,7 +132,7 @@ class _NewGroupPageState extends State<NewGroupPage> {
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [
-              Theme.of(context).primaryColor.withAlpha(5),
+              DarkColors.accentPrimary.withAlpha(5),
               isDark ? Color(0xFF1E293B) : Color(0xFFF1F5F9),
             ],
           ),
@@ -198,19 +201,18 @@ class _NewGroupPageState extends State<NewGroupPage> {
       ),
 
       // 3. Floating Action Button (Forward Arrow)
-      floatingActionButton:
-          _selectedContacts.isNotEmpty
-              ? Container(
-                margin: EdgeInsets.only(bottom: 2.h, right: 2.w),
-                child: FloatingActionButton(
-                  onPressed: () {
-                    // Navigate to next step (Group Name, etc.)
-                  },
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: Icon(Icons.arrow_forward, color: Colors.white),
-                ),
-              )
-              : null,
+      floatingActionButton: _selectedContacts.isNotEmpty
+          ? Container(
+              margin: EdgeInsets.only(bottom: 2.h, right: 2.w),
+              child: FloatingActionButton(
+                onPressed: () {
+                  // Navigate to next step (Group Name, etc.)
+                },
+                backgroundColor: Theme.of(context).primaryColor,
+                child: Icon(Icons.arrow_forward, color: Colors.white),
+              ),
+            )
+          : null,
     );
   }
 
@@ -241,15 +243,13 @@ class _NewGroupPageState extends State<NewGroupPage> {
                     shape: BoxShape.circle,
                     // Placeholder color or image
                     color: accentColor.withOpacity(0.2),
-                    image:
-                        contact['img'] != null
-                            ? DecorationImage(image: AssetImage(contact['img']))
-                            : null,
+                    image: contact['img'] != null
+                        ? DecorationImage(image: AssetImage(contact['img']))
+                        : null,
                   ),
-                  child:
-                      contact['img'] == null
-                          ? Icon(Icons.person, color: accentColor, size: 20.sp)
-                          : null,
+                  child: contact['img'] == null
+                      ? Icon(Icons.person, color: accentColor, size: 20.sp)
+                      : null,
                 ),
                 // Selection Checkmark (if selected)
                 if (isSelected)

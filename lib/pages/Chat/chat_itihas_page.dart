@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myitihas/pages/Chat/Widget/status_page.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:myitihas/utils/theme.dart';
 import 'package:sizer/sizer.dart';
@@ -118,7 +119,20 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
     }
 
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 2.5.w),
+      padding: EdgeInsets.symmetric(horizontal: 2.5.w),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          colors: [
+            DarkColors.accentPrimary.withAlpha(5),
+
+            isDark ? Color(0xFF1E293B) : Color(0xFFF1F5F9),
+          ],
+          transform: GradientRotation(3.14 / 1.5),
+        ),
+      ),
+
       child: Column(
         children: [
           SizedBox(height: 6.h),
@@ -165,39 +179,67 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
               child: Container(
                 height: 6.5.h,
                 decoration: BoxDecoration(
-                  color: isDark ? Colors.black.withOpacity(0.35) : Colors.white,
-                  borderRadius: BorderRadius.circular(30.sp),
+                  color: isDark
+                      ? Colors.black.withOpacity(0.35)
+                      : Colors.white.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(30),
                   border: Border.all(
                     color: isDark
                         ? Colors.white.withOpacity(0.25)
                         : Colors.grey.withOpacity(0.45),
                   ),
                 ),
-                child: TextField(
-                  style: GoogleFonts.inter(
-                    color: isDark
-                        ? DarkColors.textPrimary
-                        : LightColors.textPrimary,
-                    fontSize: 13.sp,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: _selectedTabIndex == 1
-                        ? "Search groups..."
-                        : "Search conversations...",
-                    hintStyle: TextStyle(
+                child: Row(
+                  children: [
+                    SizedBox(width: 4.w),
+                    Icon(
+                      Icons.search,
                       color: isDark
-                          ? DarkColors.textSecondary
-                          : LightColors.textSecondary,
-                      fontSize: 15.sp,
+                          ? Colors.white.withOpacity(0.85)
+                          : Colors.black87,
+                      size: 22.sp,
                     ),
-                    prefixIcon: Icon(
-                      Icons.search_rounded,
-                      color: Theme.of(context).primaryColor,
-                      size: 20.sp,
+                    SizedBox(width: 3.w),
+                    Expanded(
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: TextField(
+                          style: TextStyle(
+                            color: isDark
+                                ? Colors.white.withOpacity(0.85)
+                                : Colors.black87,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          cursorColor: isDark
+                              ? Colors.white.withOpacity(0.85)
+                              : Colors.black87,
+                          decoration: InputDecoration(
+                            hintText: _selectedTabIndex == 1
+                                ? "Search groups..."
+                                : "Search conversations...",
+                            hintStyle: TextStyle(
+                              color: isDark
+                                  ? Colors.white.withOpacity(0.85)
+                                  : Colors.black87,
+                              fontSize: 16.sp,
+                            ),
+
+                            filled: false,
+                            fillColor: Colors.transparent,
+
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+
+                            isDense: true,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                      ),
                     ),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 2.h),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -268,11 +310,13 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
             ],
           ),
 
-          SizedBox(height: 2.5.h),
+          SizedBox(height: 1.h),
 
           // List
           Expanded(
-            child: displayedChats.isEmpty
+            child: _selectedTabIndex == 2
+                ? const StatusPage()
+                : displayedChats.isEmpty
                 ? Center(
                     child: Text(
                       "No ${_tabs[_selectedTabIndex]} found",
@@ -345,8 +389,8 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                   ),
                                   if (isSelected)
                                     Positioned(
-                                      bottom: 0,
-                                      right: 0,
+                                      bottom: -1,
+                                      right: -1,
                                       child: Container(
                                         width: 5.w,
                                         height: 5.w,
@@ -357,23 +401,24 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                             color: isDark
                                                 ? DarkColors.bgColor
                                                 : Colors.white,
-                                            width: 2,
+                                            width: 1,
                                           ),
                                         ),
                                         child: Icon(
-                                          Icons.check,
-                                          size: 10.sp,
+                                          Icons.check_sharp,
+                                          size: 16.sp,
+
                                           color: Colors.white,
                                         ),
                                       ),
                                     )
                                   else if (chat['isOnline'] == true)
                                     Positioned(
-                                      right: 0,
-                                      bottom: 0,
+                                      right: 1,
+                                      bottom: 1,
                                       child: Container(
-                                        width: 4.w,
-                                        height: 4.w,
+                                        width: 3.w,
+                                        height: 3.w,
                                         decoration: BoxDecoration(
                                           color: DarkColors.profileGreen,
                                           shape: BoxShape.circle,
@@ -381,7 +426,7 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                             color: isDark
                                                 ? DarkColors.bgColor
                                                 : Colors.white,
-                                            width: 2.5,
+                                            width: 1,
                                           ),
                                         ),
                                       ),
@@ -411,7 +456,9 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                       style: GoogleFonts.inter(
                                         fontSize: 14.sp,
                                         color: chat['isTyping'] == true
-                                            ? Theme.of(context).primaryColor
+                                            ? isDark
+                                                  ? DarkColors.accentPrimary
+                                                  : LightColors.accentPrimary
                                             : (isDark
                                                   ? DarkColors.textSecondary
                                                   : LightColors.textSecondary),
@@ -472,47 +519,43 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
   }
 
   Widget _buildSelectionHeader(bool isDark) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.5.h),
-      color: isDark ? DarkColors.glassBg : Colors.white,
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(
-              Icons.close,
-              color: isDark ? Colors.white : Colors.black,
-              size: 20.sp,
-            ),
-            onPressed: _exitSelectionMode,
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(
+            Icons.close,
+            color: isDark ? Colors.white : Colors.black,
+            size: 20.sp,
           ),
-          SizedBox(width: 2.w),
-          Text(
-            "${_selectedIndices.length}",
-            style: GoogleFonts.inter(
-              fontSize: 18.sp,
-              fontWeight: FontWeight.bold,
-              color: isDark ? Colors.white : Colors.black,
-            ),
+          onPressed: _exitSelectionMode,
+        ),
+        SizedBox(width: 2.w),
+        Text(
+          "${_selectedIndices.length}",
+          style: GoogleFonts.inter(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+            color: isDark ? Colors.white : Colors.black,
           ),
-          Spacer(),
-          IconButton(
-            icon: Icon(
-              Icons.notifications_off_outlined,
-              color: isDark ? Colors.white : Colors.black,
-              size: 20.sp,
-            ),
-            onPressed: _exitSelectionMode,
+        ),
+        Spacer(),
+        IconButton(
+          icon: Icon(
+            Icons.notifications_off_outlined,
+            color: isDark ? Colors.white : Colors.black,
+            size: 20.sp,
           ),
-          IconButton(
-            icon: Icon(
-              Icons.delete_outline,
-              color: isDark ? Colors.white : Colors.black,
-              size: 20.sp,
-            ),
-            onPressed: _exitSelectionMode,
+          onPressed: _exitSelectionMode,
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.delete_outline,
+            color: isDark ? Colors.white : Colors.black,
+            size: 20.sp,
           ),
-        ],
-      ),
+          onPressed: _exitSelectionMode,
+        ),
+      ],
     );
   }
 

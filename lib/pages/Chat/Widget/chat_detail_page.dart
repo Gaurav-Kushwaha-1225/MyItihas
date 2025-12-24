@@ -96,10 +96,16 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [
-              Theme.of(context).primaryColor.withAlpha(30),
-              isDark ? Color(0xFF1E293B) : Color(0xFFF1F5F9),
+              ?isDark ? Colors.transparent.withOpacity(0.5) : null,
+              DarkColors.glowPrimary.withAlpha(50),
+
+              // ?isDark ? DarkColors.glassBg : null,
+              isDark
+                  ? DarkColors.accentSecondary.withOpacity(0.1)
+                  : DarkColors.glassBorder,
+              ?isDark ? Colors.transparent.withOpacity(0.4) : null,
             ],
-            transform: GradientRotation(3.14 / 1.5),
+            transform: GradientRotation(2.8 / 1.8),
           ),
         ),
         child: Column(
@@ -232,6 +238,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             if (!_isSelectionMode)
               Container(
                 padding: EdgeInsets.all(4.w),
+
                 decoration: BoxDecoration(
                   color: isDark ? DarkColors.glassBg : Colors.white,
                   border: Border(
@@ -242,8 +249,15 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.add, color: subTextColor, size: 20.sp),
-                    SizedBox(width: 3.w),
+                    Container(
+                      padding: EdgeInsets.all(1.5.w),
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.white10 : Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(Icons.add, color: subTextColor, size: 18.sp),
+                    ),
+                    SizedBox(width: 2.w),
                     Expanded(
                       child: Container(
                         padding: EdgeInsets.symmetric(horizontal: 4.w),
@@ -253,17 +267,49 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         ),
                         child: TextField(
                           controller: _messageController,
-                          style: TextStyle(color: textColor),
+                          style: TextStyle(
+                            color: textColor,
+                            fontWeight: FontWeight.w700,
+                          ),
                           decoration: InputDecoration(
-                            hintText: "Type a message...",
+                            hintText: "Type your message",
+
                             hintStyle: TextStyle(color: subTextColor),
                             border: InputBorder.none,
+                            suffixIcon: Icon(
+                              Icons.emoji_emotions_outlined,
+                              color: subTextColor,
+                            ),
+                            filled: false,
+                            fillColor: Colors.transparent,
+
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+
+                            isDense: true,
+
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 1.5.h,
+                              horizontal: 0,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(width: 3.w),
-                    Icon(Icons.mic, color: subTextColor, size: 20.sp),
+                    SizedBox(width: 2.w),
+                    Container(
+                      padding: EdgeInsets.all(3.w),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF3B82F6),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.send_rounded,
+                        color: Colors.white,
+                        size: 16.sp,
+                      ),
+                    ),
                   ],
                 ),
               ),
