@@ -31,8 +31,9 @@ class UserRemoteDataSourceSupabase implements UserRemoteDataSource {
     logger.info('🔍 [DataSource] Fetching user by ID: $userId');
     
     try {
+      // Query profiles table - canonical source for profile data
       final response = await _supabase
-          .from('users')
+          .from('profiles')
           .select('id, username, full_name, avatar_url, bio')
           .eq('id', userId)
           .single();
@@ -72,8 +73,9 @@ class UserRemoteDataSourceSupabase implements UserRemoteDataSource {
   @override
   Future<List<UserModel>> getAllUsers() async {
     try {
+      // Query profiles table - canonical source for profile data
       final response = await _supabase
-          .from('users')
+          .from('profiles')
           .select('id, username, full_name, avatar_url, bio')
           .order('created_at', ascending: false);
 
@@ -101,8 +103,9 @@ class UserRemoteDataSourceSupabase implements UserRemoteDataSource {
   @override
   Future<List<UserModel>> searchUsers(String query) async {
     try {
+      // Query profiles table - canonical source for profile data
       final response = await _supabase
-          .from('users')
+          .from('profiles')
           .select('id, username, full_name, avatar_url, bio')
           .or('username.ilike.%$query%,full_name.ilike.%$query%')
           .limit(20);
@@ -154,8 +157,10 @@ class UserRemoteDataSourceSupabase implements UserRemoteDataSource {
 
       updates['updated_at'] = DateTime.now().toIso8601String();
 
+      // Update profiles table ONLY - canonical source for profile data
+      // Do NOT update users table anymore
       await _supabase
-          .from('users')
+          .from('profiles')
           .update(updates)
           .eq('id', userId);
     } catch (e) {

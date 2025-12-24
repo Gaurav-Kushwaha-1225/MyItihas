@@ -1,16 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:myitihas/config/theme/gradient_extension.dart';
-import 'package:myitihas/features/stories/domain/entities/story.dart';
+import 'package:myitihas/features/social/domain/entities/image_post.dart';
 import 'package:myitihas/features/social/presentation/widgets/author_info_bar.dart';
 import 'package:myitihas/features/social/presentation/widgets/engagement_bar.dart';
-import 'package:myitihas/features/social/presentation/widgets/quote_callout.dart';
-import 'package:myitihas/features/social/presentation/widgets/story_attribute_chip.dart';
-import 'package:myitihas/features/social/presentation/widgets/swipeable_content_section.dart';
 import 'package:myitihas/i18n/strings.g.dart';
 
-class EnhancedStoryCard extends StatefulWidget {
-  final Story story;
+/// A full-screen card for displaying image posts in the social feed
+class ImagePostCard extends StatefulWidget {
+  final ImagePost post;
   final bool isVisible;
   final VoidCallback? onLike;
   final VoidCallback? onComment;
@@ -18,12 +15,11 @@ class EnhancedStoryCard extends StatefulWidget {
   final VoidCallback? onBookmark;
   final VoidCallback? onProfileTap;
   final VoidCallback? onFollowTap;
-  final VoidCallback? onContinueReading;
   final bool isFollowLoading;
 
-  const EnhancedStoryCard({
+  const ImagePostCard({
     super.key,
-    required this.story,
+    required this.post,
     this.isVisible = true,
     this.onLike,
     this.onComment,
@@ -31,24 +27,20 @@ class EnhancedStoryCard extends StatefulWidget {
     this.onBookmark,
     this.onProfileTap,
     this.onFollowTap,
-    this.onContinueReading,
     this.isFollowLoading = false,
   });
 
   @override
-  State<EnhancedStoryCard> createState() => _EnhancedStoryCardState();
+  State<ImagePostCard> createState() => _ImagePostCardState();
 }
 
-class _EnhancedStoryCardState extends State<EnhancedStoryCard>
+class _ImagePostCardState extends State<ImagePostCard>
     with TickerProviderStateMixin {
   late AnimationController _entranceController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-
   late Animation<double> _authorFade;
-  late Animation<double> _titleFade;
-  late Animation<double> _quoteFade;
-  late Animation<double> _contentFade;
+  late Animation<double> _captionFade;
   late Animation<double> _actionsFade;
 
   @override
@@ -76,9 +68,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
         );
 
     _authorFade = _createStaggeredFade(0.0, 0.4);
-    _titleFade = _createStaggeredFade(0.1, 0.5);
-    _quoteFade = _createStaggeredFade(0.2, 0.6);
-    _contentFade = _createStaggeredFade(0.3, 0.7);
+    _captionFade = _createStaggeredFade(0.2, 0.6);
     _actionsFade = _createStaggeredFade(0.4, 0.8);
   }
 
@@ -92,7 +82,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
   }
 
   @override
-  void didUpdateWidget(EnhancedStoryCard oldWidget) {
+  void didUpdateWidget(ImagePostCard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.isVisible && !oldWidget.isVisible) {
       _entranceController.forward(from: 0);
@@ -108,8 +98,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final gradients = theme.extension<GradientExtension>();
-    final story = widget.story;
+    final post = widget.post;
     final screenSize = MediaQuery.of(context).size;
 
     return FadeTransition(
@@ -123,48 +112,52 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
           child: Stack(
             fit: StackFit.expand,
             children: [
-              _HeroImageSection(story: story, gradients: gradients),
+              // Full-bleed image
+              _HeroImageSection(post: post),
 
+              // Top gradient for header
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: Container(
+                  height: 120,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.7),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Bottom gradient for content
               Positioned(
                 left: 0,
                 right: 0,
                 bottom: 0,
                 child: Container(
-                  height: screenSize.height * 0.65,
+                  height: screenSize.height * 0.45,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
                       colors: [
                         Colors.black.withValues(alpha: 0.95),
-                        Colors.black.withValues(alpha: 0.7),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.6, 1.0],
-                    ),
-                  ),
-                ),
-              ),
-
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 0,
-                child: Container(
-                  height: 100,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
                         Colors.black.withValues(alpha: 0.6),
                         Colors.transparent,
                       ],
+                      stops: const [0.0, 0.5, 1.0],
                     ),
                   ),
                 ),
               ),
 
+              // Content overlay
               Positioned(
                 left: 0,
                 right: 40,
@@ -177,11 +170,12 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (story.authorUser != null)
+                        // Author info
+                        if (post.authorUser != null)
                           FadeTransition(
                             opacity: _authorFade,
                             child: AuthorInfoBar(
-                              author: story.authorUser!,
+                              author: post.authorUser!,
                               onProfileTap: widget.onProfileTap,
                               onFollowTap: widget.onFollowTap,
                               isFollowLoading: widget.isFollowLoading,
@@ -189,91 +183,95 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                               darkOverlay: true,
                             ),
                           ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 12),
 
-                        // Title
-                        FadeTransition(
-                          opacity: _titleFade,
-                          child: Text(
-                            story.title,
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-
-                        FadeTransition(
-                          opacity: _titleFade,
-                          child: Row(
-                            children: [
-                              Flexible(
-                                child: StoryAttributeChip.scripture(
-                                  story.scripture,
-                                  darkOverlay: true,
+                        // Location badge
+                        if (post.location != null && post.location!.isNotEmpty)
+                          FadeTransition(
+                            opacity: _captionFade,
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  size: 16,
+                                  color: Colors.white.withValues(alpha: 0.8),
                                 ),
-                              ),
-                              if (story.attributes.theme.isNotEmpty) ...[
                                 const SizedBox(width: 4),
                                 Flexible(
-                                  child: StoryAttributeChip.theme(
-                                    story.attributes.theme,
-                                    darkOverlay: true,
+                                  child: Text(
+                                    post.location!,
+                                    style: theme.textTheme.bodySmall?.copyWith(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.8,
+                                      ),
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
-                            ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
+                        if (post.location != null && post.location!.isNotEmpty)
+                          const SizedBox(height: 8),
 
-                        if (story.quotes.isNotEmpty)
+                        // Caption
+                        if (post.caption != null && post.caption!.isNotEmpty)
                           FadeTransition(
-                            opacity: _quoteFade,
-                            child: QuoteCallout(
-                              quote: story.quotes,
-                              attribution: story.scripture,
-                              maxLines: 2,
-                              darkOverlay: true,
+                            opacity: _captionFade,
+                            child: Text(
+                              post.caption!,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: Colors.white,
+                                height: 1.4,
+                              ),
+                              maxLines: 4,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        if (story.quotes.isNotEmpty) const SizedBox(height: 10),
+                        const SizedBox(height: 12),
 
-                        FadeTransition(
-                          opacity: _contentFade,
-                          child: SizedBox(
-                            height: 184,
-                            child: SwipeableContentSection(
-                              storyExcerpt: story.story,
-                              trivia: story.trivia,
-                              lesson: story.lesson,
-                              activity: story.activity,
-                              maxLines: 8,
-                              darkOverlay: true,
-                              onContinueReadingTap: widget.onContinueReading,
+                        // Tags
+                        if (post.tags.isNotEmpty)
+                          FadeTransition(
+                            opacity: _captionFade,
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              children: post.tags.take(4).map((tag) {
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    '#$tag',
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
                             ),
                           ),
-                        ),
-                        // const SizedBox(height: 8),
-
-                        // Continue Reading button
-                        // FadeTransition(
-                        //   opacity: _actionsFade,
-                        //   child: _ContinueReadingButton(
-                        //     onTap: widget.onContinueReading,
-                        //     gradients: gradients,
-                        //     colorScheme: colorScheme,
-                        //   ),
-                        // ),
                       ],
                     ),
                   ),
                 ),
               ),
 
+              // Vertical engagement bar
               Positioned(
                 right: 12,
                 bottom: 48,
@@ -282,11 +280,11 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                   child: FadeTransition(
                     opacity: _actionsFade,
                     child: EngagementBar(
-                      likeCount: story.likes,
-                      commentCount: story.commentCount,
-                      shareCount: story.shareCount,
-                      isLiked: story.isLikedByCurrentUser,
-                      isBookmarked: story.isFavorite,
+                      likeCount: post.likes,
+                      commentCount: post.commentCount,
+                      shareCount: post.shareCount,
+                      isLiked: post.isLikedByCurrentUser,
+                      isBookmarked: post.isFavorite,
                       onLike: widget.onLike,
                       onComment: widget.onComment,
                       onShare: widget.onShare,
@@ -305,33 +303,33 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
 }
 
 class _HeroImageSection extends StatelessWidget {
-  final Story story;
-  final GradientExtension? gradients;
+  final ImagePost post;
 
-  const _HeroImageSection({required this.story, this.gradients});
+  const _HeroImageSection({required this.post});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    if (story.imageUrl != null && story.imageUrl!.isNotEmpty) {
+    if (post.imageUrl.isNotEmpty) {
       return CachedNetworkImage(
-        imageUrl: story.imageUrl!,
+        imageUrl: post.imageUrl,
         fit: BoxFit.cover,
-        placeholder: (context, url) => _Placeholder(colorScheme: colorScheme),
+        placeholder: (context, url) =>
+            _ImagePlaceholder(colorScheme: colorScheme),
         errorWidget: (context, url, error) =>
-            _Placeholder(colorScheme: colorScheme),
+            _ImagePlaceholder(colorScheme: colorScheme),
       );
     }
 
-    return _Placeholder(colorScheme: colorScheme);
+    return _ImagePlaceholder(colorScheme: colorScheme);
   }
 }
 
-class _Placeholder extends StatelessWidget {
+class _ImagePlaceholder extends StatelessWidget {
   final ColorScheme colorScheme;
 
-  const _Placeholder({required this.colorScheme});
+  const _ImagePlaceholder({required this.colorScheme});
 
   @override
   Widget build(BuildContext context) {
@@ -341,20 +339,14 @@ class _Placeholder extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Image.asset(
-            'assets/logo.png',
-            width: 96,
-            height: 96,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) => Icon(
-              Icons.auto_stories,
-              size: 64,
-              color: colorScheme.primary.withValues(alpha: 0.5),
-            ),
+          Icon(
+            Icons.image_outlined,
+            size: 64,
+            color: colorScheme.primary.withValues(alpha: 0.5),
           ),
           const SizedBox(height: 8),
           Text(
-            t.app.name,
+            t.feed.tabs.images,
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.7),
               fontSize: 16,

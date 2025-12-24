@@ -7,29 +7,141 @@ import 'package:myitihas/config/theme/gradient_extension.dart';
 import 'package:myitihas/features/social/presentation/bloc/profile_bloc.dart';
 import 'package:myitihas/features/social/presentation/bloc/profile_event.dart';
 import 'package:myitihas/features/social/presentation/bloc/profile_state.dart';
+import 'package:myitihas/features/social/domain/repositories/user_repository.dart';
 import 'package:myitihas/i18n/strings.g.dart';
 
 class ProfilePage extends StatelessWidget {
-  final String userId;
+  final String? userId;
 
-  const ProfilePage({super.key, required this.userId});
+  const ProfilePage({super.key, this.userId});
+
+  /// Returns true if this is viewing another user's profile (not my profile)
+  bool get isOtherUserProfile => userId != null;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<ProfileBloc>()..add(ProfileEvent.loadProfile(userId)),
-      child: const _ProfileView(),
+    return FutureBuilder<String>(
+      future: _resolveUserId(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Scaffold(
+            appBar: isOtherUserProfile ? _buildAppBar(context) : null,
+            body: const Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (snapshot.hasError || !snapshot.hasData) {
+          return Scaffold(
+            appBar: isOtherUserProfile ? _buildAppBar(context) : null,
+            body: Center(
+              child: Text('Error loading profile: ${snapshot.error}'),
+            ),
+          );
+        }
+
+        final resolvedUserId = snapshot.data!;
+        
+        return BlocProvider(
+          create: (context) =>
+              getIt<ProfileBloc>()..add(ProfileEvent.loadProfile(resolvedUserId)),
+          child: _ProfileView(showAppBar: isOtherUserProfile),
+        );
+      },
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Profile'),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.person_search_rounded),
+          onPressed: () {
+            const DiscoverRoute().push(context);
+          },
+          tooltip: 'Search Users',
+        ),
+        IconButton(
+          icon: const Icon(Icons.settings_rounded),
+          onPressed: () {
+            const SettingsRoute().push(context);
+          },
+          tooltip: 'Settings',
+        ),
+      ],
+    );
+  }
+
+  Future<String> _resolveUserId() async {
+    // If userId is provided, use it (other user's profile)
+    if (userId != null) {
+      return userId!;
+    }
+    
+    // If userId is null, get current authenticated user (my profile)
+    final userRepository = getIt<UserRepository>();
+    final result = await userRepository.getCurrentUser();
+    
+    return result.fold(
+      (failure) => throw Exception('Failed to get current user: ${failure.message}'),
+      (user) => user.id,
     );
   }
 }
 
 class _ProfileView extends StatelessWidget {
-  const _ProfileView();
+  final bool showAppBar;
+  
+  const _ProfileView({this.showAppBar = false});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: showAppBar ? AppBar(
+        title: const Text('Profile'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_search_rounded),
+            onPressed: () {
+              const DiscoverRoute().push(context);
+            },
+            tooltip: 'Search Users',
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_rounded),
+            onPressed: () {
+              const SettingsRoute().push(context);
+            },
+            tooltip: 'Settings',
+          ),
+        ],
+      ) : AppBar(
+        title: const Text('My Profile'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person_search_rounded),
+            onPressed: () {
+              const DiscoverRoute().push(context);
+            },
+            tooltip: 'Search Users',
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_rounded),
+            onPressed: () {
+              const SettingsRoute().push(context);
+            },
+            tooltip: 'Settings',
+          ),
+        ],
+      ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
           return state.when(
@@ -169,14 +281,7 @@ class _ProfileView extends StatelessWidget {
                                       label: t.profile.followers,
                                       count: user.followerCount,
                                       onTap: () {
-                                        context.read<ProfileBloc>().add(
-                                          ProfileEvent.loadFollowers(user.id),
-                                        );
-                                        _showFollowersSheet(
-                                          context,
-                                          followers,
-                                          isLoadingFollowers,
-                                        );
+                                        FollowersRoute(userId: user.id).push(context);
                                       },
                                     ),
                                     Container(
@@ -190,14 +295,7 @@ class _ProfileView extends StatelessWidget {
                                       label: t.profile.following,
                                       count: user.followingCount,
                                       onTap: () {
-                                        context.read<ProfileBloc>().add(
-                                          ProfileEvent.loadFollowing(user.id),
-                                        );
-                                        _showFollowingSheet(
-                                          context,
-                                          following,
-                                          isLoadingFollowing,
-                                        );
+                                        FollowingRoute(userId: user.id).push(context);
                                       },
                                     ),
                                   ],

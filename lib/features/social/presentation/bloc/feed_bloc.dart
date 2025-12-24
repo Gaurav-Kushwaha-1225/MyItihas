@@ -1,9 +1,13 @@
 import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:myitihas/features/social/domain/entities/content_type.dart';
+import 'package:myitihas/features/social/domain/entities/feed_item.dart';
+
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/stories/domain/repositories/story_repository.dart';
 import 'package:myitihas/features/social/domain/entities/share.dart';
+import 'package:myitihas/features/social/domain/repositories/post_repository.dart';
 import 'package:myitihas/features/social/domain/repositories/social_repository.dart';
 import 'package:myitihas/features/social/domain/repositories/user_repository.dart';
 import 'feed_event.dart';
@@ -14,22 +18,26 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final StoryRepository storyRepository;
   final SocialRepository socialRepository;
   final UserRepository userRepository;
+  final PostRepository postRepository;
 
   static const int _pageSize = 10;
   int _currentOffset = 0;
+  FeedType _currentFeedType = FeedType.all;
 
   FeedBloc({
     required this.storyRepository,
     required this.socialRepository,
     required this.userRepository,
+    required this.postRepository,
   }) : super(const FeedState.initial()) {
     on<LoadFeedEvent>(_onLoadFeed);
     on<LoadMoreFeedEvent>(_onLoadMore);
     on<RefreshFeedEvent>(_onRefresh);
+    on<ChangeFeedTypeEvent>(_onChangeFeedType);
     on<ToggleLikeEvent>(_onToggleLike);
     on<ToggleBookmarkEvent>(_onToggleBookmark);
     on<AddCommentEvent>(_onAddComment);
-    on<ShareStoryEvent>(_onShareStory);
+    on<ShareContentEvent>(_onShareContent);
   }
 
   Future<void> _onLoadFeed(LoadFeedEvent event, Emitter<FeedState> emit) async {
@@ -44,36 +52,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         }
       },
       (currentUser) async {
-        final result = await storyRepository.getStories(
+        final feedItems = await _loadFeedItems(
+          feedType: _currentFeedType,
           limit: _pageSize,
           offset: 0,
         );
 
-        await result.fold(
-          (failure) async {
-            if (!emit.isDone) {
-              emit(FeedState.error(failure.message));
-            }
-          },
-          (stories) async {
-            final storiesWithSocial = await _enrichStoriesWithSocialData(
-              stories,
-              currentUser.id,
-            );
+        _currentOffset = feedItems.length;
 
-            _currentOffset = stories.length;
-
-            if (!emit.isDone) {
-              emit(
-                FeedState.loaded(
-                  stories: storiesWithSocial,
-                  currentUser: currentUser,
-                  hasMore: stories.length >= _pageSize,
-                ),
-              );
-            }
-          },
-        );
+        if (!emit.isDone) {
+          emit(
+            FeedState.loaded(
+              feedItems: feedItems,
+              currentUser: currentUser,
+              hasMore: feedItems.length >= _pageSize,
+              currentFeedType: _currentFeedType,
+            ),
+          );
+        }
       },
     );
   }
@@ -91,43 +87,30 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     emit(currentState.copyWith(isLoadingMore: true));
 
-    final result = await storyRepository.getStories(
+    final newItems = await _loadFeedItems(
+      feedType: _currentFeedType,
       limit: _pageSize,
       offset: _currentOffset,
     );
 
-    await result.fold(
-      (failure) async {
-        if (!emit.isDone) {
-          emit(currentState.copyWith(isLoadingMore: false));
-        }
-      },
-      (newStories) async {
-        if (newStories.isEmpty) {
-          if (!emit.isDone) {
-            emit(currentState.copyWith(isLoadingMore: false, hasMore: false));
-          }
-          return;
-        }
+    if (newItems.isEmpty) {
+      if (!emit.isDone) {
+        emit(currentState.copyWith(isLoadingMore: false, hasMore: false));
+      }
+      return;
+    }
 
-        final storiesWithSocial = await _enrichStoriesWithSocialData(
-          newStories,
-          currentState.currentUser.id,
-        );
+    _currentOffset += newItems.length;
 
-        _currentOffset += newStories.length;
-
-        if (!emit.isDone) {
-          emit(
-            currentState.copyWith(
-              stories: [...currentState.stories, ...storiesWithSocial],
-              isLoadingMore: false,
-              hasMore: newStories.length >= _pageSize,
-            ),
-          );
-        }
-      },
-    );
+    if (!emit.isDone) {
+      emit(
+        currentState.copyWith(
+          feedItems: [...currentState.feedItems, ...newItems],
+          isLoadingMore: false,
+          hasMore: newItems.length >= _pageSize,
+        ),
+      );
+    }
   }
 
   Future<void> _onRefresh(
@@ -142,50 +125,67 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     emit(
       FeedState.refreshing(
-        stories: currentState.stories,
+        feedItems: currentState.feedItems,
         currentUser: currentState.currentUser,
         hasMore: currentState.hasMore,
+        currentFeedType: currentState.currentFeedType,
       ),
     );
 
-    final result = await storyRepository.getStories(
+    final feedItems = await _loadFeedItems(
+      feedType: _currentFeedType,
       limit: _pageSize,
       offset: 0,
     );
 
-    await result.fold(
-      (failure) async {
-        if (!emit.isDone) {
-          emit(
-            FeedState.loaded(
-              stories: currentState.stories,
-              currentUser: currentState.currentUser,
-              hasMore: currentState.hasMore,
-            ),
-          );
-        }
-      },
-      (stories) async {
-        final shuffled = List<Story>.from(stories)..shuffle(Random());
+    _currentOffset = feedItems.length;
 
-        final storiesWithSocial = await _enrichStoriesWithSocialData(
-          shuffled,
-          currentState.currentUser.id,
+    if (!emit.isDone) {
+      emit(
+        FeedState.loaded(
+          feedItems: feedItems,
+          currentUser: currentState.currentUser,
+          hasMore: feedItems.length >= _pageSize,
+          currentFeedType: _currentFeedType,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onChangeFeedType(
+    ChangeFeedTypeEvent event,
+    Emitter<FeedState> emit,
+  ) async {
+    if (_currentFeedType == event.feedType) return;
+
+    _currentFeedType = event.feedType;
+    _currentOffset = 0;
+
+    final currentState = state;
+    if (currentState is FeedLoaded) {
+      emit(const FeedState.loading());
+
+      final feedItems = await _loadFeedItems(
+        feedType: _currentFeedType,
+        limit: _pageSize,
+        offset: 0,
+      );
+
+      _currentOffset = feedItems.length;
+
+      if (!emit.isDone) {
+        emit(
+          FeedState.loaded(
+            feedItems: feedItems,
+            currentUser: currentState.currentUser,
+            hasMore: feedItems.length >= _pageSize,
+            currentFeedType: _currentFeedType,
+          ),
         );
-
-        _currentOffset = stories.length;
-
-        if (!emit.isDone) {
-          emit(
-            FeedState.loaded(
-              stories: storiesWithSocial,
-              currentUser: currentState.currentUser,
-              hasMore: stories.length >= _pageSize,
-            ),
-          );
-        }
-      },
-    );
+      }
+    } else {
+      add(const FeedEvent.loadFeed());
+    }
   }
 
   Future<void> _onToggleLike(
@@ -195,27 +195,42 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     final currentState = state;
     if (currentState is! FeedLoaded) return;
 
-    final updatedStories = currentState.stories.map((story) {
-      if (story.id == event.storyId) {
-        final isLiked = story.isLikedByCurrentUser;
-        return story.copyWith(
-          isLikedByCurrentUser: !isLiked,
-          likes: isLiked ? story.likes - 1 : story.likes + 1,
-        );
+    final updatedItems = currentState.feedItems.map((item) {
+      if (item.id == event.contentId) {
+        return item.toggleLike();
       }
-      return story;
+      return item;
     }).toList();
 
     if (!emit.isDone) {
-      emit(currentState.copyWith(stories: updatedStories));
+      emit(currentState.copyWith(feedItems: updatedItems));
     }
 
-    final story = currentState.stories.firstWhere((s) => s.id == event.storyId);
+    // Find the item to check current like state
+    final item = currentState.feedItems.firstWhere(
+      (i) => i.id == event.contentId,
+    );
 
-    if (story.isLikedByCurrentUser) {
-      await socialRepository.unlikeStory(event.storyId);
+    if (event.contentType == ContentType.story) {
+      // Use existing social repository for stories
+      if (item.isLikedByCurrentUser) {
+        await socialRepository.unlikeStory(event.contentId);
+      } else {
+        await socialRepository.likeStory(event.contentId);
+      }
     } else {
-      await socialRepository.likeStory(event.storyId);
+      // Use post repository for image/text posts
+      if (item.isLikedByCurrentUser) {
+        await postRepository.unlikeContent(
+          contentId: event.contentId,
+          contentType: event.contentType,
+        );
+      } else {
+        await postRepository.likeContent(
+          contentId: event.contentId,
+          contentType: event.contentType,
+        );
+      }
     }
   }
 
@@ -226,126 +241,234 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     final currentState = state;
     if (currentState is! FeedLoaded) return;
 
-    final updatedStories = currentState.stories.map((story) {
-      if (story.id == event.storyId) {
-        return story.copyWith(isFavorite: !story.isFavorite);
+    final updatedItems = currentState.feedItems.map((item) {
+      if (item.id == event.contentId) {
+        return item.toggleBookmark();
       }
-      return story;
+      return item;
     }).toList();
 
     if (!emit.isDone) {
-      emit(currentState.copyWith(stories: updatedStories));
+      emit(currentState.copyWith(feedItems: updatedItems));
     }
 
-    await storyRepository.toggleFavorite(event.storyId);
+    if (event.contentType == ContentType.story) {
+      await storyRepository.toggleFavorite(event.contentId);
+    } else {
+      await postRepository.toggleBookmark(
+        contentId: event.contentId,
+        contentType: event.contentType,
+      );
+    }
   }
 
   Future<void> _onAddComment(
     AddCommentEvent event,
     Emitter<FeedState> emit,
   ) async {
-    final result = await socialRepository.addComment(
-      storyId: event.storyId,
-      text: event.text,
-      parentCommentId: event.parentCommentId,
-    );
+    // Only stories support comments for now via socialRepository
+    if (event.contentType == ContentType.story) {
+      final result = await socialRepository.addComment(
+        storyId: event.contentId,
+        text: event.text,
+        parentCommentId: event.parentCommentId,
+      );
 
-    final currentState = state;
-    if (currentState is FeedLoaded) {
-      await result.fold((failure) async {}, (comment) async {
-        final updatedStories = currentState.stories.map((story) {
-          if (story.id == event.storyId) {
-            return story.copyWith(commentCount: story.commentCount + 1);
+      final currentState = state;
+      if (currentState is FeedLoaded) {
+        await result.fold((failure) async {}, (comment) async {
+          final updatedItems = currentState.feedItems.map((item) {
+            if (item.id == event.contentId) {
+              return item.incrementCommentCount();
+            }
+            return item;
+          }).toList();
+
+          if (!emit.isDone) {
+            emit(currentState.copyWith(feedItems: updatedItems));
           }
-          return story;
-        }).toList();
-
-        if (!emit.isDone) {
-          emit(currentState.copyWith(stories: updatedStories));
-        }
-      });
+        });
+      }
     }
+    // TODO: Add comment support for image/text posts when backend is ready
   }
 
-  Future<void> _onShareStory(
-    ShareStoryEvent event,
+  Future<void> _onShareContent(
+    ShareContentEvent event,
     Emitter<FeedState> emit,
   ) async {
-    final shareType = event.isDirect
-        ? ShareType.directMessage
-        : ShareType.external;
+    if (event.contentType == ContentType.story) {
+      final shareType = event.isDirect
+          ? ShareType.directMessage
+          : ShareType.external;
 
-    await socialRepository.shareStory(
-      storyId: event.storyId,
-      shareType: shareType,
-      recipientId: event.recipientId,
-    );
+      await socialRepository.shareStory(
+        storyId: event.contentId,
+        shareType: shareType,
+        recipientId: event.recipientId,
+      );
+    }
+    // TODO: Add share tracking for image/text posts when backend is ready
 
     final currentState = state;
     if (currentState is FeedLoaded) {
-      final updatedStories = currentState.stories.map((story) {
-        if (story.id == event.storyId) {
-          return story.copyWith(shareCount: story.shareCount + 1);
+      final updatedItems = currentState.feedItems.map((item) {
+        if (item.id == event.contentId) {
+          return item.incrementShareCount();
         }
-        return story;
+        return item;
       }).toList();
 
       if (!emit.isDone) {
-        emit(currentState.copyWith(stories: updatedStories));
+        emit(currentState.copyWith(feedItems: updatedItems));
       }
     }
   }
 
-  Future<List<Story>> _enrichStoriesWithSocialData(
-    List<Story> stories,
+  /// Load feed items based on feed type
+  Future<List<FeedItem>> _loadFeedItems({
+    required FeedType feedType,
+    required int limit,
+    required int offset,
+  }) async {
+    switch (feedType) {
+      case FeedType.all:
+        return await _loadAllFeedItems(limit: limit, offset: offset);
+      case FeedType.stories:
+        return await _loadStories(limit: limit, offset: offset);
+      case FeedType.posts:
+        return await _loadPosts(limit: limit, offset: offset);
+      case FeedType.videos:
+        return await _loadVideoPosts(limit: limit, offset: offset);
+    }
+  }
+
+  Future<List<FeedItem>> _loadAllFeedItems({
+    required int limit,
+    required int offset,
+  }) async {
+    final result = await postRepository.getAllFeedItems(
+      limit: limit,
+      offset: offset,
+    );
+
+    return await result.fold((failure) => <FeedItem>[], (items) async {
+      // Enrich stories with social data
+      final enrichedItems = <FeedItem>[];
+      final currentUserResult = await userRepository.getCurrentUser();
+      final currentUserId = currentUserResult.fold(
+        (f) => 'anonymous',
+        (u) => u.id,
+      );
+
+      for (final item in items) {
+        if (item is StoryFeedItem) {
+          final enrichedStory = await _enrichStoryWithSocialData(
+            item.story,
+            currentUserId,
+          );
+          enrichedItems.add(FeedItem.story(enrichedStory));
+        } else {
+          enrichedItems.add(item);
+        }
+      }
+
+      // Shuffle for variety
+      enrichedItems.shuffle(Random());
+      return enrichedItems;
+    });
+  }
+
+  Future<List<FeedItem>> _loadStories({
+    required int limit,
+    required int offset,
+  }) async {
+    final result = await storyRepository.getStories(
+      limit: limit,
+      offset: offset,
+    );
+
+    return await result.fold((failure) => <FeedItem>[], (stories) async {
+      final currentUserResult = await userRepository.getCurrentUser();
+      final currentUserId = currentUserResult.fold(
+        (f) => 'anonymous',
+        (u) => u.id,
+      );
+
+      final enrichedStories = await Future.wait(
+        stories.map((s) => _enrichStoryWithSocialData(s, currentUserId)),
+      );
+
+      return enrichedStories.map((s) => FeedItem.story(s)).toList();
+    });
+  }
+
+  Future<List<FeedItem>> _loadPosts({
+    required int limit,
+    required int offset,
+  }) async {
+    final result = await postRepository.getPosts(limit: limit, offset: offset);
+
+    return result.fold((failure) => <FeedItem>[], (posts) => posts);
+  }
+
+  Future<List<FeedItem>> _loadVideoPosts({
+    required int limit,
+    required int offset,
+  }) async {
+    final result = await postRepository.getVideoPosts(
+      limit: limit,
+      offset: offset,
+    );
+
+    return result.fold(
+      (failure) => <FeedItem>[],
+      (posts) => posts.map((p) => FeedItem.videoPost(p)).toList(),
+    );
+  }
+
+  Future<Story> _enrichStoryWithSocialData(
+    Story story,
     String currentUserId,
   ) async {
     final allUsersResult = await userRepository.getAllUsers();
 
-    return await allUsersResult.fold((failure) => stories, (users) async {
+    return await allUsersResult.fold((failure) => story, (users) async {
       final random = Random();
-      final enrichedStories = <Story>[];
+      final author = story.authorId == currentUserId
+          ? users.firstWhere((u) => u.id == currentUserId)
+          : users[random.nextInt(users.length)];
 
-      for (final story in stories) {
-        final author = story.authorId == currentUserId
-            ? users.firstWhere((u) => u.id == currentUserId)
-            : users[random.nextInt(users.length)];
+      final isLikedResult = await socialRepository.isStoryLiked(story.id);
+      final isLiked = isLikedResult.fold((l) => false, (r) => r);
 
-        final isLikedResult = await socialRepository.isStoryLiked(story.id);
-        final isLiked = isLikedResult.fold((l) => false, (r) => r);
+      final likeCountResult = await socialRepository.getStoryLikeCount(
+        story.id,
+      );
+      final likeCount = likeCountResult.fold(
+        (l) => random.nextInt(500),
+        (r) => r,
+      );
 
-        final likeCountResult = await socialRepository.getStoryLikeCount(
-          story.id,
-        );
-        final likeCount = likeCountResult.fold(
-          (l) => random.nextInt(500),
-          (r) => r,
-        );
+      final commentsResult = await socialRepository.getCommentsTree(story.id);
+      final commentCount = commentsResult.fold((l) => 0, (r) => r.length);
 
-        final commentsResult = await socialRepository.getCommentsTree(story.id);
-        final commentCount = commentsResult.fold((l) => 0, (r) => r.length);
+      final shareCountResult = await socialRepository.getStoryShareCount(
+        story.id,
+      );
+      final shareCount = shareCountResult.fold(
+        (l) => random.nextInt(100),
+        (r) => r,
+      );
 
-        final shareCountResult = await socialRepository.getStoryShareCount(
-          story.id,
-        );
-        final shareCount = shareCountResult.fold(
-          (l) => random.nextInt(100),
-          (r) => r,
-        );
-
-        enrichedStories.add(
-          story.copyWith(
-            authorId: author.id,
-            authorUser: author,
-            likes: likeCount,
-            commentCount: commentCount,
-            shareCount: shareCount,
-            isLikedByCurrentUser: isLiked,
-          ),
-        );
-      }
-
-      return enrichedStories;
+      return story.copyWith(
+        authorId: author.id,
+        authorUser: author,
+        likes: likeCount,
+        commentCount: commentCount,
+        shareCount: shareCount,
+        isLikedByCurrentUser: isLiked,
+      );
     });
   }
 }

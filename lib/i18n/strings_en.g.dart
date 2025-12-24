@@ -686,6 +686,15 @@ class TranslationsFeedEn {
 	/// en: 'No stories available'
 	String get noStoriesAvailable => 'No stories available';
 
+	/// en: 'No image posts available'
+	String get noImagesAvailable => 'No image posts available';
+
+	/// en: 'No text posts available'
+	String get noTextPostsAvailable => 'No text posts available';
+
+	/// en: 'No content available'
+	String get noContentAvailable => 'No content available';
+
 	/// en: 'Refresh'
 	String get refresh => 'Refresh';
 
@@ -701,6 +710,12 @@ class TranslationsFeedEn {
 	/// en: 'Share Story'
 	String get shareStory => 'Share Story';
 
+	/// en: 'Share Post'
+	String get sharePost => 'Share Post';
+
+	/// en: 'Share Thought'
+	String get shareThought => 'Share Thought';
+
 	/// en: 'Share as Image'
 	String get shareAsImage => 'Share as Image';
 
@@ -713,11 +728,47 @@ class TranslationsFeedEn {
 	/// en: 'Copy or share the story link'
 	String get shareLinkSubtitle => 'Copy or share the story link';
 
+	/// en: 'Copy or share the post link'
+	String get shareImageLinkSubtitle => 'Copy or share the post link';
+
+	/// en: 'Copy or share the thought link'
+	String get shareTextLinkSubtitle => 'Copy or share the thought link';
+
 	/// en: 'Share as Text'
 	String get shareAsText => 'Share as Text';
 
 	/// en: 'Share the story excerpt'
 	String get shareAsTextSubtitle => 'Share the story excerpt';
+
+	/// en: 'Share Quote'
+	String get shareQuote => 'Share Quote';
+
+	/// en: 'Share as a quotable text'
+	String get shareQuoteSubtitle => 'Share as a quotable text';
+
+	/// en: 'Share with Image'
+	String get shareWithImage => 'Share with Image';
+
+	/// en: 'Share the image with caption'
+	String get shareWithImageSubtitle => 'Share the image with caption';
+
+	/// en: 'Copy Link'
+	String get copyLink => 'Copy Link';
+
+	/// en: 'Copy link to clipboard'
+	String get copyLinkSubtitle => 'Copy link to clipboard';
+
+	/// en: 'Copy Text'
+	String get copyText => 'Copy Text';
+
+	/// en: 'Copy the quote to clipboard'
+	String get copyTextSubtitle => 'Copy the quote to clipboard';
+
+	/// en: 'Link copied to clipboard'
+	String get linkCopied => 'Link copied to clipboard';
+
+	/// en: 'Text copied to clipboard'
+	String get textCopied => 'Text copied to clipboard';
 
 	/// en: 'Send to User'
 	String get sendToUser => 'Send to User';
@@ -781,6 +832,14 @@ class TranslationsFeedEn {
 
 	/// en: 'Quote from MyItihas'
 	String get quoteFromMyitihas => 'Quote from MyItihas';
+
+	late final TranslationsFeedTabsEn tabs = TranslationsFeedTabsEn._(_root);
+
+	/// en: 'Tap to show caption'
+	String get tapToShowCaption => 'Tap to show caption';
+
+	/// en: 'No videos available'
+	String get noVideosAvailable => 'No videos available';
 }
 
 // Path: storyGenerator.storyLength
@@ -799,6 +858,33 @@ class TranslationsStoryGeneratorStoryLengthEn {
 
 	/// en: 'Long'
 	String get long => 'Long';
+}
+
+// Path: feed.tabs
+class TranslationsFeedTabsEn {
+	TranslationsFeedTabsEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'All'
+	String get all => 'All';
+
+	/// en: 'Stories'
+	String get stories => 'Stories';
+
+	/// en: 'Posts'
+	String get posts => 'Posts';
+
+	/// en: 'Videos'
+	String get videos => 'Videos';
+
+	/// en: 'Images'
+	String get images => 'Images';
+
+	/// en: 'Thoughts'
+	String get text => 'Thoughts';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -973,17 +1059,34 @@ extension on Translations {
 			'feed.errorTitle' => 'Oops! Something went wrong',
 			'feed.tryAgain' => 'Try Again',
 			'feed.noStoriesAvailable' => 'No stories available',
+			'feed.noImagesAvailable' => 'No image posts available',
+			'feed.noTextPostsAvailable' => 'No text posts available',
+			'feed.noContentAvailable' => 'No content available',
 			'feed.refresh' => 'Refresh',
 			'feed.comments' => 'Comments',
 			'feed.commentsComingSoon' => 'Comments coming soon',
 			'feed.addCommentHint' => 'Add a comment...',
 			'feed.shareStory' => 'Share Story',
+			'feed.sharePost' => 'Share Post',
+			'feed.shareThought' => 'Share Thought',
 			'feed.shareAsImage' => 'Share as Image',
 			'feed.shareAsImageSubtitle' => 'Create a beautiful preview card',
 			'feed.shareLink' => 'Share Link',
 			'feed.shareLinkSubtitle' => 'Copy or share the story link',
+			'feed.shareImageLinkSubtitle' => 'Copy or share the post link',
+			'feed.shareTextLinkSubtitle' => 'Copy or share the thought link',
 			'feed.shareAsText' => 'Share as Text',
 			'feed.shareAsTextSubtitle' => 'Share the story excerpt',
+			'feed.shareQuote' => 'Share Quote',
+			'feed.shareQuoteSubtitle' => 'Share as a quotable text',
+			'feed.shareWithImage' => 'Share with Image',
+			'feed.shareWithImageSubtitle' => 'Share the image with caption',
+			'feed.copyLink' => 'Copy Link',
+			'feed.copyLinkSubtitle' => 'Copy link to clipboard',
+			'feed.copyText' => 'Copy Text',
+			'feed.copyTextSubtitle' => 'Copy the quote to clipboard',
+			'feed.linkCopied' => 'Link copied to clipboard',
+			'feed.textCopied' => 'Text copied to clipboard',
 			'feed.sendToUser' => 'Send to User',
 			'feed.sendToUserSubtitle' => 'Share directly with a friend',
 			'feed.chooseFormat' => 'Choose Format',
@@ -1005,6 +1108,14 @@ extension on Translations {
 			'feed.copy' => 'Copy',
 			'feed.tapToViewFullQuote' => 'Tap to view full quote',
 			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
+			'feed.tabs.all' => 'All',
+			'feed.tabs.stories' => 'Stories',
+			'feed.tabs.posts' => 'Posts',
+			'feed.tabs.videos' => 'Videos',
+			'feed.tabs.images' => 'Images',
+			'feed.tabs.text' => 'Thoughts',
+			'feed.tapToShowCaption' => 'Tap to show caption',
+			'feed.noVideosAvailable' => 'No videos available',
 			_ => null,
 		};
 	}

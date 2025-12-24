@@ -1,18 +1,13 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:myitihas/core/di/injection_container.dart';
-import 'package:myitihas/features/social/domain/repositories/user_repository.dart';
 import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
 import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
+import 'package:myitihas/pages/home_content_page.dart';
 import 'package:sizer/sizer.dart';
-import 'package:myitihas/config/theme/gradient_extension.dart';
-import 'package:myitihas/pages/story_generator.dart';
-import 'package:myitihas/utils/theme.dart';
 import 'package:myitihas/features/social/presentation/pages/social_feed_page.dart';
-import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,9 +19,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int currentBottomBarIndex = 0;
-  int _tapCount = 0;
-  DateTime? _lastTapTime;
-  String? _currentUserId;
 
   final List<String> titles = [
     "Story Generator",
@@ -35,36 +27,19 @@ class _HomePageState extends State<HomePage> {
     "Map",
     "Profile",
   ];
+
   @override
   void initState() {
     super.initState();
-    _loadCurrentUser();
-  }
-
-  Future<void> _loadCurrentUser() async {
-    final userRepository = getIt<UserRepository>();
-    final result = await userRepository.getCurrentUser();
-    result.fold((failure) => null, (user) {
-      if (mounted) {
-        setState(() {
-          _currentUserId = user.id;
-        });
-      }
-    });
   }
 
   List<Widget> get pages => [
-    const StoryGeneratorPage(),
+    const HomeContentPage(),
     const ChatItihasPage(),
     const SocialFeedPage(),
     const AkhandaBharatMapPage(),
-    ProfilePage(userId: _currentUserId ?? 'user_001'),
+    const ProfilePage(), // current user's profile
   ];
-
-  void _handleUserIconTap() {
-    // Single tap - do nothing or navigate to profile
-  }
-
   final Gradient selectedGradient = const LinearGradient(
     colors: [
       Color(0xFF4FC3F7), // light blue
@@ -81,69 +56,6 @@ class _HomePageState extends State<HomePage> {
 
       body: _buildBody(context),
       bottomNavigationBar: _buildBottomNav(context),
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(10.h),
-      child: SafeArea(
-        child: Container(
-          height: 8.h,
-          padding: EdgeInsets.symmetric(horizontal: 5.w),
-          decoration: BoxDecoration(
-            gradient: Theme.of(
-              context,
-            ).extension<GradientExtension>()!.heroBackgroundGradient,
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurfaceVariant.withValues(alpha: 0.47),
-                blurRadius: 200,
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  titles[currentBottomBarIndex],
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18.sp,
-                    foreground: Paint()
-                      ..shader = selectedGradient.createShader(
-                        Rect.fromLTWH(0, 0, 60.w, 8.h),
-                      ),
-                  ),
-                ),
-              ),
-              if (currentBottomBarIndex == 3 && _currentUserId != null)
-                IconButton(
-                  icon: const Icon(Icons.settings),
-                  onPressed: () => context.push('/settings'),
-                  tooltip: 'Settings',
-                ),
-              GestureDetector(
-                onTap: () {
-                  _handleUserIconTap();
-                  context.read<ThemeBloc>().add(ToggleTheme());
-                },
-                child: Container(
-                  width: 11.w,
-                  height: 11.w,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.person, color: Colors.white, size: 16.sp),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 

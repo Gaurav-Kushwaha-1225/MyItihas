@@ -9,6 +9,7 @@ part of 'routes.dart';
 List<RouteBase> get $appRoutes => [
   $splashRoute,
   $homeRoute,
+  $discoverRoute,
   $loginRoute,
   $signupRoute,
   $resetPasswordRoute,
@@ -22,10 +23,15 @@ List<RouteBase> get $appRoutes => [
   $editProfileRoute,
   $socialFeedRoute,
   $profileRoute,
+  $followersRoute,
+  $followingRoute,
   $notificationRoute,
   $chatListRoute,
   $mapRoute,
+<<<<<<< HEAD
   $shaktiPeethaRoute,
+=======
+>>>>>>> 38c54ea249f0fc2c6228880cac4bfc1338e7fd2e
 ];
 
 RouteBase get $splashRoute =>
@@ -139,6 +145,29 @@ mixin $StoryGeneratorRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/home/story-generator');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $discoverRoute =>
+    GoRouteData.$route(path: '/discover', factory: $DiscoverRoute._fromState);
+
+mixin $DiscoverRoute on GoRouteData {
+  static DiscoverRoute _fromState(GoRouterState state) => const DiscoverRoute();
+
+  @override
+  String get location => GoRouteData.$location('/discover');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -505,6 +534,64 @@ mixin $ProfileRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
+RouteBase get $followersRoute => GoRouteData.$route(
+  path: '/followers/:userId',
+  factory: $FollowersRoute._fromState,
+);
+
+mixin $FollowersRoute on GoRouteData {
+  static FollowersRoute _fromState(GoRouterState state) =>
+      FollowersRoute(userId: state.pathParameters['userId']!);
+
+  FollowersRoute get _self => this as FollowersRoute;
+
+  @override
+  String get location =>
+      GoRouteData.$location('/followers/${Uri.encodeComponent(_self.userId)}');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $followingRoute => GoRouteData.$route(
+  path: '/following/:userId',
+  factory: $FollowingRoute._fromState,
+);
+
+mixin $FollowingRoute on GoRouteData {
+  static FollowingRoute _fromState(GoRouterState state) =>
+      FollowingRoute(userId: state.pathParameters['userId']!);
+
+  FollowingRoute get _self => this as FollowingRoute;
+
+  @override
+  String get location =>
+      GoRouteData.$location('/following/${Uri.encodeComponent(_self.userId)}');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
 RouteBase get $notificationRoute => GoRouteData.$route(
   path: '/notifications',
   factory: $NotificationRoute._fromState,
@@ -609,6 +696,7 @@ mixin $MapRoute on GoRouteData {
   @override
   void replace(BuildContext context) => context.replace(location);
 }
+<<<<<<< HEAD
 
 RouteBase get $shaktiPeethaRoute => GoRouteData.$route(
   path: '/shakti-peetha',
@@ -635,3 +723,5 @@ mixin $ShaktiPeethaRoute on GoRouteData {
   @override
   void replace(BuildContext context) => context.replace(location);
 }
+=======
+>>>>>>> 38c54ea249f0fc2c6228880cac4bfc1338e7fd2e

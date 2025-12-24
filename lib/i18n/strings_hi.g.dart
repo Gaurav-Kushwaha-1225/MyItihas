@@ -359,17 +359,34 @@ class _TranslationsFeedHi implements TranslationsFeedEn {
 	@override String get errorTitle => 'अरे! कुछ गलत हो गया';
 	@override String get tryAgain => 'फिर से प्रयास करें';
 	@override String get noStoriesAvailable => 'कोई कहानी उपलब्ध नहीं';
+	@override String get noImagesAvailable => 'कोई चित्र पोस्ट उपलब्ध नहीं';
+	@override String get noTextPostsAvailable => 'कोई विचार पोस्ट उपलब्ध नहीं';
+	@override String get noContentAvailable => 'कोई सामग्री उपलब्ध नहीं';
 	@override String get refresh => 'रिफ्रेश';
 	@override String get comments => 'टिप्पणियाँ';
 	@override String get commentsComingSoon => 'टिप्पणियाँ जल्द ही आ रही हैं';
 	@override String get addCommentHint => 'टिप्पणी जोड़ें...';
 	@override String get shareStory => 'कहानी साझा करें';
+	@override String get sharePost => 'पोस्ट साझा करें';
+	@override String get shareThought => 'विचार साझा करें';
 	@override String get shareAsImage => 'चित्र के रूप में साझा करें';
 	@override String get shareAsImageSubtitle => 'एक सुंदर पूर्वावलोकन कार्ड बनाएं';
 	@override String get shareLink => 'लिंक साझा करें';
 	@override String get shareLinkSubtitle => 'कहानी लिंक कॉपी या साझा करें';
+	@override String get shareImageLinkSubtitle => 'पोस्ट लिंक कॉपी या साझा करें';
+	@override String get shareTextLinkSubtitle => 'विचार लिंक कॉपी या साझा करें';
 	@override String get shareAsText => 'पाठ के रूप में साझा करें';
 	@override String get shareAsTextSubtitle => 'कहानी के अंश साझा करें';
+	@override String get shareQuote => 'उद्धरण साझा करें';
+	@override String get shareQuoteSubtitle => 'उद्धरण के रूप में साझा करें';
+	@override String get shareWithImage => 'चित्र सहित साझा करें';
+	@override String get shareWithImageSubtitle => 'कैप्शन सहित चित्र साझा करें';
+	@override String get copyLink => 'लिंक कॉपी करें';
+	@override String get copyLinkSubtitle => 'क्लिपबोर्ड पर लिंक कॉपी करें';
+	@override String get copyText => 'पाठ कॉपी करें';
+	@override String get copyTextSubtitle => 'क्लिपबोर्ड पर उद्धरण कॉपी करें';
+	@override String get linkCopied => 'लिंक क्लिपबोर्ड पर कॉपी हो गया';
+	@override String get textCopied => 'पाठ क्लिपबोर्ड पर कॉपी हो गया';
 	@override String get sendToUser => 'उपयोगकर्ता को भेजें';
 	@override String get sendToUserSubtitle => 'सीधे मित्र के साथ साझा करें';
 	@override String get chooseFormat => 'प्रारूप चुनें';
@@ -391,6 +408,9 @@ class _TranslationsFeedHi implements TranslationsFeedEn {
 	@override String get copy => 'Copy';
 	@override String get tapToViewFullQuote => 'Tap to view full quote';
 	@override String get quoteFromMyitihas => 'Quote from MyItihas';
+	@override late final _TranslationsFeedTabsHi tabs = _TranslationsFeedTabsHi._(_root);
+	@override String get tapToShowCaption => 'कैप्शन देखने के लिए टैप करें';
+	@override String get noVideosAvailable => 'कोई वीडियो उपलब्ध नहीं';
 }
 
 // Path: storyGenerator.storyLength
@@ -403,6 +423,21 @@ class _TranslationsStoryGeneratorStoryLengthHi implements TranslationsStoryGener
 	@override String get short => 'छोटी';
 	@override String get medium => 'मध्यम';
 	@override String get long => 'लंबी';
+}
+
+// Path: feed.tabs
+class _TranslationsFeedTabsHi implements TranslationsFeedTabsEn {
+	_TranslationsFeedTabsHi._(this._root);
+
+	final TranslationsHi _root; // ignore: unused_field
+
+	// Translations
+	@override String get all => 'सभी';
+	@override String get stories => 'कहानियाँ';
+	@override String get posts => 'पोस्ट';
+	@override String get videos => 'वीडियो';
+	@override String get images => 'चित्र';
+	@override String get text => 'विचार';
 }
 
 /// The flat map containing all translations for locale <hi>.
@@ -577,17 +612,34 @@ extension on TranslationsHi {
 			'feed.errorTitle' => 'अरे! कुछ गलत हो गया',
 			'feed.tryAgain' => 'फिर से प्रयास करें',
 			'feed.noStoriesAvailable' => 'कोई कहानी उपलब्ध नहीं',
+			'feed.noImagesAvailable' => 'कोई चित्र पोस्ट उपलब्ध नहीं',
+			'feed.noTextPostsAvailable' => 'कोई विचार पोस्ट उपलब्ध नहीं',
+			'feed.noContentAvailable' => 'कोई सामग्री उपलब्ध नहीं',
 			'feed.refresh' => 'रिफ्रेश',
 			'feed.comments' => 'टिप्पणियाँ',
 			'feed.commentsComingSoon' => 'टिप्पणियाँ जल्द ही आ रही हैं',
 			'feed.addCommentHint' => 'टिप्पणी जोड़ें...',
 			'feed.shareStory' => 'कहानी साझा करें',
+			'feed.sharePost' => 'पोस्ट साझा करें',
+			'feed.shareThought' => 'विचार साझा करें',
 			'feed.shareAsImage' => 'चित्र के रूप में साझा करें',
 			'feed.shareAsImageSubtitle' => 'एक सुंदर पूर्वावलोकन कार्ड बनाएं',
 			'feed.shareLink' => 'लिंक साझा करें',
 			'feed.shareLinkSubtitle' => 'कहानी लिंक कॉपी या साझा करें',
+			'feed.shareImageLinkSubtitle' => 'पोस्ट लिंक कॉपी या साझा करें',
+			'feed.shareTextLinkSubtitle' => 'विचार लिंक कॉपी या साझा करें',
 			'feed.shareAsText' => 'पाठ के रूप में साझा करें',
 			'feed.shareAsTextSubtitle' => 'कहानी के अंश साझा करें',
+			'feed.shareQuote' => 'उद्धरण साझा करें',
+			'feed.shareQuoteSubtitle' => 'उद्धरण के रूप में साझा करें',
+			'feed.shareWithImage' => 'चित्र सहित साझा करें',
+			'feed.shareWithImageSubtitle' => 'कैप्शन सहित चित्र साझा करें',
+			'feed.copyLink' => 'लिंक कॉपी करें',
+			'feed.copyLinkSubtitle' => 'क्लिपबोर्ड पर लिंक कॉपी करें',
+			'feed.copyText' => 'पाठ कॉपी करें',
+			'feed.copyTextSubtitle' => 'क्लिपबोर्ड पर उद्धरण कॉपी करें',
+			'feed.linkCopied' => 'लिंक क्लिपबोर्ड पर कॉपी हो गया',
+			'feed.textCopied' => 'पाठ क्लिपबोर्ड पर कॉपी हो गया',
 			'feed.sendToUser' => 'उपयोगकर्ता को भेजें',
 			'feed.sendToUserSubtitle' => 'सीधे मित्र के साथ साझा करें',
 			'feed.chooseFormat' => 'प्रारूप चुनें',
@@ -609,6 +661,14 @@ extension on TranslationsHi {
 			'feed.copy' => 'Copy',
 			'feed.tapToViewFullQuote' => 'Tap to view full quote',
 			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
+			'feed.tabs.all' => 'सभी',
+			'feed.tabs.stories' => 'कहानियाँ',
+			'feed.tabs.posts' => 'पोस्ट',
+			'feed.tabs.videos' => 'वीडियो',
+			'feed.tabs.images' => 'चित्र',
+			'feed.tabs.text' => 'विचार',
+			'feed.tapToShowCaption' => 'कैप्शन देखने के लिए टैप करें',
+			'feed.noVideosAvailable' => 'कोई वीडियो उपलब्ध नहीं',
 			_ => null,
 		};
 	}

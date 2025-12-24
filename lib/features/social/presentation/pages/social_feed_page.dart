@@ -4,11 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
 import 'package:myitihas/core/di/injection_container.dart';
+import 'package:myitihas/features/social/domain/entities/content_type.dart';
+import 'package:myitihas/features/social/domain/entities/feed_item.dart';
+import 'package:myitihas/features/social/domain/entities/image_post.dart';
+import 'package:myitihas/features/social/domain/entities/text_post.dart';
+import 'package:myitihas/features/social/domain/entities/video_post.dart';
 import 'package:myitihas/features/social/presentation/bloc/feed_bloc.dart';
 import 'package:myitihas/features/social/presentation/bloc/feed_event.dart';
 import 'package:myitihas/features/social/presentation/bloc/feed_state.dart';
 import 'package:myitihas/features/social/presentation/utils/share_preview_generator.dart';
-import 'package:myitihas/features/social/presentation/widgets/enhanced_story_card.dart';
+import 'package:myitihas/features/social/presentation/widgets/feed_item_card.dart';
 import 'package:myitihas/features/social/presentation/widgets/share_preview_card.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/i18n/strings.g.dart';
@@ -32,12 +37,43 @@ class _SocialFeedView extends StatefulWidget {
   State<_SocialFeedView> createState() => _SocialFeedViewState();
 }
 
-class _SocialFeedViewState extends State<_SocialFeedView> {
+class _SocialFeedViewState extends State<_SocialFeedView>
+    with SingleTickerProviderStateMixin {
   final PageController _pageController = PageController();
+  late TabController _tabController;
   int _currentPage = 0;
+
+  static const _feedTypes = [
+    FeedType.all,
+    FeedType.stories,
+    FeedType.posts,
+    FeedType.videos,
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _feedTypes.length, vsync: this);
+    _tabController.addListener(_onTabChanged);
+  }
+
+  void _onTabChanged() {
+    if (_tabController.indexIsChanging) return;
+
+    final newFeedType = _feedTypes[_tabController.index];
+    context.read<FeedBloc>().add(FeedEvent.changeFeedType(newFeedType));
+
+    // Reset page controller when switching tabs
+    if (_pageController.hasClients) {
+      _pageController.jumpToPage(0);
+    }
+    setState(() => _currentPage = 0);
+  }
 
   @override
   void dispose() {
+    _tabController.removeListener(_onTabChanged);
+    _tabController.dispose();
     _pageController.dispose();
     super.dispose();
   }
@@ -46,39 +82,111 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final t = Translations.of(context);
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
-      body: BlocConsumer<FeedBloc, FeedState>(
-        listener: (context, state) {
-          state.maybeWhen(
-            error: (message) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(message),
-                  behavior: SnackBarBehavior.floating,
-                ),
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          // Main content
+          BlocConsumer<FeedBloc, FeedState>(
+            listener: (context, state) {
+              state.maybeWhen(
+                error: (message) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(message),
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                },
+                orElse: () {},
               );
             },
-            orElse: () {},
-          );
-        },
-        builder: (context, state) {
-          return state.when(
-            initial: () => _buildLoadingState(colorScheme),
-            loading: () => _buildLoadingState(colorScheme),
-            refreshing: (stories, currentUser, hasMore) =>
-                _buildFeed(context, stories: stories, hasMore: hasMore),
-            loaded: (stories, currentUser, hasMore, isLoadingMore) =>
-                _buildFeed(
-                  context,
-                  stories: stories,
-                  hasMore: hasMore,
-                  isLoadingMore: isLoadingMore,
+            builder: (context, state) {
+              return state.when(
+                initial: () => _buildLoadingState(colorScheme),
+                loading: () => _buildLoadingState(colorScheme),
+                refreshing: (feedItems, currentUser, hasMore, feedType) =>
+                    _buildFeed(
+                      context,
+                      feedItems: feedItems,
+                      hasMore: hasMore,
+                      feedType: feedType,
+                    ),
+                loaded:
+                    (
+                      feedItems,
+                      currentUser,
+                      hasMore,
+                      feedType,
+                      isLoadingMore,
+                    ) => _buildFeed(
+                      context,
+                      feedItems: feedItems,
+                      hasMore: hasMore,
+                      feedType: feedType,
+                      isLoadingMore: isLoadingMore,
+                    ),
+                error: (message) =>
+                    _buildErrorState(context, message, colorScheme),
+              );
+            },
+          ),
+
+          // Top tab bar overlay
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withValues(alpha: 0.8),
+                    Colors.black.withValues(alpha: 0.4),
+                    Colors.transparent,
+                  ],
+                  stops: const [0.0, 0.7, 1.0],
                 ),
-            error: (message) => _buildErrorState(context, message, colorScheme),
-          );
-        },
+              ),
+              child: SafeArea(
+                bottom: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(height: 8),
+                    TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      tabAlignment: TabAlignment.center,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicatorColor: Colors.white,
+                      indicatorWeight: 2,
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.white60,
+                      labelStyle: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      unselectedLabelStyle: theme.textTheme.titleSmall,
+                      dividerColor: Colors.transparent,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      tabs: [
+                        Tab(text: t.feed.tabs.all),
+                        Tab(text: t.feed.tabs.stories),
+                        Tab(text: t.feed.tabs.posts),
+                        Tab(text: t.feed.tabs.videos),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -92,7 +200,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
           const SizedBox(height: 16),
           Text(
             Translations.of(context).feed.loading,
-            style: TextStyle(color: colorScheme.onSurfaceVariant),
+            style: const TextStyle(color: Colors.white70),
           ),
         ],
       ),
@@ -117,13 +225,13 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
               t.feed.errorTitle,
               style: Theme.of(
                 context,
-              ).textTheme.titleLarge?.copyWith(color: colorScheme.onSurface),
+              ).textTheme.titleLarge?.copyWith(color: Colors.white),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
               message,
-              style: TextStyle(color: colorScheme.onSurfaceVariant),
+              style: const TextStyle(color: Colors.white70),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -142,39 +250,15 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
 
   Widget _buildFeed(
     BuildContext context, {
-    required List<Story> stories,
+    required List<FeedItem> feedItems,
     required bool hasMore,
+    required FeedType feedType,
     bool isLoadingMore = false,
   }) {
-    final t = Translations.of(context);
     final colorScheme = Theme.of(context).colorScheme;
 
-    if (stories.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.auto_stories_outlined,
-              size: 64,
-              color: colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              t.feed.noStoriesAvailable,
-              style: TextStyle(color: colorScheme.onSurfaceVariant),
-            ),
-            const SizedBox(height: 16),
-            TextButton.icon(
-              onPressed: () {
-                context.read<FeedBloc>().add(const FeedEvent.refreshFeed());
-              },
-              icon: const Icon(Icons.refresh),
-              label: Text(t.feed.refresh),
-            ),
-          ],
-        ),
-      );
+    if (feedItems.isEmpty) {
+      return _buildEmptyState(context, feedType);
     }
 
     return RefreshIndicator(
@@ -186,45 +270,92 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
         controller: _pageController,
         scrollDirection: Axis.vertical,
         physics: const BouncingScrollPhysics(),
-        itemCount: stories.length + (isLoadingMore ? 1 : 0),
+        itemCount: feedItems.length + (isLoadingMore ? 1 : 0),
         onPageChanged: (index) {
           HapticFeedback.selectionClick();
           setState(() => _currentPage = index);
 
-          if (index >= stories.length - 2 && hasMore && !isLoadingMore) {
+          if (index >= feedItems.length - 2 && hasMore && !isLoadingMore) {
             context.read<FeedBloc>().add(const FeedEvent.loadMore());
           }
         },
         itemBuilder: (context, index) {
-          if (index >= stories.length) {
+          if (index >= feedItems.length) {
             return _buildLoadingState(colorScheme);
           }
 
-          final story = stories[index];
+          final feedItem = feedItems[index];
           final isVisible = index == _currentPage;
 
-          return EnhancedStoryCard(
-            story: story,
+          return FeedItemCard(
+            feedItem: feedItem,
             isVisible: isVisible,
-            onLike: () {
-              context.read<FeedBloc>().add(FeedEvent.toggleLike(story.id));
+            onLike: (contentId, contentType) {
+              context.read<FeedBloc>().add(
+                FeedEvent.toggleLike(
+                  contentId: contentId,
+                  contentType: contentType,
+                ),
+              );
             },
-            onComment: () => _showCommentSheet(context, story),
-            onShare: () => _showEnhancedShareDialog(context, story),
-            onBookmark: () {
-              context.read<FeedBloc>().add(FeedEvent.toggleBookmark(story.id));
-              _announceBookmark(context, story);
+            onComment: (contentId, contentType) {
+              feedItem.when(
+                story: (story) => _showCommentSheet(
+                  context,
+                  story.id,
+                  story.commentCount,
+                  ContentType.story,
+                ),
+                imagePost: (post) => _showCommentSheet(
+                  context,
+                  post.id,
+                  post.commentCount,
+                  ContentType.imagePost,
+                ),
+                textPost: (post) => _showCommentSheet(
+                  context,
+                  post.id,
+                  post.commentCount,
+                  ContentType.textPost,
+                ),
+                videoPost: (post) => _showCommentSheet(
+                  context,
+                  post.id,
+                  post.commentCount,
+                  ContentType.videoPost,
+                ),
+              );
+            },
+            onShare: (contentId, contentType) {
+              feedItem.whenOrNull(
+                story: (story) => _showEnhancedShareDialog(context, story),
+                imagePost: (post) => _showImagePostShareDialog(context, post),
+                textPost: (post) => _showTextPostShareDialog(context, post),
+                videoPost: (post) => _showVideoPostShareDialog(context, post),
+              );
+            },
+            onBookmark: (contentId, contentType) {
+              context.read<FeedBloc>().add(
+                FeedEvent.toggleBookmark(
+                  contentId: contentId,
+                  contentType: contentType,
+                ),
+              );
+              _announceBookmark(context, feedItem);
             },
             onProfileTap: () {
-              if (story.authorUser != null) {
-                context.push('/profile/${story.authorUser!.id}');
+              final authorUser = feedItem.authorUser;
+              if (authorUser != null) {
+                context.push('/profile/${authorUser.id}');
               }
             },
             onFollowTap: () {
               // TODO: Implement follow/unfollow
             },
             onContinueReading: () {
-              context.push('/home/stories/${story.id}');
+              feedItem.whenOrNull(
+                story: (story) => context.push('/home/stories/${story.id}'),
+              );
             },
           );
         },
@@ -232,9 +363,57 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
     );
   }
 
-  void _announceBookmark(BuildContext context, Story story) {
+  Widget _buildEmptyState(BuildContext context, FeedType feedType) {
     final t = Translations.of(context);
-    final message = story.isFavorite
+
+    IconData icon;
+    String message;
+
+    switch (feedType) {
+      case FeedType.all:
+        icon = Icons.feed_outlined;
+        message = t.feed.noContentAvailable;
+        break;
+      case FeedType.stories:
+        icon = Icons.auto_stories_outlined;
+        message = t.feed.noStoriesAvailable;
+        break;
+      case FeedType.posts:
+        icon = Icons.photo_library_outlined;
+        message = t.feed.noImagesAvailable;
+        break;
+      case FeedType.videos:
+        icon = Icons.videocam_outlined;
+        message = t.feed.noVideosAvailable;
+        break;
+    }
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 64, color: Colors.white54),
+          const SizedBox(height: 16),
+          Text(message, style: const TextStyle(color: Colors.white70)),
+          const SizedBox(height: 16),
+          TextButton.icon(
+            onPressed: () {
+              context.read<FeedBloc>().add(const FeedEvent.refreshFeed());
+            },
+            icon: const Icon(Icons.refresh, color: Colors.white),
+            label: Text(
+              t.feed.refresh,
+              style: const TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _announceBookmark(BuildContext context, FeedItem feedItem) {
+    final t = Translations.of(context);
+    final message = feedItem.isFavorite
         ? t.feed.removedFromBookmarks
         : t.feed.bookmarked;
     ScaffoldMessenger.of(context).showSnackBar(
@@ -246,7 +425,446 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
     );
   }
 
-  void _showCommentSheet(BuildContext context, Story story) {
+  void _showImagePostShareDialog(BuildContext context, ImagePost post) {
+    final t = Translations.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final gradients = theme.extension<GradientExtension>();
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      enableDrag: true,
+      builder: (sheetContext) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Text(
+                t.feed.sharePost,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              if (post.caption != null)
+                Text(
+                  post.caption!,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              const SizedBox(height: 24),
+
+              // Share with image
+              _ShareOption(
+                icon: Icons.image_outlined,
+                title: t.feed.shareWithImage,
+                subtitle: t.feed.shareWithImageSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await SharePreviewGenerator.shareImagePostImage(post: post);
+                  if (context.mounted) {
+                    context.read<FeedBloc>().add(
+                      FeedEvent.shareContent(
+                        contentId: post.id,
+                        contentType: ContentType.imagePost,
+                        isDirect: false,
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Share link
+              _ShareOption(
+                icon: Icons.link,
+                title: t.feed.shareLink,
+                subtitle: t.feed.shareImageLinkSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await SharePreviewGenerator.shareImagePostLink(
+                    post: post,
+                    baseUrl: 'https://myitihas.com',
+                  );
+                  if (context.mounted) {
+                    context.read<FeedBloc>().add(
+                      FeedEvent.shareContent(
+                        contentId: post.id,
+                        contentType: ContentType.imagePost,
+                        isDirect: false,
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Copy link
+              _ShareOption(
+                icon: Icons.copy,
+                title: t.feed.copyLink,
+                subtitle: t.feed.copyLinkSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await SharePreviewGenerator.copyImagePostLink(
+                    post: post,
+                    baseUrl: 'https://myitihas.com',
+                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(t.feed.linkCopied),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Send to user
+              _ShareOption(
+                icon: Icons.send,
+                title: t.feed.sendToUser,
+                subtitle: t.feed.sendToUserSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  // TODO: Show user selector
+                },
+              ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showTextPostShareDialog(BuildContext context, TextPost post) {
+    final t = Translations.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final gradients = theme.extension<GradientExtension>();
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      enableDrag: true,
+      builder: (sheetContext) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Text(
+                t.feed.shareThought,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '"${post.body.length > 50 ? '${post.body.substring(0, 50)}...' : post.body}"',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  fontStyle: FontStyle.italic,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 24),
+
+              // Share as quote
+              _ShareOption(
+                icon: Icons.format_quote,
+                title: t.feed.shareQuote,
+                subtitle: t.feed.shareQuoteSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await SharePreviewGenerator.shareTextPost(post: post);
+                  if (context.mounted) {
+                    context.read<FeedBloc>().add(
+                      FeedEvent.shareContent(
+                        contentId: post.id,
+                        contentType: ContentType.textPost,
+                        isDirect: false,
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Share link
+              _ShareOption(
+                icon: Icons.link,
+                title: t.feed.shareLink,
+                subtitle: t.feed.shareTextLinkSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await SharePreviewGenerator.shareTextPostLink(
+                    post: post,
+                    baseUrl: 'https://myitihas.com',
+                  );
+                  if (context.mounted) {
+                    context.read<FeedBloc>().add(
+                      FeedEvent.shareContent(
+                        contentId: post.id,
+                        contentType: ContentType.textPost,
+                        isDirect: false,
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Copy text
+              _ShareOption(
+                icon: Icons.copy,
+                title: t.feed.copyText,
+                subtitle: t.feed.copyTextSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await SharePreviewGenerator.copyTextPostContent(post: post);
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(t.feed.textCopied),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Copy link
+              _ShareOption(
+                icon: Icons.link,
+                title: t.feed.copyLink,
+                subtitle: t.feed.copyLinkSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  await SharePreviewGenerator.copyTextPostLink(
+                    post: post,
+                    baseUrl: 'https://myitihas.com',
+                  );
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(t.feed.linkCopied),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Send to user
+              _ShareOption(
+                icon: Icons.send,
+                title: t.feed.sendToUser,
+                subtitle: t.feed.sendToUserSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  // TODO: Show user selector
+                },
+              ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showVideoPostShareDialog(BuildContext context, VideoPost post) {
+    final t = Translations.of(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final gradients = theme.extension<GradientExtension>();
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      enableDrag: true,
+      builder: (sheetContext) => Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              Text(
+                t.feed.sharePost,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              if (post.caption != null && post.caption!.isNotEmpty)
+                Text(
+                  '"${post.caption!.length > 50 ? '${post.caption!.substring(0, 50)}...' : post.caption!}"',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              const SizedBox(height: 24),
+
+              // Share link
+              _ShareOption(
+                icon: Icons.link,
+                title: t.feed.shareLink,
+                subtitle: t.feed.shareLinkSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  final link = 'https://myitihas.com/videos/${post.id}';
+                  await Clipboard.setData(ClipboardData(text: link));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(t.feed.linkCopied),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                    context.read<FeedBloc>().add(
+                      FeedEvent.shareContent(
+                        contentId: post.id,
+                        contentType: ContentType.videoPost,
+                        isDirect: false,
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Copy link
+              _ShareOption(
+                icon: Icons.copy,
+                title: t.feed.copyLink,
+                subtitle: t.feed.copyLinkSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () async {
+                  Navigator.pop(sheetContext);
+                  final link = 'https://myitihas.com/videos/${post.id}';
+                  await Clipboard.setData(ClipboardData(text: link));
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(t.feed.linkCopied),
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Send to user (video)
+              _ShareOption(
+                icon: Icons.send,
+                title: t.feed.sendToUser,
+                subtitle: t.feed.sendToUserSubtitle,
+                gradients: gradients,
+                colorScheme: colorScheme,
+                onTap: () {
+                  Navigator.pop(sheetContext);
+                  // TODO: Show user selector
+                },
+              ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showCommentSheet(
+    BuildContext context,
+    String contentId,
+    int commentCount,
+    ContentType contentType,
+  ) {
     final t = Translations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
@@ -295,7 +913,7 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      '${story.commentCount}',
+                      '$commentCount',
                       style: theme.textTheme.labelMedium?.copyWith(
                         color: colorScheme.onPrimaryContainer,
                       ),
@@ -453,7 +1071,11 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
                     baseUrl: 'https://myitihas.com',
                   );
                   context.read<FeedBloc>().add(
-                    FeedEvent.shareStory(storyId: story.id, isDirect: false),
+                    FeedEvent.shareContent(
+                      contentId: story.id,
+                      contentType: ContentType.story,
+                      isDirect: false,
+                    ),
                   );
                 },
               ),
@@ -468,7 +1090,11 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
                   Navigator.pop(sheetContext);
                   SharePreviewGenerator.shareAsText(story: story);
                   context.read<FeedBloc>().add(
-                    FeedEvent.shareStory(storyId: story.id, isDirect: false),
+                    FeedEvent.shareContent(
+                      contentId: story.id,
+                      contentType: ContentType.story,
+                      isDirect: false,
+                    ),
                   );
                 },
               ),
@@ -565,7 +1191,11 @@ class _SocialFeedViewState extends State<_SocialFeedView> {
 
     if (context.mounted) {
       context.read<FeedBloc>().add(
-        FeedEvent.shareStory(storyId: story.id, isDirect: false),
+        FeedEvent.shareContent(
+          contentId: story.id,
+          contentType: ContentType.story,
+          isDirect: false,
+        ),
       );
     }
   }
