@@ -28,10 +28,7 @@ List<RouteBase> get $appRoutes => [
   $notificationRoute,
   $chatListRoute,
   $mapRoute,
-<<<<<<< HEAD
   $shaktiPeethaRoute,
-=======
->>>>>>> 38c54ea249f0fc2c6228880cac4bfc1338e7fd2e
 ];
 
 RouteBase get $splashRoute =>
@@ -696,7 +693,6 @@ mixin $MapRoute on GoRouteData {
   @override
   void replace(BuildContext context) => context.replace(location);
 }
-<<<<<<< HEAD
 
 RouteBase get $shaktiPeethaRoute => GoRouteData.$route(
   path: '/shakti-peetha',
@@ -723,5 +719,3 @@ mixin $ShaktiPeethaRoute on GoRouteData {
   @override
   void replace(BuildContext context) => context.replace(location);
 }
-=======
->>>>>>> 38c54ea249f0fc2c6228880cac4bfc1338e7fd2e
