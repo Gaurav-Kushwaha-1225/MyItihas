@@ -409,6 +409,8 @@ class _TranslationsFeedTe implements TranslationsFeedEn {
 	@override String get tapToViewFullQuote => 'Tap to view full quote';
 	@override String get quoteFromMyitihas => 'Quote from MyItihas';
 	@override late final _TranslationsFeedTabsTe tabs = _TranslationsFeedTabsTe._(_root);
+	@override String get tapToShowCaption => 'క్యాప్షన్ చూడడానికి నొక్కండి';
+	@override String get noVideosAvailable => 'వీడియోలు ఏవీ అందుబాటులో లేవు';
 }
 
 // Path: storyGenerator.storyLength
@@ -432,6 +434,8 @@ class _TranslationsFeedTabsTe implements TranslationsFeedTabsEn {
 	// Translations
 	@override String get all => 'అన్నీ';
 	@override String get stories => 'కథలు';
+	@override String get posts => 'పోస్ట్‌లు';
+	@override String get videos => 'వీడియోలు';
 	@override String get images => 'చిత్రాలు';
 	@override String get text => 'ఆలోచనలు';
 }
@@ -659,8 +663,12 @@ extension on TranslationsTe {
 			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
 			'feed.tabs.all' => 'అన్నీ',
 			'feed.tabs.stories' => 'కథలు',
+			'feed.tabs.posts' => 'పోస్ట్‌లు',
+			'feed.tabs.videos' => 'వీడియోలు',
 			'feed.tabs.images' => 'చిత్రాలు',
 			'feed.tabs.text' => 'ఆలోచనలు',
+			'feed.tapToShowCaption' => 'క్యాప్షన్ చూడడానికి నొక్కండి',
+			'feed.noVideosAvailable' => 'వీడియోలు ఏవీ అందుబాటులో లేవు',
 			_ => null,
 		};
 	}

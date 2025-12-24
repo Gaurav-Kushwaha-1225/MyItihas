@@ -245,19 +245,19 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                         FadeTransition(
                           opacity: _contentFade,
                           child: SizedBox(
-                            height: 164,
+                            height: 184,
                             child: SwipeableContentSection(
                               storyExcerpt: story.story,
                               trivia: story.trivia,
                               lesson: story.lesson,
                               activity: story.activity,
-                              maxLines: 5,
+                              maxLines: 8,
                               darkOverlay: true,
                               onContinueReadingTap: widget.onContinueReading,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        // const SizedBox(height: 8),
 
                         // Continue Reading button
                         // FadeTransition(

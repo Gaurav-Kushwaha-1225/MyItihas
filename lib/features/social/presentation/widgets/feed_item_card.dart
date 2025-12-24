@@ -4,6 +4,7 @@ import 'package:myitihas/features/social/domain/entities/feed_item.dart';
 import 'package:myitihas/features/social/presentation/widgets/enhanced_story_card.dart';
 import 'package:myitihas/features/social/presentation/widgets/image_post_card.dart';
 import 'package:myitihas/features/social/presentation/widgets/text_post_card.dart';
+import 'package:myitihas/features/social/presentation/widgets/video_post_card.dart';
 
 class FeedItemCard extends StatelessWidget {
   final FeedItem feedItem;
@@ -87,6 +88,25 @@ class FeedItemCard extends StatelessWidget {
             : null,
         onBookmark: onBookmark != null
             ? () => onBookmark!(post.id, ContentType.textPost)
+            : null,
+        onProfileTap: onProfileTap,
+        onFollowTap: onFollowTap,
+        isFollowLoading: isFollowLoading,
+      ),
+      videoPost: (post) => VideoPostCard(
+        post: post,
+        isVisible: isVisible,
+        onLike: onLike != null
+            ? () => onLike!(post.id, ContentType.videoPost)
+            : null,
+        onComment: onComment != null
+            ? () => onComment!(post.id, ContentType.videoPost)
+            : null,
+        onShare: onShare != null
+            ? () => onShare!(post.id, ContentType.videoPost)
+            : null,
+        onBookmark: onBookmark != null
+            ? () => onBookmark!(post.id, ContentType.videoPost)
             : null,
         onProfileTap: onProfileTap,
         onFollowTap: onFollowTap,

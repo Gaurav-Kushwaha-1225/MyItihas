@@ -8,11 +8,11 @@ import 'package:myitihas/features/social/domain/entities/feed_item.dart';
 import 'package:myitihas/features/social/domain/entities/image_post.dart';
 import 'package:myitihas/features/social/domain/entities/text_post.dart';
 import 'package:myitihas/features/social/domain/entities/user.dart';
+import 'package:myitihas/features/social/domain/entities/video_post.dart';
 import 'package:myitihas/features/social/domain/repositories/post_repository.dart';
 import 'package:myitihas/features/social/domain/repositories/user_repository.dart';
 import 'package:myitihas/features/stories/domain/repositories/story_repository.dart';
 
-/// Mock implementation of PostRepository with inline mock data
 @LazySingleton(as: PostRepository)
 class PostRepositoryImpl implements PostRepository {
   final UserRepository userRepository;
@@ -24,6 +24,7 @@ class PostRepositoryImpl implements PostRepository {
 
   List<ImagePost>? _cachedImagePosts;
   List<TextPost>? _cachedTextPosts;
+  List<VideoPost>? _cachedVideoPosts;
 
   PostRepositoryImpl({
     required this.userRepository,
@@ -198,7 +199,9 @@ class PostRepositoryImpl implements PostRepository {
         'id': 'txt_1',
         'body':
             '"The soul is neither born, and nor does it die." - Bhagavad Gita 2.20\n\nThis verse reminds us that our true self is eternal and unchanging.',
-        'backgroundColor': 0xFF1A237E, // Deep Indigo
+        'imageUrl':
+            'https://images.unsplash.com/photo-1609619385002-f40f8e7c8945?w=800',
+        'backgroundColor': 0xFF1A237E,
         'textColor': 0xFFFFFFFF,
         'fontSize': 20.0,
         'tags': ['gita', 'wisdom', 'soul'],
@@ -206,8 +209,9 @@ class PostRepositoryImpl implements PostRepository {
       {
         'id': 'txt_2',
         'body':
-            'Did you know? 🤔\n\nThe Mahabharata is the longest epic poem ever written, containing about 1.8 million words - roughly 10 times the length of the Iliad and Odyssey combined!',
-        'backgroundColor': 0xFF00695C, // Teal
+            'Did you know? 🤔\n\nThe Mahabharata is the longest epic poem ever written, containing about 1.8 million words!',
+        'imageUrl': null,
+        'backgroundColor': 0xFF00695C,
         'textColor': 0xFFFFFFFF,
         'fontSize': 18.0,
         'tags': ['mahabharata', 'facts', 'epic'],
@@ -215,8 +219,10 @@ class PostRepositoryImpl implements PostRepository {
       {
         'id': 'txt_3',
         'body':
-            'Today\'s thought: 💭\n\nKarma is not about punishment. It\'s the universe\'s way of teaching us through experience. Every action creates a ripple in the cosmic pond.',
-        'backgroundColor': 0xFF4A148C, // Deep Purple
+            'Karma is not about punishment. It\'s the universe\'s way of teaching us through experience.',
+        'imageUrl':
+            'https://images.unsplash.com/photo-1545126178-862cdb469409?w=800',
+        'backgroundColor': 0xFF4A148C,
         'textColor': 0xFFFFFFFF,
         'fontSize': 19.0,
         'tags': ['karma', 'philosophy', 'wisdom'],
@@ -224,8 +230,9 @@ class PostRepositoryImpl implements PostRepository {
       {
         'id': 'txt_4',
         'body':
-            '"In the midst of movement and chaos, keep stillness inside of you." - Deepak Chopra\n\nChanneling the wisdom of ancient yogic traditions for modern life.',
-        'backgroundColor': 0xFFBF360C, // Deep Orange
+            '"In the midst of movement and chaos, keep stillness inside of you." - Deepak Chopra',
+        'imageUrl': null,
+        'backgroundColor': 0xFFBF360C,
         'textColor': 0xFFFFFFFF,
         'fontSize': 20.0,
         'tags': ['yoga', 'mindfulness', 'quote'],
@@ -233,8 +240,10 @@ class PostRepositoryImpl implements PostRepository {
       {
         'id': 'txt_5',
         'body':
-            'The five Pandavas represent:\n\n🏹 Arjuna - Focus & Skill\n💪 Bhima - Strength & Loyalty\n👑 Yudhishthira - Dharma & Truth\n🌟 Nakula - Beauty & Care\n📚 Sahadeva - Wisdom & Humility',
-        'backgroundColor': 0xFF1B5E20, // Dark Green
+            'The five Pandavas represent:\n\n🏹 Arjuna - Focus & Skill\n💪 Bhima - Strength\n👑 Yudhishthira - Dharma\n🌟 Nakula - Beauty\n📚 Sahadeva - Wisdom',
+        'imageUrl':
+            'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800',
+        'backgroundColor': 0xFF1B5E20,
         'textColor': 0xFFFFFFFF,
         'fontSize': 17.0,
         'tags': ['pandavas', 'mahabharata', 'symbolism'],
@@ -242,8 +251,9 @@ class PostRepositoryImpl implements PostRepository {
       {
         'id': 'txt_6',
         'body':
-            '"When you change the way you look at things, the things you look at change."\n\nThis is the essence of Drishti - the yogic concept of perspective.',
-        'backgroundColor': 0xFF311B92, // Deep Purple
+            '"When you change the way you look at things, the things you look at change."\n\nThe essence of Drishti.',
+        'imageUrl': null,
+        'backgroundColor': 0xFF311B92,
         'textColor': 0xFFE1BEE7,
         'fontSize': 20.0,
         'tags': ['yoga', 'drishti', 'perspective'],
@@ -251,8 +261,10 @@ class PostRepositoryImpl implements PostRepository {
       {
         'id': 'txt_7',
         'body':
-            'Fun fact about Hanuman:\n\n🐒 He is considered immortal (Chiranjeevi)\n🌞 He mistook the sun for a fruit as a child\n📖 He is present wherever Rama\'s story is told\n💪 His strength has no known limit',
-        'backgroundColor': 0xFFE65100, // Orange
+            'Fun facts about Hanuman:\n\n🐒 He is immortal (Chiranjeevi)\n🌞 He mistook the sun for a fruit\n💪 His strength has no known limit',
+        'imageUrl':
+            'https://images.unsplash.com/photo-1590077428593-a55bb07c4665?w=800',
+        'backgroundColor': 0xFFE65100,
         'textColor': 0xFFFFFFFF,
         'fontSize': 17.0,
         'tags': ['hanuman', 'ramayana', 'facts'],
@@ -260,8 +272,9 @@ class PostRepositoryImpl implements PostRepository {
       {
         'id': 'txt_8',
         'body':
-            '"Yoga is the journey of the self, through the self, to the self."\n\n- Bhagavad Gita\n\n🧘‍♀️ Starting my 108-day meditation challenge today!',
-        'backgroundColor': 0xFF0D47A1, // Dark Blue
+            '"Yoga is the journey of the self, through the self, to the self." - Bhagavad Gita\n\n🧘‍♀️ Starting my 108-day meditation challenge!',
+        'imageUrl': null,
+        'backgroundColor': 0xFF0D47A1,
         'textColor': 0xFFBBDEFB,
         'fontSize': 19.0,
         'tags': ['yoga', 'meditation', 'gita'],
@@ -276,6 +289,7 @@ class PostRepositoryImpl implements PostRepository {
       return TextPost(
         id: data['id'] as String,
         body: data['body'] as String,
+        imageUrl: data['imageUrl'] as String?,
         backgroundColor: data['backgroundColor'] as int,
         textColor: data['textColor'] as int,
         fontSize: data['fontSize'] as double,
@@ -292,6 +306,107 @@ class PostRepositoryImpl implements PostRepository {
     }).toList();
 
     return _cachedTextPosts!;
+  }
+
+  List<VideoPost> _generateMockVideoPosts() {
+    if (_cachedVideoPosts != null) return _cachedVideoPosts!;
+
+    final videoData = [
+      {
+        'id': 'vid_1',
+        'videoUrl':
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+        'thumbnailUrl':
+            'https://images.unsplash.com/photo-1544813545-4827b64fcacb?w=800',
+        'caption': 'The mesmerizing evening aarti at Varanasi ghats 🪔✨',
+        'location': 'Varanasi, UP',
+        'durationSeconds': 45,
+        'tags': ['aarti', 'varanasi', 'spiritual'],
+      },
+      {
+        'id': 'vid_2',
+        'videoUrl':
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+        'thumbnailUrl':
+            'https://images.unsplash.com/photo-1602508000477-d95e7e0eb3c9?w=800',
+        'caption': 'Walking through the ancient corridors of Ellora caves 🏛️',
+        'location': 'Ellora, Maharashtra',
+        'durationSeconds': 60,
+        'tags': ['caves', 'heritage', 'architecture'],
+      },
+      {
+        'id': 'vid_3',
+        'videoUrl':
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
+        'thumbnailUrl':
+            'https://images.unsplash.com/photo-1606293926075-69a00dbfde81?w=800',
+        'caption':
+            'Kathakali performance - The art of storytelling through dance 💃',
+        'location': 'Kerala',
+        'durationSeconds': 90,
+        'tags': ['kathakali', 'dance', 'tradition'],
+      },
+      {
+        'id': 'vid_4',
+        'videoUrl':
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+        'thumbnailUrl':
+            'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=800',
+        'caption': 'Sunrise at Somnath Temple - One of the 12 Jyotirlingas 🌅',
+        'location': 'Somnath, Gujarat',
+        'durationSeconds': 30,
+        'tags': ['somnath', 'jyotirlinga', 'sunrise'],
+      },
+      {
+        'id': 'vid_5',
+        'videoUrl':
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4',
+        'thumbnailUrl':
+            'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=800',
+        'caption': 'The sacred Rath Yatra festival of Lord Jagannath 🙏',
+        'location': 'Puri, Odisha',
+        'durationSeconds': 120,
+        'tags': ['rathyatra', 'jagannath', 'festival'],
+      },
+      {
+        'id': 'vid_6',
+        'videoUrl':
+            'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',
+        'thumbnailUrl':
+            'https://images.unsplash.com/photo-1604871000636-074fa5117945?w=800',
+        'caption': 'The intricate gopuram of Meenakshi Temple 🛕',
+        'location': 'Madurai, Tamil Nadu',
+        'durationSeconds': 55,
+        'tags': ['meenakshi', 'temple', 'dravidian'],
+      },
+    ];
+
+    _cachedVideoPosts = videoData.asMap().entries.map((entry) {
+      final data = entry.value;
+      final user = _mockUsers[(entry.key + 1) % _mockUsers.length];
+      final daysAgo = _random.nextInt(14);
+
+      return VideoPost(
+        id: data['id'] as String,
+        videoUrl: data['videoUrl'] as String,
+        thumbnailUrl: data['thumbnailUrl'] as String?,
+        caption: data['caption'] as String,
+        location: data['location'] as String,
+        durationSeconds: data['durationSeconds'] as int,
+        tags: (data['tags'] as List).cast<String>(),
+        authorId: user.id,
+        authorUser: user,
+        createdAt: DateTime.now().subtract(Duration(days: daysAgo)),
+        likes: _random.nextInt(1000) + 100,
+        commentCount: _random.nextInt(100) + 10,
+        shareCount: _random.nextInt(50) + 5,
+        viewCount: _random.nextInt(5000) + 500,
+        isLikedByCurrentUser: _likedContent.contains(data['id']),
+        isFavorite: _bookmarkedContent.contains(data['id']),
+      );
+    }).toList();
+
+    return _cachedVideoPosts!;
   }
 
   @override
@@ -337,6 +452,75 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
+  Future<Either<Failure, List<VideoPost>>> getVideoPosts({
+    int limit = 10,
+    int offset = 0,
+  }) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      final allPosts = _generateMockVideoPosts();
+      final endIndex = (offset + limit).clamp(0, allPosts.length);
+
+      if (offset >= allPosts.length) {
+        return const Right([]);
+      }
+
+      return Right(allPosts.sublist(offset, endIndex));
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<FeedItem>>> getPosts({
+    int limit = 10,
+    int offset = 0,
+  }) async {
+    try {
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      final imagePosts = _generateMockImagePosts()
+          .map((p) => FeedItem.imagePost(p))
+          .toList();
+      final textPosts = _generateMockTextPosts()
+          .map((p) => FeedItem.textPost(p))
+          .toList();
+
+      final allPosts = [...imagePosts, ...textPosts];
+
+      allPosts.sort((a, b) {
+        final aDate = a.createdAt ?? DateTime.now();
+        final bDate = b.createdAt ?? DateTime.now();
+        return bDate.compareTo(aDate);
+      });
+
+      final endIndex = (offset + limit).clamp(0, allPosts.length);
+      if (offset >= allPosts.length) {
+        return const Right([]);
+      }
+
+      return Right(allPosts.sublist(offset, endIndex));
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, VideoPost>> getVideoPostById(String id) async {
+    try {
+      final posts = _generateMockVideoPosts();
+      final post = posts.firstWhere(
+        (p) => p.id == id,
+        orElse: () => throw Exception('Video post not found'),
+      );
+      return Right(post);
+    } catch (e) {
+      return Left(NotFoundFailure('Video post not found', 'NOT_FOUND'));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<FeedItem>>> getAllFeedItems({
     int limit = 10,
     int offset = 0,
@@ -360,8 +544,11 @@ class PostRepositoryImpl implements PostRepository {
       final textPosts = _generateMockTextPosts()
           .map((p) => FeedItem.textPost(p))
           .toList();
+      final videoPosts = _generateMockVideoPosts()
+          .map((p) => FeedItem.videoPost(p))
+          .toList();
 
-      final allItems = [...stories, ...imagePosts, ...textPosts];
+      final allItems = [...stories, ...imagePosts, ...textPosts, ...videoPosts];
 
       allItems.sort((a, b) {
         final aDate = a.createdAt ?? DateTime.now();
@@ -474,6 +661,9 @@ class PostRepositoryImpl implements PostRepository {
         break;
       case ContentType.textPost:
         _cachedTextPosts = null;
+        break;
+      case ContentType.videoPost:
+        _cachedVideoPosts = null;
         break;
       case ContentType.story:
         // Stories are managed by StoryRepository
