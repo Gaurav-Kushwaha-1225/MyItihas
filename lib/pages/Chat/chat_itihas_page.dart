@@ -299,7 +299,7 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
               _buildHeaderActionButton(
                 isDark,
                 Icons.add,
-                () => context.push('/new_chat'),
+                () => context.push('/new-chat'),
               ),
               SizedBox(width: 3.w),
               _buildHeaderActionButton(
