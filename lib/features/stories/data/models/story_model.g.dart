@@ -172,7 +172,7 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
   author: json['author'] as String?,
   publishedAt: json['publishedAt'] == null
       ? null
-      : DateTime.parse(json['publishedAt'] as String),
+      : DateTime.parse(json['publishedAt'] as String).toLocal(),
   likes: (json['likes'] as num?)?.toInt() ?? 0,
   views: (json['views'] as num?)?.toInt() ?? 0,
   isFavorite: json['isFavorite'] as bool? ?? false,

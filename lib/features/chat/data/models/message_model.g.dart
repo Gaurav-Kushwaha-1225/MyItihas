@@ -81,7 +81,7 @@ _MessageModel _$MessageModelFromJson(Map<String, dynamic> json) =>
       senderName: json['senderName'] as String,
       senderAvatar: json['senderAvatar'] as String,
       text: json['text'] as String,
-      timestamp: DateTime.parse(json['timestamp'] as String),
+      timestamp: DateTime.parse(json['timestamp'] as String).toLocal(),
       deliveryStatus:
           $enumDecodeNullable(
             _$MessageDeliveryStatusEnumMap,

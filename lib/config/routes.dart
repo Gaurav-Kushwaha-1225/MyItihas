@@ -150,11 +150,14 @@ class ChatDetailRoute extends GoRouteData with $ChatDetailRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ChatDetailPage(
+      conversationId: $extra['conversationId'], // Now nullable
+      userId: $extra['userId'] ?? '',
       name: $extra['name'] ?? "User",
+      avatarUrl: $extra['avatarUrl'],
       avatarColor: $extra['color'] != null
           // ignore: deprecated_member_use
           ? "0xFF${($extra['color'] as Color).value.toRadixString(16).substring(2)}"
-          : "0xFF3B82F6",
+          : null,
       isGroup: $extra['isGroup'] ?? false,
     );
   }

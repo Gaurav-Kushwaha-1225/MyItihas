@@ -90,7 +90,7 @@ _CommentModel _$CommentModelFromJson(Map<String, dynamic> json) =>
       userName: json['userName'] as String,
       userAvatar: json['userAvatar'] as String,
       text: json['text'] as String,
-      timestamp: DateTime.parse(json['timestamp'] as String),
+      timestamp: DateTime.parse(json['timestamp'] as String).toLocal(),
       likeCount: (json['likeCount'] as num?)?.toInt() ?? 0,
       parentCommentId: json['parentCommentId'] as String?,
       replies:

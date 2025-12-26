@@ -139,7 +139,7 @@ class ChatService {
   Future<List<Conversation>> getMyConversations() async {
     final uid = _supabase.auth.currentUser!.id;
 
-    // 1️⃣ Get conversation IDs
+    // Get conversation IDs where user is a member
     final memberRows = await _supabase
         .from('conversation_members')
         .select('conversation_id')
@@ -151,172 +151,24 @@ class ChatService {
 
     if (ids.isEmpty) return [];
 
-    // 2️⃣ Fetch conversations
+    // Fetch conversations
     final convoRows = await _supabase
         .from('conversations')
         .select('id, is_group')
         .inFilter('id', ids)
         .eq('is_group', false);
 
-    // 3️⃣ Map minimal conversations (last message later)
+    // Map to Conversation objects
     return (convoRows as List)
         .map(
           (e) => Conversation(
             id: e['id'],
             isGroup: e['is_group'],
-            title: 'Chat', // temp
+            title: 'Chat',
             avatarUrl: null,
-            lastMessage: null,
-            lastMessageAt: null,
           ),
         )
         .toList();
-  }
-
-  Future<List<Conversation>> getMyConversations1() async {
-    final logger = getIt<Talker>();
-
-    try {
-      final currentUserId = _supabase.auth.currentUser?.id;
-      if (currentUserId == null) {
-        logger.warning(
-          '[ChatService] Unauthenticated user attempted to fetch conversations',
-        );
-        throw AuthException(
-          'User must be authenticated to fetch conversations',
-        );
-      }
-
-      logger.debug(
-        '[ChatService] Fetching conversations for user: $currentUserId',
-      );
-
-      // Query conversations where user is a member
-      // Join with conversation_members to get other user
-      // Join with profiles to get other user's name and avatar
-      // Join with chat_messages to get latest message
-      final response = await _supabase
-          .from('conversations')
-          .select('''
-            id,
-            is_group,
-            conversation_members!inner(
-              user_id,
-              profiles!inner(
-                username,
-                full_name,
-                avatar_url
-              )
-            ),
-            chat_messages(
-              content,
-              created_at
-            )
-          ''')
-          .eq('is_group', false)
-          // 🔥 THIS IS THE CRITICAL LINE
-          .eq('conversation_members.user_id', currentUserId)
-          .order(
-            'created_at',
-            referencedTable: 'chat_messages',
-            ascending: false,
-          )
-          .limit(1, referencedTable: 'chat_messages');
-
-      final conversations = <Conversation>[];
-
-      for (final record in response as List) {
-        try {
-          final conversationId = record['id'] as String;
-          final members = record['conversation_members'] as List;
-
-          // Find the other user (not current user)
-          Map<String, dynamic>? otherUserProfile;
-          for (final member in members) {
-            final userId = member['user_id'] as String;
-            if (userId != currentUserId) {
-              otherUserProfile = member['profiles'] as Map<String, dynamic>;
-              break;
-            }
-          }
-
-          if (otherUserProfile == null) {
-            logger.warning(
-              '[ChatService] No other user found in conversation $conversationId',
-            );
-            continue;
-          }
-
-          // Extract last message if exists
-          final messages = record['chat_messages'] as List?;
-          String? lastMessage;
-          DateTime? lastMessageAt;
-
-          if (messages != null && messages.isNotEmpty) {
-            final latestMessage = messages.first;
-            lastMessage = latestMessage['content'] as String?;
-            final timestamp = latestMessage['created_at'] as String?;
-            if (timestamp != null) {
-              lastMessageAt = DateTime.parse(timestamp);
-            }
-          }
-
-          // Use full_name if available, otherwise username
-          final title =
-              (otherUserProfile['full_name'] as String?) ??
-              (otherUserProfile['username'] as String? ?? 'Unknown User');
-
-          final conversation = Conversation(
-            id: conversationId,
-            isGroup: false,
-            title: title,
-            avatarUrl: otherUserProfile['avatar_url'] as String?,
-            lastMessage: lastMessage,
-            lastMessageAt: lastMessageAt,
-          );
-
-          conversations.add(conversation);
-        } catch (parseError) {
-          print('getMyConversations ERROR: $parseError');
-          logger.warning(
-            '[ChatService] Failed to parse conversation: $parseError',
-          );
-          // Continue processing other conversations
-        }
-      }
-
-      // Sort by last message time (most recent first)
-      conversations.sort((a, b) {
-        if (a.lastMessageAt == null && b.lastMessageAt == null) return 0;
-        if (a.lastMessageAt == null) return 1;
-        if (b.lastMessageAt == null) return -1;
-        return b.lastMessageAt!.compareTo(a.lastMessageAt!);
-      });
-
-      logger.info(
-        '[ChatService] Fetched ${conversations.length} conversations for user $currentUserId',
-      );
-      return conversations;
-    } on AuthException {
-      rethrow;
-    } on PostgrestException catch (e, stackTrace) {
-      logger.error(
-        '[ChatService] Database error in getMyConversations: ${e.message}',
-        e,
-        stackTrace,
-      );
-      throw ServerException(
-        'Failed to fetch conversations: ${e.message}',
-        e.code,
-      );
-    } catch (e, stackTrace) {
-      logger.error(
-        '[ChatService] Unexpected error in getMyConversations',
-        e,
-        stackTrace,
-      );
-      throw const ServerException('Failed to fetch conversations');
-    }
   }
 
   /// Helper method to find an existing DM between two users.
@@ -484,15 +336,6 @@ class ChatService {
         'sender_id': currentUserId,
         'content': trimmedContent,
       });
-
-      // Update conversation with last message info
-      await _supabase
-          .from('conversations')
-          .update({
-            'last_message': trimmedContent,
-            'last_message_at': DateTime.now().toIso8601String(),
-          })
-          .eq('id', conversationId);
 
       logger.info(
         '[ChatService] Message sent successfully to conversation $conversationId',

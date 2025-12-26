@@ -61,7 +61,7 @@ _ShareModel _$ShareModelFromJson(Map<String, dynamic> json) => _ShareModel(
   storyId: json['storyId'] as String,
   shareType: $enumDecode(_$ShareTypeEnumMap, json['shareType']),
   recipientId: json['recipientId'] as String?,
-  timestamp: DateTime.parse(json['timestamp'] as String),
+  timestamp: DateTime.parse(json['timestamp'] as String).toLocal(),
 );
 
 Map<String, dynamic> _$ShareModelToJson(_ShareModel instance) =>

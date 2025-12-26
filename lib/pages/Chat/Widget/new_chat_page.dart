@@ -3,6 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sizer/sizer.dart';
+import 'package:myitihas/core/di/injection_container.dart';
+import 'package:myitihas/services/profile_service.dart';
+import 'package:myitihas/services/chat_service.dart';
 
 class NewChatPage extends StatefulWidget {
   const NewChatPage({super.key});
@@ -12,20 +15,71 @@ class NewChatPage extends StatefulWidget {
 }
 
 class _NewChatPageState extends State<NewChatPage> {
-  // Mock data
-  final List<Map<String, String>> _frequentlyContacted = [
-    {"name": "Aditya Gupta"},
-    {"name": "Ram Kumar"},
-    {"name": "User1"},
-  ];
+  final ProfileService _profileService = getIt<ProfileService>();
+  final ChatService _chatService = getIt<ChatService>();
+  final TextEditingController _searchController = TextEditingController();
+  
+  List<Map<String, dynamic>> _allUsers = [];
+  List<Map<String, dynamic>> _filteredUsers = [];
+  bool _isLoading = true;
+  String? _errorMessage;
 
-  final List<Map<String, String>> _allContacts = [
-    {"name": "Akash"},
-    {"name": "Ram Sharma"},
-    {"name": "Manish Kumar"},
-    {"name": "Dev Patel"},
-    {"name": "User2"},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadUsers();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_onSearchChanged);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadUsers() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final users = await _profileService.fetchPublicProfiles(
+        limit: 100,
+        offset: 0,
+      );
+      
+      setState(() {
+        _allUsers = users;
+        _filteredUsers = users;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Failed to load users: ${e.toString()}';
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    
+    if (query.isEmpty) {
+      setState(() {
+        _filteredUsers = _allUsers;
+      });
+    } else {
+      setState(() {
+        _filteredUsers = _allUsers.where((user) {
+          final username = (user['username'] ?? '').toLowerCase();
+          final fullName = (user['full_name'] ?? '').toLowerCase();
+          return username.contains(query) || fullName.contains(query);
+        }).toList();
+      });
+    }
+  }
 
   //
   // BUILD
@@ -100,8 +154,8 @@ class _NewChatPageState extends State<NewChatPage> {
       child: Column(
         children: [
           _buildSearchBar(isDark),
-          _buildTopOptions(context, isDark),
-          _buildContactLists(isDark),
+          _buildNewGroupOption(context, isDark),
+          _buildUsersList(isDark),
         ],
       ),
     );
@@ -145,6 +199,7 @@ class _NewChatPageState extends State<NewChatPage> {
           ),
         ),
         child: TextField(
+          controller: _searchController,
           style: TextStyle(color: textColor),
           decoration: InputDecoration(
             hintText: "Search name or number",
@@ -162,9 +217,9 @@ class _NewChatPageState extends State<NewChatPage> {
   }
 
   //
-  // TOP OPTIONS (NEW GROUP / CONTACT)
+  // NEW GROUP OPTION
 
-  Widget _buildTopOptions(BuildContext context, bool isDark) {
+  Widget _buildNewGroupOption(BuildContext context, bool isDark) {
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
     final secondaryTextColor = isDark
         ? DarkColors.textSecondary
@@ -175,49 +230,26 @@ class _NewChatPageState extends State<NewChatPage> {
 
     return Column(
       children: [
-        _buildOptionTile(
-          icon: Icons.group_add,
-          title: "New group",
-          textColor: textColor,
-          accentColor: accentColor,
+        ListTile(
+          leading: CircleAvatar(
+            backgroundColor: accentColor,
+            child: Icon(Icons.group_add, color: Colors.white),
+          ),
+          title: Text(
+            "New group",
+            style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
+          ),
           onTap: () => context.push('/new-group'),
-        ),
-        _buildOptionTile(
-          icon: Icons.person_add,
-          title: "New contact",
-          textColor: textColor,
-          accentColor: accentColor,
-          onTap: () => context.push('/new-contact'),
         ),
         Divider(color: secondaryTextColor.withOpacity(0.2)),
       ],
     );
   }
 
-  Widget _buildOptionTile({
-    required IconData icon,
-    required String title,
-    required Color textColor,
-    required Color accentColor,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: accentColor,
-        child: Icon(icon, color: Colors.white),
-      ),
-      title: Text(
-        title,
-        style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
-      ),
-      onTap: onTap,
-    );
-  }
-
   //
-  // CONTACT LISTS
+  // USERS LIST
 
-  Widget _buildContactLists(bool isDark) {
+  Widget _buildUsersList(bool isDark) {
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
     final secondaryTextColor = isDark
         ? DarkColors.textSecondary
@@ -226,17 +258,83 @@ class _NewChatPageState extends State<NewChatPage> {
         ? DarkColors.accentPrimary
         : LightColors.accentPrimary;
 
+    if (_isLoading) {
+      return Expanded(
+        child: Center(
+          child: CircularProgressIndicator(
+            color: accentColor,
+          ),
+        ),
+      );
+    }
+
+    if (_errorMessage != null) {
+      return Expanded(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 48,
+                color: secondaryTextColor,
+              ),
+              SizedBox(height: 16),
+              Text(
+                _errorMessage!,
+                style: TextStyle(
+                  color: secondaryTextColor,
+                  fontSize: 14.sp,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _loadUsers,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: accentColor,
+                ),
+                child: Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_filteredUsers.isEmpty) {
+      return Expanded(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.people_outline,
+                size: 48,
+                color: secondaryTextColor,
+              ),
+              SizedBox(height: 16),
+              Text(
+                _searchController.text.isEmpty
+                    ? 'No users found'
+                    : 'No users match your search',
+                style: TextStyle(
+                  color: secondaryTextColor,
+                  fontSize: 14.sp,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return Expanded(
       child: ListView(
         children: [
-          _buildSectionTitle("Frequently contacted", secondaryTextColor),
-          ..._frequentlyContacted.map(
-            (contact) => _buildContactTile(contact, textColor, accentColor),
-          ),
-          Divider(color: secondaryTextColor.withOpacity(0.2)),
-          _buildSectionTitle("Contacts on myitihas", secondaryTextColor),
-          ..._allContacts.map(
-            (contact) => _buildContactTile(contact, textColor, accentColor),
+          _buildSectionTitle("People on MyItihas", secondaryTextColor),
+          ..._filteredUsers.map(
+            (user) => _buildUserTile(user, textColor, accentColor),
           ),
         ],
       ),
@@ -258,36 +356,78 @@ class _NewChatPageState extends State<NewChatPage> {
   }
 
   //
-  // CONTACT TILE
+  // USER TILE
 
-  Widget _buildContactTile(
-    Map<String, String> contact,
+  Widget _buildUserTile(
+    Map<String, dynamic> user,
     Color textColor,
     Color accentColor,
   ) {
+    final userId = user['id'] as String;
+    final username = user['username'] as String?;
+    final fullName = user['full_name'] as String?;
+    final avatarUrl = user['avatar_url'] as String?;
+    
+    final displayName = fullName ?? username ?? 'Unknown User';
+    final subtitle = username != null && fullName != null ? '@$username' : null;
+
     return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: accentColor.withOpacity(0.2),
-        child: Text(
-          contact['name']![0],
-          style: TextStyle(
-            fontSize: 18.sp,
-            color: accentColor,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
+      leading: _buildAvatar(displayName, avatarUrl, accentColor),
       title: Text(
-        contact['name']!,
+        displayName,
         style: TextStyle(
           fontSize: 15.sp,
           color: textColor,
           fontWeight: FontWeight.w700,
         ),
       ),
-      onTap: () {
-        // Navigate to chat detail
+      subtitle: subtitle != null
+          ? Text(
+              subtitle,
+              style: TextStyle(
+                fontSize: 12.sp,
+                color: textColor.withOpacity(0.6),
+              ),
+            )
+          : null,
+      onTap: () async {
+        print('Selected user: $userId');
+        
+        // Navigate to chat detail page without creating conversation
+        // Conversation will be created on first message
+        context.push('/chat_detail', extra: {
+          'conversationId': null, // Don't create yet
+          'userId': userId,
+          'name': displayName,
+          'avatarUrl': avatarUrl,
+          'isGroup': false,
+        });
       },
+    );
+  }
+
+  Widget _buildAvatar(String displayName, String? avatarUrl, Color accentColor) {
+    if (avatarUrl != null && avatarUrl.isNotEmpty) {
+      return CircleAvatar(
+        backgroundImage: NetworkImage(avatarUrl),
+        onBackgroundImageError: (_, __) {
+          // Fallback handled by the next widget
+        },
+        child: null,
+      );
+    }
+    
+    // Fallback to initials
+    return CircleAvatar(
+      backgroundColor: accentColor.withOpacity(0.2),
+      child: Text(
+        displayName.isNotEmpty ? displayName[0].toUpperCase() : '?',
+        style: TextStyle(
+          fontSize: 18.sp,
+          color: accentColor,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
     );
   }
 }

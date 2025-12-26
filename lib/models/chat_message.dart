@@ -23,7 +23,7 @@ class ChatMessage {
       conversationId: json['conversation_id'] as String,
       senderId: json['sender_id'] as String,
       content: json['content'] as String,
-      createdAt: DateTime.parse(json['created_at'] as String),
+      createdAt: DateTime.parse(json['created_at'] as String).toLocal(),
     );
   }
 

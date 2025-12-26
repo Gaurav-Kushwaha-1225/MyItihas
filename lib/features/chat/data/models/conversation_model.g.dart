@@ -72,7 +72,7 @@ _ConversationModel _$ConversationModelFromJson(Map<String, dynamic> json) =>
           ? null
           : MessageModel.fromJson(json['lastMessage'] as Map<String, dynamic>),
       unreadCount: (json['unreadCount'] as num?)?.toInt() ?? 0,
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String).toLocal(),
     );
 
 Map<String, dynamic> _$ConversationModelToJson(_ConversationModel instance) =>

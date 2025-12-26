@@ -78,7 +78,7 @@ _NotificationModel _$NotificationModelFromJson(Map<String, dynamic> json) =>
       targetStoryId: json['targetStoryId'] as String?,
       targetCommentId: json['targetCommentId'] as String?,
       contentPreview: json['contentPreview'] as String,
-      timestamp: DateTime.parse(json['timestamp'] as String),
+      timestamp: DateTime.parse(json['timestamp'] as String).toLocal(),
       isRead: json['isRead'] as bool? ?? false,
       deepLinkData: json['deepLinkData'] as Map<String, dynamic>? ?? const {},
     );
