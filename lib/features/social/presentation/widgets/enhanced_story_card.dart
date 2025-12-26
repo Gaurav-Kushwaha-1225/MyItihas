@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
@@ -123,7 +122,10 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
           child: Stack(
             fit: StackFit.expand,
             children: [
-              _HeroImageSection(story: story, gradients: gradients),
+              Container(
+                height: screenSize.height,
+                child: _HeroImageSection(story: story, gradients: gradients),
+              ),
 
               Positioned(
                 left: 0,
@@ -245,7 +247,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                         FadeTransition(
                           opacity: _contentFade,
                           child: SizedBox(
-                            height: 120,
+                            height: 184,
                             child: SwipeableContentSection(
                               storyExcerpt: story.story,
                               trivia: story.trivia,
@@ -315,13 +317,42 @@ class _HeroImageSection extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     if (story.imageUrl != null && story.imageUrl!.isNotEmpty) {
-      return CachedNetworkImage(
-        imageUrl: story.imageUrl!,
-        fit: BoxFit.cover,
-        placeholder: (context, url) =>
-            _Placeholder(colorScheme: colorScheme, imageUrl: story.imageUrl),
-        errorWidget: (context, url, error) =>
-            _Placeholder(colorScheme: colorScheme, imageUrl: story.imageUrl),
+      return Image.network(
+        story.imageUrl!,
+        fit: BoxFit.cover, // Full background coverage
+        width: double.infinity,
+        height: double.infinity,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey[900],
+            child: const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) => Container(
+          color: Colors.grey[900],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.auto_stories,
+                size: 64,
+                color: colorScheme.primary.withValues(alpha: 0.5),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                t.app.name,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.7),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
@@ -338,35 +369,34 @@ class _Placeholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
+      height: double.infinity,
       color: Colors.grey[900],
-      alignment: Alignment.center,
-      child: imageUrl != null
-          ? Expanded(child: Image.network(imageUrl!, fit: BoxFit.fill))
-          : Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Image.asset(
-                  "assets/logo.png",
-                  width: 96,
-                  height: 96,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) => Icon(
-                    Icons.auto_stories,
-                    size: 64,
-                    color: colorScheme.primary.withValues(alpha: 0.5),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  t.app.name,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.7),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(
+            "assets/logo.png",
+            width: 96,
+            height: 96,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) => Icon(
+              Icons.auto_stories,
+              size: 64,
+              color: colorScheme.primary.withValues(alpha: 0.5),
             ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            t.app.name,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.7),
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
