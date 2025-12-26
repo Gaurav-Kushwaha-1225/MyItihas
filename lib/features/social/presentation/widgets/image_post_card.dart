@@ -4,6 +4,7 @@ import 'package:myitihas/features/social/domain/entities/image_post.dart';
 import 'package:myitihas/features/social/presentation/widgets/author_info_bar.dart';
 import 'package:myitihas/features/social/presentation/widgets/engagement_bar.dart';
 import 'package:myitihas/i18n/strings.g.dart';
+import 'package:readmore/readmore.dart';
 
 /// A full-screen card for displaying image posts in the social feed
 class ImagePostCard extends StatefulWidget {
@@ -165,7 +166,7 @@ class _ImagePostCardState extends State<ImagePostCard>
                 child: SafeArea(
                   top: false,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 16),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -183,7 +184,7 @@ class _ImagePostCardState extends State<ImagePostCard>
                               darkOverlay: true,
                             ),
                           ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 5),
 
                         // Location badge
                         if (post.location != null && post.location!.isNotEmpty)
@@ -213,23 +214,26 @@ class _ImagePostCardState extends State<ImagePostCard>
                             ),
                           ),
                         if (post.location != null && post.location!.isNotEmpty)
-                          const SizedBox(height: 8),
+                          const SizedBox(height: 5),
 
                         // Caption
                         if (post.caption != null && post.caption!.isNotEmpty)
                           FadeTransition(
                             opacity: _captionFade,
-                            child: Text(
+                            child: ReadMoreText(
                               post.caption!,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: Colors.white,
                                 height: 1.4,
                               ),
-                              maxLines: 4,
-                              overflow: TextOverflow.ellipsis,
+                              trimLines: 1,
+                              colorClickableText: Colors.white,
+                              trimMode: TrimMode.Line,
+                              trimExpandedText: ' Read less',
+                              trimCollapsedText: 'Read more',
                             ),
                           ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 5),
 
                         // Tags
                         if (post.tags.isNotEmpty)
@@ -274,7 +278,7 @@ class _ImagePostCardState extends State<ImagePostCard>
               // Vertical engagement bar
               Positioned(
                 right: 12,
-                bottom: 48,
+                bottom: 8,
                 child: SafeArea(
                   top: false,
                   child: FadeTransition(

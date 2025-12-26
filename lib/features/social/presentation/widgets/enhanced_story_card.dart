@@ -172,7 +172,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                 child: SafeArea(
                   top: false,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 16),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -204,7 +204,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 15),
 
                         FadeTransition(
                           opacity: _titleFade,
@@ -228,7 +228,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                             ],
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 15),
 
                         if (story.quotes.isNotEmpty)
                           FadeTransition(
@@ -240,12 +240,12 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                               darkOverlay: true,
                             ),
                           ),
-                        if (story.quotes.isNotEmpty) const SizedBox(height: 10),
+                        if (story.quotes.isNotEmpty) const SizedBox(height: 15),
 
                         FadeTransition(
                           opacity: _contentFade,
                           child: SizedBox(
-                            height: 184,
+                            height: 120,
                             child: SwipeableContentSection(
                               storyExcerpt: story.story,
                               trivia: story.trivia,
@@ -257,7 +257,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                             ),
                           ),
                         ),
-                        // const SizedBox(height: 8),
+                        const SizedBox(height: 8),
 
                         // Continue Reading button
                         // FadeTransition(
@@ -276,7 +276,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
 
               Positioned(
                 right: 12,
-                bottom: 48,
+                bottom: 8,
                 child: SafeArea(
                   top: false,
                   child: FadeTransition(
@@ -318,51 +318,55 @@ class _HeroImageSection extends StatelessWidget {
       return CachedNetworkImage(
         imageUrl: story.imageUrl!,
         fit: BoxFit.cover,
-        placeholder: (context, url) => _Placeholder(colorScheme: colorScheme),
+        placeholder: (context, url) =>
+            _Placeholder(colorScheme: colorScheme, imageUrl: story.imageUrl),
         errorWidget: (context, url, error) =>
-            _Placeholder(colorScheme: colorScheme),
+            _Placeholder(colorScheme: colorScheme, imageUrl: story.imageUrl),
       );
     }
 
-    return _Placeholder(colorScheme: colorScheme);
+    return _Placeholder(colorScheme: colorScheme, imageUrl: story.imageUrl);
   }
 }
 
 class _Placeholder extends StatelessWidget {
   final ColorScheme colorScheme;
+  final String? imageUrl;
 
-  const _Placeholder({required this.colorScheme});
+  const _Placeholder({required this.colorScheme, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[900],
       alignment: Alignment.center,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            'assets/logo.png',
-            width: 96,
-            height: 96,
-            fit: BoxFit.contain,
-            errorBuilder: (context, error, stackTrace) => Icon(
-              Icons.auto_stories,
-              size: 64,
-              color: colorScheme.primary.withValues(alpha: 0.5),
+      child: imageUrl != null
+          ? Expanded(child: Image.network(imageUrl!, fit: BoxFit.fill))
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Image.asset(
+                  "assets/logo.png",
+                  width: 96,
+                  height: 96,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.auto_stories,
+                    size: 64,
+                    color: colorScheme.primary.withValues(alpha: 0.5),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  t.app.name,
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.7),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            t.app.name,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.7),
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

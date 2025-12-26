@@ -675,7 +675,7 @@ class TranslationsFeedEn {
 	// Translations
 
 	/// en: 'Loading stories...'
-	String get loading => 'Loading stories...';
+	String get loading => 'Loading...';
 
 	/// en: 'Oops! Something went wrong'
 	String get errorTitle => 'Oops! Something went wrong';
@@ -881,7 +881,7 @@ class TranslationsFeedTabsEn {
 	String get videos => 'Videos';
 
 	/// en: 'Images'
-	String get images => 'Images';
+	String get images => 'Clips';
 
 	/// en: 'Thoughts'
 	String get text => 'Thoughts';
