@@ -261,15 +261,17 @@ class ChatService {
   /// Throws [AuthException] if user is not authenticated.
   /// Throws [ServerException] on database errors.
   ///
-  Future<List<Conversation>> getMyConversations() async {
+  Future<List<Conversation>> getMyConversations({bool? isGroup}) async {
     final uid = _supabase.auth.currentUser!.id;
 
     // Fetch conversations with join to conversation_members to get last_read_at
-    final response = await _supabase
+    var query = _supabase
         .from('conversations')
         .select('''
           id,
           is_group,
+          group_name,
+          group_avatar_url,
           last_message,
           last_message_at,
           last_message_sender_id,
@@ -278,8 +280,14 @@ class ChatService {
             last_read_at
           )
         ''')
-        .eq('is_group', false)
         .eq('conversation_members.user_id', uid);
+
+    // Apply is_group filter if specified
+    if (isGroup != null) {
+      query = query.eq('is_group', isGroup);
+    }
+
+    final response = await query;
 
     // Map to Conversation objects
     return (response as List).map((e) {
@@ -293,8 +301,8 @@ class ChatService {
       return Conversation(
         id: e['id'],
         isGroup: e['is_group'],
-        title: 'Chat',
-        avatarUrl: null,
+        title: e['is_group'] ? (e['group_name'] ?? 'Group') : 'Chat',
+        avatarUrl: e['is_group'] ? e['group_avatar_url'] : null,
         lastMessage: e['last_message'] as String?,
         lastMessageAt: e['last_message_at'] != null
             ? DateTime.parse(e['last_message_at'] as String)

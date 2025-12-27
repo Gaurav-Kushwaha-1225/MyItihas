@@ -53,20 +53,35 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
     });
 
     try {
-      final conversations = await _chatService.getMyConversations();
+      // Filter based on selected tab: Chats (is_group=false) or Groups (is_group=true)
+      bool? isGroupFilter;
+      if (_selectedTabIndex == 0) {
+        // Chats tab
+        isGroupFilter = false;
+      } else if (_selectedTabIndex == 1) {
+        // Groups tab
+        isGroupFilter = true;
+      }
+      // Status tab (_selectedTabIndex == 2) doesn't load conversations
 
-      // Fetch other user profiles for each conversation
+      final conversations = await _chatService.getMyConversations(
+        isGroup: isGroupFilter,
+      );
+
+      // Fetch other user profiles for DM conversations only
       for (final conversation in conversations) {
-        try {
-          final otherUserId = await _getOtherUserId(conversation.id);
-          if (otherUserId != null) {
-            final profile = await _profileService.getProfileById(otherUserId);
-            _userProfiles[conversation.id] = profile;
+        if (!conversation.isGroup) {
+          try {
+            final otherUserId = await _getOtherUserId(conversation.id);
+            if (otherUserId != null) {
+              final profile = await _profileService.getProfileById(otherUserId);
+              _userProfiles[conversation.id] = profile;
+            }
+          } catch (e) {
+            print(
+              'Error fetching profile for conversation ${conversation.id}: $e',
+            );
           }
-        } catch (e) {
-          print(
-            'Error fetching profile for conversation ${conversation.id}: $e',
-          );
         }
       }
 
@@ -371,6 +386,11 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                           _selectedTabIndex = index;
                           _exitSelectionMode();
                         });
+                        // Reload conversations when switching tabs
+                        if (index != 2) {
+                          // Not Status tab
+                          _loadConversations();
+                        }
                       },
                       child: Container(
                         margin: EdgeInsets.only(right: 3.w),
@@ -471,14 +491,20 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                       final profile = _userProfiles[conversation.id];
                       final isSelected = _selectedIndices.contains(index);
 
-                      // Extract user data
-                      final userName = profile != null
-                          ? (profile['full_name'] as String? ??
-                                profile['username'] as String? ??
-                                'Unknown User')
-                          : 'Unknown User';
-                      final avatarUrl = profile?['avatar_url'] as String?;
-                      final otherUserId = profile?['id'] as String? ?? '';
+                      // Extract user data - for groups use conversation data, for DMs use profile
+                      final userName = conversation.isGroup
+                          ? conversation.title
+                          : (profile != null
+                                ? (profile['full_name'] as String? ??
+                                      profile['username'] as String? ??
+                                      'Unknown User')
+                                : 'Unknown User');
+                      final avatarUrl = conversation.isGroup
+                          ? conversation.avatarUrl
+                          : (profile?['avatar_url'] as String?);
+                      final otherUserId = conversation.isGroup
+                          ? null
+                          : (profile?['id'] as String? ?? '');
 
                       return GestureDetector(
                         onLongPress: () => _toggleSelection(index),
