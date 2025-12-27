@@ -15,6 +15,7 @@ import 'package:myitihas/pages/Chat/Widget/group_profile_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_chat_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_contact_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_group_page.dart';
+import 'package:myitihas/pages/Chat/Widget/create_group_page.dart';
 import 'package:myitihas/pages/Chat/Widget/profile_detail_page.dart';
 
 import 'package:myitihas/pages/stories_page.dart';
@@ -126,6 +127,19 @@ class NewGroupRoute extends GoRouteData with $NewGroupRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const NewGroupPage();
+  }
+}
+
+/// Create group - takes selected users
+@TypedGoRoute<CreateGroupRoute>(path: '/create-group')
+class CreateGroupRoute extends GoRouteData with $CreateGroupRoute {
+  const CreateGroupRoute({required this.$extra});
+
+  final List<Map<String, dynamic>> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return CreateGroupPage(selectedUsers: $extra);
   }
 }
 
@@ -241,55 +255,50 @@ class MyItihasRouter {
   }
 
   GoRouter get router => GoRouter(
-        initialLocation: '/',
-        routes: $appRoutes,
-        refreshListenable: _refreshStream,
-        redirect: (context, state) {
-          final isAuthenticated =
-              SupabaseService.getCurrentSession() != null;
-          final isRecovering = _refreshStream.isRecovering;
+    initialLocation: '/',
+    routes: $appRoutes,
+    refreshListenable: _refreshStream,
+    redirect: (context, state) {
+      final isAuthenticated = SupabaseService.getCurrentSession() != null;
+      final isRecovering = _refreshStream.isRecovering;
 
-          final currentPath = state.matchedLocation;
-          final isOnLogin = currentPath == '/login';
-          final isOnSignup = currentPath == '/signup';
-          final isOnSplash = currentPath == '/';
-          final isOnResetPassword = currentPath == '/reset-password';
+      final currentPath = state.matchedLocation;
+      final isOnLogin = currentPath == '/login';
+      final isOnSignup = currentPath == '/signup';
+      final isOnSplash = currentPath == '/';
+      final isOnResetPassword = currentPath == '/reset-password';
 
-          // HIGHEST PRIORITY: Password recovery flow
-          // If user is in recovery mode, FORCE them to /reset-password
-          if (isRecovering) {
-            if (!isOnResetPassword) {
-              return '/reset-password';
-            }
-            return null;
-          }
+      // HIGHEST PRIORITY: Password recovery flow
+      // If user is in recovery mode, FORCE them to /reset-password
+      if (isRecovering) {
+        if (!isOnResetPassword) {
+          return '/reset-password';
+        }
+        return null;
+      }
 
-          // Authenticated user trying to access login/signup
-          if (isAuthenticated && (isOnLogin || isOnSignup)) {
-            return '/home';
-          }
+      // Authenticated user trying to access login/signup
+      if (isAuthenticated && (isOnLogin || isOnSignup)) {
+        return '/home';
+      }
 
-          // Splash screen handles its own logic
-          if (isOnSplash) return null;
+      // Splash screen handles its own logic
+      if (isOnSplash) return null;
 
-          // Reset password page without recovery mode
-          if (isOnResetPassword && !isRecovering) {
-            return '/login';
-          }
+      // Reset password page without recovery mode
+      if (isOnResetPassword && !isRecovering) {
+        return '/login';
+      }
 
-          // Unauthenticated access to protected routes
-          if (!isAuthenticated &&
-              !isOnLogin &&
-              !isOnSignup &&
-              !isOnResetPassword) {
-            return '/login';
-          }
+      // Unauthenticated access to protected routes
+      if (!isAuthenticated && !isOnLogin && !isOnSignup && !isOnResetPassword) {
+        return '/login';
+      }
 
-          return null;
-        },
-      );
+      return null;
+    },
+  );
 }
-
 
 // ============================================================================
 // Feature Routes (TypedGoRoute – from main branch)

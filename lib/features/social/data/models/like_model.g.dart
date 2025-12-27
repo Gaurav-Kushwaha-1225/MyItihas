@@ -53,7 +53,7 @@ class LikeModelAdapter extends TypeAdapter<LikeModel> {
 _LikeModel _$LikeModelFromJson(Map<String, dynamic> json) => _LikeModel(
   userId: json['userId'] as String,
   storyId: json['storyId'] as String,
-  timestamp: DateTime.parse(json['timestamp'] as String).toLocal(),
+  timestamp: DateTime.parse(json['timestamp'] as String),
 );
 
 Map<String, dynamic> _$LikeModelToJson(_LikeModel instance) =>

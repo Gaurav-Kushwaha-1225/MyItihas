@@ -15,6 +15,7 @@ List<RouteBase> get $appRoutes => [
   $resetPasswordRoute,
   $newChatRoute,
   $newGroupRoute,
+  $createGroupRoute,
   $newContactRoute,
   $chatDetailRoute,
   $profileDetailRoute,
@@ -296,6 +297,36 @@ mixin $NewGroupRoute on GoRouteData {
 
   @override
   void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $createGroupRoute => GoRouteData.$route(
+  path: '/create-group',
+  factory: $CreateGroupRoute._fromState,
+);
+
+mixin $CreateGroupRoute on GoRouteData {
+  static CreateGroupRoute _fromState(GoRouterState state) =>
+      CreateGroupRoute($extra: state.extra as List<Map<String, dynamic>>);
+
+  CreateGroupRoute get _self => this as CreateGroupRoute;
+
+  @override
+  String get location => GoRouteData.$location('/create-group');
+
+  @override
+  void go(BuildContext context) => context.go(location, extra: _self.$extra);
+
+  @override
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: _self.$extra);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location, extra: _self.$extra);
+
+  @override
+  void replace(BuildContext context) =>
+      context.replace(location, extra: _self.$extra);
 }
 
 RouteBase get $newContactRoute => GoRouteData.$route(
