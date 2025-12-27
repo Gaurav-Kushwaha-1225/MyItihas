@@ -132,7 +132,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                 right: 0,
                 bottom: 0,
                 child: Container(
-                  height: screenSize.height * 0.65,
+                  height: screenSize.height * 0.8,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
@@ -153,13 +153,13 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                 right: 0,
                 top: 0,
                 child: Container(
-                  height: 100,
+                  height: screenSize.height * 0.3,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withValues(alpha: 0.6),
+                        Colors.black.withValues(alpha: 0.7),
                         Colors.transparent,
                       ],
                     ),
