@@ -154,7 +154,7 @@ class ChatService {
     // Fetch conversations
     final convoRows = await _supabase
         .from('conversations')
-        .select('id, is_group')
+        .select('id, is_group, last_message, last_message_at')
         .inFilter('id', ids)
         .eq('is_group', false);
 
@@ -166,6 +166,10 @@ class ChatService {
             isGroup: e['is_group'],
             title: 'Chat',
             avatarUrl: null,
+            lastMessage: e['last_message'] as String?,
+            lastMessageAt: e['last_message_at'] != null
+                ? DateTime.parse(e['last_message_at'] as String)
+                : null,
           ),
         )
         .toList();

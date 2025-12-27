@@ -149,6 +149,50 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
     return '${dateTime.day} ${months[dateTime.month - 1]}';
   }
 
+  String _formatTimestamp(DateTime timestamp) {
+    // Convert to local time
+    final localTime = timestamp.toLocal();
+    final now = DateTime.now();
+    final difference = now.difference(localTime);
+
+    // Today: show time (e.g., "3:45 PM")
+    if (difference.inDays == 0) {
+      final hour = localTime.hour;
+      final minute = localTime.minute.toString().padLeft(2, '0');
+      final period = hour >= 12 ? 'PM' : 'AM';
+      final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+      return '$displayHour:$minute $period';
+    }
+
+    // Yesterday
+    if (difference.inDays == 1) {
+      return 'Yesterday';
+    }
+
+    // This week: show day name
+    if (difference.inDays < 7) {
+      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      return days[localTime.weekday - 1];
+    }
+
+    // Older: show date (e.g., "26 Dec")
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${localTime.day} ${months[localTime.month - 1]}';
+  }
+
   void _toggleSelection(int index) {
     setState(() {
       if (_selectedIndices.contains(index)) {
@@ -555,16 +599,34 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                       ),
                                     ),
                                     SizedBox(height: 0.5.h),
-                                    Text(
-                                      'Tap to chat',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.inter(
-                                        fontSize: 14.sp,
-                                        color: isDark
-                                            ? DarkColors.textSecondary
-                                            : LightColors.textSecondary,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            conversation.lastMessage ?? 'Tap to chat',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.inter(
+                                              fontSize: 14.sp,
+                                              color: isDark
+                                                  ? DarkColors.textSecondary
+                                                  : LightColors.textSecondary,
+                                            ),
+                                          ),
+                                        ),
+                                        if (conversation.lastMessageAt != null) ...[
+                                          SizedBox(width: 2.w),
+                                          Text(
+                                            _formatTimestamp(conversation.lastMessageAt!),
+                                            style: GoogleFonts.inter(
+                                              fontSize: 12.sp,
+                                              color: isDark
+                                                  ? DarkColors.textSecondary
+                                                  : LightColors.textSecondary,
+                                            ),
+                                          ),
+                                        ],
+                                      ],
                                     ),
                                   ],
                                 ),
