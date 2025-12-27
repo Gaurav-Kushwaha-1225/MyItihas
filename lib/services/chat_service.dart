@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide AuthException;
@@ -7,6 +8,7 @@ import 'package:myitihas/core/di/injection_container.dart';
 import 'package:myitihas/core/errors/exceptions.dart';
 import 'package:myitihas/models/chat_message.dart';
 import 'package:myitihas/models/conversation.dart';
+import 'package:uuid/uuid.dart';
 
 /// Service for managing chat conversations and messages.
 ///
@@ -119,6 +121,129 @@ class ChatService {
       }
 
       throw const ServerException('Failed to get or create DM');
+    }
+  }
+
+  /// Creates a new group conversation.
+  ///
+  /// [groupName] - The name of the group.
+  /// [memberUserIds] - List of user IDs to add as members (including creator).
+  /// [avatarFile] - The group avatar image file to upload.
+  ///
+  /// Returns the conversation ID of the newly created group.
+  ///
+  /// This method:
+  /// 1. Creates a new conversation with is_group = true
+  /// 2. Uploads the avatar to Supabase Storage (group_avatar bucket)
+  /// 3. Inserts conversation_members for all members
+  /// 4. Sets last_read_at = now() for creator, null for others
+  ///
+  /// Throws [AuthException] if user is not authenticated.
+  /// Throws [ServerException] on database or storage errors.
+  Future<String> createGroupConversation({
+    required String groupName,
+    required List<String> memberUserIds,
+    required File avatarFile,
+  }) async {
+    final logger = getIt<Talker>();
+
+    try {
+      final currentUserId = _supabase.auth.currentUser?.id;
+      if (currentUserId == null) {
+        logger.warning(
+          '[ChatService] Unauthenticated user attempted to create group',
+        );
+        throw AuthException('User must be authenticated to create group');
+      }
+
+      logger.info(
+        '[ChatService] Creating group conversation: $groupName with ${memberUserIds.length} members',
+      );
+
+      // Generate a new conversation ID
+      final conversationId = const Uuid().v4();
+      logger.debug('[ChatService] Generated conversation ID: $conversationId');
+
+      // Upload avatar to Supabase Storage
+      final avatarPath = '$conversationId/avatar.jpg';
+      logger.debug('[ChatService] Uploading avatar to: $avatarPath');
+
+      await _supabase.storage
+          .from('group_avatar')
+          .upload(
+            avatarPath,
+            avatarFile,
+            fileOptions: const FileOptions(cacheControl: '3600', upsert: false),
+          );
+
+      // Get public URL for the uploaded avatar
+      final avatarUrl = _supabase.storage
+          .from('group_avatar')
+          .getPublicUrl(avatarPath);
+
+      logger.debug('[ChatService] Avatar uploaded, public URL: $avatarUrl');
+
+      // Insert into conversations table
+      final now = DateTime.now().toUtc().toIso8601String();
+      await _supabase.from('conversations').insert({
+        'id': conversationId,
+        'is_group': true,
+        'group_name': groupName,
+        'group_avatar_url': avatarUrl,
+        'created_by': currentUserId,
+        'last_message': null,
+        'last_message_sender_id': null,
+        'last_message_at': now,
+      });
+
+      logger.debug('[ChatService] Conversation record created');
+
+      // Insert conversation_members for all members
+      final memberRows = memberUserIds.map((userId) {
+        return {
+          'conversation_id': conversationId,
+          'user_id': userId,
+          // Creator gets last_read_at = now(), others get null
+          'last_read_at': userId == currentUserId ? now : null,
+        };
+      }).toList();
+
+      await _supabase.from('conversation_members').insert(memberRows);
+
+      logger.info(
+        '[ChatService] Successfully created group conversation: $conversationId',
+      );
+
+      return conversationId;
+    } on AuthException {
+      rethrow;
+    } on StorageException catch (e, stackTrace) {
+      logger.error(
+        '[ChatService] Storage error creating group conversation',
+        e,
+        stackTrace,
+      );
+      throw ServerException(
+        'Failed to upload group avatar: ${e.message}',
+        e.statusCode,
+      );
+    } on PostgrestException catch (e, stackTrace) {
+      logger.error(
+        '[ChatService] Database error creating group conversation',
+        e,
+        stackTrace,
+      );
+      throw ServerException(
+        'Failed to create group conversation: ${e.message}',
+        e.code,
+      );
+    } catch (e, stackTrace) {
+      logger.error(
+        '[ChatService] Unexpected error creating group conversation',
+        e,
+        stackTrace,
+      );
+      throw const ServerException('Failed to create group conversation');
     }
   }
 

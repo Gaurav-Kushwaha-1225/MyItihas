@@ -1,6 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:myitihas/core/di/injection_container.dart';
+import 'package:myitihas/services/chat_service.dart';
+import 'package:myitihas/services/supabase_service.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:sizer/sizer.dart';
 
@@ -15,11 +21,117 @@ class CreateGroupPage extends StatefulWidget {
 
 class _CreateGroupPageState extends State<CreateGroupPage> {
   final TextEditingController _groupNameController = TextEditingController();
+  final ImagePicker _imagePicker = ImagePicker();
+  final ChatService _chatService = getIt<ChatService>();
+  File? _selectedGroupImage;
+  bool _isCreating = false;
 
   @override
   void dispose() {
     _groupNameController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 1024,
+        maxHeight: 1024,
+        imageQuality: 85,
+      );
+
+      if (image != null) {
+        setState(() {
+          _selectedGroupImage = File(image.path);
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to pick image: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _createGroup() async {
+    // Validate group name
+    final groupName = _groupNameController.text.trim();
+    if (groupName.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter a group name'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    // Validate avatar selection
+    if (_selectedGroupImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please select a group avatar'),
+          backgroundColor: Colors.orange,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _isCreating = true;
+    });
+
+    try {
+      // Get current user ID
+      final currentUserId = SupabaseService.client.auth.currentUser?.id;
+      if (currentUserId == null) {
+        throw Exception('User not authenticated');
+      }
+
+      // Prepare member user IDs (selected users + current user)
+      final memberUserIds = [
+        currentUserId,
+        ...widget.selectedUsers.map((user) => user['id'] as String),
+      ];
+
+      // Create group conversation
+      final conversationId = await _chatService.createGroupConversation(
+        groupName: groupName,
+        memberUserIds: memberUserIds,
+        avatarFile: _selectedGroupImage!,
+      );
+
+      if (mounted) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Group "$groupName" created successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Navigate back to chat home (pop twice to go back to chat list)
+        context.pop(); // Pop create_group_page
+        context.pop(); // Pop new_group_page
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isCreating = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to create group: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -96,47 +208,56 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             Center(
               child: Stack(
                 children: [
-                  // Circle Avatar with "G"
-                  Container(
-                    width: 30.w,
-                    height: 30.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: accentColor.withOpacity(0.2),
-                      border: Border.all(
-                        color: accentColor.withOpacity(0.3),
-                        width: 2,
-                      ),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'G',
-                        style: GoogleFonts.inter(
-                          fontSize: 48.sp,
-                          fontWeight: FontWeight.bold,
-                          color: accentColor,
+                  // Circle Avatar with image or "G" fallback
+                  _selectedGroupImage != null
+                      ? CircleAvatar(
+                          radius: 15.w,
+                          backgroundImage: FileImage(_selectedGroupImage!),
+                          backgroundColor: accentColor.withOpacity(0.2),
+                        )
+                      : Container(
+                          width: 30.w,
+                          height: 30.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: accentColor.withOpacity(0.2),
+                            border: Border.all(
+                              color: accentColor.withOpacity(0.3),
+                              width: 2,
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'G',
+                              style: GoogleFonts.inter(
+                                fontSize: 48.sp,
+                                fontWeight: FontWeight.bold,
+                                color: accentColor,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
                   // Camera Icon
                   Positioned(
                     bottom: 0,
                     right: 0,
-                    child: Container(
-                      padding: EdgeInsets.all(2.w),
-                      decoration: BoxDecoration(
-                        color: accentColor,
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: isDark ? DarkColors.bgColor : Colors.white,
-                          width: 2,
+                    child: GestureDetector(
+                      onTap: _pickImage,
+                      child: Container(
+                        padding: EdgeInsets.all(2.w),
+                        decoration: BoxDecoration(
+                          color: accentColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: isDark ? DarkColors.bgColor : Colors.white,
+                            width: 2,
+                          ),
                         ),
-                      ),
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: Colors.white,
-                        size: 16.sp,
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.white,
+                          size: 16.sp,
+                        ),
                       ),
                     ),
                   ),
@@ -260,13 +381,20 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       floatingActionButton: Container(
         margin: EdgeInsets.only(bottom: 2.h, right: 2.w),
         child: FloatingActionButton.extended(
-          onPressed: () {
-            // TODO: Create group logic
-          },
-          backgroundColor: accentColor,
-          icon: Icon(Icons.check, color: Colors.white),
+          onPressed: _isCreating ? null : _createGroup,
+          backgroundColor: _isCreating ? Colors.grey : accentColor,
+          icon: _isCreating
+              ? SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : Icon(Icons.check, color: Colors.white),
           label: Text(
-            'Create',
+            _isCreating ? 'Creating...' : 'Create',
             style: GoogleFonts.inter(
               color: Colors.white,
               fontWeight: FontWeight.w600,
