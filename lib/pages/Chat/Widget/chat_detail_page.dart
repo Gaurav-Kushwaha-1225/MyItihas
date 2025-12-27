@@ -54,6 +54,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     if (_conversationId != null) {
       _loadMessages();
       _subscribeToMessages();
+      // Mark conversation as read when user opens the chat
+      _chatService.markConversationAsRead(_conversationId!);
     } else {
       // No conversation yet, just show empty state
       setState(() {
@@ -256,22 +258,26 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                         ),
                       )
                     : ListView.builder(
+                        reverse: true,
                         padding: EdgeInsets.symmetric(vertical: 2.h),
                         itemCount: _messages.length,
                         itemBuilder: (context, index) {
-                          final msg = _messages[index];
+                          // Reverse the index to display newest at bottom
+                          final reversedIndex = _messages.length - 1 - index;
+                          final msg = _messages[reversedIndex];
                           bool isMe = msg.senderId == _currentUserId;
                           bool isSelected = _selectedMessageIndices.contains(
-                            index,
+                            reversedIndex,
                           );
 
                           return GestureDetector(
                             onLongPress: () {
                               HapticFeedback.mediumImpact();
-                              _toggleSelection(index);
+                              _toggleSelection(reversedIndex);
                             },
                             onTap: () {
-                              if (_isSelectionMode) _toggleSelection(index);
+                              if (_isSelectionMode)
+                                _toggleSelection(reversedIndex);
                             },
                             child: Container(
                               color: isSelected

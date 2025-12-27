@@ -139,40 +139,47 @@ class ChatService {
   Future<List<Conversation>> getMyConversations() async {
     final uid = _supabase.auth.currentUser!.id;
 
-    // Get conversation IDs where user is a member
-    final memberRows = await _supabase
-        .from('conversation_members')
-        .select('conversation_id')
-        .eq('user_id', uid);
-
-    final ids = (memberRows as List)
-        .map((e) => e['conversation_id'] as String)
-        .toList();
-
-    if (ids.isEmpty) return [];
-
-    // Fetch conversations
-    final convoRows = await _supabase
+    // Fetch conversations with join to conversation_members to get last_read_at
+    final response = await _supabase
         .from('conversations')
-        .select('id, is_group, last_message, last_message_at')
-        .inFilter('id', ids)
-        .eq('is_group', false);
+        .select('''
+          id,
+          is_group,
+          last_message,
+          last_message_at,
+          last_message_sender_id,
+          conversation_members!inner(
+            user_id,
+            last_read_at
+          )
+        ''')
+        .eq('is_group', false)
+        .eq('conversation_members.user_id', uid);
 
     // Map to Conversation objects
-    return (convoRows as List)
-        .map(
-          (e) => Conversation(
-            id: e['id'],
-            isGroup: e['is_group'],
-            title: 'Chat',
-            avatarUrl: null,
-            lastMessage: e['last_message'] as String?,
-            lastMessageAt: e['last_message_at'] != null
-                ? DateTime.parse(e['last_message_at'] as String)
-                : null,
-          ),
-        )
-        .toList();
+    return (response as List).map((e) {
+      // Extract last_read_at from conversation_members join
+      final members = e['conversation_members'] as List;
+      final userMember = members.firstWhere(
+        (m) => m['user_id'] == uid,
+        orElse: () => {'last_read_at': null},
+      );
+
+      return Conversation(
+        id: e['id'],
+        isGroup: e['is_group'],
+        title: 'Chat',
+        avatarUrl: null,
+        lastMessage: e['last_message'] as String?,
+        lastMessageAt: e['last_message_at'] != null
+            ? DateTime.parse(e['last_message_at'] as String)
+            : null,
+        lastMessageSenderId: e['last_message_sender_id'] as String?,
+        lastReadAt: userMember['last_read_at'] != null
+            ? DateTime.parse(userMember['last_read_at'] as String)
+            : null,
+      );
+    }).toList();
   }
 
   /// Helper method to find an existing DM between two users.
@@ -210,6 +217,55 @@ class ChatService {
     } catch (e) {
       logger.debug('[ChatService] Error in _findExistingDM: $e');
       return null;
+    }
+  }
+
+  /// Marks a conversation as read by updating the last_read_at timestamp
+  /// for the current user in the conversation_members table.
+  ///
+  /// [conversationId] - The ID of the conversation to mark as read.
+  ///
+  /// This updates the backend state only and does not affect UI.
+  /// Should be called when a user opens a conversation.
+  ///
+  /// Throws [AuthException] if user is not authenticated.
+  Future<void> markConversationAsRead(String conversationId) async {
+    final logger = getIt<Talker>();
+
+    try {
+      final currentUserId = _supabase.auth.currentUser?.id;
+      if (currentUserId == null) {
+        logger.warning(
+          '[ChatService] Cannot mark conversation as read: user not authenticated',
+        );
+        throw AuthException(
+          'User must be authenticated to mark conversation as read',
+        );
+      }
+
+      logger.debug(
+        '[ChatService] Marking conversation as read: $conversationId for user: $currentUserId',
+      );
+
+      await _supabase
+          .from('conversation_members')
+          .update({'last_read_at': DateTime.now().toUtc().toIso8601String()})
+          .eq('conversation_id', conversationId)
+          .eq('user_id', currentUserId);
+
+      logger.info(
+        '[ChatService] Successfully marked conversation as read: $conversationId',
+      );
+    } on AuthException {
+      rethrow;
+    } catch (e, stackTrace) {
+      logger.error(
+        '[ChatService] Failed to mark conversation as read: $conversationId',
+        e,
+        stackTrace,
+      );
+      // Don't throw - this is a non-critical operation
+      // The conversation will still work even if marking as read fails
     }
   }
 

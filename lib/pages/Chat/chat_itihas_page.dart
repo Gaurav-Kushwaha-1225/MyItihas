@@ -579,6 +579,30 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                         ),
                                       ),
                                     ),
+                                  // Unread dot indicator
+                                  if (!isSelected &&
+                                      _currentUserId != null &&
+                                      conversation.isUnread(_currentUserId!))
+                                    Positioned(
+                                      top: 0,
+                                      right: 0,
+                                      child: Container(
+                                        width: 3.w,
+                                        height: 3.w,
+                                        decoration: BoxDecoration(
+                                          color: isDark
+                                              ? DarkColors.accentPrimary
+                                              : LightColors.accentPrimary,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: isDark
+                                                ? DarkColors.bgColor
+                                                : Colors.white,
+                                            width: 1.5,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                               SizedBox(width: 4.w),
@@ -603,21 +627,32 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            conversation.lastMessage ?? 'Tap to chat',
+                                            conversation.lastMessage ??
+                                                'Tap to chat',
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: GoogleFonts.inter(
                                               fontSize: 14.sp,
+                                              fontWeight:
+                                                  _currentUserId != null &&
+                                                      conversation.isUnread(
+                                                        _currentUserId!,
+                                                      )
+                                                  ? FontWeight.w700
+                                                  : FontWeight.normal,
                                               color: isDark
                                                   ? DarkColors.textSecondary
                                                   : LightColors.textSecondary,
                                             ),
                                           ),
                                         ),
-                                        if (conversation.lastMessageAt != null) ...[
+                                        if (conversation.lastMessageAt !=
+                                            null) ...[
                                           SizedBox(width: 2.w),
                                           Text(
-                                            _formatTimestamp(conversation.lastMessageAt!),
+                                            _formatTimestamp(
+                                              conversation.lastMessageAt!,
+                                            ),
                                             style: GoogleFonts.inter(
                                               fontSize: 12.sp,
                                               color: isDark
