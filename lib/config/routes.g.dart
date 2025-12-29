@@ -20,6 +20,7 @@ List<RouteBase> get $appRoutes => [
   $chatDetailRoute,
   $profileDetailRoute,
   $groupProfileRoute,
+  $editGroupRoute,
   $settingsRoute,
   $editProfileRoute,
   $socialFeedRoute,
@@ -428,6 +429,36 @@ mixin $GroupProfileRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/group_profile');
+
+  @override
+  void go(BuildContext context) => context.go(location, extra: _self.$extra);
+
+  @override
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: _self.$extra);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location, extra: _self.$extra);
+
+  @override
+  void replace(BuildContext context) =>
+      context.replace(location, extra: _self.$extra);
+}
+
+RouteBase get $editGroupRoute => GoRouteData.$route(
+  path: '/edit_group',
+  factory: $EditGroupRoute._fromState,
+);
+
+mixin $EditGroupRoute on GoRouteData {
+  static EditGroupRoute _fromState(GoRouterState state) =>
+      EditGroupRoute($extra: state.extra as Map<String, dynamic>);
+
+  EditGroupRoute get _self => this as EditGroupRoute;
+
+  @override
+  String get location => GoRouteData.$location('/edit_group');
 
   @override
   void go(BuildContext context) => context.go(location, extra: _self.$extra);

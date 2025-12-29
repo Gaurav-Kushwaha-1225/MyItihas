@@ -187,10 +187,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   // --- NEW: Navigation Logic ---
   void _navigateToProfile() {
     if (widget.isGroup) {
-      context.push(
-        '/group_profile',
-        extra: {'name': widget.name, 'color': widget.avatarColor},
-      );
+      // Pass conversationId for group profile
+      if (_conversationId != null) {
+        context.push(
+          '/group_profile',
+          extra: {'conversationId': _conversationId},
+        );
+      }
     } else {
       // Navigate to normal profile page with followers/following
       context.push('/profile/${widget.userId}');

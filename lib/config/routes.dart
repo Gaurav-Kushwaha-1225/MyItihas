@@ -12,6 +12,7 @@ import 'package:myitihas/pages/auth/reset_password_page.dart';
 
 import 'package:myitihas/pages/Chat/Widget/chat_detail_page.dart';
 import 'package:myitihas/pages/Chat/Widget/group_profile_page.dart';
+import 'package:myitihas/pages/Chat/Widget/edit_group_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_chat_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_contact_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_group_page.dart';
@@ -190,7 +191,7 @@ class ProfileDetailRoute extends GoRouteData with $ProfileDetailRoute {
   }
 }
 
-/// Group profile page route - requires parameters via $extra
+/// Group profile page route - requires conversationId via $extra
 @TypedGoRoute<GroupProfileRoute>(path: '/group_profile')
 class GroupProfileRoute extends GoRouteData with $GroupProfileRoute {
   const GroupProfileRoute({required this.$extra});
@@ -199,10 +200,20 @@ class GroupProfileRoute extends GoRouteData with $GroupProfileRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return GroupProfilePage(
-      name: $extra['name'] ?? "Group",
-      avatarColor: $extra['color'] ?? "0xFF8B5CF6",
-    );
+    return GroupProfilePage(conversationId: $extra['conversationId'] ?? '');
+  }
+}
+
+/// Edit group page route - requires conversationId via $extra
+@TypedGoRoute<EditGroupRoute>(path: '/edit_group')
+class EditGroupRoute extends GoRouteData with $EditGroupRoute {
+  const EditGroupRoute({required this.$extra});
+
+  final Map<String, dynamic> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return EditGroupPage(conversationId: $extra['conversationId'] ?? '');
   }
 }
 
