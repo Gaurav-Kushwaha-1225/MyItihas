@@ -166,17 +166,48 @@ class _TranslationsStoryGeneratorHi implements TranslationsStoryGeneratorEn {
 	// Translations
 	@override String get title => 'कहानी जनरेटर';
 	@override String get subtitle => 'अपनी पौराणिक कहानी बनाएं';
+	@override String get quickStart => 'त्वरित प्रारंभ';
+	@override String get interactive => 'इंटरैक्टिव';
+	@override String get rawPrompt => 'कच्चा प्रॉम्प्ट';
+	@override String get yourStoryPrompt => 'आपका कहानी प्रॉम्प्ट';
+	@override String get writeYourPrompt => 'अपना प्रॉम्प्ट लिखें';
+	@override String get selectScripture => 'शास्त्र चुनें';
+	@override String get selectStoryType => 'कहानी प्रकार चुनें';
 	@override String get selectCharacter => 'पात्र चुनें';
 	@override String get selectTheme => 'विषय चुनें';
+	@override String get selectSetting => 'स्थान चुनें';
 	@override String get selectLanguage => 'भाषा चुनें';
 	@override String get selectLength => 'कहानी की लंबाई';
+	@override String get moreOptions => 'अधिक विकल्प';
+	@override String get random => 'यादृच्छिक';
 	@override String get generate => 'कहानी बनाएं';
 	@override String get generating => 'आपकी कहानी बन रही है...';
+	@override String get creatingYourStory => 'आपकी कहानी बनाई जा रही है';
+	@override String get consultingScriptures => 'प्राचीन शास्त्रों से परामर्श...';
+	@override String get weavingTale => 'आपकी कथा बुनी जा रही है...';
+	@override String get addingWisdom => 'दिव्य ज्ञान जोड़ रहे हैं...';
+	@override String get polishingNarrative => 'कथा को निखारा जा रहा है...';
+	@override String get almostThere => 'लगभग हो गया...';
 	@override String get generatedStory => 'आपकी बनाई कहानी';
+	@override String get aiGenerated => 'AI निर्मित';
 	@override String get regenerate => 'फिर से बनाएं';
 	@override String get saveStory => 'कहानी सहेजें';
 	@override String get shareStory => 'कहानी साझा करें';
+	@override String get newStory => 'नई कहानी';
+	@override String get saved => 'सहेजा गया';
+	@override String get storySaved => 'कहानी आपकी लाइब्रेरी में सहेजी गई';
+	@override String get story => 'कहानी';
+	@override String get lesson => 'सीख';
+	@override String get didYouKnow => 'क्या आप जानते हैं?';
+	@override String get activity => 'गतिविधि';
+	@override String get optionalRefine => 'वैकल्पिक: विकल्पों से परिष्कृत करें';
+	@override String get applyOptions => 'विकल्प लागू करें';
+	@override String get language => 'भाषा';
+	@override String get storyFormat => 'कहानी प्रारूप';
 	@override late final _TranslationsStoryGeneratorStoryLengthHi storyLength = _TranslationsStoryGeneratorStoryLengthHi._(_root);
+	@override late final _TranslationsStoryGeneratorFormatHi format = _TranslationsStoryGeneratorFormatHi._(_root);
+	@override late final _TranslationsStoryGeneratorHintsHi hints = _TranslationsStoryGeneratorHintsHi._(_root);
+	@override late final _TranslationsStoryGeneratorErrorsHi errors = _TranslationsStoryGeneratorErrorsHi._(_root);
 }
 
 // Path: chat
@@ -423,6 +454,45 @@ class _TranslationsStoryGeneratorStoryLengthHi implements TranslationsStoryGener
 	@override String get short => 'छोटी';
 	@override String get medium => 'मध्यम';
 	@override String get long => 'लंबी';
+	@override String get epic => 'महाकाव्य';
+}
+
+// Path: storyGenerator.format
+class _TranslationsStoryGeneratorFormatHi implements TranslationsStoryGeneratorFormatEn {
+	_TranslationsStoryGeneratorFormatHi._(this._root);
+
+	final TranslationsHi _root; // ignore: unused_field
+
+	// Translations
+	@override String get narrative => 'कथात्मक';
+	@override String get dialogue => 'संवाद-आधारित';
+	@override String get poetic => 'काव्यात्मक';
+	@override String get scriptural => 'शास्त्रीय';
+}
+
+// Path: storyGenerator.hints
+class _TranslationsStoryGeneratorHintsHi implements TranslationsStoryGeneratorHintsEn {
+	_TranslationsStoryGeneratorHintsHi._(this._root);
+
+	final TranslationsHi _root; // ignore: unused_field
+
+	// Translations
+	@override String get krishnaTeaching => 'कृष्ण द्वारा अर्जुन को शिक्षा देने की कहानी...';
+	@override String get warriorRedemption => 'मुक्ति की खोज में एक योद्धा की महाकाव्य...';
+	@override String get sageWisdom => 'ऋषियों की बुद्धि की कहानी...';
+	@override String get devotedSeeker => 'एक भक्त साधक की यात्रा...';
+	@override String get divineIntervention => 'दिव्य हस्तक्षेप की किंवदंती...';
+}
+
+// Path: storyGenerator.errors
+class _TranslationsStoryGeneratorErrorsHi implements TranslationsStoryGeneratorErrorsEn {
+	_TranslationsStoryGeneratorErrorsHi._(this._root);
+
+	final TranslationsHi _root; // ignore: unused_field
+
+	// Translations
+	@override String get incompletePrompt => 'कृपया सभी आवश्यक विकल्प पूरे करें';
+	@override String get generationFailed => 'कहानी बनाने में विफल। कृपया पुनः प्रयास करें।';
 }
 
 // Path: feed.tabs
@@ -507,19 +577,59 @@ extension on TranslationsHi {
 			'stories.failed_to_load' => 'कहानी लोड करने में विफल',
 			'storyGenerator.title' => 'कहानी जनरेटर',
 			'storyGenerator.subtitle' => 'अपनी पौराणिक कहानी बनाएं',
+			'storyGenerator.quickStart' => 'त्वरित प्रारंभ',
+			'storyGenerator.interactive' => 'इंटरैक्टिव',
+			'storyGenerator.rawPrompt' => 'कच्चा प्रॉम्प्ट',
+			'storyGenerator.yourStoryPrompt' => 'आपका कहानी प्रॉम्प्ट',
+			'storyGenerator.writeYourPrompt' => 'अपना प्रॉम्प्ट लिखें',
+			'storyGenerator.selectScripture' => 'शास्त्र चुनें',
+			'storyGenerator.selectStoryType' => 'कहानी प्रकार चुनें',
 			'storyGenerator.selectCharacter' => 'पात्र चुनें',
 			'storyGenerator.selectTheme' => 'विषय चुनें',
+			'storyGenerator.selectSetting' => 'स्थान चुनें',
 			'storyGenerator.selectLanguage' => 'भाषा चुनें',
 			'storyGenerator.selectLength' => 'कहानी की लंबाई',
+			'storyGenerator.moreOptions' => 'अधिक विकल्प',
+			'storyGenerator.random' => 'यादृच्छिक',
 			'storyGenerator.generate' => 'कहानी बनाएं',
 			'storyGenerator.generating' => 'आपकी कहानी बन रही है...',
+			'storyGenerator.creatingYourStory' => 'आपकी कहानी बनाई जा रही है',
+			'storyGenerator.consultingScriptures' => 'प्राचीन शास्त्रों से परामर्श...',
+			'storyGenerator.weavingTale' => 'आपकी कथा बुनी जा रही है...',
+			'storyGenerator.addingWisdom' => 'दिव्य ज्ञान जोड़ रहे हैं...',
+			'storyGenerator.polishingNarrative' => 'कथा को निखारा जा रहा है...',
+			'storyGenerator.almostThere' => 'लगभग हो गया...',
 			'storyGenerator.generatedStory' => 'आपकी बनाई कहानी',
+			'storyGenerator.aiGenerated' => 'AI निर्मित',
 			'storyGenerator.regenerate' => 'फिर से बनाएं',
 			'storyGenerator.saveStory' => 'कहानी सहेजें',
 			'storyGenerator.shareStory' => 'कहानी साझा करें',
+			'storyGenerator.newStory' => 'नई कहानी',
+			'storyGenerator.saved' => 'सहेजा गया',
+			'storyGenerator.storySaved' => 'कहानी आपकी लाइब्रेरी में सहेजी गई',
+			'storyGenerator.story' => 'कहानी',
+			'storyGenerator.lesson' => 'सीख',
+			'storyGenerator.didYouKnow' => 'क्या आप जानते हैं?',
+			'storyGenerator.activity' => 'गतिविधि',
+			'storyGenerator.optionalRefine' => 'वैकल्पिक: विकल्पों से परिष्कृत करें',
+			'storyGenerator.applyOptions' => 'विकल्प लागू करें',
+			'storyGenerator.language' => 'भाषा',
+			'storyGenerator.storyFormat' => 'कहानी प्रारूप',
 			'storyGenerator.storyLength.short' => 'छोटी',
 			'storyGenerator.storyLength.medium' => 'मध्यम',
 			'storyGenerator.storyLength.long' => 'लंबी',
+			'storyGenerator.storyLength.epic' => 'महाकाव्य',
+			'storyGenerator.format.narrative' => 'कथात्मक',
+			'storyGenerator.format.dialogue' => 'संवाद-आधारित',
+			'storyGenerator.format.poetic' => 'काव्यात्मक',
+			'storyGenerator.format.scriptural' => 'शास्त्रीय',
+			'storyGenerator.hints.krishnaTeaching' => 'कृष्ण द्वारा अर्जुन को शिक्षा देने की कहानी...',
+			'storyGenerator.hints.warriorRedemption' => 'मुक्ति की खोज में एक योद्धा की महाकाव्य...',
+			'storyGenerator.hints.sageWisdom' => 'ऋषियों की बुद्धि की कहानी...',
+			'storyGenerator.hints.devotedSeeker' => 'एक भक्त साधक की यात्रा...',
+			'storyGenerator.hints.divineIntervention' => 'दिव्य हस्तक्षेप की किंवदंती...',
+			'storyGenerator.errors.incompletePrompt' => 'कृपया सभी आवश्यक विकल्प पूरे करें',
+			'storyGenerator.errors.generationFailed' => 'कहानी बनाने में विफल। कृपया पुनः प्रयास करें।',
 			'chat.title' => 'चैटइतिहास',
 			'chat.subtitle' => 'पौराणिक कथाओं के बारे में AI से चैट करें',
 			'chat.friendMode' => 'मित्र मोड',

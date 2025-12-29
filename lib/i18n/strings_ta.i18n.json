@@ -70,20 +70,66 @@
     "storyGenerator": {
         "title": "கதை உருவாக்கி",
         "subtitle": "உங்கள் சொந்த புராண கதையை உருவாக்குங்கள்",
+        "quickStart": "விரைவு தொடக்கம்",
+        "interactive": "ஊடாடும்",
+        "rawPrompt": "மூல வரியுரு",
+        "yourStoryPrompt": "உங்கள் கதை வரியுரு",
+        "writeYourPrompt": "உங்கள் வரியுருவை எழுதுங்கள்",
+        "selectScripture": "நூலைத் தேர்ந்தெடுக்கவும்",
+        "selectStoryType": "கதை வகையைத் தேர்ந்தெடுக்கவும்",
         "selectCharacter": "பாத்திரத்தைத் தேர்ந்தெடுக்கவும்",
         "selectTheme": "தீம் தேர்ந்தெடுக்கவும்",
+        "selectSetting": "அமைப்பைத் தேர்ந்தெடுக்கவும்",
         "selectLanguage": "மொழி தேர்ந்தெடுக்கவும்",
         "selectLength": "கதை நீளம்",
+        "moreOptions": "மேலும் விருப்பங்கள்",
+        "random": "சீரற்ற",
         "generate": "கதை உருவாக்கு",
         "generating": "உங்கள் கதை உருவாக்கப்படுகிறது...",
+        "creatingYourStory": "உங்கள் கதை உருவாக்கப்படுகிறது",
+        "consultingScriptures": "பழங்கால நூல்களை ஆலோசிக்கிறது...",
+        "weavingTale": "உங்கள் கதையை நெய்கிறது...",
+        "addingWisdom": "தெய்வீக ஞானம் சேர்க்கிறது...",
+        "polishingNarrative": "கதையை மெருகேற்றுகிறது...",
+        "almostThere": "கிட்டத்தட்ட முடிந்தது...",
         "generatedStory": "உங்கள் உருவாக்கிய கதை",
+        "aiGenerated": "AI உருவாக்கியது",
         "regenerate": "மீண்டும் உருவாக்கு",
         "saveStory": "கதையைச் சேமி",
         "shareStory": "கதையைப் பகிர்",
+        "newStory": "புதிய கதை",
+        "saved": "சேமிக்கப்பட்டது",
+        "storySaved": "கதை உங்கள் நூலகத்தில் சேமிக்கப்பட்டது",
+        "story": "கதை",
+        "lesson": "பாடம்",
+        "didYouKnow": "உங்களுக்குத் தெரியுமா?",
+        "activity": "செயல்பாடு",
+        "optionalRefine": "விருப்பம்: விருப்பங்களுடன் செம்மைப்படுத்து",
+        "applyOptions": "விருப்பங்களை பயன்படுத்து",
+        "language": "மொழி",
+        "storyFormat": "கதை வடிவம்",
         "storyLength": {
             "short": "குறுகிய",
             "medium": "நடுத்தர",
-            "long": "நீண்ட"
+            "long": "நீண்ட",
+            "epic": "இதிகாசம்"
+        },
+        "format": {
+            "narrative": "கதை சொல்லல்",
+            "dialogue": "உரையாடல் அடிப்படை",
+            "poetic": "கவிதை",
+            "scriptural": "வேத நூல்"
+        },
+        "hints": {
+            "krishnaTeaching": "கிருஷ்ணர் அர்ஜுனனுக்கு கற்பிக்கும் கதை...",
+            "warriorRedemption": "விடுதலை தேடும் வீரனின் இதிகாசம்...",
+            "sageWisdom": "முனிவர்களின் ஞானக் கதை...",
+            "devotedSeeker": "பக்தனின் பயணம்...",
+            "divineIntervention": "தெய்வீக தலையீட்டின் புராணம்..."
+        },
+        "errors": {
+            "incompletePrompt": "அனைத்து தேவையான விருப்பங்களையும் முடிக்கவும்",
+            "generationFailed": "கதை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்."
         }
     },
     "chat": {

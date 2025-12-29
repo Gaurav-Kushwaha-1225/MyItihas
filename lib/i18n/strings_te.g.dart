@@ -166,17 +166,48 @@ class _TranslationsStoryGeneratorTe implements TranslationsStoryGeneratorEn {
 	// Translations
 	@override String get title => 'కథ జనరేటర్';
 	@override String get subtitle => 'మీ స్వంత పురాణ కథను సృష్టించండి';
+	@override String get quickStart => 'త్వరిత ప్రారంభం';
+	@override String get interactive => 'ఇంటరాక్టివ్';
+	@override String get rawPrompt => 'రా ప్రాంప్ట్';
+	@override String get yourStoryPrompt => 'మీ కథ ప్రాంప్ట్';
+	@override String get writeYourPrompt => 'మీ ప్రాంప్ట్ రాయండి';
+	@override String get selectScripture => 'గ్రంథాన్ని ఎంచుకోండి';
+	@override String get selectStoryType => 'కథ రకాన్ని ఎంచుకోండి';
 	@override String get selectCharacter => 'పాత్రను ఎంచుకోండి';
 	@override String get selectTheme => 'థీమ్ను ఎంచుకోండి';
+	@override String get selectSetting => 'సెట్టింగ్ను ఎంచుకోండి';
 	@override String get selectLanguage => 'భాషను ఎంచుకోండి';
 	@override String get selectLength => 'కథ పొడవు';
+	@override String get moreOptions => 'మరిన్ని ఎంపికలు';
+	@override String get random => 'యాదృచ్ఛిక';
 	@override String get generate => 'కథను రూపొందించండి';
 	@override String get generating => 'మీ కథ రూపొందించబడుతోంది...';
+	@override String get creatingYourStory => 'మీ కథ సృష్టించబడుతోంది';
+	@override String get consultingScriptures => 'పురాతన గ్రంథాలను సంప్రదిస్తోంది...';
+	@override String get weavingTale => 'మీ కథను నేస్తోంది...';
+	@override String get addingWisdom => 'దివ్య జ్ఞానాన్ని జోడిస్తోంది...';
+	@override String get polishingNarrative => 'కథనాన్ని మెరుగుపరుస్తోంది...';
+	@override String get almostThere => 'దాదాపు పూర్తయింది...';
 	@override String get generatedStory => 'మీ రూపొందించిన కథ';
+	@override String get aiGenerated => 'AI సృష్టించింది';
 	@override String get regenerate => 'మళ్లీ రూపొందించండి';
 	@override String get saveStory => 'కథను సేవ్ చేయండి';
 	@override String get shareStory => 'కథను పంచుకోండి';
+	@override String get newStory => 'కొత్త కథ';
+	@override String get saved => 'సేవ్ చేయబడింది';
+	@override String get storySaved => 'కథ మీ లైబ్రరీలో సేవ్ చేయబడింది';
+	@override String get story => 'కథ';
+	@override String get lesson => 'పాఠం';
+	@override String get didYouKnow => 'మీకు తెలుసా?';
+	@override String get activity => 'కార్యకలాపం';
+	@override String get optionalRefine => 'ఐచ్ఛికం: ఎంపికలతో మెరుగుపరచండి';
+	@override String get applyOptions => 'ఎంపికలను వర్తింపజేయండి';
+	@override String get language => 'భాష';
+	@override String get storyFormat => 'కథ ఫార్మాట్';
 	@override late final _TranslationsStoryGeneratorStoryLengthTe storyLength = _TranslationsStoryGeneratorStoryLengthTe._(_root);
+	@override late final _TranslationsStoryGeneratorFormatTe format = _TranslationsStoryGeneratorFormatTe._(_root);
+	@override late final _TranslationsStoryGeneratorHintsTe hints = _TranslationsStoryGeneratorHintsTe._(_root);
+	@override late final _TranslationsStoryGeneratorErrorsTe errors = _TranslationsStoryGeneratorErrorsTe._(_root);
 }
 
 // Path: chat
@@ -423,6 +454,45 @@ class _TranslationsStoryGeneratorStoryLengthTe implements TranslationsStoryGener
 	@override String get short => 'చిన్నది';
 	@override String get medium => 'మధ్యస్థం';
 	@override String get long => 'పొడవైనది';
+	@override String get epic => 'ఇతిహాసం';
+}
+
+// Path: storyGenerator.format
+class _TranslationsStoryGeneratorFormatTe implements TranslationsStoryGeneratorFormatEn {
+	_TranslationsStoryGeneratorFormatTe._(this._root);
+
+	final TranslationsTe _root; // ignore: unused_field
+
+	// Translations
+	@override String get narrative => 'కథనం';
+	@override String get dialogue => 'సంభాషణ ఆధారిత';
+	@override String get poetic => 'కావ్య';
+	@override String get scriptural => 'శాస్త్రీయ';
+}
+
+// Path: storyGenerator.hints
+class _TranslationsStoryGeneratorHintsTe implements TranslationsStoryGeneratorHintsEn {
+	_TranslationsStoryGeneratorHintsTe._(this._root);
+
+	final TranslationsTe _root; // ignore: unused_field
+
+	// Translations
+	@override String get krishnaTeaching => 'కృష్ణుడు అర్జునుడికి బోధించే కథ...';
+	@override String get warriorRedemption => 'విముక్తి కోరుకునే యోధుడి ఇతిహాసం...';
+	@override String get sageWisdom => 'ఋషుల జ్ఞానం గురించి కథ...';
+	@override String get devotedSeeker => 'భక్తుని ప్రయాణం...';
+	@override String get divineIntervention => 'దైవ జోక్యం యొక్క గాథ...';
+}
+
+// Path: storyGenerator.errors
+class _TranslationsStoryGeneratorErrorsTe implements TranslationsStoryGeneratorErrorsEn {
+	_TranslationsStoryGeneratorErrorsTe._(this._root);
+
+	final TranslationsTe _root; // ignore: unused_field
+
+	// Translations
+	@override String get incompletePrompt => 'దయచేసి అన్ని అవసరమైన ఎంపికలను పూర్తి చేయండి';
+	@override String get generationFailed => 'కథను సృష్టించడంలో విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి.';
 }
 
 // Path: feed.tabs
@@ -507,19 +577,59 @@ extension on TranslationsTe {
 			'stories.failed_to_load' => 'Failed to load story',
 			'storyGenerator.title' => 'కథ జనరేటర్',
 			'storyGenerator.subtitle' => 'మీ స్వంత పురాణ కథను సృష్టించండి',
+			'storyGenerator.quickStart' => 'త్వరిత ప్రారంభం',
+			'storyGenerator.interactive' => 'ఇంటరాక్టివ్',
+			'storyGenerator.rawPrompt' => 'రా ప్రాంప్ట్',
+			'storyGenerator.yourStoryPrompt' => 'మీ కథ ప్రాంప్ట్',
+			'storyGenerator.writeYourPrompt' => 'మీ ప్రాంప్ట్ రాయండి',
+			'storyGenerator.selectScripture' => 'గ్రంథాన్ని ఎంచుకోండి',
+			'storyGenerator.selectStoryType' => 'కథ రకాన్ని ఎంచుకోండి',
 			'storyGenerator.selectCharacter' => 'పాత్రను ఎంచుకోండి',
 			'storyGenerator.selectTheme' => 'థీమ్ను ఎంచుకోండి',
+			'storyGenerator.selectSetting' => 'సెట్టింగ్ను ఎంచుకోండి',
 			'storyGenerator.selectLanguage' => 'భాషను ఎంచుకోండి',
 			'storyGenerator.selectLength' => 'కథ పొడవు',
+			'storyGenerator.moreOptions' => 'మరిన్ని ఎంపికలు',
+			'storyGenerator.random' => 'యాదృచ్ఛిక',
 			'storyGenerator.generate' => 'కథను రూపొందించండి',
 			'storyGenerator.generating' => 'మీ కథ రూపొందించబడుతోంది...',
+			'storyGenerator.creatingYourStory' => 'మీ కథ సృష్టించబడుతోంది',
+			'storyGenerator.consultingScriptures' => 'పురాతన గ్రంథాలను సంప్రదిస్తోంది...',
+			'storyGenerator.weavingTale' => 'మీ కథను నేస్తోంది...',
+			'storyGenerator.addingWisdom' => 'దివ్య జ్ఞానాన్ని జోడిస్తోంది...',
+			'storyGenerator.polishingNarrative' => 'కథనాన్ని మెరుగుపరుస్తోంది...',
+			'storyGenerator.almostThere' => 'దాదాపు పూర్తయింది...',
 			'storyGenerator.generatedStory' => 'మీ రూపొందించిన కథ',
+			'storyGenerator.aiGenerated' => 'AI సృష్టించింది',
 			'storyGenerator.regenerate' => 'మళ్లీ రూపొందించండి',
 			'storyGenerator.saveStory' => 'కథను సేవ్ చేయండి',
 			'storyGenerator.shareStory' => 'కథను పంచుకోండి',
+			'storyGenerator.newStory' => 'కొత్త కథ',
+			'storyGenerator.saved' => 'సేవ్ చేయబడింది',
+			'storyGenerator.storySaved' => 'కథ మీ లైబ్రరీలో సేవ్ చేయబడింది',
+			'storyGenerator.story' => 'కథ',
+			'storyGenerator.lesson' => 'పాఠం',
+			'storyGenerator.didYouKnow' => 'మీకు తెలుసా?',
+			'storyGenerator.activity' => 'కార్యకలాపం',
+			'storyGenerator.optionalRefine' => 'ఐచ్ఛికం: ఎంపికలతో మెరుగుపరచండి',
+			'storyGenerator.applyOptions' => 'ఎంపికలను వర్తింపజేయండి',
+			'storyGenerator.language' => 'భాష',
+			'storyGenerator.storyFormat' => 'కథ ఫార్మాట్',
 			'storyGenerator.storyLength.short' => 'చిన్నది',
 			'storyGenerator.storyLength.medium' => 'మధ్యస్థం',
 			'storyGenerator.storyLength.long' => 'పొడవైనది',
+			'storyGenerator.storyLength.epic' => 'ఇతిహాసం',
+			'storyGenerator.format.narrative' => 'కథనం',
+			'storyGenerator.format.dialogue' => 'సంభాషణ ఆధారిత',
+			'storyGenerator.format.poetic' => 'కావ్య',
+			'storyGenerator.format.scriptural' => 'శాస్త్రీయ',
+			'storyGenerator.hints.krishnaTeaching' => 'కృష్ణుడు అర్జునుడికి బోధించే కథ...',
+			'storyGenerator.hints.warriorRedemption' => 'విముక్తి కోరుకునే యోధుడి ఇతిహాసం...',
+			'storyGenerator.hints.sageWisdom' => 'ఋషుల జ్ఞానం గురించి కథ...',
+			'storyGenerator.hints.devotedSeeker' => 'భక్తుని ప్రయాణం...',
+			'storyGenerator.hints.divineIntervention' => 'దైవ జోక్యం యొక్క గాథ...',
+			'storyGenerator.errors.incompletePrompt' => 'దయచేసి అన్ని అవసరమైన ఎంపికలను పూర్తి చేయండి',
+			'storyGenerator.errors.generationFailed' => 'కథను సృష్టించడంలో విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి.',
 			'chat.title' => 'చాట్ఇతిహాస్',
 			'chat.subtitle' => 'పురాణాల గురించి AI తో చాట్ చేయండి',
 			'chat.friendMode' => 'స్నేహితుడి మోడ్',
