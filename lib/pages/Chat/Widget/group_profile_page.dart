@@ -334,6 +334,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                     if (!isCurrentUser) {
                       _showMemberOptions(
                         context,
+                        user['user_id']!,
                         user['name']!,
                         isAdmin,
                         isDark,
@@ -389,6 +390,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
 
   void _showMemberOptions(
     BuildContext context,
+    String userId,
     String memberName,
     bool isAdmin,
     bool isDark,
@@ -503,7 +505,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                 ),
                 onTap: () {
                   context.pop(); // Close bottom sheet
-                  // TODO: Remove member
+                  _removeMember(context, userId, memberName, dangerColor);
                 },
               ),
 
@@ -556,6 +558,59 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('Failed to exit group: $e')));
+        }
+      }
+    }
+  }
+
+  Future<void> _removeMember(
+    BuildContext context,
+    String userId,
+    String memberName,
+    Color dangerColor,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Remove Member'),
+        content: Text(
+          'Are you sure you want to remove $memberName from this group?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: dangerColor),
+            child: Text('Remove'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await SupabaseService.client
+            .from('conversation_members')
+            .delete()
+            .eq('conversation_id', widget.conversationId)
+            .eq('user_id', userId);
+
+        // Reload member list first
+        await _loadGroupData();
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$memberName removed from group')),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to remove member: $e')),
+          );
         }
       }
     }
