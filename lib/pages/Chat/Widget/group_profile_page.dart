@@ -18,12 +18,15 @@ class GroupProfilePage extends StatefulWidget {
 
 class _GroupProfilePageState extends State<GroupProfilePage> {
   final ProfileService _profileService = getIt<ProfileService>();
+  final TextEditingController _searchController = TextEditingController();
 
   bool _isLoading = true;
+  bool _isSearching = false;
   String _groupName = '';
   String? _groupAvatarUrl;
   String? _groupDescription;
   List<Map<String, dynamic>> _members = [];
+  List<Map<String, dynamic>> _filteredMembers = [];
   String? _currentUserId;
 
   @override
@@ -31,6 +34,27 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
     super.initState();
     _currentUserId = SupabaseService.client.auth.currentUser?.id;
     _loadGroupData();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      if (query.isEmpty) {
+        _filteredMembers = _members;
+      } else {
+        _filteredMembers = _members.where((member) {
+          final name = (member['name'] as String? ?? '').toLowerCase();
+          return name.contains(query);
+        }).toList();
+      }
+    });
   }
 
   Future<void> _loadGroupData() async {
@@ -77,8 +101,19 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
         }
       }
 
+      // Sort members: current user first, then rest
+      membersList.sort((a, b) {
+        final aIsCurrentUser = a['is_current_user'] == true;
+        final bIsCurrentUser = b['is_current_user'] == true;
+        
+        if (aIsCurrentUser && !bIsCurrentUser) return -1;
+        if (!aIsCurrentUser && bIsCurrentUser) return 1;
+        return 0;
+      });
+
       setState(() {
         _members = membersList;
+        _filteredMembers = membersList;
         _isLoading = false;
       });
     } catch (e) {
@@ -269,19 +304,60 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Icon(Icons.search, color: subTextColor, size: 18.sp),
+                  IconButton(
+                    icon: Icon(
+                      _isSearching ? Icons.close : Icons.search,
+                      color: subTextColor,
+                      size: 18.sp,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isSearching = !_isSearching;
+                        if (!_isSearching) {
+                          _searchController.clear();
+                          _filteredMembers = _members;
+                        }
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
+
+            // Search Field
+            if (_isSearching)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
+                child: TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  style: GoogleFonts.inter(color: textColor),
+                  decoration: InputDecoration(
+                    hintText: 'Search members...',
+                    hintStyle: GoogleFonts.inter(color: subTextColor),
+                    prefixIcon: Icon(Icons.search, color: subTextColor),
+                    filled: true,
+                    fillColor: isDark ? DarkColors.glassBg : Colors.grey.shade100,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 4.w,
+                      vertical: 1.h,
+                    ),
+                  ),
+                ),
+              ),
 
             // Participants List
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
-              itemCount: _members.length,
+              itemCount: _filteredMembers.length,
               itemBuilder: (context, index) {
-                final user = _members[index];
+                final user = _filteredMembers[index];
                 final isAdmin = user['role'] == 'admin';
                 final isCurrentUser = user['is_current_user'] == true;
 
@@ -500,7 +576,7 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
                 ),
                 onTap: () {
                   context.pop(); // Close bottom sheet
-                  // TODO: Toggle admin status
+                  _toggleAdminStatus(context, userId, memberName, isAdmin, accentColor);
                 },
               ),
 
@@ -626,6 +702,67 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to remove member: $e')),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _toggleAdminStatus(
+    BuildContext context,
+    String userId,
+    String memberName,
+    bool isCurrentlyAdmin,
+    Color accentColor,
+  ) async {
+    final newRole = isCurrentlyAdmin ? 'member' : 'admin';
+    final action = isCurrentlyAdmin ? 'dismiss $memberName as admin' : 'make $memberName a group admin';
+    
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(isCurrentlyAdmin ? 'Dismiss Admin' : 'Make Admin'),
+        content: Text('Are you sure you want to $action?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: accentColor),
+            child: Text('Confirm'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await SupabaseService.client
+            .from('conversation_members')
+            .update({'role': newRole})
+            .eq('conversation_id', widget.conversationId)
+            .eq('user_id', userId);
+
+        // Reload member list first
+        await _loadGroupData();
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                isCurrentlyAdmin
+                    ? '$memberName is now a member'
+                    : '$memberName is now an admin',
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to update role: $e')),
           );
         }
       }
