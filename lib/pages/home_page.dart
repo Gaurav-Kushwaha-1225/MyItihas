@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> get pages => [
-    const HomeContentPage(),
+    const StoryGeneratorPage(),
     const ChatItihasPage(),
     const SocialFeedPage(),
     const AkhandaBharatMapPage(),

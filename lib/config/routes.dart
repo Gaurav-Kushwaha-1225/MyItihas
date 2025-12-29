@@ -422,6 +422,9 @@ class GeneratedStoryResultRoute extends GoRouteData
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return GeneratedStoryDetailPage(story: $extra);
+  }
+}
+
 @TypedGoRoute<ShaktiPeethaRoute>(path: '/shakti-peetha')
 class ShaktiPeethaRoute extends GoRouteData with $ShaktiPeethaRoute {
   const ShaktiPeethaRoute();

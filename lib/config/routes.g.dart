@@ -687,17 +687,6 @@ mixin $StoryGeneratorRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/story-generator');
-RouteBase get $shaktiPeethaRoute => GoRouteData.$route(
-  path: '/shakti-peetha',
-  factory: $ShaktiPeethaRoute._fromState,
-);
-
-mixin $ShaktiPeethaRoute on GoRouteData {
-  static ShaktiPeethaRoute _fromState(GoRouterState state) =>
-      const ShaktiPeethaRoute();
-
-  @override
-  String get location => GoRouteData.$location('/shakti-peetha');
 
   @override
   void go(BuildContext context) => context.go(location);
@@ -736,4 +725,30 @@ mixin $GeneratedStoryResultRoute on GoRouteData {
   @override
   void replace(BuildContext context) =>
       context.replace(location, extra: _self.$extra);
+}
+
+RouteBase get $shaktiPeethaRoute => GoRouteData.$route(
+  path: '/shakti-peetha',
+  factory: $ShaktiPeethaRoute._fromState,
+);
+
+mixin $ShaktiPeethaRoute on GoRouteData {
+  static ShaktiPeethaRoute _fromState(GoRouterState state) =>
+      const ShaktiPeethaRoute();
+
+  @override
+  String get location => GoRouteData.$location('/shakti-peetha');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
 }

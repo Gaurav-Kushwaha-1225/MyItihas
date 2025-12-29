@@ -168,7 +168,7 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
   attributes: StoryAttributesModel.fromJson(
     json['attributes'] as Map<String, dynamic>,
   ),
-  imageUrl: json['image'] as String?,
+  imageUrl: json['imageUrl'] as String?,
   author: json['author'] as String?,
   publishedAt: json['publishedAt'] == null
       ? null
@@ -189,7 +189,7 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'activity': instance.activity,
       'lesson': instance.lesson,
       'attributes': instance.attributes,
-      'image': instance.imageUrl,
+      'imageUrl': instance.imageUrl,
       'author': instance.author,
       'publishedAt': instance.publishedAt?.toIso8601String(),
       'likes': instance.likes,
