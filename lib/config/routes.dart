@@ -13,6 +13,7 @@ import 'package:myitihas/pages/auth/reset_password_page.dart';
 import 'package:myitihas/pages/Chat/Widget/chat_detail_page.dart';
 import 'package:myitihas/pages/Chat/Widget/group_profile_page.dart';
 import 'package:myitihas/pages/Chat/Widget/edit_group_page.dart';
+import 'package:myitihas/pages/Chat/Widget/add_group_members_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_chat_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_contact_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_group_page.dart';
@@ -214,6 +215,22 @@ class EditGroupRoute extends GoRouteData with $EditGroupRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return EditGroupPage(conversationId: $extra['conversationId'] ?? '');
+  }
+}
+
+/// Add members to group page route - requires conversationId and existingMemberIds via $extra
+@TypedGoRoute<AddGroupMembersRoute>(path: '/add_group_members')
+class AddGroupMembersRoute extends GoRouteData with $AddGroupMembersRoute {
+  const AddGroupMembersRoute({required this.$extra});
+
+  final Map<String, dynamic> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AddGroupMembersPage(
+      conversationId: $extra['conversationId'] ?? '',
+      existingMemberIds: List<String>.from($extra['existingMemberIds'] ?? []),
+    );
   }
 }
 

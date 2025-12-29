@@ -148,7 +148,23 @@ class _GroupProfilePageState extends State<GroupProfilePage> {
           ),
           IconButton(
             icon: Icon(Icons.person_add_alt_1, color: textColor, size: 20.sp),
-            onPressed: () {},
+            onPressed: () async {
+              // Extract member IDs for existing member check
+              final memberIds = _members.map((m) => m['user_id'] as String).toList();
+              
+              final result = await context.push(
+                '/add_group_members',
+                extra: {
+                  'conversationId': widget.conversationId,
+                  'existingMemberIds': memberIds,
+                },
+              );
+              
+              // Reload group data if members were added
+              if (result == true) {
+                _loadGroupData();
+              }
+            },
           ),
           SizedBox(width: 2.w),
         ],
