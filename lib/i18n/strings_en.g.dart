@@ -762,7 +762,7 @@ class TranslationsFeedEn {
 	// Translations
 
 	/// en: 'Loading stories...'
-	String get loading => 'Loading stories...';
+	String get loading => 'Loading...';
 
 	/// en: 'Oops! Something went wrong'
 	String get errorTitle => 'Oops! Something went wrong';
@@ -921,6 +921,12 @@ class TranslationsFeedEn {
 	String get quoteFromMyitihas => 'Quote from MyItihas';
 
 	late final TranslationsFeedTabsEn tabs = TranslationsFeedTabsEn._(_root);
+
+	/// en: 'Tap to show caption'
+	String get tapToShowCaption => 'Tap to show caption';
+
+	/// en: 'No videos available'
+	String get noVideosAvailable => 'No videos available';
 }
 
 // Path: storyGenerator.storyLength
@@ -1018,8 +1024,14 @@ class TranslationsFeedTabsEn {
 	/// en: 'Stories'
 	String get stories => 'Stories';
 
+	/// en: 'Posts'
+	String get posts => 'Posts';
+
+	/// en: 'Videos'
+	String get videos => 'Videos';
+
 	/// en: 'Images'
-	String get images => 'Images';
+	String get images => 'Clips';
 
 	/// en: 'Thoughts'
 	String get text => 'Thoughts';
@@ -1288,8 +1300,12 @@ extension on Translations {
 			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
 			'feed.tabs.all' => 'All',
 			'feed.tabs.stories' => 'Stories',
+			'feed.tabs.posts' => 'Posts',
+			'feed.tabs.videos' => 'Videos',
 			'feed.tabs.images' => 'Images',
 			'feed.tabs.text' => 'Thoughts',
+			'feed.tapToShowCaption' => 'Tap to show caption',
+			'feed.noVideosAvailable' => 'No videos available',
 			_ => null,
 		};
 	}

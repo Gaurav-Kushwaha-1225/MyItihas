@@ -440,6 +440,8 @@ class _TranslationsFeedTa implements TranslationsFeedEn {
 	@override String get tapToViewFullQuote => 'Tap to view full quote';
 	@override String get quoteFromMyitihas => 'Quote from MyItihas';
 	@override late final _TranslationsFeedTabsTa tabs = _TranslationsFeedTabsTa._(_root);
+	@override String get tapToShowCaption => 'தலைப்பைக் காட்ட தட்டவும்';
+	@override String get noVideosAvailable => 'வீடியோக்கள் எதுவும் இல்லை';
 }
 
 // Path: storyGenerator.storyLength
@@ -502,6 +504,8 @@ class _TranslationsFeedTabsTa implements TranslationsFeedTabsEn {
 	// Translations
 	@override String get all => 'அனைத்தும்';
 	@override String get stories => 'கதைகள்';
+	@override String get posts => 'பதிவுகள்';
+	@override String get videos => 'வீடியோக்கள்';
 	@override String get images => 'படங்கள்';
 	@override String get text => 'சிந்தனைகள்';
 }
@@ -769,8 +773,12 @@ extension on TranslationsTa {
 			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
 			'feed.tabs.all' => 'அனைத்தும்',
 			'feed.tabs.stories' => 'கதைகள்',
+			'feed.tabs.posts' => 'பதிவுகள்',
+			'feed.tabs.videos' => 'வீடியோக்கள்',
 			'feed.tabs.images' => 'படங்கள்',
 			'feed.tabs.text' => 'சிந்தனைகள்',
+			'feed.tapToShowCaption' => 'தலைப்பைக் காட்ட தட்டவும்',
+			'feed.noVideosAvailable' => 'வீடியோக்கள் எதுவும் இல்லை',
 			_ => null,
 		};
 	}

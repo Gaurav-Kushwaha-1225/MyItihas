@@ -54,6 +54,8 @@ dependencies:
   smooth_sheets:
     git:
       url: https://github.com/fujidaiti/smooth_sheets.git
+  readmore: ^3.0.0
+  gradient_borders: ^1.0.2
 
 dev_dependencies:
   flutter_test:

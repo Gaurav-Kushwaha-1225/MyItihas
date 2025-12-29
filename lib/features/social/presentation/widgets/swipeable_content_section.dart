@@ -156,6 +156,7 @@ class _SwipeableContentSectionState extends State<SwipeableContentSection> {
           //     ),
           //   ),
           // ),
+          const SizedBox(height: 4),
           if (sections.length > 1)
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -198,7 +199,7 @@ class _SwipeableContentSectionState extends State<SwipeableContentSection> {
 
   double _calculateHeight(BuildContext context) {
     final textScale = MediaQuery.textScalerOf(context);
-    final lineHeight = textScale.scale(14) * 1.2;
+    final lineHeight = textScale.scale(14) * 1.3;
     return (widget.maxLines * lineHeight) + 28;
   }
 }

@@ -55,13 +55,14 @@ extension FeedItemPatterns on FeedItem {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( StoryFeedItem value)?  story,TResult Function( ImagePostFeedItem value)?  imagePost,TResult Function( TextPostFeedItem value)?  textPost,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( StoryFeedItem value)?  story,TResult Function( ImagePostFeedItem value)?  imagePost,TResult Function( TextPostFeedItem value)?  textPost,TResult Function( VideoPostFeedItem value)?  videoPost,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case StoryFeedItem() when story != null:
 return story(_that);case ImagePostFeedItem() when imagePost != null:
 return imagePost(_that);case TextPostFeedItem() when textPost != null:
-return textPost(_that);case _:
+return textPost(_that);case VideoPostFeedItem() when videoPost != null:
+return videoPost(_that);case _:
   return orElse();
 
 }
@@ -79,13 +80,14 @@ return textPost(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( StoryFeedItem value)  story,required TResult Function( ImagePostFeedItem value)  imagePost,required TResult Function( TextPostFeedItem value)  textPost,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( StoryFeedItem value)  story,required TResult Function( ImagePostFeedItem value)  imagePost,required TResult Function( TextPostFeedItem value)  textPost,required TResult Function( VideoPostFeedItem value)  videoPost,}){
 final _that = this;
 switch (_that) {
 case StoryFeedItem():
 return story(_that);case ImagePostFeedItem():
 return imagePost(_that);case TextPostFeedItem():
-return textPost(_that);}
+return textPost(_that);case VideoPostFeedItem():
+return videoPost(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -99,13 +101,14 @@ return textPost(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( StoryFeedItem value)?  story,TResult? Function( ImagePostFeedItem value)?  imagePost,TResult? Function( TextPostFeedItem value)?  textPost,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( StoryFeedItem value)?  story,TResult? Function( ImagePostFeedItem value)?  imagePost,TResult? Function( TextPostFeedItem value)?  textPost,TResult? Function( VideoPostFeedItem value)?  videoPost,}){
 final _that = this;
 switch (_that) {
 case StoryFeedItem() when story != null:
 return story(_that);case ImagePostFeedItem() when imagePost != null:
 return imagePost(_that);case TextPostFeedItem() when textPost != null:
-return textPost(_that);case _:
+return textPost(_that);case VideoPostFeedItem() when videoPost != null:
+return videoPost(_that);case _:
   return null;
 
 }
@@ -122,12 +125,13 @@ return textPost(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Story story)?  story,TResult Function( ImagePost imagePost)?  imagePost,TResult Function( TextPost textPost)?  textPost,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Story story)?  story,TResult Function( ImagePost imagePost)?  imagePost,TResult Function( TextPost textPost)?  textPost,TResult Function( VideoPost videoPost)?  videoPost,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case StoryFeedItem() when story != null:
 return story(_that.story);case ImagePostFeedItem() when imagePost != null:
 return imagePost(_that.imagePost);case TextPostFeedItem() when textPost != null:
-return textPost(_that.textPost);case _:
+return textPost(_that.textPost);case VideoPostFeedItem() when videoPost != null:
+return videoPost(_that.videoPost);case _:
   return orElse();
 
 }
@@ -145,12 +149,13 @@ return textPost(_that.textPost);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Story story)  story,required TResult Function( ImagePost imagePost)  imagePost,required TResult Function( TextPost textPost)  textPost,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Story story)  story,required TResult Function( ImagePost imagePost)  imagePost,required TResult Function( TextPost textPost)  textPost,required TResult Function( VideoPost videoPost)  videoPost,}) {final _that = this;
 switch (_that) {
 case StoryFeedItem():
 return story(_that.story);case ImagePostFeedItem():
 return imagePost(_that.imagePost);case TextPostFeedItem():
-return textPost(_that.textPost);}
+return textPost(_that.textPost);case VideoPostFeedItem():
+return videoPost(_that.videoPost);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -164,12 +169,13 @@ return textPost(_that.textPost);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Story story)?  story,TResult? Function( ImagePost imagePost)?  imagePost,TResult? Function( TextPost textPost)?  textPost,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Story story)?  story,TResult? Function( ImagePost imagePost)?  imagePost,TResult? Function( TextPost textPost)?  textPost,TResult? Function( VideoPost videoPost)?  videoPost,}) {final _that = this;
 switch (_that) {
 case StoryFeedItem() when story != null:
 return story(_that.story);case ImagePostFeedItem() when imagePost != null:
 return imagePost(_that.imagePost);case TextPostFeedItem() when textPost != null:
-return textPost(_that.textPost);case _:
+return textPost(_that.textPost);case VideoPostFeedItem() when videoPost != null:
+return videoPost(_that.videoPost);case _:
   return null;
 
 }
@@ -398,6 +404,81 @@ $TextPostCopyWith<$Res> get textPost {
   
   return $TextPostCopyWith<$Res>(_self.textPost, (value) {
     return _then(_self.copyWith(textPost: value));
+  });
+}
+}
+
+/// @nodoc
+
+
+class VideoPostFeedItem extends FeedItem {
+  const VideoPostFeedItem(this.videoPost): super._();
+  
+
+ final  VideoPost videoPost;
+
+/// Create a copy of FeedItem
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$VideoPostFeedItemCopyWith<VideoPostFeedItem> get copyWith => _$VideoPostFeedItemCopyWithImpl<VideoPostFeedItem>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VideoPostFeedItem&&(identical(other.videoPost, videoPost) || other.videoPost == videoPost));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,videoPost);
+
+@override
+String toString() {
+  return 'FeedItem.videoPost(videoPost: $videoPost)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $VideoPostFeedItemCopyWith<$Res> implements $FeedItemCopyWith<$Res> {
+  factory $VideoPostFeedItemCopyWith(VideoPostFeedItem value, $Res Function(VideoPostFeedItem) _then) = _$VideoPostFeedItemCopyWithImpl;
+@useResult
+$Res call({
+ VideoPost videoPost
+});
+
+
+$VideoPostCopyWith<$Res> get videoPost;
+
+}
+/// @nodoc
+class _$VideoPostFeedItemCopyWithImpl<$Res>
+    implements $VideoPostFeedItemCopyWith<$Res> {
+  _$VideoPostFeedItemCopyWithImpl(this._self, this._then);
+
+  final VideoPostFeedItem _self;
+  final $Res Function(VideoPostFeedItem) _then;
+
+/// Create a copy of FeedItem
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? videoPost = null,}) {
+  return _then(VideoPostFeedItem(
+null == videoPost ? _self.videoPost : videoPost // ignore: cast_nullable_to_non_nullable
+as VideoPost,
+  ));
+}
+
+/// Create a copy of FeedItem
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$VideoPostCopyWith<$Res> get videoPost {
+  
+  return $VideoPostCopyWith<$Res>(_self.videoPost, (value) {
+    return _then(_self.copyWith(videoPost: value));
   });
 }
 }

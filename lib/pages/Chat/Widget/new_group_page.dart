@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sizer/sizer.dart';
 
 class NewGroupPage extends StatefulWidget {
   const NewGroupPage({super.key});
@@ -44,26 +44,29 @@ class _NewGroupPageState extends State<NewGroupPage> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    final subTextColor =
-        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
+    final subTextColor = isDark
+        ? DarkColors.textSecondary
+        : LightColors.textSecondary;
     final glassBg = isDark ? DarkColors.glassBg : LightColors.cardBg;
-    final glassBorder =
-        isDark ? DarkColors.glassBorder : LightColors.glassBorder;
-    final accentColor =
-        isDark ? DarkColors.accentPrimary : LightColors.accentPrimary;
-    final secondaryTextColor =
-        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
+    final glassBorder = isDark
+        ? DarkColors.glassBorder
+        : LightColors.glassBorder;
+    final accentColor = isDark
+        ? DarkColors.accentPrimary
+        : LightColors.accentPrimary;
+    final secondaryTextColor = isDark
+        ? DarkColors.textSecondary
+        : LightColors.textSecondary;
 
     return Scaffold(
       // 1. App Bar
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.h),
+        preferredSize: Size.fromHeight(6.h),
         child: Container(
           decoration: BoxDecoration(
-            gradient:
-                isDark
-                    ? DarkColors.featureCardGradient
-                    : LightColors.featureCardGradient,
+            gradient: isDark
+                ? DarkColors.featureCardGradient
+                : LightColors.featureCardGradient,
             boxShadow: [
               BoxShadow(
                 color: Theme.of(context).secondaryHeaderColor.withAlpha(50),
@@ -73,7 +76,7 @@ class _NewGroupPageState extends State<NewGroupPage> {
           ),
           child: SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              padding: EdgeInsets.symmetric(horizontal: 2.w),
               child: Row(
                 children: [
                   IconButton(
@@ -90,9 +93,9 @@ class _NewGroupPageState extends State<NewGroupPage> {
                           style: GoogleFonts.inter(
                             fontWeight: FontWeight.w700,
                             fontSize: 18.sp,
-                            foreground:
-                                Paint()
-                                  ..shader = (isDark
+                            foreground: Paint()
+                              ..shader =
+                                  (isDark
                                           ? DarkColors.messageUserGradient
                                           : LightColors.messageUserGradient)
                                       .createShader(
@@ -129,17 +132,17 @@ class _NewGroupPageState extends State<NewGroupPage> {
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [
-              Theme.of(context).primaryColor.withAlpha(5),
+              DarkColors.accentPrimary.withAlpha(5),
               isDark ? Color(0xFF1E293B) : Color(0xFFF1F5F9),
             ],
           ),
         ),
         child: ListView(
-          padding: EdgeInsets.symmetric(vertical: 16.h),
+          padding: EdgeInsets.symmetric(vertical: 2.h),
           children: [
             // Frequently Contacted Header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
               child: Text(
                 "Frequently contacted",
                 style: TextStyle(
@@ -163,11 +166,11 @@ class _NewGroupPageState extends State<NewGroupPage> {
               ),
             ),
 
-            SizedBox(height: 16.h),
+            SizedBox(height: 2.h),
 
             // All Contacts Header
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
               child: Text(
                 "Contacts on MyItihas",
                 style: TextStyle(
@@ -192,25 +195,24 @@ class _NewGroupPageState extends State<NewGroupPage> {
             ),
 
             // Padding for FAB
-            SizedBox(height: 80.h),
+            SizedBox(height: 10.h),
           ],
         ),
       ),
 
       // 3. Floating Action Button (Forward Arrow)
-      floatingActionButton:
-          _selectedContacts.isNotEmpty
-              ? Container(
-                margin: EdgeInsets.only(bottom: 16.h, right: 16.w),
-                child: FloatingActionButton(
-                  onPressed: () {
-                    // Navigate to next step (Group Name, etc.)
-                  },
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: Icon(Icons.arrow_forward, color: Colors.white),
-                ),
-              )
-              : null,
+      floatingActionButton: _selectedContacts.isNotEmpty
+          ? Container(
+              margin: EdgeInsets.only(bottom: 2.h, right: 2.w),
+              child: FloatingActionButton(
+                onPressed: () {
+                  // Navigate to next step (Group Name, etc.)
+                },
+                backgroundColor: Theme.of(context).primaryColor,
+                child: Icon(Icons.arrow_forward, color: Colors.white),
+              ),
+            )
+          : null,
     );
   }
 
@@ -228,28 +230,26 @@ class _NewGroupPageState extends State<NewGroupPage> {
     return InkWell(
       onTap: () => _toggleSelection(contact['name']),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
         child: Row(
           children: [
             // Avatar Stack
             Stack(
               children: [
                 Container(
-                  width: 48.w,
-                  height: 48.w,
+                  width: 12.w,
+                  height: 12.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     // Placeholder color or image
                     color: accentColor.withOpacity(0.2),
-                    image:
-                        contact['img'] != null
-                            ? DecorationImage(image: AssetImage(contact['img']))
-                            : null,
+                    image: contact['img'] != null
+                        ? DecorationImage(image: AssetImage(contact['img']))
+                        : null,
                   ),
-                  child:
-                      contact['img'] == null
-                          ? Icon(Icons.person, color: accentColor, size: 24.sp)
-                          : null,
+                  child: contact['img'] == null
+                      ? Icon(Icons.person, color: accentColor, size: 20.sp)
+                      : null,
                 ),
                 // Selection Checkmark (if selected)
                 if (isSelected)
@@ -266,12 +266,12 @@ class _NewGroupPageState extends State<NewGroupPage> {
                           width: 2,
                         ),
                       ),
-                      child: Icon(Icons.check, size: 12.sp, color: Colors.white),
+                      child: Icon(Icons.check, size: 8.sp, color: Colors.white),
                     ),
                   ),
               ],
             ),
-            SizedBox(width: 16.w),
+            SizedBox(width: 4.w),
 
             // Name and Status
             Expanded(

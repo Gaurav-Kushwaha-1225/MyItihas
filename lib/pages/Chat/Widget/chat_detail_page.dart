@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sizer/sizer.dart';
 import 'package:flutter/services.dart';
 
 class ChatDetailPage extends StatefulWidget {
@@ -70,24 +70,23 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     Color textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    Color subTextColor =
-        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
-    Color highlightColor =
-        isDark
-            ? Colors.white.withOpacity(0.1)
-            : Color(0xFF3B82F6).withOpacity(0.15);
+    Color subTextColor = isDark
+        ? DarkColors.textSecondary
+        : LightColors.textSecondary;
+    Color highlightColor = isDark
+        ? Colors.white.withOpacity(0.1)
+        : Color(0xFF3B82F6).withOpacity(0.15);
 
     return Scaffold(
       backgroundColor: isDark ? DarkColors.bgColor : LightColors.bgColor,
 
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(80.h),
+        preferredSize: Size.fromHeight(8.h),
         child: AnimatedSwitcher(
           duration: Duration(milliseconds: 200),
-          child:
-              _isSelectionMode
-                  ? _buildSelectionHeader(isDark)
-                  : _buildNormalHeader(isDark, textColor, subTextColor),
+          child: _isSelectionMode
+              ? _buildSelectionHeader(isDark)
+              : _buildNormalHeader(isDark, textColor, subTextColor),
         ),
       ),
 
@@ -97,17 +96,23 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [
-              Theme.of(context).primaryColor.withAlpha(5),
-              isDark ? Color(0xFF1E293B) : Color(0xFFF1F5F9),
+              ?isDark ? Colors.transparent.withOpacity(0.5) : null,
+              DarkColors.glowPrimary.withAlpha(50),
+
+              // ?isDark ? DarkColors.glassBg : null,
+              isDark
+                  ? DarkColors.accentSecondary.withOpacity(0.1)
+                  : DarkColors.glassBorder,
+              ?isDark ? Colors.transparent.withOpacity(0.4) : null,
             ],
-            transform: GradientRotation(3.14 / 1.5),
+            transform: GradientRotation(2.8 / 1.8),
           ),
         ),
         child: Column(
           children: [
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.symmetric(vertical: 16.h),
+                padding: EdgeInsets.symmetric(vertical: 2.h),
                 itemCount: _messages.length,
                 itemBuilder: (context, index) {
                   final msg = _messages[index];
@@ -125,14 +130,13 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     child: Container(
                       color: isSelected ? highlightColor : Colors.transparent,
                       padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 8.h,
+                        horizontal: 4.w,
+                        vertical: 1.h,
                       ),
                       child: Row(
-                        mainAxisAlignment:
-                            isMe
-                                ? MainAxisAlignment.end
-                                : MainAxisAlignment.start,
+                        mainAxisAlignment: isMe
+                            ? MainAxisAlignment.end
+                            : MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           if (!isMe) ...[
@@ -140,7 +144,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               backgroundColor: Color(
                                 int.parse(widget.avatarColor),
                               ).withOpacity(0.2),
-                              radius: 20.sp,
+                              radius: 15.sp,
                               child: Text(
                                 widget.name[0],
                                 style: GoogleFonts.inter(
@@ -150,51 +154,46 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 8.w),
+                            SizedBox(width: 2.w),
                           ],
                           Column(
-                            crossAxisAlignment:
-                                isMe
-                                    ? CrossAxisAlignment.end
-                                    : CrossAxisAlignment.start,
+                            crossAxisAlignment: isMe
+                                ? CrossAxisAlignment.end
+                                : CrossAxisAlignment.start,
                             children: [
                               Container(
-                                constraints: BoxConstraints(maxWidth: 280.w),
+                                constraints: BoxConstraints(maxWidth: 70.w),
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 16.w,
-                                  vertical: 12.h,
+                                  horizontal: 4.w,
+                                  vertical: 1.5.h,
                                 ),
                                 decoration: BoxDecoration(
-                                  color:
-                                      isMe
-                                          ? Color(0xFF3B82F6) // Blue for me
-                                          : (isDark
-                                              ? DarkColors.glassBg
-                                              : Colors.white),
+                                  color: isMe
+                                      ? Color(0xFF3B82F6) // Blue for me
+                                      : (isDark
+                                            ? DarkColors.glassBg
+                                            : Colors.white),
                                   borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(18.r),
-                                    topRight: Radius.circular(18.r),
-                                    bottomLeft:
-                                        isMe
-                                            ? Radius.circular(18.r)
-                                            : Radius.circular(0),
-                                    bottomRight:
-                                        isMe
-                                            ? Radius.circular(0)
-                                            : Radius.circular(18.r),
+                                    topLeft: Radius.circular(15.sp),
+                                    topRight: Radius.circular(15.sp),
+                                    bottomLeft: isMe
+                                        ? Radius.circular(15.sp)
+                                        : Radius.circular(0),
+                                    bottomRight: isMe
+                                        ? Radius.circular(0)
+                                        : Radius.circular(15.sp),
                                   ),
-                                  boxShadow:
-                                      isMe
-                                          ? []
-                                          : [
-                                            BoxShadow(
-                                              color: Colors.black.withOpacity(
-                                                0.05,
-                                              ),
-                                              blurRadius: 5,
-                                              offset: Offset(0, 2),
+                                  boxShadow: isMe
+                                      ? []
+                                      : [
+                                          BoxShadow(
+                                            color: Colors.black.withOpacity(
+                                              0.05,
                                             ),
-                                          ],
+                                            blurRadius: 5,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
                                 ),
                                 child: Text(
                                   msg['msg'],
@@ -206,7 +205,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 4.h),
+                              SizedBox(height: 0.5.h),
 
                               // --- UPDATED: Time + Status Icon ---
                               Row(
@@ -220,7 +219,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                                     ),
                                   ),
                                   if (isMe) ...[
-                                    SizedBox(width: 6.w),
+                                    SizedBox(width: 1.5.w),
                                     // Added Helper function call
                                     _buildStatusIcon(msg['status'] ?? 0),
                                   ],
@@ -238,7 +237,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
 
             if (!_isSelectionMode)
               Container(
-                padding: EdgeInsets.all(16.w),
+                padding: EdgeInsets.all(4.w),
+
                 decoration: BoxDecoration(
                   color: isDark ? DarkColors.glassBg : Colors.white,
                   border: Border(
@@ -249,28 +249,67 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.add, color: subTextColor, size: 20.sp),
-                    SizedBox(width: 12.w),
+                    Container(
+                      padding: EdgeInsets.all(1.5.w),
+                      decoration: BoxDecoration(
+                        color: isDark ? Colors.white10 : Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Icon(Icons.add, color: subTextColor, size: 18.sp),
+                    ),
+                    SizedBox(width: 2.w),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        padding: EdgeInsets.symmetric(horizontal: 4.w),
                         decoration: BoxDecoration(
                           color: isDark ? Colors.white10 : Colors.grey.shade100,
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: TextField(
                           controller: _messageController,
-                          style: TextStyle(color: textColor),
+                          style: TextStyle(
+                            color: textColor,
+                            fontWeight: FontWeight.w700,
+                          ),
                           decoration: InputDecoration(
-                            hintText: "Type a message...",
+                            hintText: "Type your message",
+
                             hintStyle: TextStyle(color: subTextColor),
                             border: InputBorder.none,
+                            suffixIcon: Icon(
+                              Icons.emoji_emotions_outlined,
+                              color: subTextColor,
+                            ),
+                            filled: false,
+                            fillColor: Colors.transparent,
+
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+
+                            isDense: true,
+
+                            contentPadding: EdgeInsets.symmetric(
+                              vertical: 1.5.h,
+                              horizontal: 0,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(width: 12.w),
-                    Icon(Icons.mic, color: subTextColor, size: 20.sp),
+                    SizedBox(width: 2.w),
+                    Container(
+                      padding: EdgeInsets.all(3.w),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF3B82F6),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.send_rounded,
+                        color: Colors.white,
+                        size: 16.sp,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -295,7 +334,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       ),
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          padding: EdgeInsets.symmetric(horizontal: 2.w),
           child: Row(
             children: [
               IconButton(
@@ -306,7 +345,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 ),
                 onPressed: () => context.pop(),
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: 2.w),
 
               GestureDetector(
                 onTap: _navigateToProfile,
@@ -314,7 +353,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   backgroundColor: Color(
                     int.parse(widget.avatarColor),
                   ).withOpacity(0.2),
-                  radius: 20.sp,
+                  radius: 18.sp,
                   child: Text(
                     widget.name[0],
                     style: GoogleFonts.inter(
@@ -325,7 +364,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                   ),
                 ),
               ),
-              SizedBox(width: 12.w),
+              SizedBox(width: 3.w),
 
               Expanded(
                 child: GestureDetector(
@@ -336,8 +375,6 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                     children: [
                       Text(
                         widget.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.inter(
                           color: textColor,
                           fontSize: 16.sp,
@@ -347,14 +384,14 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                       Row(
                         children: [
                           Container(
-                            width: 8.w,
-                            height: 8.w,
+                            width: 2.w,
+                            height: 2.w,
                             decoration: BoxDecoration(
                               color: DarkColors.profileGreen,
                               shape: BoxShape.circle,
                             ),
                           ),
-                          SizedBox(width: 6.w),
+                          SizedBox(width: 1.5.w),
                           Text(
                             "Online",
                             style: GoogleFonts.inter(
@@ -390,40 +427,37 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                 onSelected: (value) {
                   if (value == 'view') _navigateToProfile();
                 },
-                itemBuilder:
-                    (BuildContext context) => <PopupMenuEntry<String>>[
-                      PopupMenuItem(
-                        value: 'view',
-                        child: Text(
-                          widget.isGroup ? 'Group Info' : 'View Contact',
-                          style: TextStyle(color: textColor),
-                        ),
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  PopupMenuItem(
+                    value: 'view',
+                    child: Text(
+                      widget.isGroup ? 'Group Info' : 'View Contact',
+                      style: TextStyle(color: textColor),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'block',
+                    child: Text(
+                      widget.isGroup ? 'Exit Group' : 'Block',
+                      style: TextStyle(
+                        color: isDark
+                            ? DarkColors.dangerColor
+                            : LightColors.dangerColor,
                       ),
-                      PopupMenuItem(
-                        value: 'block',
-                        child: Text(
-                          widget.isGroup ? 'Exit Group' : 'Block',
-                          style: TextStyle(
-                            color:
-                                isDark
-                                    ? DarkColors.dangerColor
-                                    : LightColors.dangerColor,
-                          ),
-                        ),
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'report',
+                    child: Text(
+                      'Report',
+                      style: TextStyle(
+                        color: isDark
+                            ? DarkColors.dangerColor
+                            : LightColors.dangerColor,
                       ),
-                      PopupMenuItem(
-                        value: 'report',
-                        child: Text(
-                          'Report',
-                          style: TextStyle(
-                            color:
-                                isDark
-                                    ? DarkColors.dangerColor
-                                    : LightColors.dangerColor,
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -441,7 +475,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       color: selectionBg,
       child: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w),
+          padding: EdgeInsets.symmetric(horizontal: 2.w),
           child: Row(
             children: [
               IconButton(

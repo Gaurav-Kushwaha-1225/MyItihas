@@ -336,10 +336,10 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         return await _loadAllFeedItems(limit: limit, offset: offset);
       case FeedType.stories:
         return await _loadStories(limit: limit, offset: offset);
-      case FeedType.images:
-        return await _loadImagePosts(limit: limit, offset: offset);
-      case FeedType.text:
-        return await _loadTextPosts(limit: limit, offset: offset);
+      case FeedType.posts:
+        return await _loadPosts(limit: limit, offset: offset);
+      case FeedType.videos:
+        return await _loadVideoPosts(limit: limit, offset: offset);
     }
   }
 
@@ -403,33 +403,27 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     });
   }
 
-  Future<List<FeedItem>> _loadImagePosts({
+  Future<List<FeedItem>> _loadPosts({
     required int limit,
     required int offset,
   }) async {
-    final result = await postRepository.getImagePosts(
-      limit: limit,
-      offset: offset,
-    );
+    final result = await postRepository.getPosts(limit: limit, offset: offset);
 
-    return result.fold(
-      (failure) => <FeedItem>[],
-      (posts) => posts.map((p) => FeedItem.imagePost(p)).toList(),
-    );
+    return result.fold((failure) => <FeedItem>[], (posts) => posts);
   }
 
-  Future<List<FeedItem>> _loadTextPosts({
+  Future<List<FeedItem>> _loadVideoPosts({
     required int limit,
     required int offset,
   }) async {
-    final result = await postRepository.getTextPosts(
+    final result = await postRepository.getVideoPosts(
       limit: limit,
       offset: offset,
     );
 
     return result.fold(
       (failure) => <FeedItem>[],
-      (posts) => posts.map((p) => FeedItem.textPost(p)).toList(),
+      (posts) => posts.map((p) => FeedItem.videoPost(p)).toList(),
     );
   }
 

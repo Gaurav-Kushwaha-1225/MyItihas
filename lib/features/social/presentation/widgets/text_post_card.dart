@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myitihas/features/social/domain/entities/text_post.dart';
 import 'package:myitihas/features/social/presentation/widgets/author_info_bar.dart';
 import 'package:myitihas/features/social/presentation/widgets/engagement_bar.dart';
 
-/// A full-screen card for displaying text posts in the social feed
+/// A full-screen card for displaying text posts in the social feed.
+/// If the post has an imageUrl, it displays the text as a caption over the image.
 class TextPostCard extends StatefulWidget {
   final TextPost post;
   final bool isVisible;
@@ -99,6 +101,206 @@ class _TextPostCardState extends State<TextPostCard>
     final post = widget.post;
     final screenSize = MediaQuery.of(context).size;
 
+    final hasImage = post.imageUrl != null && post.imageUrl!.isNotEmpty;
+
+    // If the post has an image, render with image background
+    if (hasImage) {
+      return _buildImageBackgroundLayout(context, theme, post, screenSize);
+    }
+
+    // Otherwise, render with solid color background
+    return _buildColorBackgroundLayout(context, theme, post, screenSize);
+  }
+
+  Widget _buildImageBackgroundLayout(
+    BuildContext context,
+    ThemeData theme,
+    TextPost post,
+    Size screenSize,
+  ) {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: SlideTransition(
+        position: _slideAnimation,
+        child: Container(
+          height: screenSize.height,
+          width: screenSize.width,
+          color: Colors.black,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // Full-bleed background image
+              CachedNetworkImage(
+                imageUrl: post.imageUrl!,
+                fit: BoxFit.cover,
+                placeholder: (context, url) =>
+                    Container(color: Color(post.backgroundColor)),
+                errorWidget: (context, url, error) =>
+                    Container(color: Color(post.backgroundColor)),
+              ),
+
+              // Top gradient for header
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 0,
+                child: Container(
+                  height: 120,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.7),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Bottom gradient for content
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  height: screenSize.height * 0.55,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withValues(alpha: 0.95),
+                        Colors.black.withValues(alpha: 0.7),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.5, 1.0],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Content overlay - caption style
+              Positioned(
+                left: 0,
+                right: 40,
+                bottom: 0,
+                child: SafeArea(
+                  top: false,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Author info
+                        if (post.authorUser != null)
+                          FadeTransition(
+                            opacity: _authorFade,
+                            child: AuthorInfoBar(
+                              author: post.authorUser!,
+                              onProfileTap: widget.onProfileTap,
+                              onFollowTap: widget.onFollowTap,
+                              isFollowLoading: widget.isFollowLoading,
+                              compact: false,
+                              darkOverlay: true,
+                            ),
+                          ),
+                        const SizedBox(height: 12),
+
+                        // Caption text (the body)
+                        FadeTransition(
+                          opacity: _textFade,
+                          child: Text(
+                            post.body,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white,
+                              height: 1.5,
+                              fontSize: 16,
+                            ),
+                            maxLines: 6,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Tags
+                        if (post.tags.isNotEmpty)
+                          FadeTransition(
+                            opacity: _authorFade,
+                            child: Wrap(
+                              spacing: 8,
+                              runSpacing: 4,
+                              children: post.tags.take(4).map((tag) {
+                                return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    '#$tag',
+                                    style: theme.textTheme.labelSmall?.copyWith(
+                                      color: Colors.white.withValues(
+                                        alpha: 0.9,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Vertical engagement bar
+              Positioned(
+                right: 12,
+                bottom: 48,
+                child: SafeArea(
+                  top: false,
+                  child: FadeTransition(
+                    opacity: _actionsFade,
+                    child: EngagementBar(
+                      likeCount: post.likes,
+                      commentCount: post.commentCount,
+                      shareCount: post.shareCount,
+                      isLiked: post.isLikedByCurrentUser,
+                      isBookmarked: post.isFavorite,
+                      onLike: widget.onLike,
+                      onComment: widget.onComment,
+                      onShare: widget.onShare,
+                      onBookmark: widget.onBookmark,
+                      vertical: true,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildColorBackgroundLayout(
+    BuildContext context,
+    ThemeData theme,
+    TextPost post,
+    Size screenSize,
+  ) {
     final backgroundColor = Color(post.backgroundColor);
     final textColor = Color(post.textColor);
 
@@ -220,7 +422,7 @@ class _TextPostCardState extends State<TextPostCard>
                 child: SafeArea(
                   top: false,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 16),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -238,7 +440,7 @@ class _TextPostCardState extends State<TextPostCard>
                               darkOverlay: true,
                             ),
                           ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 5),
 
                         // Tags
                         if (post.tags.isNotEmpty)
@@ -283,7 +485,7 @@ class _TextPostCardState extends State<TextPostCard>
               // Vertical engagement bar
               Positioned(
                 right: 12,
-                bottom: 48,
+                bottom: 8,
                 child: SafeArea(
                   top: false,
                   child: FadeTransition(

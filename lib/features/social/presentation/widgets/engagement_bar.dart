@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
 import 'package:myitihas/i18n/strings.g.dart';
+import 'package:myitihas/utils/constants.dart';
 
 /// Engagement bar with Like, Comment, Share, Bookmark buttons and Continue Reading CTA
 class EngagementBar extends StatelessWidget {
@@ -260,6 +261,14 @@ class _EngagementButtonState extends State<_EngagementButton>
                       widget.icon,
                       color: widget.color,
                       size: widget.iconSize,
+                      shadows: [
+                        BoxShadow(
+                          color: theme.brightness == Brightness.dark ? DarkColors.textPrimary.withOpacity(0.5) : LightColors.textPrimary.withOpacity(0.5),
+                          blurRadius: 100,
+                          spreadRadius: 20,
+                          offset: const Offset(2, 2),
+                        ),
+                      ],
                     ),
                     if (widget.label.isNotEmpty) ...[
                       const SizedBox(height: 4),

@@ -295,8 +295,12 @@
         "tabs": {
             "all": "All",
             "stories": "Stories",
+            "posts": "Posts",
+            "videos": "Videos",
             "images": "Images",
             "text": "Thoughts"
-        }
+        },
+        "tapToShowCaption": "Tap to show caption",
+        "noVideosAvailable": "No videos available"
     }
 }

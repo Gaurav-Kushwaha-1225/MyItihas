@@ -113,7 +113,7 @@ class _AkhandaBharatMapPageState extends State<AkhandaBharatMapPage>
             Positioned(
               left: 4.h,
               right: 4.h,
-              top: 5.5.h,
+              top: 6.h,
               child: Row(
                 children: [
                   Expanded(
@@ -145,7 +145,7 @@ class _AkhandaBharatMapPageState extends State<AkhandaBharatMapPage>
 
             // --- 1. SCROLLABLE CONTENT LAYER ---
             Container(
-              padding: EdgeInsets.only(top: 18.h),
+              padding: EdgeInsets.only(top: 18.5.h),
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.symmetric(horizontal: 2.h),
@@ -191,107 +191,116 @@ class _AkhandaBharatMapPageState extends State<AkhandaBharatMapPage>
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(18),
-                          child: InteractiveViewer(
-                            transformationController: _transformationController,
-                            minScale: 1.0,
-                            maxScale: 5.0,
-                            boundaryMargin: EdgeInsets.zero,
-                            child: AspectRatio(
-                              aspectRatio: 1.0,
-                              child: LayoutBuilder(
-                                builder: (context, constraints) {
-                                  final width = constraints.maxWidth;
-                                  final height = constraints.maxHeight;
+                          child: Stack(
+                            children: [
+                              InteractiveViewer(
+                                transformationController:
+                                    _transformationController,
+                                minScale: 1.0,
+                                maxScale: 5.0,
+                                boundaryMargin: EdgeInsets.zero,
+                                child: AspectRatio(
+                                  aspectRatio: 1.0,
+                                  child: LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      final width = constraints.maxWidth;
+                                      final height = constraints.maxHeight;
 
-                                  return Stack(
-                                    children: [
-                                      Image.asset(
-                                        'assets/images/akhand_bharat.png',
-                                        width: width,
-                                        height: height,
-                                        fit: BoxFit.fill,
-                                        errorBuilder: (_, __, ___) => Container(
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                      ...sacredPlacesData.map((place) {
-                                        final pos = _getRelativePosition(
-                                          place.lat,
-                                          place.lon,
-                                        );
-                                        final isSelected =
-                                            _selectedPlace?.id == place.id;
-
-                                        return Positioned(
-                                          left:
-                                              pos.dx * width -
-                                              (isSelected ? 10 : 6),
-                                          top:
-                                              pos.dy * height -
-                                              (isSelected ? 10 : 6),
-                                          child: GestureDetector(
-                                            onTap: () =>
-                                                _onPlaceSelected(place),
-                                            child: AnimatedContainer(
-                                              duration: const Duration(
-                                                milliseconds: 300,
-                                              ),
-                                              width: isSelected ? 15 : 12,
-                                              height: isSelected ? 15 : 12,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                gradient: isSelected
-                                                    ? null
-                                                    : DarkColors
-                                                          .messageUserGradient,
-                                                color: isSelected
-                                                    ? Colors.green
-                                                    : null,
-                                                border: Border.all(
-                                                  color: Colors.white,
-                                                  width: 2,
+                                      return Stack(
+                                        children: [
+                                          Image.asset(
+                                            'assets/images/akhand_bharat.png',
+                                            width: width,
+                                            height: height,
+                                            fit: BoxFit.fill,
+                                            errorBuilder: (_, __, ___) =>
+                                                Container(
+                                                  color: Colors.transparent,
                                                 ),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color:
-                                                        (isSelected
-                                                                ? Colors.green
-                                                                : accentColor)
-                                                            .withOpacity(0.5),
-                                                    blurRadius: 10,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
                                           ),
-                                        );
-                                      }),
-                                      Positioned(
-                                        right: 2.w,
-                                        top: 15.h,
-                                        child: Column(
-                                          children: [
-                                            _buildZoomBtn(
-                                              Icons.add,
-                                              () => _updateZoom(1.4),
-                                              glassBg,
-                                              textColor,
-                                            ),
-                                            SizedBox(height: 1.5.h),
-                                            _buildZoomBtn(
-                                              Icons.remove,
-                                              () => _updateZoom(0.7),
-                                              glassBg,
-                                              textColor,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
+                                          ...sacredPlacesData.map((place) {
+                                            final pos = _getRelativePosition(
+                                              place.lat,
+                                              place.lon,
+                                            );
+                                            final isSelected =
+                                                _selectedPlace?.id == place.id;
+
+                                            return Positioned(
+                                              left:
+                                                  pos.dx * width -
+                                                  (isSelected ? 10 : 6),
+                                              top:
+                                                  pos.dy * height -
+                                                  (isSelected ? 10 : 6),
+                                              child: GestureDetector(
+                                                onTap: () =>
+                                                    _onPlaceSelected(place),
+                                                child: AnimatedContainer(
+                                                  duration: const Duration(
+                                                    milliseconds: 300,
+                                                  ),
+                                                  width: isSelected ? 15 : 12,
+                                                  height: isSelected ? 15 : 12,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    gradient: isSelected
+                                                        ? null
+                                                        : DarkColors
+                                                              .messageUserGradient,
+                                                    color: isSelected
+                                                        ? Colors.green
+                                                        : null,
+                                                    border: Border.all(
+                                                      color: Colors.white,
+                                                      width: 2,
+                                                    ),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color:
+                                                            (isSelected
+                                                                    ? Colors
+                                                                          .green
+                                                                    : accentColor)
+                                                                .withOpacity(
+                                                                  0.5,
+                                                                ),
+                                                        blurRadius: 10,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ),
                               ),
-                            ),
+                              Positioned(
+                                right: 2.w,
+                                top: 15.h,
+                                child: Column(
+                                  children: [
+                                    _buildZoomBtn(
+                                      Icons.add,
+                                      () => _updateZoom(1.4),
+                                      glassBg,
+                                      textColor,
+                                    ),
+                                    SizedBox(height: 1.5.h),
+                                    _buildZoomBtn(
+                                      Icons.remove,
+                                      () => _updateZoom(0.7),
+                                      glassBg,
+                                      textColor,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -402,8 +411,64 @@ class _AkhandaBharatMapPageState extends State<AkhandaBharatMapPage>
                         ),
                       ),
 
+                    if (_isDetailsVisible && _selectedPlace != null)
+                      SizedBox(height: 1.h),
+                    Divider(
+                      color: isDark
+                          ? Colors.white.withOpacity(0.3)
+                          : Colors.black.withOpacity(0.3),
+                    ),
+                    SizedBox(height: 1.h),
+                    _sectionTitle3(),
+                    SizedBox(height: 2.h),
+                    GestureDetector(
+                      onTap: () {
+                        context.push('/shakti-peetha');
+                        debugPrint("Shaktipeetha card tapped");
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(5.w),
+                            decoration: BoxDecoration(
+                              color: glassBg,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: isDark
+                                    ? Colors.white.withOpacity(0.25)
+                                    : Colors.grey.withOpacity(0.45),
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Where the divine feminine energy manifests in its most powerful forms. "
+                                  "These sacred sites mark where parts of Goddess Sati's body fell when "
+                                  "Lord Shiva carried her across the universe in grief.",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.expand_more_rounded,
+                                  color: textColor,
+                                  size: 24.sp,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
                     // Bottom padding to ensure content isn't cut off
-                    SizedBox(height: 10.h),
+                    SizedBox(height: 15.h),
                   ],
                 ),
               ),
@@ -411,7 +476,7 @@ class _AkhandaBharatMapPageState extends State<AkhandaBharatMapPage>
 
             // --- 2. FIXED SEARCH BAR (Pinned on top) ---
             Positioned(
-              top: 10.h,
+              top: 10.5.h,
               left: 4.w,
               right: 4.w,
               child: ClipRRect(
@@ -705,19 +770,37 @@ class _AkhandaBharatMapPageState extends State<AkhandaBharatMapPage>
     final textColor = isDark
         ? [Colors.white, Color(0xFF7DD3FC), Color(0xFFA78BFA)]
         : [Colors.black, Colors.black, Colors.black];
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 3.h),
-      child: Text(
-        "Akhanda Bharata — The Sacred Atlas",
-        style: GoogleFonts.playfairDisplay(
-          fontSize: 22.sp,
-          fontWeight: FontWeight.bold,
-          height: 1.25,
-          foreground: Paint()
-            ..shader = LinearGradient(
-              colors: textColor,
-            ).createShader(const Rect.fromLTWH(0, 0, 300, 80)),
-        ),
+    return Text(
+      "Akhanda Bharata — The Sacred Atlas",
+      textAlign: TextAlign.center,
+      style: GoogleFonts.playfairDisplay(
+        fontSize: 22.sp,
+        fontWeight: FontWeight.bold,
+        height: 1.25,
+        foreground: Paint()
+          ..shader = LinearGradient(
+            colors: textColor,
+          ).createShader(const Rect.fromLTWH(0, 0, 300, 80)),
+      ),
+    );
+  }
+
+  Widget _sectionTitle3() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark
+        ? [Colors.white, Color(0xFF7DD3FC), Color(0xFFA78BFA)]
+        : [Colors.black, Colors.black, Colors.black];
+    return Text(
+      "The 18 Sacred Shaktipeethas",
+      textAlign: TextAlign.center,
+      style: GoogleFonts.playfairDisplay(
+        fontSize: 22.sp,
+        fontWeight: FontWeight.bold,
+        height: 1.25,
+        foreground: Paint()
+          ..shader = LinearGradient(
+            colors: textColor,
+          ).createShader(const Rect.fromLTWH(0, 0, 300, 80)),
       ),
     );
   }

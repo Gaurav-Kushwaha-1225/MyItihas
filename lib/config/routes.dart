@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/pages/Map/Widget/shaktipeetha_detail_page.dart';
 
 import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
 import 'package:myitihas/pages/home_page.dart';
@@ -421,5 +422,12 @@ class GeneratedStoryResultRoute extends GoRouteData
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return GeneratedStoryDetailPage(story: $extra);
+@TypedGoRoute<ShaktiPeethaRoute>(path: '/shakti-peetha')
+class ShaktiPeethaRoute extends GoRouteData with $ShaktiPeethaRoute {
+  const ShaktiPeethaRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const ShaktiPeethaDetailPage();
   }
 }

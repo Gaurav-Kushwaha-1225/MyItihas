@@ -29,6 +29,7 @@ List<RouteBase> get $appRoutes => [
   $chatListRoute,
   $mapRoute,
   $storyGeneratorRoute,
+  $shaktiPeethaRoute,
 ];
 
 RouteBase get $splashRoute =>
@@ -686,6 +687,17 @@ mixin $StoryGeneratorRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/story-generator');
+RouteBase get $shaktiPeethaRoute => GoRouteData.$route(
+  path: '/shakti-peetha',
+  factory: $ShaktiPeethaRoute._fromState,
+);
+
+mixin $ShaktiPeethaRoute on GoRouteData {
+  static ShaktiPeethaRoute _fromState(GoRouterState state) =>
+      const ShaktiPeethaRoute();
+
+  @override
+  String get location => GoRouteData.$location('/shakti-peetha');
 
   @override
   void go(BuildContext context) => context.go(location);

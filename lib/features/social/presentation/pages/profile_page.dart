@@ -164,7 +164,10 @@ class _ProfileView extends StatelessWidget {
                           child: Container(
                             padding: const EdgeInsets.all(20),
                             decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .surfaceContainerHighest
+                                  .withValues(alpha: 0.3),
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
@@ -181,19 +184,25 @@ class _ProfileView extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: Theme.of(context).colorScheme.surface,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.surface,
                                       width: 3,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.1),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.1,
+                                        ),
                                         blurRadius: 12,
                                         offset: const Offset(0, 4),
                                       ),
                                     ],
                                   ),
                                   child: SvgAvatar(
-                                    key: ValueKey('avatar_${user.id}_${user.avatarUrl}'),
+                                    key: ValueKey(
+                                      'avatar_${user.id}_${user.avatarUrl}',
+                                    ),
                                     imageUrl: user.avatarUrl,
                                     radius: 50,
                                     fallbackText: user.displayName,
@@ -203,12 +212,15 @@ class _ProfileView extends StatelessWidget {
                                 // Name and username on right
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         user.displayName,
                                         style: TextStyle(
-                                          color: Theme.of(context).colorScheme.onSurface,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurface,
                                           fontSize: 24,
                                           fontWeight: FontWeight.bold,
                                           letterSpacing: 0.5,
@@ -218,7 +230,9 @@ class _ProfileView extends StatelessWidget {
                                       Text(
                                         '@${user.username}',
                                         style: TextStyle(
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurfaceVariant,
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -242,19 +256,26 @@ class _ProfileView extends StatelessWidget {
                               // Modern stats card
                               Container(
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.surfaceContainerHighest,
                                   borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.05),
+                                      color: Colors.black.withValues(
+                                        alpha: 0.05,
+                                      ),
                                       blurRadius: 10,
                                       offset: const Offset(0, 4),
                                     ),
                                   ],
                                 ),
-                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 20,
+                                ),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     _ModernStatItem(
                                       label: t.profile.followers,
@@ -266,7 +287,9 @@ class _ProfileView extends StatelessWidget {
                                     Container(
                                       width: 1,
                                       height: 40,
-                                      color: Theme.of(context).colorScheme.outlineVariant,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.outlineVariant,
                                     ),
                                     _ModernStatItem(
                                       label: t.profile.following,
@@ -288,12 +311,15 @@ class _ProfileView extends StatelessWidget {
                                   height: 52,
                                   decoration: BoxDecoration(
                                     gradient: Theme.of(context)
-                                          .extension<GradientExtension>()!
-                                          .primaryButtonGradient,
+                                        .extension<GradientExtension>()!
+                                        .primaryButtonGradient,
                                     borderRadius: BorderRadius.circular(16),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary
+                                            .withValues(alpha: 0.3),
                                         blurRadius: 12,
                                         offset: const Offset(0, 6),
                                       ),
@@ -307,7 +333,7 @@ class _ProfileView extends StatelessWidget {
                                         bio: user.bio,
                                         avatarUrl: user.avatarUrl,
                                       ).push<bool>(context);
-                                      
+
                                       // Reload profile if changes were saved
                                       if (result == true && context.mounted) {
                                         context.read<ProfileBloc>().add(
@@ -324,7 +350,10 @@ class _ProfileView extends StatelessWidget {
                                       ),
                                       elevation: 0,
                                     ),
-                                    icon: const Icon(Icons.edit_rounded, size: 22),
+                                    icon: const Icon(
+                                      Icons.edit_rounded,
+                                      size: 22,
+                                    ),
                                     label: const Text(
                                       'Edit Profile',
                                       style: TextStyle(
@@ -348,19 +377,26 @@ class _ProfileView extends StatelessWidget {
                                               .extension<GradientExtension>()!
                                               .primaryButtonGradient,
                                     color: user.isFollowing
-                                        ? Theme.of(context).colorScheme.surfaceContainerHighest
+                                        ? Theme.of(
+                                            context,
+                                          ).colorScheme.surfaceContainerHighest
                                         : null,
                                     borderRadius: BorderRadius.circular(16),
                                     border: user.isFollowing
                                         ? Border.all(
-                                            color: Theme.of(context).colorScheme.outline,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.outline,
                                             width: 1.5,
                                           )
                                         : null,
                                     boxShadow: !user.isFollowing
                                         ? [
                                             BoxShadow(
-                                              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                                  .withValues(alpha: 0.3),
                                               blurRadius: 12,
                                               offset: const Offset(0, 6),
                                             ),
@@ -377,7 +413,9 @@ class _ProfileView extends StatelessWidget {
                                       backgroundColor: Colors.transparent,
                                       shadowColor: Colors.transparent,
                                       foregroundColor: user.isFollowing
-                                          ? Theme.of(context).colorScheme.onSurface
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface
                                           : Colors.white,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(16),
@@ -385,10 +423,13 @@ class _ProfileView extends StatelessWidget {
                                       elevation: 0,
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Icon(
-                                          user.isFollowing ? Icons.person_remove_rounded : Icons.person_add_rounded,
+                                          user.isFollowing
+                                              ? Icons.person_remove_rounded
+                                              : Icons.person_add_rounded,
                                           size: 20,
                                         ),
                                         const SizedBox(width: 8),
@@ -414,18 +455,23 @@ class _ProfileView extends StatelessWidget {
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(20),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceContainerHighest,
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
                                           Icon(
                                             Icons.info_outline_rounded,
                                             size: 20,
-                                            color: Theme.of(context).colorScheme.primary,
+                                            color: Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
@@ -433,7 +479,9 @@ class _ProfileView extends StatelessWidget {
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w600,
-                                              color: Theme.of(context).colorScheme.onSurface,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.onSurface,
                                               letterSpacing: 0.5,
                                             ),
                                           ),
@@ -445,7 +493,9 @@ class _ProfileView extends StatelessWidget {
                                         style: TextStyle(
                                           fontSize: 15,
                                           height: 1.5,
-                                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                                          color: Theme.of(
+                                            context,
+                                          ).colorScheme.onSurfaceVariant,
                                         ),
                                       ),
                                     ],
@@ -459,7 +509,9 @@ class _ProfileView extends StatelessWidget {
                                   Icon(
                                     Icons.auto_stories_rounded,
                                     size: 20,
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
@@ -467,7 +519,9 @@ class _ProfileView extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600,
-                                      color: Theme.of(context).colorScheme.onSurface,
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.onSurface,
                                       letterSpacing: 0.5,
                                     ),
                                   ),
@@ -498,8 +552,12 @@ class _ProfileView extends StatelessWidget {
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                   colors: [
-                                    Theme.of(context).colorScheme.surfaceContainerHighest,
-                                    Theme.of(context).colorScheme.surfaceContainer,
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceContainerHighest,
+                                    Theme.of(
+                                      context,
+                                    ).colorScheme.surfaceContainer,
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(16),
@@ -515,7 +573,9 @@ class _ProfileView extends StatelessWidget {
                                 child: Icon(
                                   Icons.auto_stories_rounded,
                                   size: 40,
-                                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.6),
                                 ),
                               ),
                             );

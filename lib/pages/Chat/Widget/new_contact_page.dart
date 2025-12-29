@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sizer/sizer.dart';
 
 class NewContactPage extends StatefulWidget {
   const NewContactPage({super.key});
@@ -16,7 +16,7 @@ class _NewContactPageState extends State<NewContactPage> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
-  final String _selectedCountryCode = "+91";
+  String _selectedCountryCode = "+91";
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class _NewContactPageState extends State<NewContactPage> {
 
       // 1. App Bar
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.h),
+        preferredSize: Size.fromHeight(6.h),
         child: Container(
           decoration: BoxDecoration(
             gradient: isDark
@@ -54,7 +54,7 @@ class _NewContactPageState extends State<NewContactPage> {
           ),
           child: SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              padding: EdgeInsets.symmetric(horizontal: 2.w),
               child: Row(
                 children: [
                   IconButton(
@@ -96,28 +96,30 @@ class _NewContactPageState extends State<NewContactPage> {
       ),
       // 2. Form Body
       body: Container(
+        height: 100.h,
+        width: 100.w,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.bottomCenter,
             end: Alignment.topCenter,
             colors: [
-              Theme.of(context).primaryColor.withAlpha(5),
+              DarkColors.accentPrimary.withAlpha(5),
               isDark ? Color(0xFF1E293B) : Color(0xFFF1F5F9),
             ],
             transform: GradientRotation(3.14 / 1.5),
           ),
         ),
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(20.w),
+          padding: EdgeInsets.all(5.w),
           child: Column(
             children: [
-              SizedBox(height: 16.h),
+              SizedBox(height: 2.h),
 
               // Icon Placeholder
               Center(
                 child: Container(
-                  width: 80.w,
-                  height: 80.w,
+                  width: 20.w,
+                  height: 20.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isDark ? DarkColors.glassBg : Colors.grey.shade200,
@@ -125,13 +127,13 @@ class _NewContactPageState extends State<NewContactPage> {
                   ),
                   child: Icon(
                     Icons.person_add_alt_1_rounded,
-                    size: 40.sp,
+                    size: 25.sp,
                     color: subTextColor,
                   ),
                 ),
               ),
 
-              SizedBox(height: 32.h),
+              SizedBox(height: 4.h),
 
               // First Name Field
               _buildTextField(
@@ -145,7 +147,7 @@ class _NewContactPageState extends State<NewContactPage> {
                 subTextColor: subTextColor,
               ),
 
-              SizedBox(height: 20.h),
+              SizedBox(height: 2.5.h),
 
               // Last Name Field
               _buildTextField(
@@ -160,16 +162,16 @@ class _NewContactPageState extends State<NewContactPage> {
                 subTextColor: subTextColor,
               ),
 
-              SizedBox(height: 20.h),
+              SizedBox(height: 2.5.h),
 
               // Phone Number Row
               Row(
                 children: [
                   // Country Code
                   Container(
-                    width: 112.w,
-                    height: 56.h, // Match height with text field
-                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                    width: 28.w,
+                    height: 6.h, // Match height with text field
+                    padding: EdgeInsets.symmetric(horizontal: 3.w),
                     decoration: BoxDecoration(
                       color: inputBg.withOpacity(0.4),
                       borderRadius: BorderRadius.circular(30),
@@ -199,7 +201,7 @@ class _NewContactPageState extends State<NewContactPage> {
                       ],
                     ),
                   ),
-                  SizedBox(width: 12.w),
+                  SizedBox(width: 3.w),
 
                   // Phone Input
                   Expanded(
@@ -217,7 +219,7 @@ class _NewContactPageState extends State<NewContactPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 32.h),
+              SizedBox(height: 2.5.h),
               GestureDetector(
                 onTap: () {
                   // Handle button tap here
@@ -225,10 +227,10 @@ class _NewContactPageState extends State<NewContactPage> {
                 },
 
                 child: Container(
-                  width: double.infinity,
+                  width: 90.w,
                   padding: EdgeInsets.symmetric(
-                    horizontal: 24.w, // Wider horizontal padding for pill shape
-                    vertical: 16.h, // Vertical padding
+                    horizontal: 6.w, // Wider horizontal padding for pill shape
+                    vertical: 1.5.h, // Vertical padding
                   ),
                   decoration: BoxDecoration(
                     // Use your theme's gradient
@@ -278,7 +280,7 @@ class _NewContactPageState extends State<NewContactPage> {
     TextInputType inputType = TextInputType.text,
   }) {
     return Container(
-      height: 56.h, // Fixed height for consistency
+      height: 6.h, // Fixed height for consistency
       decoration: BoxDecoration(
         color: inputBg.withOpacity(0.4),
         borderRadius: BorderRadius.circular(30),
@@ -298,8 +300,8 @@ class _NewContactPageState extends State<NewContactPage> {
               ? Icon(icon, color: subTextColor, size: 16.sp)
               : null,
           contentPadding: EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 16.h, // Centers text vertically
+            horizontal: 4.w,
+            vertical: 2.h, // Centers text vertically
           ),
         ),
       ),

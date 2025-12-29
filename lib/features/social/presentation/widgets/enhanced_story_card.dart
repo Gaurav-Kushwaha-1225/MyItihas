@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
@@ -123,14 +122,17 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
           child: Stack(
             fit: StackFit.expand,
             children: [
-              _HeroImageSection(story: story, gradients: gradients),
+              Container(
+                height: screenSize.height,
+                child: _HeroImageSection(story: story, gradients: gradients),
+              ),
 
               Positioned(
                 left: 0,
                 right: 0,
                 bottom: 0,
                 child: Container(
-                  height: screenSize.height * 0.65,
+                  height: screenSize.height * 0.8,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.bottomCenter,
@@ -151,13 +153,13 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                 right: 0,
                 top: 0,
                 child: Container(
-                  height: 100,
+                  height: screenSize.height * 0.3,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withValues(alpha: 0.6),
+                        Colors.black.withValues(alpha: 0.7),
                         Colors.transparent,
                       ],
                     ),
@@ -172,7 +174,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                 child: SafeArea(
                   top: false,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 16),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -204,7 +206,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 15),
 
                         FadeTransition(
                           opacity: _titleFade,
@@ -228,7 +230,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                             ],
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 15),
 
                         if (story.quotes.isNotEmpty)
                           FadeTransition(
@@ -240,24 +242,24 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
                               darkOverlay: true,
                             ),
                           ),
-                        if (story.quotes.isNotEmpty) const SizedBox(height: 10),
+                        if (story.quotes.isNotEmpty) const SizedBox(height: 15),
 
                         FadeTransition(
                           opacity: _contentFade,
                           child: SizedBox(
-                            height: 164,
+                            height: 184,
                             child: SwipeableContentSection(
                               storyExcerpt: story.story,
                               trivia: story.trivia,
                               lesson: story.lesson,
                               activity: story.activity,
-                              maxLines: 5,
+                              maxLines: 8,
                               darkOverlay: true,
                               onContinueReadingTap: widget.onContinueReading,
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 8),
 
                         // Continue Reading button
                         // FadeTransition(
@@ -276,7 +278,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
 
               Positioned(
                 right: 12,
-                bottom: 48,
+                bottom: 8,
                 child: SafeArea(
                   top: false,
                   child: FadeTransition(
@@ -315,34 +317,66 @@ class _HeroImageSection extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     if (story.imageUrl != null && story.imageUrl!.isNotEmpty) {
-      return CachedNetworkImage(
-        imageUrl: story.imageUrl!,
-        fit: BoxFit.cover,
-        placeholder: (context, url) => _Placeholder(colorScheme: colorScheme),
-        errorWidget: (context, url, error) =>
-            _Placeholder(colorScheme: colorScheme),
+      return Image.network(
+        story.imageUrl!,
+        fit: BoxFit.cover, // Full background coverage
+        width: double.infinity,
+        height: double.infinity,
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: Colors.grey[900],
+            child: const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) => Container(
+          color: Colors.grey[900],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.auto_stories,
+                size: 64,
+                color: colorScheme.primary.withValues(alpha: 0.5),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                t.app.name,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.7),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
       );
     }
 
-    return _Placeholder(colorScheme: colorScheme);
+    return _Placeholder(colorScheme: colorScheme, imageUrl: story.imageUrl);
   }
 }
 
 class _Placeholder extends StatelessWidget {
   final ColorScheme colorScheme;
+  final String? imageUrl;
 
-  const _Placeholder({required this.colorScheme});
+  const _Placeholder({required this.colorScheme, required this.imageUrl});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
+      height: double.infinity,
       color: Colors.grey[900],
-      alignment: Alignment.center,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
-            'assets/logo.png',
+            "assets/logo.png",
             width: 96,
             height: 96,
             fit: BoxFit.contain,

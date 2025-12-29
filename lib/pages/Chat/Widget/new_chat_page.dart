@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sizer/sizer.dart';
 
 class NewChatPage extends StatefulWidget {
   const NewChatPage({super.key});
@@ -36,7 +36,7 @@ class _NewChatPageState extends State<NewChatPage> {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70.h),
+        preferredSize: Size.fromHeight(6.h),
         child: _buildAppBar(context, isDark),
       ),
       body: _buildBody(context, isDark),
@@ -62,7 +62,7 @@ class _NewChatPageState extends State<NewChatPage> {
           ),
         ],
       ),
-      padding: EdgeInsets.symmetric(horizontal: 8.w),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: SafeArea(
         child: Row(
           children: [
@@ -116,7 +116,7 @@ class _NewChatPageState extends State<NewChatPage> {
         begin: Alignment.bottomCenter,
         end: Alignment.topCenter,
         colors: [
-          Theme.of(context).primaryColor.withAlpha(5),
+          DarkColors.accentPrimary.withAlpha(5),
           isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
         ],
         transform: const GradientRotation(3.14 / 1.5),
@@ -180,14 +180,14 @@ class _NewChatPageState extends State<NewChatPage> {
           title: "New group",
           textColor: textColor,
           accentColor: accentColor,
-          onTap: () => context.push('/new-group'),
+          onTap: () => context.push('/new_group'),
         ),
         _buildOptionTile(
           icon: Icons.person_add,
           title: "New contact",
           textColor: textColor,
           accentColor: accentColor,
-          onTap: () => context.push('/new-contact'),
+          onTap: () => context.push('/new_contact'),
         ),
         Divider(color: secondaryTextColor.withOpacity(0.2)),
       ],

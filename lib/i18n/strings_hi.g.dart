@@ -440,6 +440,8 @@ class _TranslationsFeedHi implements TranslationsFeedEn {
 	@override String get tapToViewFullQuote => 'Tap to view full quote';
 	@override String get quoteFromMyitihas => 'Quote from MyItihas';
 	@override late final _TranslationsFeedTabsHi tabs = _TranslationsFeedTabsHi._(_root);
+	@override String get tapToShowCaption => 'कैप्शन देखने के लिए टैप करें';
+	@override String get noVideosAvailable => 'कोई वीडियो उपलब्ध नहीं';
 }
 
 // Path: storyGenerator.storyLength
@@ -502,6 +504,8 @@ class _TranslationsFeedTabsHi implements TranslationsFeedTabsEn {
 	// Translations
 	@override String get all => 'सभी';
 	@override String get stories => 'कहानियाँ';
+	@override String get posts => 'पोस्ट';
+	@override String get videos => 'वीडियो';
 	@override String get images => 'चित्र';
 	@override String get text => 'विचार';
 }
@@ -769,8 +773,12 @@ extension on TranslationsHi {
 			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
 			'feed.tabs.all' => 'सभी',
 			'feed.tabs.stories' => 'कहानियाँ',
+			'feed.tabs.posts' => 'पोस्ट',
+			'feed.tabs.videos' => 'वीडियो',
 			'feed.tabs.images' => 'चित्र',
 			'feed.tabs.text' => 'विचार',
+			'feed.tapToShowCaption' => 'कैप्शन देखने के लिए टैप करें',
+			'feed.noVideosAvailable' => 'कोई वीडियो उपलब्ध नहीं',
 			_ => null,
 		};
 	}
