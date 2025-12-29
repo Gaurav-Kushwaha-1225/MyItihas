@@ -63,6 +63,20 @@ import '../../features/stories/domain/usecases/get_story_by_id.dart' as _i494;
 import '../../features/stories/domain/usecases/toggle_favorite.dart' as _i53;
 import '../../features/stories/presentation/bloc/stories_bloc.dart' as _i790;
 import '../../services/chat_service.dart' as _i207;
+import '../../features/story_generator/data/datasources/datasource_module.dart'
+    as _i561;
+import '../../features/story_generator/data/datasources/mock_story_generator_datasource.dart'
+    as _i625;
+import '../../features/story_generator/data/repositories/story_generator_repository_impl.dart'
+    as _i720;
+import '../../features/story_generator/domain/repositories/story_generator_repository.dart'
+    as _i277;
+import '../../features/story_generator/domain/usecases/generate_story.dart'
+    as _i688;
+import '../../features/story_generator/domain/usecases/randomize_options.dart'
+    as _i445;
+import '../../features/story_generator/presentation/bloc/story_generator_bloc.dart'
+    as _i177;
 import '../../services/follow_service.dart' as _i545;
 import '../../services/profile_service.dart' as _i637;
 import '../../services/profile_storage_service.dart' as _i743;
@@ -83,6 +97,7 @@ extension GetItInjectableX on _i174.GetIt {
     final thirdPartyModule = _$ThirdPartyModule();
     final apiClientModule = _$ApiClientModule();
     final networkModule = _$NetworkModule();
+    final storyGeneratorDataSourceModule = _$StoryGeneratorDataSourceModule();
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => thirdPartyModule.prefs,
       preResolve: true,
@@ -98,6 +113,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i459.HiveService>(() => _i459.HiveService());
     gh.lazySingleton<_i746.StoryMockDataSource>(
       () => _i746.StoryMockDataSource(),
+    );
+    gh.lazySingleton<_i625.MockStoryGeneratorDataSource>(
+      () => storyGeneratorDataSourceModule.mockDataSource,
     );
     gh.lazySingleton<_i773.UserDataSource>(() => _i773.UserDataSourceImpl());
     gh.lazySingleton<_i932.NetworkInfo>(
@@ -162,6 +180,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i799.ChatDataSource>(
       () => _i799.ChatDataSourceImpl(gh<_i773.UserDataSource>()),
     );
+    gh.lazySingleton<_i277.StoryGeneratorRepository>(
+      () => _i720.StoryGeneratorRepositoryImpl(
+        gh<_i625.MockStoryGeneratorDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i640.SocialRepository>(
       () => _i5.SocialRepositoryImpl(
         dataSource: gh<_i1050.SocialDataSource>(),
@@ -173,6 +196,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i62.CommentBloc>(
       () => _i62.CommentBloc(socialRepository: gh<_i640.SocialRepository>()),
+    );
+    gh.lazySingleton<_i688.GenerateStory>(
+      () => _i688.GenerateStory(gh<_i277.StoryGeneratorRepository>()),
+    );
+    gh.lazySingleton<_i445.RandomizeOptions>(
+      () => _i445.RandomizeOptions(gh<_i277.StoryGeneratorRepository>()),
     );
     gh.lazySingleton<_i596.GetStories>(
       () => _i596.GetStories(gh<_i909.StoryRepository>()),
@@ -201,6 +230,12 @@ extension GetItInjectableX on _i174.GetIt {
         userRepository: gh<_i721.UserRepository>(),
       ),
     );
+    gh.factory<_i177.StoryGeneratorBloc>(
+      () => _i177.StoryGeneratorBloc(
+        generateStory: gh<_i688.GenerateStory>(),
+        randomizeOptions: gh<_i445.RandomizeOptions>(),
+      ),
+    );
     gh.factory<_i420.FeedBloc>(
       () => _i420.FeedBloc(
         storyRepository: gh<_i909.StoryRepository>(),
@@ -218,3 +253,6 @@ class _$ThirdPartyModule extends _i809.ThirdPartyModule {}
 class _$ApiClientModule extends _i557.ApiClientModule {}
 
 class _$NetworkModule extends _i932.NetworkModule {}
+
+class _$StoryGeneratorDataSourceModule
+    extends _i561.StoryGeneratorDataSourceModule {}

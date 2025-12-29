@@ -1,6 +1,9 @@
+// ignore_for_file: unused_element, unused_field
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:myitihas/core/di/injection_container.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/social/domain/entities/share.dart';
@@ -10,7 +13,7 @@ import 'package:myitihas/features/social/presentation/bloc/comment_bloc.dart';
 import 'package:myitihas/features/social/presentation/bloc/comment_event.dart';
 import 'package:myitihas/features/social/presentation/bloc/comment_state.dart';
 import 'package:myitihas/features/social/presentation/widgets/svg_avatar.dart';
-import 'package:myitihas/i18n/strings.g.dart';
+import 'package:myitihas/utils/constants.dart';
 
 class StoryDetailPage extends StatefulWidget {
   final Story story;
@@ -62,228 +65,479 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final t = Translations.of(context);
+    // final t = Translations.of(context);
     final theme = Theme.of(context);
-
+    final screenSize = MediaQuery.of(context).size;
+    bool isDark = theme.brightness == Brightness.dark;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.stories.storyDetails),
-        actions: [
-          if (widget.onFavorite != null)
-            IconButton(
-              icon: Icon(
-                widget.story.isFavorite
-                    ? Icons.favorite
-                    : Icons.favorite_border,
-                color: widget.story.isFavorite ? theme.colorScheme.error : null,
-              ),
-              onPressed: widget.onFavorite,
-            ),
-          IconButton(
-            icon: const Icon(Icons.share),
-            onPressed: () {
-              _showShareDialog(context);
-            },
-          ),
-        ],
-      ),
+      backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Title
-            Text(
-              widget.story.title,
-              style: theme.textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            SizedBox(height: 16.h),
-
-            Wrap(
-              spacing: 8.w,
-              runSpacing: 8.h,
-              children: [
-                Chip(
-                  label: Text(widget.story.scripture),
-                  backgroundColor: theme.primaryColor.withValues(alpha: 0.1),
-                ),
-                if (widget.story.attributes.storyType.isNotEmpty)
-                  Chip(
-                    label: Text(widget.story.attributes.storyType),
-                    avatar: const Icon(Icons.category, size: 16),
-                  ),
-                if (widget.story.attributes.theme.isNotEmpty)
-                  Chip(
-                    label: Text(widget.story.attributes.theme),
-                    avatar: const Icon(Icons.palette, size: 16),
-                  ),
-                if (widget.story.attributes.mainCharacterType.isNotEmpty)
-                  Chip(
-                    label: Text(widget.story.attributes.mainCharacterType),
-                    avatar: const Icon(Icons.person, size: 16),
-                  ),
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                Theme.of(context).primaryColor.withAlpha(5),
+                Theme.of(context).brightness == Brightness.dark
+                    ? Color(0xFF1E293B)
+                    : Color(0xFFF1F5F9),
               ],
+              transform: GradientRotation(3.14 / 1.5),
             ),
-
-            SizedBox(height: 16.h),
-
-            _StorySocialActionsRow(
-              isLiked: _isLiked,
-              likeCount: _likeCount,
-              commentCount: _commentCount,
-              shareCount: _shareCount,
-              onLike: _toggleLike,
-              onComment: () => _showCommentsBottomSheet(context),
-              onShare: () => _showShareDialog(context),
-            ),
-
-            SizedBox(height: 24.h),
-
-            // Story content
-            _buildSection(
-              context,
-              t.stories.title,
-              widget.story.story,
-              Icons.book,
-            ),
-
-            // Quotes section
-            if (widget.story.quotes.isNotEmpty) ...[
-              SizedBox(height: 24.h),
-              _buildSection(
-                context,
-                'Quotes',
-                widget.story.quotes,
-                Icons.format_quote,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: screenSize.height * 0.115,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: 0.7),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_rounded),
+                      onPressed: () {
+                        context.pop();
+                      },
+                    ),
+                    Spacer(),
+                    if (widget.onFavorite != null)
+                      IconButton(
+                        icon: Icon(
+                          widget.story.isFavorite
+                              ? Icons.favorite
+                              : Icons.favorite_border,
+                          color: widget.story.isFavorite
+                              ? theme.colorScheme.error
+                              : null,
+                        ),
+                        onPressed: widget.onFavorite,
+                      ),
+                    IconButton(
+                      icon: const Icon(Icons.share),
+                      onPressed: () {
+                        _showShareDialog(context);
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ],
+              Stack(
+                children: [
+                  Container(
+                    width: screenSize.width,
+                    height: screenSize.height * 0.4,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.15),
+                          blurRadius: 100,
+                          spreadRadius: 0,
+                          offset: const Offset(0, -6),
+                        ),
+                      ],
+                    ),
+                    child: widget.story.imageUrl != null
+                        ? Image.network(
+                            widget.story.imageUrl!,
+                            fit: BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).cardColor,
+                                ),
+                              );
+                            },
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.asset("assets/logo.png"),
+                          )
+                        : Image.asset(
+                            ("assets/logo.png"),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Center(
+                                  child: Icon(
+                                    Icons.error_outline_rounded,
+                                    color: Colors.red.shade200,
+                                  ),
+                                ),
+                          ),
+                  ),
+                  Container(
+                    width: screenSize.width,
+                    height: screenSize.height * 0.4,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [Colors.black, Colors.transparent],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    child: Container(
+                      width: screenSize.width,
+                      height: screenSize.height * 0.3,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 5,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              if (widget.story.attributes.storyType.isNotEmpty)
+                                Chip(
+                                  padding: EdgeInsets.zero,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  label: Text(
+                                    widget.story.attributes.storyType,
+                                  ),
+                                  labelStyle: Theme.of(
+                                    context,
+                                  ).textTheme.labelSmall,
+                                  visualDensity: VisualDensity.compact,
+                                  backgroundColor: Colors.transparent,
+                                  side: BorderSide(width: 0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      20,
+                                    ),
+                                  ),
+                                ),
+                              SizedBox(width: screenSize.width * 0.02),
+                              if (widget.story.attributes.theme.isNotEmpty)
+                                Chip(
+                                  padding: EdgeInsets.zero,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  label: Text(widget.story.attributes.theme),
+                                  labelStyle: Theme.of(
+                                    context,
+                                  ).textTheme.labelSmall,
+                                  visualDensity: VisualDensity.compact,
+                                  backgroundColor: Colors.transparent,
+                                  side: BorderSide(width: 0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      20,
+                                    ),
+                                  ),
+                                ),
 
-            // Trivia section
-            if (widget.story.trivia.isNotEmpty) ...[
-              SizedBox(height: 24.h),
-              _buildSection(
-                context,
-                'Trivia',
-                widget.story.trivia,
-                Icons.lightbulb,
+                              SizedBox(width: screenSize.width * 0.02),
+                              if (widget
+                                  .story
+                                  .attributes
+                                  .mainCharacterType
+                                  .isNotEmpty)
+                                Flexible(
+                                  fit: FlexFit.loose,
+                                  child: Chip(
+                                    padding: EdgeInsets.zero,
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    label: Text(
+                                      widget.story.attributes.mainCharacterType,
+                                    ),
+                                    labelStyle: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall!
+                                        .copyWith(
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                    visualDensity: VisualDensity.compact,
+                                    backgroundColor: Colors.transparent,
+                                    side: BorderSide(width: 0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadiusGeometry.circular(20),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                          Text(
+                            widget.story.title,
+                            maxLines: 2,
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(height: screenSize.height * 0.005),
+                          Text(
+                            widget.story.scripture,
+                            maxLines: 1,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                              color: isDark
+                                  ? DarkColors.textSecondary
+                                  : LightColors.textSecondary,
+                            ),
+                          ),
+                          SizedBox(height: screenSize.height * 0.005),
+                          Row(
+                            children: [
+                              Text(
+                                widget.story.authorUser != null
+                                    ? widget.story.authorUser!.displayName
+                                    : "By AI StoryTeller",
+                                maxLines: 1,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  overflow: TextOverflow.ellipsis,
+                                  color: isDark
+                                      ? DarkColors.textPrimary
+                                      : LightColors.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                "  •  ",
+                                maxLines: 1,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  overflow: TextOverflow.ellipsis,
+                                  color: isDark
+                                      ? DarkColors.textPrimary
+                                      : LightColors.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                "15 min read",
+                                maxLines: 1,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  overflow: TextOverflow.ellipsis,
+                                  color: isDark
+                                      ? DarkColors.textPrimary
+                                      : LightColors.textPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
+              SizedBox(height: screenSize.height * 0.01),
 
-            // Activity section
-            if (widget.story.activity.isNotEmpty) ...[
-              SizedBox(height: 24.h),
-              _buildSection(
-                context,
-                'Activity',
-                widget.story.activity,
-                Icons.sports_esports,
+              // Padding(
+              //   padding: const EdgeInsets.symmetric(horizontal: 8),
+              //   child: _StorySocialActionsRow(
+              //     isLiked: _isLiked,
+              //     likeCount: _likeCount,
+              //     commentCount: _commentCount,
+              //     shareCount: _shareCount,
+              //     onLike: _toggleLike,
+              //     onComment: () => _showCommentsBottomSheet(context),
+              //     onShare: () => _showShareDialog(context),
+              //   ),
+              // ),
+              SizedBox(height: screenSize.height * 0.01),
+
+              // Story content
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: widget.story.story.isNotEmpty
+                            ? widget.story.story[0]
+                            : '',
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          fontSize:
+                              theme.textTheme.bodyLarge!.fontSize! *
+                              2, // bigger
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.primary,
+                        ),
+                      ),
+                      TextSpan(
+                        text: widget.story.story.length > 1
+                            ? widget.story.story.substring(1)
+                            : '',
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                ),
               ),
+
+              // Quotes section
+              if (widget.story.quotes.isNotEmpty)
+              SizedBox(height: screenSize.height * 0.02),
+              if (widget.story.quotes.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Quote\n",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize:
+                                theme.textTheme.bodyLarge!.fontSize! *
+                                2, // bigger
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.story.quotes,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              // Trivia section
+              if (widget.story.trivia.isNotEmpty)
+              SizedBox(height: screenSize.height * 0.02),
+              if (widget.story.trivia.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Trivia\n",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize:
+                                theme.textTheme.bodyLarge!.fontSize! *
+                                2, // bigger
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.story.trivia,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              // Lesson section
+              if (widget.story.lesson.isNotEmpty)
+              SizedBox(height: screenSize.height * 0.02),
+              if (widget.story.lesson.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Lesson\n",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize:
+                                theme.textTheme.bodyLarge!.fontSize! *
+                                2, // bigger
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.story.lesson,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              // Activity section
+              if (widget.story.activity.isNotEmpty)
+              SizedBox(height: screenSize.height * 0.02),
+              if (widget.story.activity.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Activity\n",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize:
+                                theme.textTheme.bodyLarge!.fontSize! *
+                                2, // bigger
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.story.activity,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              SizedBox(height: screenSize.height * 0.02),
+              // Metadata (author, published date, etc.)
+              if (widget.story.author != null ||
+                  widget.story.publishedAt != null) ...[
+                Divider(),
+                SizedBox(height: screenSize.height * 0.01),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (widget.story.author != null)
+                        _buildMetadataRow(
+                          context,
+                          Icons.person,
+                          'Author',
+                          widget.story.author!,
+                        ),
+                      if (widget.story.publishedAt != null)
+                        _buildMetadataRow(
+                          context,
+                          Icons.calendar_today,
+                          'Published',
+                          '${widget.story.publishedAt!.day}/${widget.story.publishedAt!.month}/${widget.story.publishedAt!.year}',
+                        ),
+                      _buildMetadataRow(
+                        context,
+                        Icons.visibility,
+                        'Views',
+                        '${widget.story.views}',
+                      ),
+                      _buildMetadataRow(
+                        context,
+                        Icons.thumb_up,
+                        'Likes',
+                        '$_likeCount',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+              SizedBox(height: screenSize.height * 0.03),
             ],
-
-            // Lesson section
-            if (widget.story.lesson.isNotEmpty) ...[
-              SizedBox(height: 24.h),
-              _buildSection(
-                context,
-                'Lesson',
-                widget.story.lesson,
-                Icons.school,
-              ),
-            ],
-
-            SizedBox(height: 32.h),
-
-            // Metadata (author, published date, etc.)
-            if (widget.story.author != null ||
-                widget.story.publishedAt != null) ...[
-              Divider(),
-              SizedBox(height: 16.h),
-              _buildMetadata(context),
-            ],
-
-            SizedBox(height: 32.h),
-          ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildSection(
-    BuildContext context,
-    String title,
-    String content,
-    IconData icon,
-  ) {
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, color: theme.primaryColor),
-            SizedBox(width: 8.w),
-            Text(
-              title,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 12.h),
-        Container(
-          padding: EdgeInsets.all(16.w),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest.withValues(
-              alpha: 0.5,
-            ),
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Text(content, style: theme.textTheme.bodyLarge),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMetadata(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Story Details',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        SizedBox(height: 12.h),
-        if (widget.story.author != null)
-          _buildMetadataRow(
-            context,
-            Icons.person,
-            'Author',
-            widget.story.author!,
-          ),
-        if (widget.story.publishedAt != null)
-          _buildMetadataRow(
-            context,
-            Icons.calendar_today,
-            'Published',
-            '${widget.story.publishedAt!.day}/${widget.story.publishedAt!.month}/${widget.story.publishedAt!.year}',
-          ),
-        _buildMetadataRow(
-          context,
-          Icons.visibility,
-          'Views',
-          '${widget.story.views}',
-        ),
-        _buildMetadataRow(context, Icons.thumb_up, 'Likes', '$_likeCount'),
-      ],
     );
   }
 
@@ -439,6 +693,7 @@ class _StorySocialActionsRow extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _ActionChipButton(
           icon: isLiked ? Icons.favorite : Icons.favorite_border,

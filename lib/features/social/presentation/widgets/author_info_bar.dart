@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gradient_borders/gradient_borders.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
 import 'package:myitihas/features/social/domain/entities/user.dart';
 import 'package:myitihas/features/social/presentation/widgets/svg_avatar.dart';
 import 'package:myitihas/i18n/strings.g.dart';
+import 'package:myitihas/utils/constants.dart';
 
 class AuthorInfoBar extends StatelessWidget {
   final User author;
@@ -141,7 +143,7 @@ class AuthorInfoBar extends StatelessWidget {
   }
 }
 
-class _FollowButton extends StatelessWidget {
+class _FollowButton extends StatefulWidget {
   final bool isFollowing;
   final bool isLoading;
   final VoidCallback? onTap;
@@ -159,64 +161,99 @@ class _FollowButton extends StatelessWidget {
   });
 
   @override
+  State<_FollowButton> createState() => _FollowButtonState();
+}
+
+class _FollowButtonState extends State<_FollowButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
+  }
+
+  @override
+  void didUpdateWidget(_FollowButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isFollowing != oldWidget.isFollowing) {
+      _controller.forward().then((_) => _controller.reverse());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Semantics(
       button: true,
-      label: isFollowing ? t.profile.unfollow : t.profile.follow,
+      label: widget.isFollowing ? t.profile.unfollow : t.profile.follow,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: isLoading
+          onTap: widget.isLoading
               ? null
               : () {
                   HapticFeedback.lightImpact();
-                  onTap?.call();
+                  widget.onTap?.call();
                 },
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: EdgeInsets.symmetric(
-              horizontal: compact ? 10 : 14,
-              vertical: compact ? 4 : 6,
+              horizontal: widget.compact ? 10 : 14,
+              vertical: widget.compact ? 6 : 8,
             ),
             decoration: BoxDecoration(
-              gradient: isFollowing
-                  ? null
-                  : gradients?.primaryButtonGradient ??
-                        LinearGradient(
-                          colors: [colorScheme.primary, colorScheme.secondary],
-                        ),
-              color: isFollowing ? colorScheme.surfaceContainerHighest : null,
-              borderRadius: BorderRadius.circular(16),
-              border: isFollowing
-                  ? Border.all(color: colorScheme.outline)
-                  : null,
+              // gradient: !widget.isFollowing
+              //     ? null
+              //     : widget.gradients?.primaryButtonGradient ??
+              //           LinearGradient(
+              //             colors: [
+              //               widget.colorScheme.primary,
+              //               widget.colorScheme.secondary,
+              //             ],
+              //           ),
+              // color: !widget.isFollowing ? Colors.transparent : null,
+              borderRadius: BorderRadius.circular(10),
+              border: widget.isFollowing
+                  ? GradientBoxBorder(
+                    width: 1.5,
+                      gradient:
+                          widget.gradients?.primaryButtonGradient ??
+                          LinearGradient(
+                            colors: [
+                              widget.colorScheme.primary,
+                              widget.colorScheme.secondary,
+                            ],
+                          ),
+                    )
+                  : Border.all(color: DarkColors.textPrimary, width: 1.5),
             ),
-            child: isLoading
+            child: widget.isLoading
                 ? SizedBox(
-                    width: compact ? 12 : 16,
-                    height: compact ? 12 : 16,
+                    width: widget.compact ? 12 : 16,
+                    height: widget.compact ? 12 : 16,
                     child: CircularProgressIndicator.adaptive(
                       strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation(
-                        isFollowing
-                            ? colorScheme.onSurface
-                            : colorScheme.onPrimary,
+                        widget.colorScheme.onSurface,
                       ),
                     ),
                   )
                 : Text(
-                    isFollowing ? t.profile.following : t.profile.follow,
+                    widget.isFollowing
+                        ? t.profile.following
+                        : t.profile.follow,
                     style:
-                        (compact
+                        (widget.compact
                                 ? theme.textTheme.labelSmall
                                 : theme.textTheme.labelMedium)
                             ?.copyWith(
-                              color: isFollowing
-                                  ? colorScheme.onSurface
-                                  : colorScheme.onPrimary,
+                              color: widget.colorScheme.onSurface,
                               fontWeight: FontWeight.w600,
                             ),
                   ),
@@ -224,5 +261,11 @@ class _FollowButton extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

@@ -166,17 +166,48 @@ class _TranslationsStoryGeneratorTa implements TranslationsStoryGeneratorEn {
 	// Translations
 	@override String get title => 'கதை உருவாக்கி';
 	@override String get subtitle => 'உங்கள் சொந்த புராண கதையை உருவாக்குங்கள்';
+	@override String get quickStart => 'விரைவு தொடக்கம்';
+	@override String get interactive => 'ஊடாடும்';
+	@override String get rawPrompt => 'மூல வரியுரு';
+	@override String get yourStoryPrompt => 'உங்கள் கதை வரியுரு';
+	@override String get writeYourPrompt => 'உங்கள் வரியுருவை எழுதுங்கள்';
+	@override String get selectScripture => 'நூலைத் தேர்ந்தெடுக்கவும்';
+	@override String get selectStoryType => 'கதை வகையைத் தேர்ந்தெடுக்கவும்';
 	@override String get selectCharacter => 'பாத்திரத்தைத் தேர்ந்தெடுக்கவும்';
 	@override String get selectTheme => 'தீம் தேர்ந்தெடுக்கவும்';
+	@override String get selectSetting => 'அமைப்பைத் தேர்ந்தெடுக்கவும்';
 	@override String get selectLanguage => 'மொழி தேர்ந்தெடுக்கவும்';
 	@override String get selectLength => 'கதை நீளம்';
+	@override String get moreOptions => 'மேலும் விருப்பங்கள்';
+	@override String get random => 'சீரற்ற';
 	@override String get generate => 'கதை உருவாக்கு';
 	@override String get generating => 'உங்கள் கதை உருவாக்கப்படுகிறது...';
+	@override String get creatingYourStory => 'உங்கள் கதை உருவாக்கப்படுகிறது';
+	@override String get consultingScriptures => 'பழங்கால நூல்களை ஆலோசிக்கிறது...';
+	@override String get weavingTale => 'உங்கள் கதையை நெய்கிறது...';
+	@override String get addingWisdom => 'தெய்வீக ஞானம் சேர்க்கிறது...';
+	@override String get polishingNarrative => 'கதையை மெருகேற்றுகிறது...';
+	@override String get almostThere => 'கிட்டத்தட்ட முடிந்தது...';
 	@override String get generatedStory => 'உங்கள் உருவாக்கிய கதை';
+	@override String get aiGenerated => 'AI உருவாக்கியது';
 	@override String get regenerate => 'மீண்டும் உருவாக்கு';
 	@override String get saveStory => 'கதையைச் சேமி';
 	@override String get shareStory => 'கதையைப் பகிர்';
+	@override String get newStory => 'புதிய கதை';
+	@override String get saved => 'சேமிக்கப்பட்டது';
+	@override String get storySaved => 'கதை உங்கள் நூலகத்தில் சேமிக்கப்பட்டது';
+	@override String get story => 'கதை';
+	@override String get lesson => 'பாடம்';
+	@override String get didYouKnow => 'உங்களுக்குத் தெரியுமா?';
+	@override String get activity => 'செயல்பாடு';
+	@override String get optionalRefine => 'விருப்பம்: விருப்பங்களுடன் செம்மைப்படுத்து';
+	@override String get applyOptions => 'விருப்பங்களை பயன்படுத்து';
+	@override String get language => 'மொழி';
+	@override String get storyFormat => 'கதை வடிவம்';
 	@override late final _TranslationsStoryGeneratorStoryLengthTa storyLength = _TranslationsStoryGeneratorStoryLengthTa._(_root);
+	@override late final _TranslationsStoryGeneratorFormatTa format = _TranslationsStoryGeneratorFormatTa._(_root);
+	@override late final _TranslationsStoryGeneratorHintsTa hints = _TranslationsStoryGeneratorHintsTa._(_root);
+	@override late final _TranslationsStoryGeneratorErrorsTa errors = _TranslationsStoryGeneratorErrorsTa._(_root);
 }
 
 // Path: chat
@@ -423,6 +454,45 @@ class _TranslationsStoryGeneratorStoryLengthTa implements TranslationsStoryGener
 	@override String get short => 'குறுகிய';
 	@override String get medium => 'நடுத்தர';
 	@override String get long => 'நீண்ட';
+	@override String get epic => 'இதிகாசம்';
+}
+
+// Path: storyGenerator.format
+class _TranslationsStoryGeneratorFormatTa implements TranslationsStoryGeneratorFormatEn {
+	_TranslationsStoryGeneratorFormatTa._(this._root);
+
+	final TranslationsTa _root; // ignore: unused_field
+
+	// Translations
+	@override String get narrative => 'கதை சொல்லல்';
+	@override String get dialogue => 'உரையாடல் அடிப்படை';
+	@override String get poetic => 'கவிதை';
+	@override String get scriptural => 'வேத நூல்';
+}
+
+// Path: storyGenerator.hints
+class _TranslationsStoryGeneratorHintsTa implements TranslationsStoryGeneratorHintsEn {
+	_TranslationsStoryGeneratorHintsTa._(this._root);
+
+	final TranslationsTa _root; // ignore: unused_field
+
+	// Translations
+	@override String get krishnaTeaching => 'கிருஷ்ணர் அர்ஜுனனுக்கு கற்பிக்கும் கதை...';
+	@override String get warriorRedemption => 'விடுதலை தேடும் வீரனின் இதிகாசம்...';
+	@override String get sageWisdom => 'முனிவர்களின் ஞானக் கதை...';
+	@override String get devotedSeeker => 'பக்தனின் பயணம்...';
+	@override String get divineIntervention => 'தெய்வீக தலையீட்டின் புராணம்...';
+}
+
+// Path: storyGenerator.errors
+class _TranslationsStoryGeneratorErrorsTa implements TranslationsStoryGeneratorErrorsEn {
+	_TranslationsStoryGeneratorErrorsTa._(this._root);
+
+	final TranslationsTa _root; // ignore: unused_field
+
+	// Translations
+	@override String get incompletePrompt => 'அனைத்து தேவையான விருப்பங்களையும் முடிக்கவும்';
+	@override String get generationFailed => 'கதை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.';
 }
 
 // Path: feed.tabs
@@ -507,19 +577,59 @@ extension on TranslationsTa {
 			'stories.failed_to_load' => 'Failed to load story',
 			'storyGenerator.title' => 'கதை உருவாக்கி',
 			'storyGenerator.subtitle' => 'உங்கள் சொந்த புராண கதையை உருவாக்குங்கள்',
+			'storyGenerator.quickStart' => 'விரைவு தொடக்கம்',
+			'storyGenerator.interactive' => 'ஊடாடும்',
+			'storyGenerator.rawPrompt' => 'மூல வரியுரு',
+			'storyGenerator.yourStoryPrompt' => 'உங்கள் கதை வரியுரு',
+			'storyGenerator.writeYourPrompt' => 'உங்கள் வரியுருவை எழுதுங்கள்',
+			'storyGenerator.selectScripture' => 'நூலைத் தேர்ந்தெடுக்கவும்',
+			'storyGenerator.selectStoryType' => 'கதை வகையைத் தேர்ந்தெடுக்கவும்',
 			'storyGenerator.selectCharacter' => 'பாத்திரத்தைத் தேர்ந்தெடுக்கவும்',
 			'storyGenerator.selectTheme' => 'தீம் தேர்ந்தெடுக்கவும்',
+			'storyGenerator.selectSetting' => 'அமைப்பைத் தேர்ந்தெடுக்கவும்',
 			'storyGenerator.selectLanguage' => 'மொழி தேர்ந்தெடுக்கவும்',
 			'storyGenerator.selectLength' => 'கதை நீளம்',
+			'storyGenerator.moreOptions' => 'மேலும் விருப்பங்கள்',
+			'storyGenerator.random' => 'சீரற்ற',
 			'storyGenerator.generate' => 'கதை உருவாக்கு',
 			'storyGenerator.generating' => 'உங்கள் கதை உருவாக்கப்படுகிறது...',
+			'storyGenerator.creatingYourStory' => 'உங்கள் கதை உருவாக்கப்படுகிறது',
+			'storyGenerator.consultingScriptures' => 'பழங்கால நூல்களை ஆலோசிக்கிறது...',
+			'storyGenerator.weavingTale' => 'உங்கள் கதையை நெய்கிறது...',
+			'storyGenerator.addingWisdom' => 'தெய்வீக ஞானம் சேர்க்கிறது...',
+			'storyGenerator.polishingNarrative' => 'கதையை மெருகேற்றுகிறது...',
+			'storyGenerator.almostThere' => 'கிட்டத்தட்ட முடிந்தது...',
 			'storyGenerator.generatedStory' => 'உங்கள் உருவாக்கிய கதை',
+			'storyGenerator.aiGenerated' => 'AI உருவாக்கியது',
 			'storyGenerator.regenerate' => 'மீண்டும் உருவாக்கு',
 			'storyGenerator.saveStory' => 'கதையைச் சேமி',
 			'storyGenerator.shareStory' => 'கதையைப் பகிர்',
+			'storyGenerator.newStory' => 'புதிய கதை',
+			'storyGenerator.saved' => 'சேமிக்கப்பட்டது',
+			'storyGenerator.storySaved' => 'கதை உங்கள் நூலகத்தில் சேமிக்கப்பட்டது',
+			'storyGenerator.story' => 'கதை',
+			'storyGenerator.lesson' => 'பாடம்',
+			'storyGenerator.didYouKnow' => 'உங்களுக்குத் தெரியுமா?',
+			'storyGenerator.activity' => 'செயல்பாடு',
+			'storyGenerator.optionalRefine' => 'விருப்பம்: விருப்பங்களுடன் செம்மைப்படுத்து',
+			'storyGenerator.applyOptions' => 'விருப்பங்களை பயன்படுத்து',
+			'storyGenerator.language' => 'மொழி',
+			'storyGenerator.storyFormat' => 'கதை வடிவம்',
 			'storyGenerator.storyLength.short' => 'குறுகிய',
 			'storyGenerator.storyLength.medium' => 'நடுத்தர',
 			'storyGenerator.storyLength.long' => 'நீண்ட',
+			'storyGenerator.storyLength.epic' => 'இதிகாசம்',
+			'storyGenerator.format.narrative' => 'கதை சொல்லல்',
+			'storyGenerator.format.dialogue' => 'உரையாடல் அடிப்படை',
+			'storyGenerator.format.poetic' => 'கவிதை',
+			'storyGenerator.format.scriptural' => 'வேத நூல்',
+			'storyGenerator.hints.krishnaTeaching' => 'கிருஷ்ணர் அர்ஜுனனுக்கு கற்பிக்கும் கதை...',
+			'storyGenerator.hints.warriorRedemption' => 'விடுதலை தேடும் வீரனின் இதிகாசம்...',
+			'storyGenerator.hints.sageWisdom' => 'முனிவர்களின் ஞானக் கதை...',
+			'storyGenerator.hints.devotedSeeker' => 'பக்தனின் பயணம்...',
+			'storyGenerator.hints.divineIntervention' => 'தெய்வீக தலையீட்டின் புராணம்...',
+			'storyGenerator.errors.incompletePrompt' => 'அனைத்து தேவையான விருப்பங்களையும் முடிக்கவும்',
+			'storyGenerator.errors.generationFailed' => 'கதை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
 			'chat.title' => 'அரட்டைஇதிஹாஸ்',
 			'chat.subtitle' => 'புராணங்கள் பற்றி AI உடன் அரட்டையடிக்கவும்',
 			'chat.friendMode' => 'நண்பர் பயன்முறை',

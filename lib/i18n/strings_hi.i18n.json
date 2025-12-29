@@ -70,20 +70,66 @@
     "storyGenerator": {
         "title": "कहानी जनरेटर",
         "subtitle": "अपनी पौराणिक कहानी बनाएं",
+        "quickStart": "त्वरित प्रारंभ",
+        "interactive": "इंटरैक्टिव",
+        "rawPrompt": "कच्चा प्रॉम्प्ट",
+        "yourStoryPrompt": "आपका कहानी प्रॉम्प्ट",
+        "writeYourPrompt": "अपना प्रॉम्प्ट लिखें",
+        "selectScripture": "शास्त्र चुनें",
+        "selectStoryType": "कहानी प्रकार चुनें",
         "selectCharacter": "पात्र चुनें",
         "selectTheme": "विषय चुनें",
+        "selectSetting": "स्थान चुनें",
         "selectLanguage": "भाषा चुनें",
         "selectLength": "कहानी की लंबाई",
+        "moreOptions": "अधिक विकल्प",
+        "random": "यादृच्छिक",
         "generate": "कहानी बनाएं",
         "generating": "आपकी कहानी बन रही है...",
+        "creatingYourStory": "आपकी कहानी बनाई जा रही है",
+        "consultingScriptures": "प्राचीन शास्त्रों से परामर्श...",
+        "weavingTale": "आपकी कथा बुनी जा रही है...",
+        "addingWisdom": "दिव्य ज्ञान जोड़ रहे हैं...",
+        "polishingNarrative": "कथा को निखारा जा रहा है...",
+        "almostThere": "लगभग हो गया...",
         "generatedStory": "आपकी बनाई कहानी",
+        "aiGenerated": "AI निर्मित",
         "regenerate": "फिर से बनाएं",
         "saveStory": "कहानी सहेजें",
         "shareStory": "कहानी साझा करें",
+        "newStory": "नई कहानी",
+        "saved": "सहेजा गया",
+        "storySaved": "कहानी आपकी लाइब्रेरी में सहेजी गई",
+        "story": "कहानी",
+        "lesson": "सीख",
+        "didYouKnow": "क्या आप जानते हैं?",
+        "activity": "गतिविधि",
+        "optionalRefine": "वैकल्पिक: विकल्पों से परिष्कृत करें",
+        "applyOptions": "विकल्प लागू करें",
+        "language": "भाषा",
+        "storyFormat": "कहानी प्रारूप",
         "storyLength": {
             "short": "छोटी",
             "medium": "मध्यम",
-            "long": "लंबी"
+            "long": "लंबी",
+            "epic": "महाकाव्य"
+        },
+        "format": {
+            "narrative": "कथात्मक",
+            "dialogue": "संवाद-आधारित",
+            "poetic": "काव्यात्मक",
+            "scriptural": "शास्त्रीय"
+        },
+        "hints": {
+            "krishnaTeaching": "कृष्ण द्वारा अर्जुन को शिक्षा देने की कहानी...",
+            "warriorRedemption": "मुक्ति की खोज में एक योद्धा की महाकाव्य...",
+            "sageWisdom": "ऋषियों की बुद्धि की कहानी...",
+            "devotedSeeker": "एक भक्त साधक की यात्रा...",
+            "divineIntervention": "दिव्य हस्तक्षेप की किंवदंती..."
+        },
+        "errors": {
+            "incompletePrompt": "कृपया सभी आवश्यक विकल्प पूरे करें",
+            "generationFailed": "कहानी बनाने में विफल। कृपया पुनः प्रयास करें।"
         }
     },
     "chat": {

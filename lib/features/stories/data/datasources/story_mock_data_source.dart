@@ -59,7 +59,9 @@ class StoryMockDataSource {
           activity: json['activity'] ?? '',
           lesson: json['lesson'] ?? '',
           attributes: attributes,
-          imageUrl: _storyImageUrls[_random.nextInt(_storyImageUrls.length)],
+          imageUrl:
+              json['image'] ??
+              _storyImageUrls[_random.nextInt(_storyImageUrls.length)],
           author: null,
           publishedAt: publishedAt,
           likes: likes,

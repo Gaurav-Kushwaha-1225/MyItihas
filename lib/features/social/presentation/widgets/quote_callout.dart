@@ -21,7 +21,6 @@ class QuoteCallout extends StatelessWidget {
   void _showFullQuote(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final gradients = theme.extension<GradientExtension>();
 
     showModalBottomSheet(
       context: context,
@@ -33,8 +32,21 @@ class QuoteCallout extends StatelessWidget {
             maxHeight: MediaQuery.of(context).size.height * 0.7,
           ),
           decoration: BoxDecoration(
-            color: colorScheme.surface,
+            color: Theme.of(context).brightness == Brightness.dark
+                ? Color(0xFF1E293B)
+                : Color(0xFFF1F5F9),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                Theme.of(context).primaryColor,
+                Theme.of(context).brightness == Brightness.dark
+                    ? Color(0xFF1E293B)
+                    : Color(0xFFF1F5F9),
+              ],
+              transform: GradientRotation(3.14 / 1.5),
+            ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -45,7 +57,17 @@ class QuoteCallout extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Theme.of(context).primaryColor.withAlpha(5),
+                      Theme.of(context).brightness == Brightness.dark
+                          ? Color(0xFF1E293B)
+                          : Color(0xFFF1F5F9),
+                    ],
+                    transform: GradientRotation(3.14 / 1.5),
+                  ),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -53,11 +75,10 @@ class QuoteCallout extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20,
-                  vertical: 8,
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.format_quote, color: colorScheme.primary),
+                    Icon(Icons.format_quote_rounded, color: colorScheme.primary),
                     const SizedBox(width: 8),
                     Text(
                       t.feed.quote,
@@ -83,7 +104,7 @@ class QuoteCallout extends StatelessWidget {
                     children: [
                       // Quote with decorative marks
                       Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
                           color: colorScheme.surfaceContainerHighest.withValues(
                             alpha: 0.5,
@@ -91,7 +112,7 @@ class QuoteCallout extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                           border: Border(
                             left: BorderSide(
-                              color: colorScheme.primary,
+                              color: colorScheme.primary.withValues(alpha: 0.5),
                               width: 4,
                             ),
                           ),
@@ -108,10 +129,10 @@ class QuoteCallout extends StatelessWidget {
                                     fontSize: 40,
                                     fontWeight: FontWeight.bold,
                                     height: 0.8,
-                                    color: colorScheme.primary,
+                                    color: colorScheme.primary.withValues(alpha: 0.5),
                                   ),
                                 ),
-                                const SizedBox(width: 12),
+                                const SizedBox(width: 5),
                                 Expanded(
                                   child: Text(
                                     quote,
@@ -126,7 +147,7 @@ class QuoteCallout extends StatelessWidget {
                             ),
                             if (attribution != null &&
                                 attribution!.isNotEmpty) ...[
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 10),
                               Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
@@ -203,10 +224,7 @@ class QuoteCallout extends StatelessWidget {
                         label: Text(t.common.share),
                         style: FilledButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          backgroundColor:
-                              gradients?.primaryButtonGradient != null
-                              ? null
-                              : colorScheme.primary,
+                          backgroundColor: colorScheme.primary,
                         ),
                       ),
                     ),
@@ -274,7 +292,7 @@ class QuoteCallout extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: 3),
                   Expanded(
                     child: Text(
                       quote,

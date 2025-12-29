@@ -84,9 +84,21 @@ class _SocialFeedViewState extends State<_SocialFeedView>
     final colorScheme = theme.colorScheme;
     final t = Translations.of(context);
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          colors: [
+            Theme.of(context).primaryColor.withAlpha(5),
+            Theme.of(context).brightness == Brightness.dark
+                ? Color(0xFF1E293B)
+                : Color(0xFFF1F5F9),
+          ],
+          transform: GradientRotation(3.14 / 1.5),
+        ),
+      ),
+      child: Stack(
         children: [
           // Main content
           BlocConsumer<FeedBloc, FeedState>(
@@ -192,17 +204,35 @@ class _SocialFeedViewState extends State<_SocialFeedView>
   }
 
   Widget _buildLoadingState(ColorScheme colorScheme) {
+    final width = MediaQuery.of(context).size.width;
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(color: colorScheme.primary),
-          const SizedBox(height: 16),
-          Text(
-            Translations.of(context).feed.loading,
-            style: const TextStyle(color: Colors.white70),
+      child: Container(
+        width: width,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [
+              Theme.of(context).primaryColor.withAlpha(5),
+              Theme.of(context).brightness == Brightness.dark
+                  ? Color(0xFF1E293B)
+                  : Color(0xFFF1F5F9),
+            ],
+            transform: GradientRotation(3.14 / 1.5),
           ),
-        ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(color: colorScheme.primary),
+            const SizedBox(height: 16),
+            Text(
+              Translations.of(context).feed.loading,
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -286,7 +316,7 @@ class _SocialFeedViewState extends State<_SocialFeedView>
 
           final feedItem = feedItems[index];
           final isVisible = index == _currentPage;
-
+          
           return FeedItemCard(
             feedItem: feedItem,
             isVisible: isVisible,

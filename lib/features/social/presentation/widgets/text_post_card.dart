@@ -422,7 +422,7 @@ class _TextPostCardState extends State<TextPostCard>
                 child: SafeArea(
                   top: false,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 16),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 8, 8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
@@ -440,7 +440,7 @@ class _TextPostCardState extends State<TextPostCard>
                               darkOverlay: true,
                             ),
                           ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: 5),
 
                         // Tags
                         if (post.tags.isNotEmpty)
@@ -485,7 +485,7 @@ class _TextPostCardState extends State<TextPostCard>
               // Vertical engagement bar
               Positioned(
                 right: 12,
-                bottom: 48,
+                bottom: 8,
                 child: SafeArea(
                   top: false,
                   child: FadeTransition(
