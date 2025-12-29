@@ -12,9 +12,12 @@ import 'package:myitihas/pages/auth/reset_password_page.dart';
 
 import 'package:myitihas/pages/Chat/Widget/chat_detail_page.dart';
 import 'package:myitihas/pages/Chat/Widget/group_profile_page.dart';
+import 'package:myitihas/pages/Chat/Widget/edit_group_page.dart';
+import 'package:myitihas/pages/Chat/Widget/add_group_members_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_chat_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_contact_page.dart';
 import 'package:myitihas/pages/Chat/Widget/new_group_page.dart';
+import 'package:myitihas/pages/Chat/Widget/create_group_page.dart';
 import 'package:myitihas/pages/Chat/Widget/profile_detail_page.dart';
 
 import 'package:myitihas/pages/stories_page.dart';
@@ -130,6 +133,19 @@ class NewGroupRoute extends GoRouteData with $NewGroupRoute {
   }
 }
 
+/// Create group - takes selected users
+@TypedGoRoute<CreateGroupRoute>(path: '/create-group')
+class CreateGroupRoute extends GoRouteData with $CreateGroupRoute {
+  const CreateGroupRoute({required this.$extra});
+
+  final List<Map<String, dynamic>> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return CreateGroupPage(selectedUsers: $extra);
+  }
+}
+
 /// New contact
 @TypedGoRoute<NewContactRoute>(path: '/new-contact')
 class NewContactRoute extends GoRouteData with $NewContactRoute {
@@ -151,11 +167,14 @@ class ChatDetailRoute extends GoRouteData with $ChatDetailRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ChatDetailPage(
+      conversationId: $extra['conversationId'], // Now nullable
+      userId: $extra['userId'] ?? '',
       name: $extra['name'] ?? "User",
+      avatarUrl: $extra['avatarUrl'],
       avatarColor: $extra['color'] != null
           // ignore: deprecated_member_use
           ? "0xFF${($extra['color'] as Color).value.toRadixString(16).substring(2)}"
-          : "0xFF3B82F6",
+          : null,
       isGroup: $extra['isGroup'] ?? false,
     );
   }
@@ -174,7 +193,7 @@ class ProfileDetailRoute extends GoRouteData with $ProfileDetailRoute {
   }
 }
 
-/// Group profile page route - requires parameters via $extra
+/// Group profile page route - requires conversationId via $extra
 @TypedGoRoute<GroupProfileRoute>(path: '/group_profile')
 class GroupProfileRoute extends GoRouteData with $GroupProfileRoute {
   const GroupProfileRoute({required this.$extra});
@@ -183,9 +202,35 @@ class GroupProfileRoute extends GoRouteData with $GroupProfileRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return GroupProfilePage(
-      name: $extra['name'] ?? "Group",
-      avatarColor: $extra['color'] ?? "0xFF8B5CF6",
+    return GroupProfilePage(conversationId: $extra['conversationId'] ?? '');
+  }
+}
+
+/// Edit group page route - requires conversationId via $extra
+@TypedGoRoute<EditGroupRoute>(path: '/edit_group')
+class EditGroupRoute extends GoRouteData with $EditGroupRoute {
+  const EditGroupRoute({required this.$extra});
+
+  final Map<String, dynamic> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return EditGroupPage(conversationId: $extra['conversationId'] ?? '');
+  }
+}
+
+/// Add members to group page route - requires conversationId and existingMemberIds via $extra
+@TypedGoRoute<AddGroupMembersRoute>(path: '/add_group_members')
+class AddGroupMembersRoute extends GoRouteData with $AddGroupMembersRoute {
+  const AddGroupMembersRoute({required this.$extra});
+
+  final Map<String, dynamic> $extra;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return AddGroupMembersPage(
+      conversationId: $extra['conversationId'] ?? '',
+      existingMemberIds: List<String>.from($extra['existingMemberIds'] ?? []),
     );
   }
 }
