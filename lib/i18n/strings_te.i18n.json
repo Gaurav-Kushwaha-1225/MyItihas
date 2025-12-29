@@ -70,20 +70,66 @@
     "storyGenerator": {
         "title": "కథ జనరేటర్",
         "subtitle": "మీ స్వంత పురాణ కథను సృష్టించండి",
+        "quickStart": "త్వరిత ప్రారంభం",
+        "interactive": "ఇంటరాక్టివ్",
+        "rawPrompt": "రా ప్రాంప్ట్",
+        "yourStoryPrompt": "మీ కథ ప్రాంప్ట్",
+        "writeYourPrompt": "మీ ప్రాంప్ట్ రాయండి",
+        "selectScripture": "గ్రంథాన్ని ఎంచుకోండి",
+        "selectStoryType": "కథ రకాన్ని ఎంచుకోండి",
         "selectCharacter": "పాత్రను ఎంచుకోండి",
         "selectTheme": "థీమ్ను ఎంచుకోండి",
+        "selectSetting": "సెట్టింగ్ను ఎంచుకోండి",
         "selectLanguage": "భాషను ఎంచుకోండి",
         "selectLength": "కథ పొడవు",
+        "moreOptions": "మరిన్ని ఎంపికలు",
+        "random": "యాదృచ్ఛిక",
         "generate": "కథను రూపొందించండి",
         "generating": "మీ కథ రూపొందించబడుతోంది...",
+        "creatingYourStory": "మీ కథ సృష్టించబడుతోంది",
+        "consultingScriptures": "పురాతన గ్రంథాలను సంప్రదిస్తోంది...",
+        "weavingTale": "మీ కథను నేస్తోంది...",
+        "addingWisdom": "దివ్య జ్ఞానాన్ని జోడిస్తోంది...",
+        "polishingNarrative": "కథనాన్ని మెరుగుపరుస్తోంది...",
+        "almostThere": "దాదాపు పూర్తయింది...",
         "generatedStory": "మీ రూపొందించిన కథ",
+        "aiGenerated": "AI సృష్టించింది",
         "regenerate": "మళ్లీ రూపొందించండి",
         "saveStory": "కథను సేవ్ చేయండి",
         "shareStory": "కథను పంచుకోండి",
+        "newStory": "కొత్త కథ",
+        "saved": "సేవ్ చేయబడింది",
+        "storySaved": "కథ మీ లైబ్రరీలో సేవ్ చేయబడింది",
+        "story": "కథ",
+        "lesson": "పాఠం",
+        "didYouKnow": "మీకు తెలుసా?",
+        "activity": "కార్యకలాపం",
+        "optionalRefine": "ఐచ్ఛికం: ఎంపికలతో మెరుగుపరచండి",
+        "applyOptions": "ఎంపికలను వర్తింపజేయండి",
+        "language": "భాష",
+        "storyFormat": "కథ ఫార్మాట్",
         "storyLength": {
             "short": "చిన్నది",
             "medium": "మధ్యస్థం",
-            "long": "పొడవైనది"
+            "long": "పొడవైనది",
+            "epic": "ఇతిహాసం"
+        },
+        "format": {
+            "narrative": "కథనం",
+            "dialogue": "సంభాషణ ఆధారిత",
+            "poetic": "కావ్య",
+            "scriptural": "శాస్త్రీయ"
+        },
+        "hints": {
+            "krishnaTeaching": "కృష్ణుడు అర్జునుడికి బోధించే కథ...",
+            "warriorRedemption": "విముక్తి కోరుకునే యోధుడి ఇతిహాసం...",
+            "sageWisdom": "ఋషుల జ్ఞానం గురించి కథ...",
+            "devotedSeeker": "భక్తుని ప్రయాణం...",
+            "divineIntervention": "దైవ జోక్యం యొక్క గాథ..."
+        },
+        "errors": {
+            "incompletePrompt": "దయచేసి అన్ని అవసరమైన ఎంపికలను పూర్తి చేయండి",
+            "generationFailed": "కథను సృష్టించడంలో విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి."
         }
     },
     "chat": {

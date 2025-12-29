@@ -17,7 +17,6 @@ import 'package:myitihas/pages/Chat/Widget/new_group_page.dart';
 import 'package:myitihas/pages/Chat/Widget/profile_detail_page.dart';
 
 import 'package:myitihas/pages/stories_page.dart';
-import 'package:myitihas/pages/story_generator.dart';
 import 'package:myitihas/pages/settings_page.dart';
 import 'package:myitihas/features/social/presentation/pages/social_feed_page.dart';
 import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
@@ -28,6 +27,9 @@ import 'package:myitihas/features/social/presentation/pages/following_page.dart'
 import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_view_page.dart';
 import 'package:myitihas/features/stories/presentation/pages/story_detail_route_page.dart';
+import 'package:myitihas/features/stories/domain/entities/story.dart';
+import 'package:myitihas/features/story_generator/presentation/pages/story_generator_page.dart';
+import 'package:myitihas/features/story_generator/presentation/pages/generated_story_detail_page.dart';
 import 'package:myitihas/services/supabase_service.dart';
 import 'package:myitihas/config/go_router_refresh.dart';
 
@@ -50,7 +52,6 @@ class SplashRoute extends GoRouteData with $SplashRoute {
       path: 'stories',
       routes: [TypedGoRoute<StoryDetailRoute>(path: ':id')],
     ),
-    TypedGoRoute<StoryGeneratorRoute>(path: 'story-generator'),
   ],
 )
 class HomeRoute extends GoRouteData with $HomeRoute {
@@ -237,55 +238,50 @@ class MyItihasRouter {
   }
 
   GoRouter get router => GoRouter(
-        initialLocation: '/',
-        routes: $appRoutes,
-        refreshListenable: _refreshStream,
-        redirect: (context, state) {
-          final isAuthenticated =
-              SupabaseService.getCurrentSession() != null;
-          final isRecovering = _refreshStream.isRecovering;
+    initialLocation: '/',
+    routes: $appRoutes,
+    refreshListenable: _refreshStream,
+    redirect: (context, state) {
+      final isAuthenticated = SupabaseService.getCurrentSession() != null;
+      final isRecovering = _refreshStream.isRecovering;
 
-          final currentPath = state.matchedLocation;
-          final isOnLogin = currentPath == '/login';
-          final isOnSignup = currentPath == '/signup';
-          final isOnSplash = currentPath == '/';
-          final isOnResetPassword = currentPath == '/reset-password';
+      final currentPath = state.matchedLocation;
+      final isOnLogin = currentPath == '/login';
+      final isOnSignup = currentPath == '/signup';
+      final isOnSplash = currentPath == '/';
+      final isOnResetPassword = currentPath == '/reset-password';
 
-          // HIGHEST PRIORITY: Password recovery flow
-          // If user is in recovery mode, FORCE them to /reset-password
-          if (isRecovering) {
-            if (!isOnResetPassword) {
-              return '/reset-password';
-            }
-            return null;
-          }
+      // HIGHEST PRIORITY: Password recovery flow
+      // If user is in recovery mode, FORCE them to /reset-password
+      if (isRecovering) {
+        if (!isOnResetPassword) {
+          return '/reset-password';
+        }
+        return null;
+      }
 
-          // Authenticated user trying to access login/signup
-          if (isAuthenticated && (isOnLogin || isOnSignup)) {
-            return '/home';
-          }
+      // Authenticated user trying to access login/signup
+      if (isAuthenticated && (isOnLogin || isOnSignup)) {
+        return '/home';
+      }
 
-          // Splash screen handles its own logic
-          if (isOnSplash) return null;
+      // Splash screen handles its own logic
+      if (isOnSplash) return null;
 
-          // Reset password page without recovery mode
-          if (isOnResetPassword && !isRecovering) {
-            return '/login';
-          }
+      // Reset password page without recovery mode
+      if (isOnResetPassword && !isRecovering) {
+        return '/login';
+      }
 
-          // Unauthenticated access to protected routes
-          if (!isAuthenticated &&
-              !isOnLogin &&
-              !isOnSignup &&
-              !isOnResetPassword) {
-            return '/login';
-          }
+      // Unauthenticated access to protected routes
+      if (!isAuthenticated && !isOnLogin && !isOnSignup && !isOnResetPassword) {
+        return '/login';
+      }
 
-          return null;
-        },
-      );
+      return null;
+    },
+  );
 }
-
 
 // ============================================================================
 // Feature Routes (TypedGoRoute – from main branch)
@@ -308,15 +304,6 @@ class StoryDetailRoute extends GoRouteData with $StoryDetailRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return StoryDetailRoutePage(id: id);
-  }
-}
-
-class StoryGeneratorRoute extends GoRouteData with $StoryGeneratorRoute {
-  const StoryGeneratorRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const StoryGeneratorPage();
   }
 }
 
@@ -407,5 +394,32 @@ class MapRoute extends GoRouteData with $MapRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const AkhandaBharatMapPage();
+  }
+}
+
+/// Story Generator route with result sub-route
+@TypedGoRoute<StoryGeneratorRoute>(
+  path: '/story-generator',
+  routes: [TypedGoRoute<GeneratedStoryResultRoute>(path: 'result')],
+)
+class StoryGeneratorRoute extends GoRouteData with $StoryGeneratorRoute {
+  const StoryGeneratorRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const StoryGeneratorPage();
+  }
+}
+
+/// Generated story result page - receives Story via $extra
+class GeneratedStoryResultRoute extends GoRouteData
+    with $GeneratedStoryResultRoute {
+  final Story $extra;
+
+  const GeneratedStoryResultRoute({required this.$extra});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return GeneratedStoryDetailPage(story: $extra);
   }
 }

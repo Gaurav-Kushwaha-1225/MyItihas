@@ -3,9 +3,9 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myitihas/features/story_generator/presentation/pages/story_generator_page.dart';
 import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
 import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
-import 'package:myitihas/pages/story_generator.dart';
 import 'package:sizer/sizer.dart';
 import 'package:myitihas/features/social/presentation/pages/social_feed_page.dart';
 import 'package:myitihas/features/social/presentation/pages/profile_page.dart';
@@ -28,21 +28,17 @@ class _HomePageState extends State<HomePage> {
     "Profile",
   ];
 
-
   @override
   void initState() {
     super.initState();
   }
 
   List<Widget> get pages => [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: const StoryGeneratorPage(),
-      ),
-      const ChatItihasPage(),
-      const SocialFeedPage(),
-      const AkhandaBharatMapPage(),
-      const ProfilePage(), // current user's profile
+    const StoryGeneratorPage(),
+    const ChatItihasPage(),
+    const SocialFeedPage(),
+    const AkhandaBharatMapPage(),
+    const ProfilePage(), // current user's profile
   ];
   final Gradient selectedGradient = const LinearGradient(
     colors: [
@@ -62,8 +58,6 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: _buildBottomNav(context),
     );
   }
-
-
 
   Widget _buildBody(BuildContext context) {
     return AnimatedSwitcher(

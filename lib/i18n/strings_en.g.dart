@@ -288,11 +288,35 @@ class TranslationsStoryGeneratorEn {
 	/// en: 'Create your own mythological story'
 	String get subtitle => 'Create your own mythological story';
 
+	/// en: 'Quick Start'
+	String get quickStart => 'Quick Start';
+
+	/// en: 'Interactive'
+	String get interactive => 'Interactive';
+
+	/// en: 'Raw Prompt'
+	String get rawPrompt => 'Raw Prompt';
+
+	/// en: 'Your Story Prompt'
+	String get yourStoryPrompt => 'Your Story Prompt';
+
+	/// en: 'Write Your Prompt'
+	String get writeYourPrompt => 'Write Your Prompt';
+
+	/// en: 'Select Scripture'
+	String get selectScripture => 'Select Scripture';
+
+	/// en: 'Select Story Type'
+	String get selectStoryType => 'Select Story Type';
+
 	/// en: 'Select Character'
 	String get selectCharacter => 'Select Character';
 
 	/// en: 'Select Theme'
 	String get selectTheme => 'Select Theme';
+
+	/// en: 'Select Setting'
+	String get selectSetting => 'Select Setting';
 
 	/// en: 'Select Language'
 	String get selectLanguage => 'Select Language';
@@ -300,14 +324,41 @@ class TranslationsStoryGeneratorEn {
 	/// en: 'Story Length'
 	String get selectLength => 'Story Length';
 
+	/// en: 'More Options'
+	String get moreOptions => 'More Options';
+
+	/// en: 'Random'
+	String get random => 'Random';
+
 	/// en: 'Generate Story'
 	String get generate => 'Generate Story';
 
 	/// en: 'Generating your story...'
 	String get generating => 'Generating your story...';
 
+	/// en: 'Creating Your Story'
+	String get creatingYourStory => 'Creating Your Story';
+
+	/// en: 'Consulting the ancient scriptures...'
+	String get consultingScriptures => 'Consulting the ancient scriptures...';
+
+	/// en: 'Weaving your tale...'
+	String get weavingTale => 'Weaving your tale...';
+
+	/// en: 'Adding divine wisdom...'
+	String get addingWisdom => 'Adding divine wisdom...';
+
+	/// en: 'Polishing the narrative...'
+	String get polishingNarrative => 'Polishing the narrative...';
+
+	/// en: 'Almost there...'
+	String get almostThere => 'Almost there...';
+
 	/// en: 'Your Generated Story'
 	String get generatedStory => 'Your Generated Story';
+
+	/// en: 'AI Generated'
+	String get aiGenerated => 'AI Generated';
 
 	/// en: 'Regenerate'
 	String get regenerate => 'Regenerate';
@@ -318,7 +369,43 @@ class TranslationsStoryGeneratorEn {
 	/// en: 'Share Story'
 	String get shareStory => 'Share Story';
 
+	/// en: 'New Story'
+	String get newStory => 'New Story';
+
+	/// en: 'Saved'
+	String get saved => 'Saved';
+
+	/// en: 'Story saved to your library'
+	String get storySaved => 'Story saved to your library';
+
+	/// en: 'Story'
+	String get story => 'Story';
+
+	/// en: 'Lesson'
+	String get lesson => 'Lesson';
+
+	/// en: 'Did You Know?'
+	String get didYouKnow => 'Did You Know?';
+
+	/// en: 'Activity'
+	String get activity => 'Activity';
+
+	/// en: 'Optional: Refine with options'
+	String get optionalRefine => 'Optional: Refine with options';
+
+	/// en: 'Apply Options'
+	String get applyOptions => 'Apply Options';
+
+	/// en: 'Language'
+	String get language => 'Language';
+
+	/// en: 'Story Format'
+	String get storyFormat => 'Story Format';
+
 	late final TranslationsStoryGeneratorStoryLengthEn storyLength = TranslationsStoryGeneratorStoryLengthEn._(_root);
+	late final TranslationsStoryGeneratorFormatEn format = TranslationsStoryGeneratorFormatEn._(_root);
+	late final TranslationsStoryGeneratorHintsEn hints = TranslationsStoryGeneratorHintsEn._(_root);
+	late final TranslationsStoryGeneratorErrorsEn errors = TranslationsStoryGeneratorErrorsEn._(_root);
 }
 
 // Path: chat
@@ -852,6 +939,69 @@ class TranslationsStoryGeneratorStoryLengthEn {
 
 	/// en: 'Long'
 	String get long => 'Long';
+
+	/// en: 'Epic'
+	String get epic => 'Epic';
+}
+
+// Path: storyGenerator.format
+class TranslationsStoryGeneratorFormatEn {
+	TranslationsStoryGeneratorFormatEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Narrative'
+	String get narrative => 'Narrative';
+
+	/// en: 'Dialogue-based'
+	String get dialogue => 'Dialogue-based';
+
+	/// en: 'Poetic'
+	String get poetic => 'Poetic';
+
+	/// en: 'Scriptural'
+	String get scriptural => 'Scriptural';
+}
+
+// Path: storyGenerator.hints
+class TranslationsStoryGeneratorHintsEn {
+	TranslationsStoryGeneratorHintsEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Tell me a story about Krishna teaching Arjuna...'
+	String get krishnaTeaching => 'Tell me a story about Krishna teaching Arjuna...';
+
+	/// en: 'Write an epic tale of a warrior seeking redemption...'
+	String get warriorRedemption => 'Write an epic tale of a warrior seeking redemption...';
+
+	/// en: 'Create a story about the wisdom of the sages...'
+	String get sageWisdom => 'Create a story about the wisdom of the sages...';
+
+	/// en: 'Narrate the journey of a devoted seeker...'
+	String get devotedSeeker => 'Narrate the journey of a devoted seeker...';
+
+	/// en: 'Share the legend of divine intervention...'
+	String get divineIntervention => 'Share the legend of divine intervention...';
+}
+
+// Path: storyGenerator.errors
+class TranslationsStoryGeneratorErrorsEn {
+	TranslationsStoryGeneratorErrorsEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Please complete all required options'
+	String get incompletePrompt => 'Please complete all required options';
+
+	/// en: 'Failed to generate story. Please try again.'
+	String get generationFailed => 'Failed to generate story. Please try again.';
 }
 
 // Path: feed.tabs
@@ -942,19 +1092,59 @@ extension on Translations {
 			'stories.failed_to_load' => 'Failed to load story',
 			'storyGenerator.title' => 'Story Generator',
 			'storyGenerator.subtitle' => 'Create your own mythological story',
+			'storyGenerator.quickStart' => 'Quick Start',
+			'storyGenerator.interactive' => 'Interactive',
+			'storyGenerator.rawPrompt' => 'Raw Prompt',
+			'storyGenerator.yourStoryPrompt' => 'Your Story Prompt',
+			'storyGenerator.writeYourPrompt' => 'Write Your Prompt',
+			'storyGenerator.selectScripture' => 'Select Scripture',
+			'storyGenerator.selectStoryType' => 'Select Story Type',
 			'storyGenerator.selectCharacter' => 'Select Character',
 			'storyGenerator.selectTheme' => 'Select Theme',
+			'storyGenerator.selectSetting' => 'Select Setting',
 			'storyGenerator.selectLanguage' => 'Select Language',
 			'storyGenerator.selectLength' => 'Story Length',
+			'storyGenerator.moreOptions' => 'More Options',
+			'storyGenerator.random' => 'Random',
 			'storyGenerator.generate' => 'Generate Story',
 			'storyGenerator.generating' => 'Generating your story...',
+			'storyGenerator.creatingYourStory' => 'Creating Your Story',
+			'storyGenerator.consultingScriptures' => 'Consulting the ancient scriptures...',
+			'storyGenerator.weavingTale' => 'Weaving your tale...',
+			'storyGenerator.addingWisdom' => 'Adding divine wisdom...',
+			'storyGenerator.polishingNarrative' => 'Polishing the narrative...',
+			'storyGenerator.almostThere' => 'Almost there...',
 			'storyGenerator.generatedStory' => 'Your Generated Story',
+			'storyGenerator.aiGenerated' => 'AI Generated',
 			'storyGenerator.regenerate' => 'Regenerate',
 			'storyGenerator.saveStory' => 'Save Story',
 			'storyGenerator.shareStory' => 'Share Story',
+			'storyGenerator.newStory' => 'New Story',
+			'storyGenerator.saved' => 'Saved',
+			'storyGenerator.storySaved' => 'Story saved to your library',
+			'storyGenerator.story' => 'Story',
+			'storyGenerator.lesson' => 'Lesson',
+			'storyGenerator.didYouKnow' => 'Did You Know?',
+			'storyGenerator.activity' => 'Activity',
+			'storyGenerator.optionalRefine' => 'Optional: Refine with options',
+			'storyGenerator.applyOptions' => 'Apply Options',
+			'storyGenerator.language' => 'Language',
+			'storyGenerator.storyFormat' => 'Story Format',
 			'storyGenerator.storyLength.short' => 'Short',
 			'storyGenerator.storyLength.medium' => 'Medium',
 			'storyGenerator.storyLength.long' => 'Long',
+			'storyGenerator.storyLength.epic' => 'Epic',
+			'storyGenerator.format.narrative' => 'Narrative',
+			'storyGenerator.format.dialogue' => 'Dialogue-based',
+			'storyGenerator.format.poetic' => 'Poetic',
+			'storyGenerator.format.scriptural' => 'Scriptural',
+			'storyGenerator.hints.krishnaTeaching' => 'Tell me a story about Krishna teaching Arjuna...',
+			'storyGenerator.hints.warriorRedemption' => 'Write an epic tale of a warrior seeking redemption...',
+			'storyGenerator.hints.sageWisdom' => 'Create a story about the wisdom of the sages...',
+			'storyGenerator.hints.devotedSeeker' => 'Narrate the journey of a devoted seeker...',
+			'storyGenerator.hints.divineIntervention' => 'Share the legend of divine intervention...',
+			'storyGenerator.errors.incompletePrompt' => 'Please complete all required options',
+			'storyGenerator.errors.generationFailed' => 'Failed to generate story. Please try again.',
 			'chat.title' => 'ChatItihas',
 			'chat.subtitle' => 'Chat with AI about mythology',
 			'chat.friendMode' => 'Friend Mode',

@@ -70,20 +70,66 @@
     "storyGenerator": {
         "title": "Story Generator",
         "subtitle": "Create your own mythological story",
+        "quickStart": "Quick Start",
+        "interactive": "Interactive",
+        "rawPrompt": "Raw Prompt",
+        "yourStoryPrompt": "Your Story Prompt",
+        "writeYourPrompt": "Write Your Prompt",
+        "selectScripture": "Select Scripture",
+        "selectStoryType": "Select Story Type",
         "selectCharacter": "Select Character",
         "selectTheme": "Select Theme",
+        "selectSetting": "Select Setting",
         "selectLanguage": "Select Language",
         "selectLength": "Story Length",
+        "moreOptions": "More Options",
+        "random": "Random",
         "generate": "Generate Story",
         "generating": "Generating your story...",
+        "creatingYourStory": "Creating Your Story",
+        "consultingScriptures": "Consulting the ancient scriptures...",
+        "weavingTale": "Weaving your tale...",
+        "addingWisdom": "Adding divine wisdom...",
+        "polishingNarrative": "Polishing the narrative...",
+        "almostThere": "Almost there...",
         "generatedStory": "Your Generated Story",
+        "aiGenerated": "AI Generated",
         "regenerate": "Regenerate",
         "saveStory": "Save Story",
         "shareStory": "Share Story",
+        "newStory": "New Story",
+        "saved": "Saved",
+        "storySaved": "Story saved to your library",
+        "story": "Story",
+        "lesson": "Lesson",
+        "didYouKnow": "Did You Know?",
+        "activity": "Activity",
+        "optionalRefine": "Optional: Refine with options",
+        "applyOptions": "Apply Options",
+        "language": "Language",
+        "storyFormat": "Story Format",
         "storyLength": {
             "short": "Short",
             "medium": "Medium",
-            "long": "Long"
+            "long": "Long",
+            "epic": "Epic"
+        },
+        "format": {
+            "narrative": "Narrative",
+            "dialogue": "Dialogue-based",
+            "poetic": "Poetic",
+            "scriptural": "Scriptural"
+        },
+        "hints": {
+            "krishnaTeaching": "Tell me a story about Krishna teaching Arjuna...",
+            "warriorRedemption": "Write an epic tale of a warrior seeking redemption...",
+            "sageWisdom": "Create a story about the wisdom of the sages...",
+            "devotedSeeker": "Narrate the journey of a devoted seeker...",
+            "divineIntervention": "Share the legend of divine intervention..."
+        },
+        "errors": {
+            "incompletePrompt": "Please complete all required options",
+            "generationFailed": "Failed to generate story. Please try again."
         }
     },
     "chat": {
