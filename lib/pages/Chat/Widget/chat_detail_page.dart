@@ -192,7 +192,8 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
         extra: {'name': widget.name, 'color': widget.avatarColor},
       );
     } else {
-      context.push('/profile_detail', extra: {'name': widget.name});
+      // Navigate to normal profile page with followers/following
+      context.push('/profile/${widget.userId}');
     }
   }
 

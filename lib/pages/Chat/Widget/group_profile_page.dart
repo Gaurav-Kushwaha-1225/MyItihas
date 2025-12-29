@@ -19,12 +19,14 @@ class GroupProfilePage extends StatelessWidget {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     Color bgColor = isDark ? DarkColors.bgColor : LightColors.bgColor;
     Color textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    Color subTextColor =
-        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
+    Color subTextColor = isDark
+        ? DarkColors.textSecondary
+        : LightColors.textSecondary;
     Color accentColor = Color(0xFF3B82F6); // Fixed blue for action buttons
     Color groupColor = Color(int.parse(avatarColor));
-    Color dangerColor =
-        isDark ? DarkColors.dangerColor : LightColors.dangerColor;
+    Color dangerColor = isDark
+        ? DarkColors.dangerColor
+        : LightColors.dangerColor;
 
     // Mock Participants Data
     final List<Map<String, String>> participants = [
@@ -47,15 +49,7 @@ class GroupProfilePage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(
-              Icons.person_add_alt_1,
-              color: subTextColor,
-              size: 20.sp,
-            ),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: Icon(Icons.more_horiz, color: subTextColor, size: 20.sp),
+            icon: Icon(Icons.person_add_alt_1, color: textColor, size: 20.sp),
             onPressed: () {},
           ),
           SizedBox(width: 2.w),
@@ -116,72 +110,33 @@ class GroupProfilePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 0.5.h),
+
+            SizedBox(height: 1.h),
+
+            // Group member count
             Text(
               "Group · ${participants.length} members",
               style: GoogleFonts.inter(color: subTextColor, fontSize: 14.sp),
             ),
 
-            SizedBox(height: 4.h),
+            SizedBox(height: 2.h),
 
-            // --- ACTION BUTTONS (Updated Layout) ---
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Chat Button
-                _buildActionButton(
-                  Icons.chat_bubble,
-                  accentColor,
-                  14.w,
-                  18.sp,
-                  () => context.pop(),
-                ),
-
-                SizedBox(width: 6.w),
-
-                // Large Call Button (Center)
-                _buildActionButton(Icons.call, accentColor, 18.w, 24.sp, () {}),
-
-                SizedBox(width: 6.w),
-
-                // Video Button
-                _buildActionButton(
-                  Icons.videocam_rounded,
-                  accentColor,
-                  14.w,
-                  18.sp,
-                  () {},
-                ),
-              ],
-            ),
-
-            SizedBox(height: 4.h),
-            Divider(color: subTextColor.withOpacity(0.1), thickness: 1),
-
-            // Description Section
+            // Description
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Description",
-                    style: GoogleFonts.inter(
-                      color: accentColor,
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 1.h),
-                  Text(
-                    "Official group for daily updates and discussions. Please maintain decorum.",
-                    style: GoogleFonts.inter(color: textColor, fontSize: 14.sp),
-                  ),
-                ],
+              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              child: Text(
+                "Official group for daily updates and discussions. Please maintain decorum.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(
+                  color: textColor,
+                  fontSize: 14.sp,
+                  height: 1.5,
+                ),
               ),
             ),
 
-            Divider(color: subTextColor.withOpacity(0.1), thickness: 8),
+            SizedBox(height: 3.h),
+            Divider(color: subTextColor.withOpacity(0.1), thickness: 1),
 
             // Participants List Header
             Padding(
@@ -242,30 +197,29 @@ class GroupProfilePage extends StatelessWidget {
                       fontSize: 14.sp,
                     ),
                   ),
-                  trailing:
-                      user['status'] == "Admin"
-                          ? Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 2.w,
-                              vertical: 0.5.h,
+                  trailing: user['status'] == "Admin"
+                      ? Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 2.w,
+                            vertical: 0.5.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: accentColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: accentColor.withOpacity(0.3),
                             ),
-                            decoration: BoxDecoration(
-                              color: accentColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                color: accentColor.withOpacity(0.3),
-                              ),
+                          ),
+                          child: Text(
+                            "Group Admin",
+                            style: TextStyle(
+                              color: accentColor,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.bold,
                             ),
-                            child: Text(
-                              "Group Admin",
-                              style: TextStyle(
-                                color: accentColor,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          )
-                          : null,
+                          ),
+                        )
+                      : null,
                 );
               },
             ),
@@ -305,36 +259,6 @@ class GroupProfilePage extends StatelessWidget {
             SizedBox(height: 5.h),
           ],
         ),
-      ),
-    );
-  }
-
-  // Unified Builder for all action buttons
-  Widget _buildActionButton(
-    IconData icon,
-    Color color,
-    double size,
-    double iconSize,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.4),
-              blurRadius: 20, // Increased blur for glow effect
-              spreadRadius: 2,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Icon(icon, color: Colors.white, size: iconSize),
       ),
     );
   }
