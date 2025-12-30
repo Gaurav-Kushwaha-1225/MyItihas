@@ -29,6 +29,7 @@ List<RouteBase> get $appRoutes => [
   $chatListRoute,
   $mapRoute,
   $shaktiPeethaRoute,
+  $chatbotRoute,
 ];
 
 RouteBase get $splashRoute =>
@@ -705,6 +706,29 @@ mixin $ShaktiPeethaRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/shakti-peetha');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $chatbotRoute =>
+    GoRouteData.$route(path: '/chatbot', factory: $ChatbotRoute._fromState);
+
+mixin $ChatbotRoute on GoRouteData {
+  static ChatbotRoute _fromState(GoRouterState state) => const ChatbotRoute();
+
+  @override
+  String get location => GoRouteData.$location('/chatbot');
 
   @override
   void go(BuildContext context) => context.go(location);

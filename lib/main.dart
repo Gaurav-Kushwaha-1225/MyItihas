@@ -14,7 +14,7 @@ import 'package:myitihas/services/supabase_service.dart';
 import 'package:myitihas/utils/theme.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sizer/sizer.dart'; // Import sizer
+import 'package:sizer/sizer.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,11 +39,11 @@ Future<void> main() async {
   );
 
   final SharedPreferences storage = await SharedPreferences.getInstance();
-  
+
   // IMPORTANT: Create router FIRST to register refreshStream
   // This must happen before starting deep link listener
   final GoRouter router = MyItihasRouter().router;
-  
+
   // Now start deep link listener - refreshStream is available
   SupabaseService.authService.startDeepLinkListener();
 

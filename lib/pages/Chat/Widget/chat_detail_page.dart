@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -91,229 +93,283 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
       ),
 
       body: Container(
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            colors: [
-              ?isDark ? Colors.transparent.withOpacity(0.5) : null,
-              DarkColors.glowPrimary.withAlpha(50),
-
-              // ?isDark ? DarkColors.glassBg : null,
-              isDark
-                  ? DarkColors.accentSecondary.withOpacity(0.1)
-                  : DarkColors.glassBorder,
-              ?isDark ? Colors.transparent.withOpacity(0.4) : null,
-            ],
-            transform: GradientRotation(2.8 / 1.8),
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: isDark
+                ? [
+                    Color(0xFF0B1D3A), // deep navy
+                    Color(0xFF1B2E5A), // blue
+                    Color(0xFF3A2A6A), // purple touch
+                  ]
+                : [
+                    DarkColors.accentPrimary.withAlpha(5),
+                    DarkColors.accentPrimary.withAlpha(5),
+                    DarkColors.accentPrimary.withAlpha(5),
+                  ],
+            stops: [0.0, 0.55, 1.0],
           ),
         ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(vertical: 2.h),
-                itemCount: _messages.length,
-                itemBuilder: (context, index) {
-                  final msg = _messages[index];
-                  bool isMe = msg['isMe'];
-                  bool isSelected = _selectedMessageIndices.contains(index);
+        child: Container(
+          // margin: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            // borderRadius: BorderRadius.circular(24),
+            color: Colors.white.withOpacity(0.06),
+            // border: Border.all(color: Colors.white.withOpacity(0.12)),
+          ),
+          child: ClipRRect(
+            // borderRadius: BorderRadius.circular(24),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      DarkColors.accentPrimary.withOpacity(0.3), // deep navy
+                      DarkColors.accentSecondary.withOpacity(0.2), // blue
+                      DarkColors.accentSecondary.withOpacity(0.1), // purple tou
+                    ],
+                    stops: [0.0, 0.55, 1.0],
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.symmetric(vertical: 2.h),
+                        itemCount: _messages.length,
+                        itemBuilder: (context, index) {
+                          final msg = _messages[index];
+                          bool isMe = msg['isMe'];
+                          bool isSelected = _selectedMessageIndices.contains(
+                            index,
+                          );
 
-                  return GestureDetector(
-                    onLongPress: () {
-                      HapticFeedback.mediumImpact();
-                      _toggleSelection(index);
-                    },
-                    onTap: () {
-                      if (_isSelectionMode) _toggleSelection(index);
-                    },
-                    child: Container(
-                      color: isSelected ? highlightColor : Colors.transparent,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.w,
-                        vertical: 1.h,
+                          return GestureDetector(
+                            onLongPress: () {
+                              HapticFeedback.mediumImpact();
+                              _toggleSelection(index);
+                            },
+                            onTap: () {
+                              if (_isSelectionMode) _toggleSelection(index);
+                            },
+                            child: Container(
+                              color: isSelected
+                                  ? highlightColor
+                                  : Colors.transparent,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4.w,
+                                vertical: 1.h,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: isMe
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  if (!isMe) ...[
+                                    CircleAvatar(
+                                      backgroundColor: Color(
+                                        int.parse(widget.avatarColor),
+                                      ).withOpacity(0.2),
+                                      radius: 15.sp,
+                                      child: Text(
+                                        widget.name[0],
+                                        style: GoogleFonts.inter(
+                                          color: Color(
+                                            int.parse(widget.avatarColor),
+                                          ),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13.sp,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 2.w),
+                                  ],
+                                  Column(
+                                    crossAxisAlignment: isMe
+                                        ? CrossAxisAlignment.end
+                                        : CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth: 70.w,
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 4.w,
+                                          vertical: 1.5.h,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: isMe
+                                              ? Color(0xFF3B82F6) // Blue for me
+                                              : (isDark
+                                                    ? DarkColors.glassBg
+                                                    : Colors.white),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(15.sp),
+                                            topRight: Radius.circular(15.sp),
+                                            bottomLeft: isMe
+                                                ? Radius.circular(15.sp)
+                                                : Radius.circular(0),
+                                            bottomRight: isMe
+                                                ? Radius.circular(0)
+                                                : Radius.circular(15.sp),
+                                          ),
+                                          boxShadow: isMe
+                                              ? []
+                                              : [
+                                                  BoxShadow(
+                                                    color: Colors.black
+                                                        .withOpacity(0.05),
+                                                    blurRadius: 5,
+                                                    offset: Offset(0, 2),
+                                                  ),
+                                                ],
+                                        ),
+                                        child: Text(
+                                          msg['msg'],
+                                          style: GoogleFonts.inter(
+                                            color: isMe
+                                                ? Colors.white
+                                                : textColor,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14.5.sp,
+                                            height: 1.4,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 0.5.h),
+
+                                      // --- UPDATED: Time + Status Icon ---
+                                      Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            "${msg['time']} ${isMe ? 'You' : widget.name}",
+                                            style: GoogleFonts.inter(
+                                              fontSize: 12.sp,
+                                              color: subTextColor.withOpacity(
+                                                0.7,
+                                              ),
+                                            ),
+                                          ),
+                                          if (isMe) ...[
+                                            SizedBox(width: 1.5.w),
+                                            // Added Helper function call
+                                            _buildStatusIcon(
+                                              msg['status'] ?? 0,
+                                            ),
+                                          ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                      child: Row(
-                        mainAxisAlignment: isMe
-                            ? MainAxisAlignment.end
-                            : MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          if (!isMe) ...[
-                            CircleAvatar(
-                              backgroundColor: Color(
-                                int.parse(widget.avatarColor),
-                              ).withOpacity(0.2),
-                              radius: 15.sp,
-                              child: Text(
-                                widget.name[0],
-                                style: GoogleFonts.inter(
-                                  color: Color(int.parse(widget.avatarColor)),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13.sp,
+                    ),
+
+                    if (!_isSelectionMode)
+                      Container(
+                        padding: EdgeInsets.all(4.w),
+
+                        decoration: BoxDecoration(
+                          color: isDark ? DarkColors.glassBg : Colors.white,
+                          border: Border(
+                            top: BorderSide(
+                              color: isDark
+                                  ? Colors.white10
+                                  : Colors.grey.shade100,
+                            ),
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(1.5.w),
+                              decoration: BoxDecoration(
+                                color: isDark
+                                    ? Colors.white10
+                                    : Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Icon(
+                                Icons.add,
+                                color: subTextColor,
+                                size: 18.sp,
+                              ),
+                            ),
+                            SizedBox(width: 2.w),
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                decoration: BoxDecoration(
+                                  color: isDark
+                                      ? Colors.white10
+                                      : Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: TextField(
+                                  controller: _messageController,
+                                  style: TextStyle(
+                                    color: textColor,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                  decoration: InputDecoration(
+                                    hintText: "Type your message",
+
+                                    hintStyle: TextStyle(color: subTextColor),
+                                    border: InputBorder.none,
+                                    suffixIcon: Icon(
+                                      Icons.emoji_emotions_outlined,
+                                      color: subTextColor,
+                                    ),
+                                    filled: false,
+                                    fillColor: Colors.transparent,
+
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                    disabledBorder: InputBorder.none,
+
+                                    isDense: true,
+
+                                    contentPadding: EdgeInsets.symmetric(
+                                      vertical: 1.5.h,
+                                      horizontal: 0,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                             SizedBox(width: 2.w),
+                            Container(
+                              padding: EdgeInsets.all(3.w),
+                              decoration: BoxDecoration(
+                                color: Color(0xFF3B82F6),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.send_rounded,
+                                color: Colors.white,
+                                size: 16.sp,
+                              ),
+                            ),
                           ],
-                          Column(
-                            crossAxisAlignment: isMe
-                                ? CrossAxisAlignment.end
-                                : CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                constraints: BoxConstraints(maxWidth: 70.w),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 4.w,
-                                  vertical: 1.5.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: isMe
-                                      ? Color(0xFF3B82F6) // Blue for me
-                                      : (isDark
-                                            ? DarkColors.glassBg
-                                            : Colors.white),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15.sp),
-                                    topRight: Radius.circular(15.sp),
-                                    bottomLeft: isMe
-                                        ? Radius.circular(15.sp)
-                                        : Radius.circular(0),
-                                    bottomRight: isMe
-                                        ? Radius.circular(0)
-                                        : Radius.circular(15.sp),
-                                  ),
-                                  boxShadow: isMe
-                                      ? []
-                                      : [
-                                          BoxShadow(
-                                            color: Colors.black.withOpacity(
-                                              0.05,
-                                            ),
-                                            blurRadius: 5,
-                                            offset: Offset(0, 2),
-                                          ),
-                                        ],
-                                ),
-                                child: Text(
-                                  msg['msg'],
-                                  style: GoogleFonts.inter(
-                                    color: isMe ? Colors.white : textColor,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14.5.sp,
-                                    height: 1.4,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 0.5.h),
-
-                              // --- UPDATED: Time + Status Icon ---
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    "${msg['time']} ${isMe ? 'You' : widget.name}",
-                                    style: GoogleFonts.inter(
-                                      fontSize: 12.sp,
-                                      color: subTextColor.withOpacity(0.7),
-                                    ),
-                                  ),
-                                  if (isMe) ...[
-                                    SizedBox(width: 1.5.w),
-                                    // Added Helper function call
-                                    _buildStatusIcon(msg['status'] ?? 0),
-                                  ],
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            if (!_isSelectionMode)
-              Container(
-                padding: EdgeInsets.all(4.w),
-
-                decoration: BoxDecoration(
-                  color: isDark ? DarkColors.glassBg : Colors.white,
-                  border: Border(
-                    top: BorderSide(
-                      color: isDark ? Colors.white10 : Colors.grey.shade100,
-                    ),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(1.5.w),
-                      decoration: BoxDecoration(
-                        color: isDark ? Colors.white10 : Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Icon(Icons.add, color: subTextColor, size: 18.sp),
-                    ),
-                    SizedBox(width: 2.w),
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 4.w),
-                        decoration: BoxDecoration(
-                          color: isDark ? Colors.white10 : Colors.grey.shade100,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: TextField(
-                          controller: _messageController,
-                          style: TextStyle(
-                            color: textColor,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: "Type your message",
-
-                            hintStyle: TextStyle(color: subTextColor),
-                            border: InputBorder.none,
-                            suffixIcon: Icon(
-                              Icons.emoji_emotions_outlined,
-                              color: subTextColor,
-                            ),
-                            filled: false,
-                            fillColor: Colors.transparent,
-
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-
-                            isDense: true,
-
-                            contentPadding: EdgeInsets.symmetric(
-                              vertical: 1.5.h,
-                              horizontal: 0,
-                            ),
-                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 2.w),
-                    Container(
-                      padding: EdgeInsets.all(3.w),
-                      decoration: BoxDecoration(
-                        color: Color(0xFF3B82F6),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.send_rounded,
-                        color: Colors.white,
-                        size: 16.sp,
-                      ),
-                    ),
                   ],
                 ),
               ),
-          ],
+            ),
+          ),
         ),
       ),
     );
@@ -323,7 +379,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return Container(
       key: ValueKey("NormalHeader"),
       decoration: BoxDecoration(
-        color: isDark ? DarkColors.glassBg : Colors.white,
+        color: isDark ? Colors.blue.shade400.withAlpha(35) : Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -469,7 +525,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   // ... (Selection Header and Status Icon helpers remain the same)
   Widget _buildSelectionHeader(bool isDark) {
     Color iconColor = isDark ? Colors.white : Colors.black87;
-    Color selectionBg = isDark ? DarkColors.glassBg : Colors.grey.shade100;
+    Color selectionBg = isDark
+        ? Colors.blue.shade400.withAlpha(35)
+        : Colors.grey.shade100;
     return Container(
       key: ValueKey("SelectionHeader"),
       color: selectionBg,

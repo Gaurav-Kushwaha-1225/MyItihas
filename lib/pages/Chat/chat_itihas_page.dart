@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:myitihas/config/routes.dart';
 import 'package:myitihas/pages/Chat/Widget/status_page.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:myitihas/utils/theme.dart';
@@ -305,7 +306,7 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
               _buildHeaderActionButton(
                 isDark,
                 CupertinoIcons.camera_fill,
-                () {},
+                () => const ChatbotRoute().push(context),
               ),
             ],
           ),
