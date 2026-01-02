@@ -40,10 +40,11 @@ class ProfilePage extends StatelessWidget {
         }
 
         final resolvedUserId = snapshot.data!;
-        
+
         return BlocProvider(
           create: (context) =>
-              getIt<ProfileBloc>()..add(ProfileEvent.loadProfile(resolvedUserId)),
+              getIt<ProfileBloc>()
+                ..add(ProfileEvent.loadProfile(resolvedUserId)),
           child: _ProfileView(showAppBar: isOtherUserProfile),
         );
       },
@@ -81,13 +82,14 @@ class ProfilePage extends StatelessWidget {
     if (userId != null) {
       return userId!;
     }
-    
+
     // If userId is null, get current authenticated user (my profile)
     final userRepository = getIt<UserRepository>();
     final result = await userRepository.getCurrentUser();
-    
+
     return result.fold(
-      (failure) => throw Exception('Failed to get current user: ${failure.message}'),
+      (failure) =>
+          throw Exception('Failed to get current user: ${failure.message}'),
       (user) => user.id,
     );
   }
@@ -95,53 +97,55 @@ class ProfilePage extends StatelessWidget {
 
 class _ProfileView extends StatelessWidget {
   final bool showAppBar;
-  
+
   const _ProfileView({this.showAppBar = false});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: showAppBar ? AppBar(
-        title: const Text('Profile'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person_search_rounded),
-            onPressed: () {
-              const DiscoverRoute().push(context);
-            },
-            tooltip: 'Search Users',
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings_rounded),
-            onPressed: () {
-              const SettingsRoute().push(context);
-            },
-            tooltip: 'Settings',
-          ),
-        ],
-      ) : AppBar(
-        title: const Text('My Profile'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person_search_rounded),
-            onPressed: () {
-              const DiscoverRoute().push(context);
-            },
-            tooltip: 'Search Users',
-          ),
-          IconButton(
-            icon: const Icon(Icons.settings_rounded),
-            onPressed: () {
-              const SettingsRoute().push(context);
-            },
-            tooltip: 'Settings',
-          ),
-        ],
-      ),
+      appBar: showAppBar
+          ? AppBar(
+              title: const Text('Profile'),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.person_search_rounded),
+                  onPressed: () {
+                    const DiscoverRoute().push(context);
+                  },
+                  tooltip: 'Search Users',
+                ),
+                IconButton(
+                  icon: const Icon(Icons.settings_rounded),
+                  onPressed: () {
+                    const SettingsRoute().push(context);
+                  },
+                  tooltip: 'Settings',
+                ),
+              ],
+            )
+          : AppBar(
+              title: const Text('My Profile'),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.person_search_rounded),
+                  onPressed: () {
+                    const DiscoverRoute().push(context);
+                  },
+                  tooltip: 'Search Users',
+                ),
+                IconButton(
+                  icon: const Icon(Icons.settings_rounded),
+                  onPressed: () {
+                    const SettingsRoute().push(context);
+                  },
+                  tooltip: 'Settings',
+                ),
+              ],
+            ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
           return state.when(
@@ -281,7 +285,9 @@ class _ProfileView extends StatelessWidget {
                                       label: t.profile.followers,
                                       count: user.followerCount,
                                       onTap: () {
-                                        FollowersRoute(userId: user.id).push(context);
+                                        FollowersRoute(
+                                          userId: user.id,
+                                        ).push(context);
                                       },
                                     ),
                                     Container(
@@ -295,7 +301,9 @@ class _ProfileView extends StatelessWidget {
                                       label: t.profile.following,
                                       count: user.followingCount,
                                       onTap: () {
-                                        FollowingRoute(userId: user.id).push(context);
+                                        FollowingRoute(
+                                          userId: user.id,
+                                        ).push(context);
                                       },
                                     ),
                                   ],

@@ -22,6 +22,11 @@ import '../../features/chat/data/datasources/chat_data_source.dart' as _i799;
 import '../../features/chat/domain/repositories/chat_repository.dart' as _i420;
 import '../../features/chat/presentation/bloc/chat_detail_bloc.dart' as _i57;
 import '../../features/chat/presentation/bloc/chat_list_bloc.dart' as _i2;
+import '../../features/home/data/datasources/activity_local_datasource.dart'
+    as _i922;
+import '../../features/home/data/datasources/quote_local_datasource.dart'
+    as _i908;
+import '../../features/home/presentation/bloc/home_bloc.dart' as _i202;
 import '../../features/notifications/data/datasources/notification_data_source.dart'
     as _i691;
 import '../../features/notifications/domain/repositories/notification_repository.dart'
@@ -79,6 +84,7 @@ import '../../features/story_generator/presentation/bloc/story_generator_bloc.da
 import '../../services/follow_service.dart' as _i545;
 import '../../services/profile_service.dart' as _i637;
 import '../../services/profile_storage_service.dart' as _i743;
+import '../../services/reading_progress_service.dart' as _i277;
 import '../network/api_client.dart' as _i557;
 import '../network/mock_websocket_service.dart' as _i817;
 import '../network/network_info.dart' as _i932;
@@ -110,11 +116,20 @@ extension GetItInjectableX on _i174.GetIt {
       () => networkModule.connectionChecker,
     );
     gh.lazySingleton<_i459.HiveService>(() => _i459.HiveService());
+    gh.lazySingleton<_i922.ActivityLocalDataSource>(
+      () => _i922.ActivityLocalDataSource(),
+    );
+    gh.lazySingleton<_i908.QuoteLocalDataSource>(
+      () => _i908.QuoteLocalDataSource(),
+    );
     gh.lazySingleton<_i746.StoryMockDataSource>(
       () => _i746.StoryMockDataSource(),
     );
     gh.lazySingleton<_i625.MockStoryGeneratorDataSource>(
       () => storyGeneratorDataSourceModule.mockDataSource,
+    );
+    gh.lazySingleton<_i277.ReadingProgressService>(
+      () => _i277.ReadingProgressService(),
     );
     gh.lazySingleton<_i773.UserDataSource>(() => _i773.UserDataSourceImpl());
     gh.lazySingleton<_i932.NetworkInfo>(
@@ -145,6 +160,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i533.StoryLocalDataSourceImpl(
         gh<_i459.HiveService>(),
         gh<_i746.StoryMockDataSource>(),
+      ),
+    );
+    gh.factory<_i202.HomeBloc>(
+      () => _i202.HomeBloc(
+        gh<_i908.QuoteLocalDataSource>(),
+        gh<_i277.ReadingProgressService>(),
       ),
     );
     gh.lazySingleton<_i909.StoryRepository>(
