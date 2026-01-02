@@ -53,6 +53,7 @@ class TranslationsTe with BaseTranslations<AppLocale, Translations> implements T
 	@override late final _TranslationsNotificationTe notification = _TranslationsNotificationTe._(_root);
 	@override late final _TranslationsProfileTe profile = _TranslationsProfileTe._(_root);
 	@override late final _TranslationsFeedTe feed = _TranslationsFeedTe._(_root);
+	@override late final _TranslationsHomeScreenTe homeScreen = _TranslationsHomeScreenTe._(_root);
 }
 
 // Path: app
@@ -444,6 +445,46 @@ class _TranslationsFeedTe implements TranslationsFeedEn {
 	@override String get noVideosAvailable => 'వీడియోలు ఏవీ అందుబాటులో లేవు';
 }
 
+// Path: homeScreen
+class _TranslationsHomeScreenTe implements TranslationsHomeScreenEn {
+	_TranslationsHomeScreenTe._(this._root);
+
+	final TranslationsTe _root; // ignore: unused_field
+
+	// Translations
+	@override String get greeting => 'నమస్కారం';
+	@override String get quoteOfTheDay => 'రోజు యొక్క కోట్';
+	@override String get shareQuote => 'కోట్ షేర్ చేయండి';
+	@override String get copyQuote => 'కోట్ కాపీ చేయండి';
+	@override String get quoteCopied => 'కోట్ క్లిప్‌బోర్డ్‌కి కాపీ అయింది';
+	@override String get featuredStories => 'ఫీచర్డ్ కథలు';
+	@override String get quickActions => 'శీఘ్ర చర్యలు';
+	@override String get generateStory => 'కథ రూపొందించండి';
+	@override String get chatWithKrishna => 'కృష్ణుడితో చాట్';
+	@override String get myActivity => 'నా కార్యకలాపం';
+	@override String get continueReading => 'చదవడం కొనసాగించండి';
+	@override String get savedStories => 'సేవ్ చేసిన కథలు';
+	@override String get seeAll => 'అన్నీ చూడండి';
+	@override String get startReading => 'చదవడం ప్రారంభించండి';
+	@override String get exploreStories => 'మీ ప్రయాణాన్ని ప్రారంభించడానికి కథలను అన్వేషించండి';
+	@override String get saveForLater => 'మీరు ఇష్టపడే కథలను బుక్‌మార్క్ చేయండి';
+	@override String get noActivityYet => 'ఇంకా కార్యకలాపం లేదు';
+	@override String get minLeft => '{{count}} నిమిషాలు మిగిలి ఉన్నాయి';
+	@override String get activityHistory => 'కార్యకలాప చరిత్ర';
+	@override String get storyGenerated => 'కథ రూపొందించబడింది';
+	@override String get storyRead => 'కథ చదివారు';
+	@override String get storyBookmarked => 'కథ బుక్‌మార్క్ చేయబడింది';
+	@override String get storyShared => 'కథ షేర్ చేయబడింది';
+	@override String get storyCompleted => 'కథ పూర్తయింది';
+	@override String get today => 'ఈరోజు';
+	@override String get yesterday => 'నిన్న';
+	@override String get thisWeek => 'ఈ వారం';
+	@override String get earlier => 'ముందు';
+	@override String get noContinueReading => 'చదవడానికి ఏమీ లేదు';
+	@override String get noSavedStories => 'సేవ్ చేసిన కథలు లేవు';
+	@override String get bookmarkStoriesToSave => 'సేవ్ చేయడానికి కథలను బుక్‌మార్క్ చేయండి';
+}
+
 // Path: storyGenerator.storyLength
 class _TranslationsStoryGeneratorStoryLengthTe implements TranslationsStoryGeneratorStoryLengthEn {
 	_TranslationsStoryGeneratorStoryLengthTe._(this._root);
@@ -779,6 +820,37 @@ extension on TranslationsTe {
 			'feed.tabs.text' => 'ఆలోచనలు',
 			'feed.tapToShowCaption' => 'క్యాప్షన్ చూడడానికి నొక్కండి',
 			'feed.noVideosAvailable' => 'వీడియోలు ఏవీ అందుబాటులో లేవు',
+			'homeScreen.greeting' => 'నమస్కారం',
+			'homeScreen.quoteOfTheDay' => 'రోజు యొక్క కోట్',
+			'homeScreen.shareQuote' => 'కోట్ షేర్ చేయండి',
+			'homeScreen.copyQuote' => 'కోట్ కాపీ చేయండి',
+			'homeScreen.quoteCopied' => 'కోట్ క్లిప్‌బోర్డ్‌కి కాపీ అయింది',
+			'homeScreen.featuredStories' => 'ఫీచర్డ్ కథలు',
+			'homeScreen.quickActions' => 'శీఘ్ర చర్యలు',
+			'homeScreen.generateStory' => 'కథ రూపొందించండి',
+			'homeScreen.chatWithKrishna' => 'కృష్ణుడితో చాట్',
+			'homeScreen.myActivity' => 'నా కార్యకలాపం',
+			'homeScreen.continueReading' => 'చదవడం కొనసాగించండి',
+			'homeScreen.savedStories' => 'సేవ్ చేసిన కథలు',
+			'homeScreen.seeAll' => 'అన్నీ చూడండి',
+			'homeScreen.startReading' => 'చదవడం ప్రారంభించండి',
+			'homeScreen.exploreStories' => 'మీ ప్రయాణాన్ని ప్రారంభించడానికి కథలను అన్వేషించండి',
+			'homeScreen.saveForLater' => 'మీరు ఇష్టపడే కథలను బుక్‌మార్క్ చేయండి',
+			'homeScreen.noActivityYet' => 'ఇంకా కార్యకలాపం లేదు',
+			'homeScreen.minLeft' => '{{count}} నిమిషాలు మిగిలి ఉన్నాయి',
+			'homeScreen.activityHistory' => 'కార్యకలాప చరిత్ర',
+			'homeScreen.storyGenerated' => 'కథ రూపొందించబడింది',
+			'homeScreen.storyRead' => 'కథ చదివారు',
+			'homeScreen.storyBookmarked' => 'కథ బుక్‌మార్క్ చేయబడింది',
+			'homeScreen.storyShared' => 'కథ షేర్ చేయబడింది',
+			'homeScreen.storyCompleted' => 'కథ పూర్తయింది',
+			'homeScreen.today' => 'ఈరోజు',
+			'homeScreen.yesterday' => 'నిన్న',
+			'homeScreen.thisWeek' => 'ఈ వారం',
+			'homeScreen.earlier' => 'ముందు',
+			'homeScreen.noContinueReading' => 'చదవడానికి ఏమీ లేదు',
+			'homeScreen.noSavedStories' => 'సేవ్ చేసిన కథలు లేవు',
+			'homeScreen.bookmarkStoriesToSave' => 'సేవ్ చేయడానికి కథలను బుక్‌మార్క్ చేయండి',
 			_ => null,
 		};
 	}

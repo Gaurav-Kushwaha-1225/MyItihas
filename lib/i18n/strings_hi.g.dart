@@ -53,6 +53,7 @@ class TranslationsHi with BaseTranslations<AppLocale, Translations> implements T
 	@override late final _TranslationsNotificationHi notification = _TranslationsNotificationHi._(_root);
 	@override late final _TranslationsProfileHi profile = _TranslationsProfileHi._(_root);
 	@override late final _TranslationsFeedHi feed = _TranslationsFeedHi._(_root);
+	@override late final _TranslationsHomeScreenHi homeScreen = _TranslationsHomeScreenHi._(_root);
 }
 
 // Path: app
@@ -444,6 +445,46 @@ class _TranslationsFeedHi implements TranslationsFeedEn {
 	@override String get noVideosAvailable => 'कोई वीडियो उपलब्ध नहीं';
 }
 
+// Path: homeScreen
+class _TranslationsHomeScreenHi implements TranslationsHomeScreenEn {
+	_TranslationsHomeScreenHi._(this._root);
+
+	final TranslationsHi _root; // ignore: unused_field
+
+	// Translations
+	@override String get greeting => 'नमस्ते';
+	@override String get quoteOfTheDay => 'आज का विचार';
+	@override String get shareQuote => 'विचार साझा करें';
+	@override String get copyQuote => 'विचार कॉपी करें';
+	@override String get quoteCopied => 'विचार क्लिपबोर्ड पर कॉपी किया गया';
+	@override String get featuredStories => 'विशेष कहानियां';
+	@override String get quickActions => 'त्वरित क्रियाएं';
+	@override String get generateStory => 'कहानी बनाएं';
+	@override String get chatWithKrishna => 'कृष्ण से बातचीत';
+	@override String get myActivity => 'मेरी गतिविधि';
+	@override String get continueReading => 'पढ़ना जारी रखें';
+	@override String get savedStories => 'सहेजी गई कहानियां';
+	@override String get seeAll => 'सभी देखें';
+	@override String get startReading => 'पढ़ना शुरू करें';
+	@override String get exploreStories => 'अपनी यात्रा शुरू करने के लिए कहानियां खोजें';
+	@override String get saveForLater => 'पसंदीदा कहानियां बुकमार्क करें';
+	@override String get noActivityYet => 'अभी तक कोई गतिविधि नहीं';
+	@override String get minLeft => '{{count}} मिनट बाकी';
+	@override String get activityHistory => 'गतिविधि इतिहास';
+	@override String get storyGenerated => 'कहानी बनाई';
+	@override String get storyRead => 'कहानी पढ़ी';
+	@override String get storyBookmarked => 'कहानी सहेजी';
+	@override String get storyShared => 'कहानी साझा की';
+	@override String get storyCompleted => 'कहानी पूरी की';
+	@override String get today => 'आज';
+	@override String get yesterday => 'कल';
+	@override String get thisWeek => 'इस सप्ताह';
+	@override String get earlier => 'पहले';
+	@override String get noContinueReading => 'अभी पढ़ने के लिए कुछ नहीं';
+	@override String get noSavedStories => 'अभी कोई सहेजी गई कहानी नहीं';
+	@override String get bookmarkStoriesToSave => 'कहानियां सहेजने के लिए बुकमार्क करें';
+}
+
 // Path: storyGenerator.storyLength
 class _TranslationsStoryGeneratorStoryLengthHi implements TranslationsStoryGeneratorStoryLengthEn {
 	_TranslationsStoryGeneratorStoryLengthHi._(this._root);
@@ -779,6 +820,37 @@ extension on TranslationsHi {
 			'feed.tabs.text' => 'विचार',
 			'feed.tapToShowCaption' => 'कैप्शन देखने के लिए टैप करें',
 			'feed.noVideosAvailable' => 'कोई वीडियो उपलब्ध नहीं',
+			'homeScreen.greeting' => 'नमस्ते',
+			'homeScreen.quoteOfTheDay' => 'आज का विचार',
+			'homeScreen.shareQuote' => 'विचार साझा करें',
+			'homeScreen.copyQuote' => 'विचार कॉपी करें',
+			'homeScreen.quoteCopied' => 'विचार क्लिपबोर्ड पर कॉपी किया गया',
+			'homeScreen.featuredStories' => 'विशेष कहानियां',
+			'homeScreen.quickActions' => 'त्वरित क्रियाएं',
+			'homeScreen.generateStory' => 'कहानी बनाएं',
+			'homeScreen.chatWithKrishna' => 'कृष्ण से बातचीत',
+			'homeScreen.myActivity' => 'मेरी गतिविधि',
+			'homeScreen.continueReading' => 'पढ़ना जारी रखें',
+			'homeScreen.savedStories' => 'सहेजी गई कहानियां',
+			'homeScreen.seeAll' => 'सभी देखें',
+			'homeScreen.startReading' => 'पढ़ना शुरू करें',
+			'homeScreen.exploreStories' => 'अपनी यात्रा शुरू करने के लिए कहानियां खोजें',
+			'homeScreen.saveForLater' => 'पसंदीदा कहानियां बुकमार्क करें',
+			'homeScreen.noActivityYet' => 'अभी तक कोई गतिविधि नहीं',
+			'homeScreen.minLeft' => '{{count}} मिनट बाकी',
+			'homeScreen.activityHistory' => 'गतिविधि इतिहास',
+			'homeScreen.storyGenerated' => 'कहानी बनाई',
+			'homeScreen.storyRead' => 'कहानी पढ़ी',
+			'homeScreen.storyBookmarked' => 'कहानी सहेजी',
+			'homeScreen.storyShared' => 'कहानी साझा की',
+			'homeScreen.storyCompleted' => 'कहानी पूरी की',
+			'homeScreen.today' => 'आज',
+			'homeScreen.yesterday' => 'कल',
+			'homeScreen.thisWeek' => 'इस सप्ताह',
+			'homeScreen.earlier' => 'पहले',
+			'homeScreen.noContinueReading' => 'अभी पढ़ने के लिए कुछ नहीं',
+			'homeScreen.noSavedStories' => 'अभी कोई सहेजी गई कहानी नहीं',
+			'homeScreen.bookmarkStoriesToSave' => 'कहानियां सहेजने के लिए बुकमार्क करें',
 			_ => null,
 		};
 	}

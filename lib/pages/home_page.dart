@@ -3,7 +3,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:myitihas/features/story_generator/presentation/pages/story_generator_page.dart';
+import 'package:myitihas/features/home/presentation/pages/home_screen_page.dart';
 import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
 import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
 import 'package:sizer/sizer.dart';
@@ -20,13 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int currentBottomBarIndex = 0;
 
-  final List<String> titles = [
-    "Story Generator",
-    "Chat",
-    "Social Feed",
-    "Map",
-    "Profile",
-  ];
+  final List<String> titles = ["Home", "Chat", "Social Feed", "Map", "Profile"];
 
   @override
   void initState() {
@@ -34,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> get pages => [
-    const StoryGeneratorPage(),
+    const HomeScreenPage(),
     const ChatItihasPage(),
     const SocialFeedPage(),
     const AkhandaBharatMapPage(),
@@ -136,8 +130,8 @@ class _HomePageState extends State<HomePage> {
               children: [
                 _buildPopupItem(
                   0,
-                  Icons.auto_awesome_rounded,
-                  "StoryGen",
+                  Icons.home_rounded,
+                  "Home",
                   isDark,
                   selectedGradient,
                 ),

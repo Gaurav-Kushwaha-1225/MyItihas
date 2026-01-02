@@ -6,6 +6,7 @@ import 'package:hive_ce/hive_ce.dart';
 import 'package:myitihas/features/chat/data/models/conversation_model.dart';
 import 'package:myitihas/features/chat/data/models/message_model.dart';
 import 'package:myitihas/features/chat/domain/entities/message.dart';
+import 'package:myitihas/features/home/data/models/activity_item_model.dart';
 import 'package:myitihas/features/notifications/data/models/notification_model.dart';
 import 'package:myitihas/features/notifications/domain/entities/notification.dart';
 import 'package:myitihas/features/social/data/models/comment_model.dart';
@@ -14,9 +15,11 @@ import 'package:myitihas/features/social/data/models/share_model.dart';
 import 'package:myitihas/features/social/data/models/user_model.dart';
 import 'package:myitihas/features/social/domain/entities/share.dart';
 import 'package:myitihas/features/stories/data/models/story_model.dart';
+import 'package:myitihas/services/reading_progress_service.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {
+    registerAdapter(ActivityItemModelAdapter());
     registerAdapter(CommentModelAdapter());
     registerAdapter(ConversationModelAdapter());
     registerAdapter(LikeModelAdapter());
@@ -24,6 +27,7 @@ extension HiveRegistrar on HiveInterface {
     registerAdapter(MessageModelAdapter());
     registerAdapter(NotificationModelAdapter());
     registerAdapter(NotificationTypeAdapter());
+    registerAdapter(ReadingProgressAdapter());
     registerAdapter(ShareModelAdapter());
     registerAdapter(ShareTypeAdapter());
     registerAdapter(StoryAttributesModelAdapter());
@@ -34,6 +38,7 @@ extension HiveRegistrar on HiveInterface {
 
 extension IsolatedHiveRegistrar on IsolatedHiveInterface {
   void registerAdapters() {
+    registerAdapter(ActivityItemModelAdapter());
     registerAdapter(CommentModelAdapter());
     registerAdapter(ConversationModelAdapter());
     registerAdapter(LikeModelAdapter());
@@ -41,6 +46,7 @@ extension IsolatedHiveRegistrar on IsolatedHiveInterface {
     registerAdapter(MessageModelAdapter());
     registerAdapter(NotificationModelAdapter());
     registerAdapter(NotificationTypeAdapter());
+    registerAdapter(ReadingProgressAdapter());
     registerAdapter(ShareModelAdapter());
     registerAdapter(ShareTypeAdapter());
     registerAdapter(StoryAttributesModelAdapter());
