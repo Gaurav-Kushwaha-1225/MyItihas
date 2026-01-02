@@ -170,8 +170,8 @@ class _HeroGenerateButtonState extends State<HeroGenerateButton>
                                   color: Colors.white.withValues(alpha: 0.25),
                                   borderRadius: BorderRadius.circular(14.r),
                                 ),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.wandMagicSparkles,
+                                child: FaIcon(
+                                  FontAwesomeIcons.wandMagicSparkles,
                                   size: 26.sp,
                                   color: Colors.white,
                                 ),
