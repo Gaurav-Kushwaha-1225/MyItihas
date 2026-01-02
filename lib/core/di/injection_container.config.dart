@@ -67,6 +67,7 @@ import '../../features/stories/domain/usecases/get_stories.dart' as _i596;
 import '../../features/stories/domain/usecases/get_story_by_id.dart' as _i494;
 import '../../features/stories/domain/usecases/toggle_favorite.dart' as _i53;
 import '../../features/stories/presentation/bloc/stories_bloc.dart' as _i790;
+import '../../services/chat_service.dart' as _i207;
 import '../../features/story_generator/data/datasources/datasource_module.dart'
     as _i561;
 import '../../features/story_generator/data/datasources/mock_story_generator_datasource.dart'
@@ -137,6 +138,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i51.StoryRemoteDataSource>(
       () => _i51.StoryRemoteDataSourceImpl(gh<_i361.Dio>()),
+    );
+    gh.lazySingleton<_i207.ChatService>(
+      () => _i207.ChatService(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i545.FollowService>(
       () => _i545.FollowService(gh<_i454.SupabaseClient>()),

@@ -3,38 +3,160 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:sizer/sizer.dart';
+import 'package:myitihas/services/supabase_service.dart';
+import 'package:myitihas/core/di/injection_container.dart';
+import 'package:myitihas/services/profile_service.dart';
 
-class GroupProfilePage extends StatelessWidget {
-  final String name;
-  final String avatarColor;
+class GroupProfilePage extends StatefulWidget {
+  final String conversationId;
 
-  const GroupProfilePage({
-    super.key,
-    required this.name,
-    this.avatarColor = "0xFF8B5CF6", // Default purple for groups
-  });
+  const GroupProfilePage({super.key, required this.conversationId});
+
+  @override
+  State<GroupProfilePage> createState() => _GroupProfilePageState();
+}
+
+class _GroupProfilePageState extends State<GroupProfilePage> {
+  final ProfileService _profileService = getIt<ProfileService>();
+  final TextEditingController _searchController = TextEditingController();
+
+  bool _isLoading = true;
+  bool _isSearching = false;
+  String _groupName = '';
+  String? _groupAvatarUrl;
+  String? _groupDescription;
+  List<Map<String, dynamic>> _members = [];
+  List<Map<String, dynamic>> _filteredMembers = [];
+  String? _currentUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentUserId = SupabaseService.client.auth.currentUser?.id;
+    _loadGroupData();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      if (query.isEmpty) {
+        _filteredMembers = _members;
+      } else {
+        _filteredMembers = _members.where((member) {
+          final name = (member['name'] as String? ?? '').toLowerCase();
+          return name.contains(query);
+        }).toList();
+      }
+    });
+  }
+
+  Future<void> _loadGroupData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Fetch group info from conversations table
+      final conversationData = await SupabaseService.client
+          .from('conversations')
+          .select('group_name, group_avatar_url, group_description')
+          .eq('id', widget.conversationId)
+          .single();
+
+      _groupName = conversationData['group_name'] ?? 'Group';
+      _groupAvatarUrl = conversationData['group_avatar_url'];
+      _groupDescription = conversationData['group_description'];
+
+      // Fetch members from conversation_members table
+      final membersData = await SupabaseService.client
+          .from('conversation_members')
+          .select('user_id, role')
+          .eq('conversation_id', widget.conversationId);
+
+      // Fetch profile data for each member
+      final List<Map<String, dynamic>> membersList = [];
+      for (final memberData in membersData) {
+        try {
+          final userId = memberData['user_id'] as String;
+          final role = memberData['role'] as String? ?? 'member';
+
+          final profile = await _profileService.getProfileById(userId);
+
+          membersList.add({
+            'user_id': userId,
+            'name': profile['full_name'] ?? profile['username'] ?? 'Unknown',
+            'avatar_url': profile['avatar_url'],
+            'role': role,
+            'is_current_user': userId == _currentUserId,
+          });
+        } catch (e) {
+          print('Error fetching profile for member: $e');
+        }
+      }
+
+      // Sort members: current user first, then rest
+      membersList.sort((a, b) {
+        final aIsCurrentUser = a['is_current_user'] == true;
+        final bIsCurrentUser = b['is_current_user'] == true;
+        
+        if (aIsCurrentUser && !bIsCurrentUser) return -1;
+        if (!aIsCurrentUser && bIsCurrentUser) return 1;
+        return 0;
+      });
+
+      setState(() {
+        _members = membersList;
+        _filteredMembers = membersList;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading group data: $e');
+      setState(() {
+        _isLoading = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load group data: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     Color bgColor = isDark ? DarkColors.bgColor : LightColors.bgColor;
     Color textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    Color subTextColor =
-        isDark ? DarkColors.textSecondary : LightColors.textSecondary;
-    Color accentColor = Color(0xFF3B82F6); // Fixed blue for action buttons
-    Color groupColor = Color(int.parse(avatarColor));
-    Color dangerColor =
-        isDark ? DarkColors.dangerColor : LightColors.dangerColor;
+    Color subTextColor = isDark
+        ? DarkColors.textSecondary
+        : LightColors.textSecondary;
+    Color accentColor = Color(0xFF3B82F6);
+    Color groupColor = Color(0xFF8B5CF6); // Default purple for groups
+    Color dangerColor = isDark
+        ? DarkColors.dangerColor
+        : LightColors.dangerColor;
 
-    // Mock Participants Data
-    final List<Map<String, String>> participants = [
-      {"name": "You", "status": "Admin", "color": "0xFF3B82F6"},
-      {"name": "Aditya Gupta", "status": "Available", "color": "0xFFEAB308"},
-      {"name": "Piyush Sharma", "status": "At the gym", "color": "0xFFEC4899"},
-      {"name": "Ram Kumar", "status": "Busy", "color": "0xFF10B981"},
-      {"name": "Amit Singh", "status": "Sleeping", "color": "0xFF6366F1"},
-      {"name": "Sneha", "status": "Available", "color": "0xFFF97316"},
-    ];
+    if (_isLoading) {
+      return Scaffold(
+        backgroundColor: bgColor,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios_new, color: textColor, size: 18.sp),
+            onPressed: () => context.pop(),
+          ),
+        ),
+        body: Center(child: CircularProgressIndicator(color: accentColor)),
+      );
+    }
 
     return Scaffold(
       backgroundColor: bgColor,
@@ -47,16 +169,37 @@ class GroupProfilePage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(
-              Icons.person_add_alt_1,
-              color: subTextColor,
-              size: 20.sp,
-            ),
-            onPressed: () {},
+            icon: Icon(Icons.edit, color: textColor, size: 20.sp),
+            onPressed: () async {
+              final result = await context.push(
+                '/edit_group',
+                extra: {'conversationId': widget.conversationId},
+              );
+              // Reload group data if edit was successful
+              if (result == true) {
+                _loadGroupData();
+              }
+            },
           ),
           IconButton(
-            icon: Icon(Icons.more_horiz, color: subTextColor, size: 20.sp),
-            onPressed: () {},
+            icon: Icon(Icons.person_add_alt_1, color: textColor, size: 20.sp),
+            onPressed: () async {
+              // Extract member IDs for existing member check
+              final memberIds = _members.map((m) => m['user_id'] as String).toList();
+              
+              final result = await context.push(
+                '/add_group_members',
+                extra: {
+                  'conversationId': widget.conversationId,
+                  'existingMemberIds': memberIds,
+                },
+              );
+              
+              // Reload group data if members were added
+              if (result == true) {
+                _loadGroupData();
+              }
+            },
           ),
           SizedBox(width: 2.w),
         ],
@@ -82,25 +225,25 @@ class GroupProfilePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    width: 38.w,
-                    height: 38.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: groupColor.withOpacity(0.2),
-                      border: Border.all(color: Colors.white, width: 4),
-                    ),
-                    child: Center(
-                      child: Text(
-                        name[0],
-                        style: GoogleFonts.inter(
-                          fontSize: 50.sp,
-                          fontWeight: FontWeight.bold,
-                          color: groupColor,
-                        ),
-                      ),
-                    ),
-                  ),
+                  _groupAvatarUrl != null && _groupAvatarUrl!.isNotEmpty
+                      ? Container(
+                          width: 38.w,
+                          height: 38.w,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 4),
+                          ),
+                          child: ClipOval(
+                            child: Image.network(
+                              _groupAvatarUrl!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return _buildFallbackAvatar(groupColor);
+                              },
+                            ),
+                          ),
+                        )
+                      : _buildFallbackAvatar(groupColor),
                 ],
               ),
             ),
@@ -109,79 +252,43 @@ class GroupProfilePage extends StatelessWidget {
 
             // Group Name
             Text(
-              name,
+              _groupName,
               style: GoogleFonts.inter(
                 color: textColor,
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 0.5.h),
+
+            SizedBox(height: 1.h),
+
+            // Group member count
             Text(
-              "Group · ${participants.length} members",
+              "Group · ${_members.length} members",
               style: GoogleFonts.inter(color: subTextColor, fontSize: 14.sp),
             ),
 
-            SizedBox(height: 4.h),
+            SizedBox(height: 2.h),
 
-            // --- ACTION BUTTONS (Updated Layout) ---
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Chat Button
-                _buildActionButton(
-                  Icons.chat_bubble,
-                  accentColor,
-                  14.w,
-                  18.sp,
-                  () => context.pop(),
-                ),
-
-                SizedBox(width: 6.w),
-
-                // Large Call Button (Center)
-                _buildActionButton(Icons.call, accentColor, 18.w, 24.sp, () {}),
-
-                SizedBox(width: 6.w),
-
-                // Video Button
-                _buildActionButton(
-                  Icons.videocam_rounded,
-                  accentColor,
-                  14.w,
-                  18.sp,
-                  () {},
-                ),
-              ],
-            ),
-
-            SizedBox(height: 4.h),
-            Divider(color: subTextColor.withOpacity(0.1), thickness: 1),
-
-            // Description Section
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Description",
-                    style: GoogleFonts.inter(
-                      color: accentColor,
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
+            // Description
+            if (_groupDescription != null && _groupDescription!.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                child: Text(
+                  _groupDescription!,
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.inter(
+                    color: textColor,
+                    fontSize: 14.sp,
+                    height: 1.5,
                   ),
-                  SizedBox(height: 1.h),
-                  Text(
-                    "Official group for daily updates and discussions. Please maintain decorum.",
-                    style: GoogleFonts.inter(color: textColor, fontSize: 14.sp),
-                  ),
-                ],
+                ),
               ),
-            ),
+            if (_groupDescription != null && _groupDescription!.isNotEmpty)
+              SizedBox(height: 1.h),
 
-            Divider(color: subTextColor.withOpacity(0.1), thickness: 8),
+            SizedBox(height: 3.h),
+            Divider(color: subTextColor.withOpacity(0.1), thickness: 1),
 
             // Participants List Header
             Padding(
@@ -190,45 +297,94 @@ class GroupProfilePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "${participants.length} members",
+                    "${_members.length} members",
                     style: GoogleFonts.inter(
                       color: subTextColor,
                       fontSize: 13.sp,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Icon(Icons.search, color: subTextColor, size: 18.sp),
+                  IconButton(
+                    icon: Icon(
+                      _isSearching ? Icons.close : Icons.search,
+                      color: subTextColor,
+                      size: 18.sp,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _isSearching = !_isSearching;
+                        if (!_isSearching) {
+                          _searchController.clear();
+                          _filteredMembers = _members;
+                        }
+                      });
+                    },
+                  ),
                 ],
               ),
             ),
+
+            // Search Field
+            if (_isSearching)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 1.h),
+                child: TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  style: GoogleFonts.inter(color: textColor),
+                  decoration: InputDecoration(
+                    hintText: 'Search members...',
+                    hintStyle: GoogleFonts.inter(color: subTextColor),
+                    prefixIcon: Icon(Icons.search, color: subTextColor),
+                    filled: true,
+                    fillColor: isDark ? DarkColors.glassBg : Colors.grey.shade100,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 4.w,
+                      vertical: 1.h,
+                    ),
+                  ),
+                ),
+              ),
 
             // Participants List
             ListView.builder(
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               padding: EdgeInsets.zero,
-              itemCount: participants.length,
+              itemCount: _filteredMembers.length,
               itemBuilder: (context, index) {
-                final user = participants[index];
+                final user = _filteredMembers[index];
+                final isAdmin = user['role'] == 'admin';
+                final isCurrentUser = user['is_current_user'] == true;
+
                 return ListTile(
                   contentPadding: EdgeInsets.symmetric(
                     horizontal: 6.w,
                     vertical: 0.5.h,
                   ),
-                  leading: CircleAvatar(
-                    backgroundColor: Color(
-                      int.parse(user['color']!),
-                    ).withOpacity(0.2),
-                    child: Text(
-                      user['name']![0],
-                      style: GoogleFonts.inter(
-                        color: Color(int.parse(user['color']!)),
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  leading:
+                      user['avatar_url'] != null &&
+                          user['avatar_url'].isNotEmpty
+                      ? CircleAvatar(
+                          backgroundImage: NetworkImage(user['avatar_url']),
+                          backgroundColor: accentColor.withOpacity(0.2),
+                        )
+                      : CircleAvatar(
+                          backgroundColor: accentColor.withOpacity(0.2),
+                          child: Text(
+                            user['name'][0].toUpperCase(),
+                            style: GoogleFonts.inter(
+                              color: accentColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                   title: Text(
-                    user['name']!,
+                    isCurrentUser ? 'You' : user['name'],
                     style: GoogleFonts.inter(
                       color: textColor,
                       fontWeight: FontWeight.w600,
@@ -236,36 +392,51 @@ class GroupProfilePage extends StatelessWidget {
                     ),
                   ),
                   subtitle: Text(
-                    user['status']!,
+                    isAdmin ? 'Admin' : 'Member',
                     style: GoogleFonts.inter(
                       color: subTextColor,
                       fontSize: 14.sp,
                     ),
                   ),
-                  trailing:
-                      user['status'] == "Admin"
-                          ? Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 2.w,
-                              vertical: 0.5.h,
+                  trailing: isAdmin
+                      ? Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 2.w,
+                            vertical: 0.5.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: accentColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(4),
+                            border: Border.all(
+                              color: accentColor.withOpacity(0.3),
                             ),
-                            decoration: BoxDecoration(
-                              color: accentColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(4),
-                              border: Border.all(
-                                color: accentColor.withOpacity(0.3),
-                              ),
+                          ),
+                          child: Text(
+                            "Group Admin",
+                            style: TextStyle(
+                              color: accentColor,
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.bold,
                             ),
-                            child: Text(
-                              "Group Admin",
-                              style: TextStyle(
-                                color: accentColor,
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          )
-                          : null,
+                          ),
+                        )
+                      : null,
+                  onTap: () {
+                    // Don't show options for current user
+                    if (!isCurrentUser) {
+                      _showMemberOptions(
+                        context,
+                        user['user_id']!,
+                        user['name']!,
+                        isAdmin,
+                        isDark,
+                        textColor,
+                        subTextColor,
+                        accentColor,
+                        dangerColor,
+                      );
+                    }
+                  },
                 );
               },
             ),
@@ -284,7 +455,7 @@ class GroupProfilePage extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              onTap: () {},
+              onTap: () => _exitGroup(context, dangerColor),
             ),
 
             // Report Group
@@ -309,32 +480,313 @@ class GroupProfilePage extends StatelessWidget {
     );
   }
 
-  // Unified Builder for all action buttons
-  Widget _buildActionButton(
-    IconData icon,
-    Color color,
-    double size,
-    double iconSize,
-    VoidCallback onTap,
+  void _showMemberOptions(
+    BuildContext context,
+    String userId,
+    String memberName,
+    bool isAdmin,
+    bool isDark,
+    Color textColor,
+    Color subTextColor,
+    Color accentColor,
+    Color dangerColor,
   ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.4),
-              blurRadius: 20, // Increased blur for glow effect
-              spreadRadius: 2,
-              offset: Offset(0, 4),
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: isDark ? DarkColors.glassBg : Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
             ),
-          ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 2.h),
+
+              // Handle bar
+              Container(
+                width: 12.w,
+                height: 0.5.h,
+                decoration: BoxDecoration(
+                  color: subTextColor.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+
+              SizedBox(height: 2.h),
+
+              // Member name
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6.w),
+                child: Text(
+                  memberName,
+                  style: GoogleFonts.inter(
+                    color: textColor,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 2.h),
+              Divider(color: subTextColor.withOpacity(0.1), height: 1),
+
+              // View Profile option
+              ListTile(
+                leading: Icon(
+                  Icons.person_outline,
+                  color: accentColor,
+                  size: 20.sp,
+                ),
+                title: Text(
+                  'View Profile',
+                  style: GoogleFonts.inter(
+                    color: textColor,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: () {
+                  context.pop(); // Close bottom sheet
+                  // TODO: Navigate to profile
+                },
+              ),
+
+              // Make/Dismiss Admin option
+              ListTile(
+                leading: Icon(
+                  isAdmin
+                      ? Icons.remove_moderator_outlined
+                      : Icons.admin_panel_settings_outlined,
+                  color: accentColor,
+                  size: 20.sp,
+                ),
+                title: Text(
+                  isAdmin ? 'Dismiss as Admin' : 'Make Group Admin',
+                  style: GoogleFonts.inter(
+                    color: textColor,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: () {
+                  context.pop(); // Close bottom sheet
+                  _toggleAdminStatus(context, userId, memberName, isAdmin, accentColor);
+                },
+              ),
+
+              // Remove from group option
+              ListTile(
+                leading: Icon(
+                  Icons.person_remove_outlined,
+                  color: dangerColor,
+                  size: 20.sp,
+                ),
+                title: Text(
+                  'Remove from Group',
+                  style: GoogleFonts.inter(
+                    color: dangerColor,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onTap: () {
+                  context.pop(); // Close bottom sheet
+                  _removeMember(context, userId, memberName, dangerColor);
+                },
+              ),
+
+              SizedBox(height: 2.h),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _exitGroup(BuildContext context, Color dangerColor) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Exit Group'),
+        content: Text('Are you sure you want to exit this group?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: dangerColor),
+            child: Text('Exit'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && _currentUserId != null) {
+      try {
+        await SupabaseService.client
+            .from('conversation_members')
+            .delete()
+            .eq('conversation_id', widget.conversationId)
+            .eq('user_id', _currentUserId!);
+
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('You have left the group')));
+          // Pop back to chat list
+          context.pop();
+          context.pop();
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Failed to exit group: $e')));
+        }
+      }
+    }
+  }
+
+  Future<void> _removeMember(
+    BuildContext context,
+    String userId,
+    String memberName,
+    Color dangerColor,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Remove Member'),
+        content: Text(
+          'Are you sure you want to remove $memberName from this group?',
         ),
-        child: Icon(icon, color: Colors.white, size: iconSize),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: dangerColor),
+            child: Text('Remove'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await SupabaseService.client
+            .from('conversation_members')
+            .delete()
+            .eq('conversation_id', widget.conversationId)
+            .eq('user_id', userId);
+
+        // Reload member list first
+        await _loadGroupData();
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('$memberName removed from group')),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to remove member: $e')),
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> _toggleAdminStatus(
+    BuildContext context,
+    String userId,
+    String memberName,
+    bool isCurrentlyAdmin,
+    Color accentColor,
+  ) async {
+    final newRole = isCurrentlyAdmin ? 'member' : 'admin';
+    final action = isCurrentlyAdmin ? 'dismiss $memberName as admin' : 'make $memberName a group admin';
+    
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(isCurrentlyAdmin ? 'Dismiss Admin' : 'Make Admin'),
+        content: Text('Are you sure you want to $action?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: accentColor),
+            child: Text('Confirm'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+        await SupabaseService.client
+            .from('conversation_members')
+            .update({'role': newRole})
+            .eq('conversation_id', widget.conversationId)
+            .eq('user_id', userId);
+
+        // Reload member list first
+        await _loadGroupData();
+
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                isCurrentlyAdmin
+                    ? '$memberName is now a member'
+                    : '$memberName is now an admin',
+              ),
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to update role: $e')),
+          );
+        }
+      }
+    }
+  }
+
+  Widget _buildFallbackAvatar(Color groupColor) {
+    return Container(
+      width: 38.w,
+      height: 38.w,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: groupColor.withOpacity(0.2),
+        border: Border.all(color: Colors.white, width: 4),
+      ),
+      child: Center(
+        child: Text(
+          _groupName.isNotEmpty ? _groupName[0].toUpperCase() : 'G',
+          style: GoogleFonts.inter(
+            fontSize: 50.sp,
+            fontWeight: FontWeight.bold,
+            color: groupColor,
+          ),
+        ),
       ),
     );
   }

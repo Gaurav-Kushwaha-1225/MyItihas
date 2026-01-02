@@ -9,6 +9,8 @@ import 'package:myitihas/features/social/presentation/bloc/profile_event.dart';
 import 'package:myitihas/features/social/presentation/bloc/profile_state.dart';
 import 'package:myitihas/features/social/domain/repositories/user_repository.dart';
 import 'package:myitihas/i18n/strings.g.dart';
+import 'package:go_router/go_router.dart';
+import 'package:myitihas/services/chat_service.dart';
 
 class ProfilePage extends StatelessWidget {
   final String? userId;
@@ -373,87 +375,196 @@ class _ProfileView extends StatelessWidget {
                                   ),
                                 ),
 
-                              // Follow/Unfollow button for other users
+                              // Follow/Unfollow and Message buttons for other users
                               if (!user.isCurrentUser)
-                                Container(
-                                  width: double.infinity,
-                                  height: 52,
-                                  decoration: BoxDecoration(
-                                    gradient: user.isFollowing
-                                        ? null
-                                        : Theme.of(context)
-                                              .extension<GradientExtension>()!
-                                              .primaryButtonGradient,
-                                    color: user.isFollowing
-                                        ? Theme.of(
+                                Row(
+                                  children: [
+                                    // Follow/Unfollow button
+                                    Expanded(
+                                      child: Container(
+                                        height: 52,
+                                        decoration: BoxDecoration(
+                                          gradient: user.isFollowing
+                                              ? null
+                                              : Theme.of(context)
+                                                    .extension<
+                                                      GradientExtension
+                                                    >()!
+                                                    .primaryButtonGradient,
+                                          color: user.isFollowing
+                                              ? Theme.of(context)
+                                                    .colorScheme
+                                                    .surfaceContainerHighest
+                                              : null,
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                          border: user.isFollowing
+                                              ? Border.all(
+                                                  color: Theme.of(
+                                                    context,
+                                                  ).colorScheme.outline,
+                                                  width: 1.5,
+                                                )
+                                              : null,
+                                          boxShadow: !user.isFollowing
+                                              ? [
+                                                  BoxShadow(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .primary
+                                                        .withValues(alpha: 0.3),
+                                                    blurRadius: 12,
+                                                    offset: const Offset(0, 6),
+                                                  ),
+                                                ]
+                                              : null,
+                                        ),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            context.read<ProfileBloc>().add(
+                                              ProfileEvent.toggleFollow(
+                                                user.id,
+                                              ),
+                                            );
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            shadowColor: Colors.transparent,
+                                            foregroundColor: user.isFollowing
+                                                ? Theme.of(
+                                                    context,
+                                                  ).colorScheme.onSurface
+                                                : Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                            elevation: 0,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                user.isFollowing
+                                                    ? Icons
+                                                          .person_remove_rounded
+                                                    : Icons.person_add_rounded,
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                user.isFollowing
+                                                    ? t.profile.unfollow
+                                                    : t.profile.follow,
+                                                style: const TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600,
+                                                  letterSpacing: 0.5,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+
+                                    const SizedBox(width: 12),
+
+                                    // Message button
+                                    Expanded(
+                                      child: Container(
+                                        height: 52,
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(
                                             context,
-                                          ).colorScheme.surfaceContainerHighest
-                                        : null,
-                                    borderRadius: BorderRadius.circular(16),
-                                    border: user.isFollowing
-                                        ? Border.all(
+                                          ).colorScheme.surfaceContainerHighest,
+                                          borderRadius: BorderRadius.circular(
+                                            16,
+                                          ),
+                                          border: Border.all(
                                             color: Theme.of(
                                               context,
                                             ).colorScheme.outline,
                                             width: 1.5,
-                                          )
-                                        : null,
-                                    boxShadow: !user.isFollowing
-                                        ? [
-                                            BoxShadow(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                                  .withValues(alpha: 0.3),
-                                              blurRadius: 12,
-                                              offset: const Offset(0, 6),
-                                            ),
-                                          ]
-                                        : null,
-                                  ),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      context.read<ProfileBloc>().add(
-                                        ProfileEvent.toggleFollow(user.id),
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.transparent,
-                                      shadowColor: Colors.transparent,
-                                      foregroundColor: user.isFollowing
-                                          ? Theme.of(
-                                              context,
-                                            ).colorScheme.onSurface
-                                          : Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16),
-                                      ),
-                                      elevation: 0,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          user.isFollowing
-                                              ? Icons.person_remove_rounded
-                                              : Icons.person_add_rounded,
-                                          size: 20,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          user.isFollowing
-                                              ? t.profile.unfollow
-                                              : t.profile.follow,
-                                          style: const TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 0.5,
                                           ),
                                         ),
-                                      ],
+                                        child: ElevatedButton(
+                                          onPressed: () async {
+                                            // Navigate to chat with this user
+                                            try {
+                                              final chatService =
+                                                  getIt<ChatService>();
+
+                                              // Get or create DM conversation
+                                              final conversationId =
+                                                  await chatService
+                                                      .getOrCreateDM(user.id);
+
+                                              // Navigate to chat detail page
+                                              if (context.mounted) {
+                                                context.push(
+                                                  '/chat_detail',
+                                                  extra: {
+                                                    'conversationId':
+                                                        conversationId,
+                                                    'userId': user.id,
+                                                    'name': user.displayName,
+                                                    'avatarUrl': user.avatarUrl,
+                                                    'isGroup': false,
+                                                  },
+                                                );
+                                              }
+                                            } catch (e) {
+                                              if (context.mounted) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      'Failed to open chat: $e',
+                                                    ),
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            shadowColor: Colors.transparent,
+                                            foregroundColor: Theme.of(
+                                              context,
+                                            ).colorScheme.onSurface,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                            elevation: 0,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.chat_bubble_rounded,
+                                                size: 20,
+                                              ),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                'Message',
+                                                style: const TextStyle(
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600,
+                                                  letterSpacing: 0.5,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
 
                               const SizedBox(height: 24),

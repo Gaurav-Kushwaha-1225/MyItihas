@@ -9,6 +9,11 @@ import 'package:myitihas/utils/theme.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/core/di/injection_container.dart';
+import 'package:myitihas/services/chat_service.dart';
+import 'package:myitihas/services/profile_service.dart';
+import 'package:myitihas/models/conversation.dart';
+import 'package:myitihas/services/supabase_service.dart';
 
 class ChatItihasPage extends StatefulWidget {
   const ChatItihasPage({super.key});
@@ -18,6 +23,9 @@ class ChatItihasPage extends StatefulWidget {
 }
 
 class _ChatItihasPageState extends State<ChatItihasPage> {
+  final ChatService _chatService = getIt<ChatService>();
+  final ProfileService _profileService = getIt<ProfileService>();
+
   int _selectedTabIndex = 0;
   final List<String> _tabs = ["Chats", "Groups", "Status"];
 
@@ -25,55 +33,180 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
   final Set<int> _selectedIndices = {};
   bool get _isSelectionMode => _selectedIndices.isNotEmpty;
 
-  // Mock Data with Types
-  final List<Map<String, dynamic>> _chats = [
-    {
-      "name": "Aditya Gupta",
-      "msg": "Ok, Let me check",
-      "time": "09:38 AM",
-      "unread": 0,
-      "isOnline": true,
-      "color": Colors.blueAccent,
-      "type": "chat",
-    },
-    {
-      "name": "Piyush Sharma",
-      "msg": "Piyush is typing...",
-      "time": "09:30 AM",
-      "unread": 2,
-      "isOnline": true,
-      "isTyping": true,
-      "color": Colors.orangeAccent,
-      "type": "chat",
-    },
-    {
-      "name": "Old Group",
-      "msg": "See you tomorrow at the temple...",
-      "time": "Yesterday",
-      "unread": 5,
-      "isOnline": false,
-      "color": Colors.purpleAccent,
-      "type": "group", // Identifies as a group
-    },
-    {
-      "name": "Ram Kumar",
-      "msg": "Oh... thank you so much!",
-      "time": "26 May",
-      "unread": 0,
-      "isOnline": true,
-      "color": Colors.teal,
-      "type": "chat",
-    },
-    {
-      "name": "Devotees United",
-      "msg": "Admin: Event started.",
-      "time": "12:00 PM",
-      "unread": 10,
-      "isOnline": false,
-      "color": Colors.indigoAccent,
-      "type": "group", // Identifies as a group
-    },
-  ];
+  // Real conversation data
+  List<Conversation> _conversations = [];
+  Map<String, Map<String, dynamic>> _userProfiles =
+      {}; // conversationId -> user profile
+  bool _isLoading = true;
+  String? _currentUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentUserId = SupabaseService.client.auth.currentUser?.id;
+    _loadConversations();
+  }
+
+  Future<void> _loadConversations() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // Filter based on selected tab: Chats (is_group=false) or Groups (is_group=true)
+      bool? isGroupFilter;
+      if (_selectedTabIndex == 0) {
+        // Chats tab
+        isGroupFilter = false;
+      } else if (_selectedTabIndex == 1) {
+        // Groups tab
+        isGroupFilter = true;
+      }
+      // Status tab (_selectedTabIndex == 2) doesn't load conversations
+
+      final conversations = await _chatService.getMyConversations(
+        isGroup: isGroupFilter,
+      );
+
+      // Fetch other user profiles for DM conversations only
+      for (final conversation in conversations) {
+        if (!conversation.isGroup) {
+          try {
+            final otherUserId = await _getOtherUserId(conversation.id);
+            if (otherUserId != null) {
+              final profile = await _profileService.getProfileById(otherUserId);
+              _userProfiles[conversation.id] = profile;
+            }
+          } catch (e) {
+            print(
+              'Error fetching profile for conversation ${conversation.id}: $e',
+            );
+          }
+        }
+      }
+
+      setState(() {
+        _conversations = conversations;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load conversations: $e')),
+        );
+      }
+    }
+  }
+
+  Future<String?> _getOtherUserId(String conversationId) async {
+    try {
+      final members = await SupabaseService.client
+          .from('conversation_members')
+          .select('user_id')
+          .eq('conversation_id', conversationId);
+
+      for (final member in members as List) {
+        final userId = member['user_id'] as String;
+        if (userId != _currentUserId) {
+          return userId;
+        }
+      }
+    } catch (e) {
+      print('Error getting other user ID: $e');
+    }
+    return null;
+  }
+
+  String _formatChatTime(DateTime? dateTime) {
+    if (dateTime == null) return '';
+
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    // Today: show time (e.g., "3:45 PM")
+    if (difference.inDays == 0) {
+      final hour = dateTime.hour;
+      final minute = dateTime.minute.toString().padLeft(2, '0');
+      final period = hour >= 12 ? 'PM' : 'AM';
+      final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+      return '$displayHour:$minute $period';
+    }
+
+    // Yesterday
+    if (difference.inDays == 1) {
+      return 'Yesterday';
+    }
+
+    // This week: show day name
+    if (difference.inDays < 7) {
+      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      return days[dateTime.weekday - 1];
+    }
+
+    // Older: show date (e.g., "26 Dec")
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${dateTime.day} ${months[dateTime.month - 1]}';
+  }
+
+  String _formatTimestamp(DateTime timestamp) {
+    // Convert to local time
+    final localTime = timestamp.toLocal();
+    final now = DateTime.now();
+    final difference = now.difference(localTime);
+
+    // Today: show time (e.g., "3:45 PM")
+    if (difference.inDays == 0) {
+      final hour = localTime.hour;
+      final minute = localTime.minute.toString().padLeft(2, '0');
+      final period = hour >= 12 ? 'PM' : 'AM';
+      final displayHour = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+      return '$displayHour:$minute $period';
+    }
+
+    // Yesterday
+    if (difference.inDays == 1) {
+      return 'Yesterday';
+    }
+
+    // This week: show day name
+    if (difference.inDays < 7) {
+      const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      return days[localTime.weekday - 1];
+    }
+
+    // Older: show date (e.g., "26 Dec")
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${localTime.day} ${months[localTime.month - 1]}';
+  }
 
   void _toggleSelection(int index) {
     setState(() {
@@ -95,7 +228,6 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
   Widget build(BuildContext context) {
     bool isDark = Theme.of(context).brightness == Brightness.dark;
     final textColor = isDark ? DarkColors.textPrimary : LightColors.textPrimary;
-    final glassBg = isDark ? DarkColors.glassBg : Colors.white.withOpacity(0.9);
     final accentColor = isDark
         ? DarkColors.accentPrimary
         : LightColors.accentPrimary;
@@ -108,15 +240,8 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
       end: Alignment.centerRight,
     );
 
-    // Filter Logic based on selected tab
-    List<Map<String, dynamic>> displayedChats = [];
-    if (_selectedTabIndex == 0) {
-      displayedChats = _chats.where((c) => c['type'] == 'chat').toList();
-    } else if (_selectedTabIndex == 1) {
-      displayedChats = _chats.where((c) => c['type'] == 'group').toList();
-    } else {
-      displayedChats = []; // Status not implemented yet
-    }
+    // No need to filter logic anymore - just show conversations
+    // Groups tab will show groups when we add group support later
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 2.5.w),
@@ -261,6 +386,11 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                           _selectedTabIndex = index;
                           _exitSelectionMode();
                         });
+                        // Reload conversations when switching tabs
+                        if (index != 2) {
+                          // Not Status tab
+                          _loadConversations();
+                        }
                       },
                       child: Container(
                         margin: EdgeInsets.only(right: 3.w),
@@ -296,11 +426,11 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                   }),
                 ),
               ),
-              _buildHeaderActionButton(
-                isDark,
-                Icons.add,
-                () => context.push('/new_chat'),
-              ),
+              _buildHeaderActionButton(isDark, Icons.add, () async {
+                await context.push('/new-chat');
+                // Refresh conversations after returning from new chat
+                _loadConversations();
+              }),
               SizedBox(width: 3.w),
               _buildHeaderActionButton(
                 isDark,
@@ -316,37 +446,85 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
           Expanded(
             child: _selectedTabIndex == 2
                 ? const StatusPage()
-                : displayedChats.isEmpty
+                : _isLoading
+                ? Center(child: CircularProgressIndicator(color: accentColor))
+                : _conversations.isEmpty
                 ? Center(
-                    child: Text(
-                      "No ${_tabs[_selectedTabIndex]} found",
-                      style: TextStyle(
-                        color: isDark ? Colors.grey : Colors.black54,
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.chat_bubble_outline,
+                          size: 64,
+                          color: isDark
+                              ? DarkColors.textSecondary
+                              : LightColors.textSecondary,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'No chats yet',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: isDark
+                                ? DarkColors.textSecondary
+                                : LightColors.textSecondary,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Tap + to start a new chat',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: isDark
+                                ? DarkColors.textSecondary
+                                : LightColors.textSecondary,
+                          ),
+                        ),
+                      ],
                     ),
                   )
                 : ListView.builder(
                     padding: EdgeInsets.symmetric(horizontal: 1.w),
-                    itemCount: displayedChats.length,
+                    itemCount: _conversations.length,
                     itemBuilder: (context, index) {
-                      final chat = displayedChats[index];
+                      final conversation = _conversations[index];
+                      final profile = _userProfiles[conversation.id];
                       final isSelected = _selectedIndices.contains(index);
+
+                      // Extract user data - for groups use conversation data, for DMs use profile
+                      final userName = conversation.isGroup
+                          ? conversation.title
+                          : (profile != null
+                                ? (profile['full_name'] as String? ??
+                                      profile['username'] as String? ??
+                                      'Unknown User')
+                                : 'Unknown User');
+                      final avatarUrl = conversation.isGroup
+                          ? conversation.avatarUrl
+                          : (profile?['avatar_url'] as String?);
+                      final otherUserId = conversation.isGroup
+                          ? null
+                          : (profile?['id'] as String? ?? '');
 
                       return GestureDetector(
                         onLongPress: () => _toggleSelection(index),
-                        onTap: () {
+                        onTap: () async {
                           if (_isSelectionMode) {
                             _toggleSelection(index);
                           } else {
-                            context.push(
+                            final result = await context.push(
                               '/chat_detail',
                               extra: {
-                                'name': chat['name'],
-                                'color': chat['color'],
-                                'isGroup':
-                                    chat['type'] == 'group', // Pass group flag
+                                'conversationId': conversation.id,
+                                'userId': otherUserId,
+                                'name': userName,
+                                'avatarUrl': avatarUrl,
+                                'isGroup': conversation.isGroup,
                               },
                             );
+                            // Always refresh conversations after returning from chat
+                            // (markAsRead was called, or messages might have been sent)
+                            _loadConversations();
                           }
                         },
                         child: AnimatedContainer(
@@ -369,24 +547,40 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                               Stack(
                                 clipBehavior: Clip.none,
                                 children: [
-                                  Container(
-                                    width: 14.w,
-                                    height: 14.w,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: chat['color'].withOpacity(0.2),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        chat['name'][0],
-                                        style: GoogleFonts.inter(
-                                          fontSize: 18.sp,
-                                          fontWeight: FontWeight.bold,
-                                          color: chat['color'],
+                                  // Avatar with NetworkImage or initials
+                                  avatarUrl != null && avatarUrl.isNotEmpty
+                                      ? CircleAvatar(
+                                          radius: 7.w,
+                                          backgroundImage: NetworkImage(
+                                            avatarUrl,
+                                          ),
+                                          onBackgroundImageError: (_, __) {},
+                                          backgroundColor: isDark
+                                              ? DarkColors.glassBg
+                                              : LightColors.glassBg,
+                                        )
+                                      : Container(
+                                          width: 14.w,
+                                          height: 14.w,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Color(
+                                              0xFF3B82F6,
+                                            ).withOpacity(0.2),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              userName.isNotEmpty
+                                                  ? userName[0].toUpperCase()
+                                                  : '?',
+                                              style: GoogleFonts.inter(
+                                                fontSize: 18.sp,
+                                                fontWeight: FontWeight.bold,
+                                                color: Color(0xFF3B82F6),
+                                              ),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  ),
                                   if (isSelected)
                                     Positioned(
                                       bottom: -1,
@@ -407,26 +601,30 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                         child: Icon(
                                           Icons.check_sharp,
                                           size: 16.sp,
-
                                           color: Colors.white,
                                         ),
                                       ),
-                                    )
-                                  else if (chat['isOnline'] == true)
+                                    ),
+                                  // Unread dot indicator
+                                  if (!isSelected &&
+                                      _currentUserId != null &&
+                                      conversation.isUnread(_currentUserId!))
                                     Positioned(
-                                      right: 1,
-                                      bottom: 1,
+                                      top: 0,
+                                      right: 0,
                                       child: Container(
                                         width: 3.w,
                                         height: 3.w,
                                         decoration: BoxDecoration(
-                                          color: DarkColors.profileGreen,
+                                          color: isDark
+                                              ? DarkColors.accentPrimary
+                                              : LightColors.accentPrimary,
                                           shape: BoxShape.circle,
                                           border: Border.all(
                                             color: isDark
                                                 ? DarkColors.bgColor
                                                 : Colors.white,
-                                            width: 1,
+                                            width: 1.5,
                                           ),
                                         ),
                                       ),
@@ -439,7 +637,9 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      chat['name'],
+                                      userName,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
                                       style: GoogleFonts.inter(
                                         fontSize: 16.sp,
                                         fontWeight: FontWeight.w700,
@@ -449,63 +649,49 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                       ),
                                     ),
                                     SizedBox(height: 0.5.h),
-                                    Text(
-                                      chat['msg'],
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.inter(
-                                        fontSize: 14.sp,
-                                        color: chat['isTyping'] == true
-                                            ? isDark
-                                                  ? DarkColors.accentPrimary
-                                                  : LightColors.accentPrimary
-                                            : (isDark
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            conversation.lastMessage ??
+                                                'Tap to chat',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.inter(
+                                              fontSize: 14.sp,
+                                              fontWeight:
+                                                  _currentUserId != null &&
+                                                      conversation.isUnread(
+                                                        _currentUserId!,
+                                                      )
+                                                  ? FontWeight.w700
+                                                  : FontWeight.normal,
+                                              color: isDark
                                                   ? DarkColors.textSecondary
-                                                  : LightColors.textSecondary),
-                                      ),
+                                                  : LightColors.textSecondary,
+                                            ),
+                                          ),
+                                        ),
+                                        if (conversation.lastMessageAt !=
+                                            null) ...[
+                                          SizedBox(width: 2.w),
+                                          Text(
+                                            _formatTimestamp(
+                                              conversation.lastMessageAt!,
+                                            ),
+                                            style: GoogleFonts.inter(
+                                              fontSize: 12.sp,
+                                              color: isDark
+                                                  ? DarkColors.textSecondary
+                                                  : LightColors.textSecondary,
+                                            ),
+                                          ),
+                                        ],
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
-                              if (!isSelected)
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      chat['time'],
-                                      style: GoogleFonts.inter(
-                                        fontSize: 12.sp,
-                                        color: isDark
-                                            ? DarkColors.textSecondary
-                                            : LightColors.textSecondary,
-                                      ),
-                                    ),
-                                    if (chat['unread'] > 0) ...[
-                                      SizedBox(height: 0.5.h),
-                                      Container(
-                                        height: 2.5.h,
-                                        width: 2.5.h,
-                                        padding: EdgeInsets.all(0.5.h),
-                                        decoration: BoxDecoration(
-                                          gradient: isDark
-                                              ? DarkColors.messageUserGradient
-                                              : LightColors.messageUserGradient,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            chat['unread'].toString(),
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
                             ],
                           ),
                         ),
