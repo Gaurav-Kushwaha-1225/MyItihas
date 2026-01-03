@@ -44,6 +44,12 @@ sealed class StoryGeneratorEvent with _$StoryGeneratorEvent {
   /// Generate the story
   const factory StoryGeneratorEvent.generate() = _Generate;
 
+  /// Generate an image for the current story
+  const factory StoryGeneratorEvent.generateImage() = _GenerateImage;
+
   /// Reset all selections
   const factory StoryGeneratorEvent.reset() = _Reset;
+
+  /// Load generated stories history
+  const factory StoryGeneratorEvent.loadHistory() = _LoadHistory;
 }

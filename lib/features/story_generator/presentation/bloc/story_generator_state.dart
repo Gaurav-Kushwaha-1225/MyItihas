@@ -32,6 +32,21 @@ abstract class StoryGeneratorState with _$StoryGeneratorState {
 
     /// Current quick prompt index in carousel
     @Default(0) int currentQuickPromptIndex,
+
+    /// Whether an image is being generated
+    @Default(false) bool isGeneratingImage,
+
+    /// The generated story image URL
+    String? storyImageUrl,
+
+    /// Error message for image generation
+    String? imageGenerationError,
+
+    /// List of generated stories history
+    @Default([]) List<Story> history,
+
+    /// Whether history is being loaded
+    @Default(false) bool isLoadingHistory,
   }) = _StoryGeneratorState;
 
   const StoryGeneratorState._();

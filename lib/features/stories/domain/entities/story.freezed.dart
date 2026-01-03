@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Story {
 
- String get id; String get title; String get scripture; String get story; String get quotes; String get trivia; String get activity; String get lesson; StoryAttributes get attributes; String? get imageUrl; String? get author; DateTime? get publishedAt; int get likes; int get views; bool get isFavorite; String? get authorId; User? get authorUser; int get commentCount; int get shareCount; bool get isLikedByCurrentUser;
+ String get id; String get title; String get scripture; String get story; String get quotes; String get trivia; String get activity; String get lesson; StoryAttributes get attributes; String? get imageUrl; String? get author; DateTime? get publishedAt; DateTime? get createdAt; int get likes; int get views; bool get isFavorite; String? get authorId; User? get authorUser; int get commentCount; int get shareCount; bool get isLikedByCurrentUser;
 /// Create a copy of Story
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -246,7 +246,7 @@ return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_t
 
 
 class _Story extends Story {
-  const _Story({required this.id, required this.title, required this.scripture, required this.story, required this.quotes, required this.trivia, required this.activity, required this.lesson, required this.attributes, this.imageUrl, this.author, this.publishedAt, this.likes = 0, this.views = 0, this.isFavorite = false, this.authorId, this.authorUser, this.commentCount = 0, this.shareCount = 0, this.isLikedByCurrentUser = false}): super._();
+  const _Story({required this.id, required this.title, required this.scripture, required this.story, required this.quotes, required this.trivia, required this.activity, required this.lesson, required this.attributes, this.imageUrl, this.author, this.publishedAt, this.createdAt, this.likes = 0, this.views = 0, this.isFavorite = false, this.authorId, this.authorUser, this.commentCount = 0, this.shareCount = 0, this.isLikedByCurrentUser = false}): super._();
   
 
 @override final  String id;
@@ -261,6 +261,7 @@ class _Story extends Story {
 @override final  String? imageUrl;
 @override final  String? author;
 @override final  DateTime? publishedAt;
+@override final  DateTime? createdAt;
 @override@JsonKey() final  int likes;
 @override@JsonKey() final  int views;
 @override@JsonKey() final  bool isFavorite;
@@ -370,7 +371,7 @@ $UserCopyWith<$Res>? get authorUser {
 /// @nodoc
 mixin _$StoryAttributes {
 
- String get storyType; String get theme; String get mainCharacterType; String get storySetting; String get timeEra; String get narrativePerspective; String get languageStyle; String get emotionalTone; String get narrativeStyle; String get plotStructure; String get storyLength; List<String> get references; List<String> get tags;
+ String get storyType; String get theme; String get mainCharacterType; String get storySetting; String get timeEra; String get narrativePerspective; String get languageStyle; String get emotionalTone; String get narrativeStyle; String get plotStructure; String get storyLength; List<String> get references; List<String> get tags; List<String> get characters;
 /// Create a copy of StoryAttributes
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -574,7 +575,7 @@ return $default(_that.storyType,_that.theme,_that.mainCharacterType,_that.storyS
 
 
 class _StoryAttributes implements StoryAttributes {
-  const _StoryAttributes({required this.storyType, required this.theme, required this.mainCharacterType, required this.storySetting, required this.timeEra, required this.narrativePerspective, required this.languageStyle, required this.emotionalTone, required this.narrativeStyle, required this.plotStructure, required this.storyLength, final  List<String> references = const [], final  List<String> tags = const []}): _references = references,_tags = tags;
+  const _StoryAttributes({required this.storyType, required this.theme, required this.mainCharacterType, required this.storySetting, required this.timeEra, required this.narrativePerspective, required this.languageStyle, required this.emotionalTone, required this.narrativeStyle, required this.plotStructure, required this.storyLength, final  List<String> references = const [], final  List<String> tags = const [], final  List<String> characters = const []}): _references = references,_tags = tags,_characters = characters;
   
 
 @override final  String storyType;
@@ -602,6 +603,13 @@ class _StoryAttributes implements StoryAttributes {
   return EqualUnmodifiableListView(_tags);
 }
 
+ final  List<String> _characters;
+@override@JsonKey() List<String> get characters {
+  if (_characters is EqualUnmodifiableListView) return _characters;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_characters);
+}
+
 
 /// Create a copy of StoryAttributes
 /// with the given fields replaced by the non-null parameter values.
@@ -613,12 +621,12 @@ _$StoryAttributesCopyWith<_StoryAttributes> get copyWith => __$StoryAttributesCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryAttributes&&(identical(other.storyType, storyType) || other.storyType == storyType)&&(identical(other.theme, theme) || other.theme == theme)&&(identical(other.mainCharacterType, mainCharacterType) || other.mainCharacterType == mainCharacterType)&&(identical(other.storySetting, storySetting) || other.storySetting == storySetting)&&(identical(other.timeEra, timeEra) || other.timeEra == timeEra)&&(identical(other.narrativePerspective, narrativePerspective) || other.narrativePerspective == narrativePerspective)&&(identical(other.languageStyle, languageStyle) || other.languageStyle == languageStyle)&&(identical(other.emotionalTone, emotionalTone) || other.emotionalTone == emotionalTone)&&(identical(other.narrativeStyle, narrativeStyle) || other.narrativeStyle == narrativeStyle)&&(identical(other.plotStructure, plotStructure) || other.plotStructure == plotStructure)&&(identical(other.storyLength, storyLength) || other.storyLength == storyLength)&&const DeepCollectionEquality().equals(other._references, _references)&&const DeepCollectionEquality().equals(other._tags, _tags));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryAttributes&&(identical(other.storyType, storyType) || other.storyType == storyType)&&(identical(other.theme, theme) || other.theme == theme)&&(identical(other.mainCharacterType, mainCharacterType) || other.mainCharacterType == mainCharacterType)&&(identical(other.storySetting, storySetting) || other.storySetting == storySetting)&&(identical(other.timeEra, timeEra) || other.timeEra == timeEra)&&(identical(other.narrativePerspective, narrativePerspective) || other.narrativePerspective == narrativePerspective)&&(identical(other.languageStyle, languageStyle) || other.languageStyle == languageStyle)&&(identical(other.emotionalTone, emotionalTone) || other.emotionalTone == emotionalTone)&&(identical(other.narrativeStyle, narrativeStyle) || other.narrativeStyle == narrativeStyle)&&(identical(other.plotStructure, plotStructure) || other.plotStructure == plotStructure)&&(identical(other.storyLength, storyLength) || other.storyLength == storyLength)&&const DeepCollectionEquality().equals(other._references, _references)&&const DeepCollectionEquality().equals(other._tags, _tags)&& const DeepCollectionEquality().equals(other._characters, _characters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,storyType,theme,mainCharacterType,storySetting,timeEra,narrativePerspective,languageStyle,emotionalTone,narrativeStyle,plotStructure,storyLength,const DeepCollectionEquality().hash(_references),const DeepCollectionEquality().hash(_tags));
+int get hashCode => Object.hash(runtimeType,storyType,theme,mainCharacterType,storySetting,timeEra,narrativePerspective,languageStyle,emotionalTone,narrativeStyle,plotStructure,storyLength,const DeepCollectionEquality().hash(_references),const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_characters));
 
 @override
 String toString() {
@@ -650,7 +658,7 @@ class __$StoryAttributesCopyWithImpl<$Res>
 
 /// Create a copy of StoryAttributes
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? storyType = null,Object? theme = null,Object? mainCharacterType = null,Object? storySetting = null,Object? timeEra = null,Object? narrativePerspective = null,Object? languageStyle = null,Object? emotionalTone = null,Object? narrativeStyle = null,Object? plotStructure = null,Object? storyLength = null,Object? references = null,Object? tags = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? storyType = null,Object? theme = null,Object? mainCharacterType = null,Object? storySetting = null,Object? timeEra = null,Object? narrativePerspective = null,Object? languageStyle = null,Object? emotionalTone = null,Object? narrativeStyle = null,Object? plotStructure = null,Object? storyLength = null,Object? references = null,Object? tags = null,Object? characters = null,}) {
   return _then(_StoryAttributes(
 storyType: null == storyType ? _self.storyType : storyType // ignore: cast_nullable_to_non_nullable
 as String,theme: null == theme ? _self.theme : theme // ignore: cast_nullable_to_non_nullable
@@ -665,6 +673,7 @@ as String,plotStructure: null == plotStructure ? _self.plotStructure : plotStruc
 as String,storyLength: null == storyLength ? _self.storyLength : storyLength // ignore: cast_nullable_to_non_nullable
 as String,references: null == references ? _self._references : references // ignore: cast_nullable_to_non_nullable
 as List<String>,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
+as List<String>,characters: null == characters ? _self._characters : characters // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
 }

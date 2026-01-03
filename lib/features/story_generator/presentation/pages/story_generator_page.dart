@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/config/routes.dart';
 import 'package:myitihas/core/di/injection_container.dart';
 import 'package:myitihas/features/story_generator/domain/entities/quick_prompt.dart';
 import 'package:myitihas/features/story_generator/presentation/bloc/story_generator_bloc.dart';
+import 'package:myitihas/features/story_generator/presentation/widgets/history_bottom_sheet.dart';
 import 'package:myitihas/features/story_generator/presentation/widgets/widgets.dart';
 import 'package:myitihas/i18n/strings.g.dart';
 
@@ -41,19 +43,19 @@ class _StoryGeneratorViewState extends State<_StoryGeneratorView> {
       listener: (context, state) {
         // Navigate to generated story page when story is ready
         if (state.generatedStory != null && !state.isGenerating) {
-          context.push('/story-generator/result', extra: state.generatedStory);
+          GeneratedStoryResultRoute($extra: state.generatedStory!).go(context);
         }
 
         // Show error snackbar
-        if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage!),
-              backgroundColor: colorScheme.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-        }
+        // if (state.errorMessage != null) {
+        //   ScaffoldMessenger.of(context).showSnackBar(
+        //     SnackBar(
+        //       content: Text(state.errorMessage!),
+        //       backgroundColor: colorScheme.error,
+        //       behavior: SnackBarBehavior.floating,
+        //     ),
+        //   );
+        // }
       },
       builder: (context, state) {
         return SafeArea(
@@ -77,6 +79,14 @@ class _StoryGeneratorViewState extends State<_StoryGeneratorView> {
                     onPressed: () => context.pop(),
                   ),
                   actions: [
+                    IconButton(
+                      icon: Icon(Icons.history_rounded),
+                      tooltip: 'History',
+                      onPressed: () {
+                        HapticFeedback.lightImpact();
+                        HistoryBottomSheet.show(context);
+                      },
+                    ),
                     IconButton(
                       icon: Icon(Icons.refresh_rounded),
                       tooltip: 'Reset',

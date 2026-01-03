@@ -18,6 +18,7 @@ abstract class Story with _$Story {
     String? imageUrl,
     String? author,
     DateTime? publishedAt,
+    DateTime? createdAt,
     @Default(0) int likes,
     @Default(0) int views,
     @Default(false) bool isFavorite,
@@ -47,5 +48,6 @@ abstract class StoryAttributes with _$StoryAttributes {
     required String storyLength,
     @Default([]) List<String> references,
     @Default([]) List<String> tags,
+    @Default([]) List<String> characters,
   }) = _StoryAttributes;
 }

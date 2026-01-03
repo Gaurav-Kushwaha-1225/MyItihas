@@ -14,4 +14,16 @@ abstract class StoryGeneratorRepository {
 
   /// Get random options for story generation
   Future<Either<Failure, StoryPrompt>> getRandomOptions();
+  /// Generate an image for the story
+  Future<Either<Failure, String>> generateStoryImage({
+    required String title,
+    required String story,
+    required String moral,
+  });
+
+  /// Save the generated story to Supabase
+  Future<Either<Failure, Story>> updateStory(Story story);
+
+  /// Get list of generated stories for the current user
+  Future<Either<Failure, List<Story>>> getGeneratedStories();
 }
