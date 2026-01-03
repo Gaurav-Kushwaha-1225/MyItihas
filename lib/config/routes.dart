@@ -30,6 +30,7 @@ import 'package:myitihas/features/social/presentation/pages/followers_page.dart'
 import 'package:myitihas/features/social/presentation/pages/following_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_view_page.dart';
+import 'package:myitihas/features/social/presentation/pages/create_post_page.dart';
 import 'package:myitihas/features/stories/presentation/pages/story_detail_route_page.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/presentation/pages/story_generator_page.dart';
@@ -361,6 +362,16 @@ class SocialFeedRoute extends GoRouteData with $SocialFeedRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const SocialFeedPage();
+  }
+}
+
+@TypedGoRoute<CreatePostRoute>(path: '/create-post')
+class CreatePostRoute extends GoRouteData with $CreatePostRoute {
+  const CreatePostRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const CreatePostPage();
   }
 }
 

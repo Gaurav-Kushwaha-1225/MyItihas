@@ -83,7 +83,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                         child: Image.network(
                           'https://www.transparenttextures.com/patterns/cubes.png',
                           repeat: ImageRepeat.repeat,
-                          errorBuilder: (_, __, ___) => const SizedBox(),
+                          errorBuilder: (_, _, _) => const SizedBox(),
                         ),
                       ),
                     ),

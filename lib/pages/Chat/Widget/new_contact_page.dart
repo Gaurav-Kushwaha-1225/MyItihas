@@ -16,7 +16,7 @@ class _NewContactPageState extends State<NewContactPage> {
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
-  String _selectedCountryCode = "+91";
+  final String _selectedCountryCode = "+91";
 
   @override
   Widget build(BuildContext context) {

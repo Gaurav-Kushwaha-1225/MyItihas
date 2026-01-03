@@ -25,6 +25,7 @@ List<RouteBase> get $appRoutes => [
   $settingsRoute,
   $editProfileRoute,
   $socialFeedRoute,
+  $createPostRoute,
   $profileRoute,
   $followersRoute,
   $followingRoute,
@@ -557,6 +558,32 @@ mixin $SocialFeedRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/social-feed');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $createPostRoute => GoRouteData.$route(
+  path: '/create-post',
+  factory: $CreatePostRoute._fromState,
+);
+
+mixin $CreatePostRoute on GoRouteData {
+  static CreatePostRoute _fromState(GoRouterState state) =>
+      const CreatePostRoute();
+
+  @override
+  String get location => GoRouteData.$location('/create-post');
 
   @override
   void go(BuildContext context) => context.go(location);

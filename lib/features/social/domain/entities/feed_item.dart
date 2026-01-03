@@ -149,4 +149,37 @@ extension FeedItemExtension on FeedItem {
     videoPost: (post) =>
         FeedItem.videoPost(post.copyWith(commentCount: post.commentCount + 1)),
   );
+
+  FeedItem decrementCommentCount() => when(
+    story: (story) => FeedItem.story(
+        story.copyWith(commentCount: (story.commentCount - 1).clamp(0, 999999))),
+    imagePost: (post) => FeedItem.imagePost(
+        post.copyWith(commentCount: (post.commentCount - 1).clamp(0, 999999))),
+    textPost: (post) => FeedItem.textPost(
+        post.copyWith(commentCount: (post.commentCount - 1).clamp(0, 999999))),
+    videoPost: (post) => FeedItem.videoPost(
+        post.copyWith(commentCount: (post.commentCount - 1).clamp(0, 999999))),
+  );
+
+  FeedItem incrementLikeCount() => when(
+    story: (story) =>
+        FeedItem.story(story.copyWith(likes: story.likes + 1)),
+    imagePost: (post) =>
+        FeedItem.imagePost(post.copyWith(likes: post.likes + 1)),
+    textPost: (post) =>
+        FeedItem.textPost(post.copyWith(likes: post.likes + 1)),
+    videoPost: (post) =>
+        FeedItem.videoPost(post.copyWith(likes: post.likes + 1)),
+  );
+
+  FeedItem decrementLikeCount() => when(
+    story: (story) =>
+        FeedItem.story(story.copyWith(likes: (story.likes - 1).clamp(0, 999999))),
+    imagePost: (post) =>
+        FeedItem.imagePost(post.copyWith(likes: (post.likes - 1).clamp(0, 999999))),
+    textPost: (post) =>
+        FeedItem.textPost(post.copyWith(likes: (post.likes - 1).clamp(0, 999999))),
+    videoPost: (post) =>
+        FeedItem.videoPost(post.copyWith(likes: (post.likes - 1).clamp(0, 999999))),
+  );
 }

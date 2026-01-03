@@ -213,7 +213,7 @@ class _AkhandaBharatMapPageState extends State<AkhandaBharatMapPage>
                                             width: width,
                                             height: height,
                                             fit: BoxFit.fill,
-                                            errorBuilder: (_, __, ___) =>
+                                            errorBuilder: (_, _, _) =>
                                                 Container(
                                                   color: Colors.transparent,
                                                 ),

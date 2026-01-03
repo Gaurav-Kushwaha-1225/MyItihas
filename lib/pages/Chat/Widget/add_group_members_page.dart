@@ -27,7 +27,7 @@ class _AddGroupMembersPageState extends State<AddGroupMembersPage> {
 
   List<Map<String, dynamic>> _allUsers = [];
   List<Map<String, dynamic>> _filteredUsers = [];
-  Set<String> _selectedUserIds = {};
+  final Set<String> _selectedUserIds = {};
   bool _isLoading = true;
   String? _currentUserId;
 

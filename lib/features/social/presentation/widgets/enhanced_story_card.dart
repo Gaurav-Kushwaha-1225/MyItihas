@@ -122,7 +122,7 @@ class _EnhancedStoryCardState extends State<EnhancedStoryCard>
           child: Stack(
             fit: StackFit.expand,
             children: [
-              Container(
+              SizedBox(
                 height: screenSize.height,
                 child: _HeroImageSection(story: story, gradients: gradients),
               ),

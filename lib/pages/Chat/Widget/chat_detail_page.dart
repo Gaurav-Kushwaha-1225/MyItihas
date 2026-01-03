@@ -280,8 +280,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
                               _toggleSelection(reversedIndex);
                             },
                             onTap: () {
-                              if (_isSelectionMode)
+                              if (_isSelectionMode) {
                                 _toggleSelection(reversedIndex);
+                              }
                             },
                             child: Container(
                               color: isSelected
