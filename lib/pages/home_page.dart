@@ -1,5 +1,6 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int currentBottomBarIndex = 0;
+  int? _enlargedIndex;
+  Timer? _shrinkTimer;
   bool _isBottomNavVisible = true;
   late AnimationController _navAnimationController;
   late Animation<Offset> _navSlideAnimation;
@@ -31,6 +34,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _initializeAnimations();
+    _startShrinkTimer(0);
+  }
+
+  void _startShrinkTimer(int index) {
+    _shrinkTimer?.cancel();
+    setState(() => _enlargedIndex = index);
+    _shrinkTimer = Timer(const Duration(milliseconds: 2500), () {
+      if (mounted) {
+        setState(() => _enlargedIndex = null);
+      }
+    });
   }
 
   void _initializeAnimations() {
@@ -55,6 +69,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _navAnimationController.dispose();
+    _shrinkTimer?.cancel();
     super.dispose();
   }
 
@@ -147,7 +162,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           alignment: Alignment.bottomCenter,
           children: [
             Padding(
-              padding: EdgeInsets.only(left: 2.w, right: 2.w, bottom: 1.5.h),
+              padding: EdgeInsets.only(left: 2.w, right: 2.w, bottom: 2.5.h),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(32.sp),
                 child: BackdropFilter(
@@ -227,10 +242,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     bool isDark,
     Gradient selectedGradient,
   ) {
-    final bool isSelected = currentBottomBarIndex == index;
+    bool isTabActive = currentBottomBarIndex == index;
+    bool isTemporarilyEnlarged = _enlargedIndex == index;
 
     return GestureDetector(
-      onTap: () => setState(() => currentBottomBarIndex = index),
+      onTap: () {
+        setState(() => currentBottomBarIndex = index);
+        _startShrinkTimer(index);
+      },
       behavior: HitTestBehavior.opaque,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -239,17 +258,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOutBack,
-            transform: Matrix4.translationValues(0, isSelected ? -1.0.h : 0, 0),
-            width: isSelected ? 13.w : 6.w,
-            height: isSelected ? 13.w : 6.w,
+            transform: Matrix4.translationValues(
+              0,
+              isTemporarilyEnlarged ? -1.0.h : 0,
+              0,
+            ),
+            width: isTemporarilyEnlarged ? 13.w : 10.w,
+            height: isTemporarilyEnlarged ? 13.w : 10.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: isSelected ? selectedGradient : null,
+              gradient: isTabActive ? selectedGradient : null,
             ),
             child: Icon(
               icon,
-              size: isSelected ? 20.sp : 18.sp,
-              color: isSelected
+              size: isTemporarilyEnlarged ? 20.sp : 18.sp,
+              color: isTabActive
                   ? Colors.white
                   : (isDark ? Colors.grey[500] : Colors.grey[600]),
             ),
@@ -261,8 +284,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               label,
               style: GoogleFonts.inter(
                 fontSize: 13.5.sp,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected
+                fontWeight: isTabActive ? FontWeight.w600 : FontWeight.w500,
+                color: isTabActive
                     ? (isDark ? Colors.white : const Color(0xFF6E48AA))
                     : (isDark ? Colors.grey[500] : Colors.grey[600]),
               ),

@@ -34,9 +34,6 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
   }
 
   Future<void> _initializeData() async {
-    print(
-      'DEBUG: GeneratedStoryDetailPage initialized with story ID: ${_story.id}',
-    );
     if (_story.imageUrl == null) {
       await _generateImage();
     }
@@ -111,10 +108,6 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
     final screenSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     bool isDark = theme.brightness == Brightness.dark;
-    print(_story.attributes.theme);
-    print(_story.attributes.theme);
-    print(_story.attributes.theme);
-    print(_story.attributes.theme);
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
