@@ -1,7 +1,9 @@
 // ignore_for_file: deprecated_member_use
 
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/features/home/presentation/pages/home_screen_page.dart';
 import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
@@ -17,14 +19,43 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int currentBottomBarIndex = 0;
+  bool _isBottomNavVisible = true;
+  late AnimationController _navAnimationController;
+  late Animation<Offset> _navSlideAnimation;
 
   final List<String> titles = ["Home", "Chat", "Social Feed", "Map", "Profile"];
 
   @override
   void initState() {
     super.initState();
+    _initializeAnimations();
+  }
+
+  void _initializeAnimations() {
+    // Create animation controller for smooth bottom nav movement
+    _navAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _navSlideAnimation =
+        Tween<Offset>(
+          begin: Offset.zero,
+          end: const Offset(0, 1), // Slide down to hide
+        ).animate(
+          CurvedAnimation(
+            parent: _navAnimationController,
+            curve: Curves.easeInOut,
+          ),
+        );
+  }
+
+  @override
+  void dispose() {
+    _navAnimationController.dispose();
+    super.dispose();
   }
 
   List<Widget> get pages => [
@@ -47,15 +78,32 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
+      body: NotificationListener<ScrollUpdateNotification>(
+        onNotification: (notification) {
+          final direction = notification.scrollDelta! > 0
+              ? ScrollDirection.reverse
+              : ScrollDirection.forward;
 
-      body: _buildBody(context),
-      bottomNavigationBar: _buildBottomNav(context),
+          if (direction == ScrollDirection.reverse && _isBottomNavVisible) {
+            setState(() => _isBottomNavVisible = false);
+            _navAnimationController.forward(); // Animate hide
+          } else if (direction == ScrollDirection.forward &&
+              !_isBottomNavVisible) {
+            setState(() => _isBottomNavVisible = true);
+            _navAnimationController.reverse(); // Animate show
+          }
+          return false;
+        },
+        child: _buildBody(context),
+      ),
+      bottomNavigationBar: _buildAnimatedBottomNav(context),
     );
   }
 
   Widget _buildBody(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
+      key: ValueKey<int>(currentBottomBarIndex),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -64,19 +112,18 @@ class _HomePageState extends State<HomePage> {
             colors: [
               Theme.of(context).primaryColor.withAlpha(5),
               Theme.of(context).brightness == Brightness.dark
-                  ? Color(0xFF1E293B)
-                  : Color(0xFFF1F5F9),
+                  ? const Color(0xFF1E293B)
+                  : const Color(0xFFF1F5F9),
             ],
             transform: GradientRotation(3.14 / 1.5),
           ),
         ),
-        key: ValueKey<int>(currentBottomBarIndex),
         child: pages[currentBottomBarIndex],
       ),
     );
   }
 
-  Widget _buildBottomNav(BuildContext context) {
+  Widget _buildAnimatedBottomNav(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     // NEW: blue–purple gradient (replace old pinkish one)
@@ -91,82 +138,84 @@ class _HomePageState extends State<HomePage> {
 
     final double barHeight = 9.h;
     final double containerHeight = 13.h;
-
-    return SizedBox(
-      height: containerHeight,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.bottomCenter,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 2.w, right: 2.w, bottom: 1.5.h),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(32.sp),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-                child: Container(
-                  height: barHeight,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.black.withOpacity(0.1)
-                        : Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(32.sp),
-                    border: Border.all(
-                      color: Colors.grey.withOpacity(0.25),
-                      width: 1.5,
+    return SlideTransition(
+      position: _navSlideAnimation,
+      child: SizedBox(
+        height: containerHeight,
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.bottomCenter,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 2.w, right: 2.w, bottom: 1.5.h),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32.sp),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+                  child: Container(
+                    height: barHeight,
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.black.withOpacity(0.1)
+                          : Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(32.sp),
+                      border: Border.all(
+                        color: Colors.grey.withOpacity(0.25),
+                        width: 1.5,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: 3.h,
-            left: 1.w,
-            right: 1.w,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _buildPopupItem(
-                  0,
-                  Icons.home_rounded,
-                  "Home",
-                  isDark,
-                  selectedGradient,
-                ),
-                _buildPopupItem(
-                  1,
-                  Icons.chat_bubble_rounded,
-                  "Chat",
-                  isDark,
-                  selectedGradient,
-                ),
-                _buildPopupItem(
-                  2,
-                  Icons.forum_rounded,
-                  "Social",
-                  isDark,
-                  selectedGradient,
-                ),
-                _buildPopupItem(
-                  3,
-                  Icons.map_rounded,
-                  "Map",
-                  isDark,
-                  selectedGradient,
-                ),
-                _buildPopupItem(
-                  4,
-                  Icons.person_rounded,
-                  "Profile",
-                  isDark,
-                  selectedGradient,
-                ),
-              ],
+            Positioned(
+              bottom: 3.h,
+              left: 1.w,
+              right: 1.w,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _buildPopupItem(
+                    0,
+                    Icons.home_rounded,
+                    "Home",
+                    isDark,
+                    selectedGradient,
+                  ),
+                  _buildPopupItem(
+                    1,
+                    Icons.chat_bubble_rounded,
+                    "Chat",
+                    isDark,
+                    selectedGradient,
+                  ),
+                  _buildPopupItem(
+                    2,
+                    Icons.forum_rounded,
+                    "Social",
+                    isDark,
+                    selectedGradient,
+                  ),
+                  _buildPopupItem(
+                    3,
+                    Icons.map_rounded,
+                    "Map",
+                    isDark,
+                    selectedGradient,
+                  ),
+                  _buildPopupItem(
+                    4,
+                    Icons.person_rounded,
+                    "Profile",
+                    isDark,
+                    selectedGradient,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

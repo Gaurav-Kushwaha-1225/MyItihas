@@ -105,12 +105,12 @@ class _HomeScreenViewState extends State<_HomeScreenView>
           color: colorScheme.primary,
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(
-              parent: BouncingScrollPhysics(),
+              parent: ClampingScrollPhysics(),
             ),
             slivers: [
               // App bar with greeting
               SliverAppBar(
-                expandedHeight: 72.h,
+                expandedHeight: 80.h,
                 floating: true,
                 pinned: false,
                 backgroundColor: Colors.transparent,
@@ -215,7 +215,7 @@ class _HomeScreenViewState extends State<_HomeScreenView>
                                 ),
                               ),
                             ),
-                            SizedBox(height: 16.h),
+                            SizedBox(height: 8.h),
                           ],
                         ),
                       ),
