@@ -1,10 +1,15 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
-import 'package:myitihas/i18n/strings.g.dart';
+import 'package:myitihas/utils/constants.dart';
+import 'package:rich_readmore/rich_readmore.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:myitihas/core/di/injection_container.dart';
+import 'package:myitihas/features/story_generator/domain/usecases/generate_story_image.dart';
+import 'package:myitihas/features/story_generator/domain/usecases/update_generated_story.dart';
+import 'package:myitihas/core/logging/talker_setup.dart';
 
 /// Page for displaying a generated story with save and share options
 class GeneratedStoryDetailPage extends StatefulWidget {
@@ -18,63 +23,126 @@ class GeneratedStoryDetailPage extends StatefulWidget {
 }
 
 class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
-  bool _isSaved = false;
-  bool _showFullStory = false;
+  late Story _story;
+  bool _isGeneratingImage = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _story = widget.story;
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    if (_story.imageUrl == null) {
+      await _generateImage();
+    }
+
+    // Both now use the same upsert logic in the repository
+    await _saveOrUpdateStory();
+  }
+
+  Future<void> _generateImage() async {
+    setState(() {
+      _isGeneratingImage = true;
+    });
+
+    try {
+      final generateImage = getIt<GenerateStoryImage>();
+      final result = await generateImage(
+        GenerateStoryImageParams(
+          title: _story.title,
+          story: _story.story,
+          moral: _story.lesson,
+        ),
+      );
+
+      result.fold(
+        (failure) {
+          talker.error('Failed to generate image: ${failure.message}');
+          setState(() {
+            _isGeneratingImage = false;
+          });
+        },
+        (imageUrl) {
+          if (!mounted) return;
+          setState(() {
+            imageUrl = imageUrl.split(',')[1];
+            _story = _story.copyWith(imageUrl: imageUrl);
+            _isGeneratingImage = false;
+          });
+        },
+      );
+    } catch (e) {
+      talker.error('Error in image generation flow: $e');
+      if (mounted) {
+        setState(() {
+          _isGeneratingImage = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _saveOrUpdateStory() async {
+    try {
+      final upsertStory = getIt<UpdateGeneratedStory>();
+      final result = await upsertStory(_story);
+      result.fold(
+        (failure) => talker.error('Failed to save story: ${failure.message}'),
+        (savedStory) {
+          talker.info('Story saved/updated successfully');
+          if (mounted) {
+            setState(() {
+              _story = savedStory;
+            });
+          }
+        },
+      );
+    } catch (e) {
+      talker.error('Error saving story: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final t = Translations.of(context);
-
+    final screenSize = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
+    bool isDark = theme.brightness == Brightness.dark;
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // App bar with gradient
-          SliverAppBar(
-            expandedHeight: 200.h,
-            pinned: true,
-            stretch: true,
-            backgroundColor: colorScheme.surface,
-            leading: IconButton(
-              icon: Container(
-                padding: EdgeInsets.all(8.w),
-                decoration: BoxDecoration(
-                  color: colorScheme.surface.withValues(alpha: 0.9),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.arrow_back_rounded,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-              onPressed: () => context.pop(),
+      backgroundColor: Colors.transparent,
+      body: SingleChildScrollView(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [
+                Theme.of(context).primaryColor.withAlpha(5),
+                Theme.of(context).brightness == Brightness.dark
+                    ? Color(0xFF1E293B)
+                    : Color(0xFFF1F5F9),
+              ],
+              transform: GradientRotation(3.14 / 1.5),
             ),
-            actions: [
-              IconButton(
-                icon: Container(
-                  padding: EdgeInsets.all(8.w),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface.withValues(alpha: 0.9),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.share_rounded,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                onPressed: _shareStory,
-              ),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                height: screenSize.height * 0.115,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [colorScheme.primary, colorScheme.secondary],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: 0.7),
+                      Colors.transparent,
+                    ],
                   ),
                 ),
-                child: Stack(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     // Pattern overlay
                     Positioned.fill(
@@ -84,266 +152,389 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                           'https://www.transparenttextures.com/patterns/cubes.png',
                           repeat: ImageRepeat.repeat,
                           errorBuilder: (_, _, _) => const SizedBox(),
-                        ),
-                      ),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_rounded),
+                      onPressed: () {
+                        context.pop();
+                      },
                     ),
-                    // Content
-                    Positioned(
-                      bottom: 60.h,
-                      left: 20.w,
-                      right: 20.w,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 6.h,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.auto_awesome,
-                                  size: 14.sp,
-                                  color: Colors.white,
+                    Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.share),
+                      onPressed: () {
+                        _shareStory();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Stack(
+                children: [
+                  Container(
+                    width: screenSize.width,
+                    height: screenSize.height * 0.4,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.15),
+                          blurRadius: 100,
+                          spreadRadius: 0,
+                          offset: const Offset(0, -6),
+                        ),
+                      ],
+                    ),
+                    child: _story.imageUrl != null
+                        ? Image.memory(
+                            _story.imageUrl != null &&
+                                    _story.imageUrl!.split(',').length > 1
+                                ? base64Decode(_story.imageUrl!.split(',')[1])
+                                : base64Decode(_story.imageUrl!),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Image.asset(
+                                  "assets/logo.png",
+                                  fit: BoxFit.cover,
                                 ),
-                                SizedBox(width: 6.w),
+                          )
+                        : _isGeneratingImage
+                        ? Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CircularProgressIndicator(color: Colors.white),
+                                SizedBox(height: 16),
                                 Text(
-                                  'AI Generated',
+                                  "Painting your story...",
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 12.sp,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ],
                             ),
+                          )
+                        : Image.asset(
+                            ("assets/logo.png"),
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) =>
+                                Center(
+                                  child: Icon(
+                                    Icons.error_outline_rounded,
+                                    color: Colors.red.shade200,
+                                  ),
+                                ),
                           ),
-                          SizedBox(height: 12.h),
+                  ),
+                  Container(
+                    width: screenSize.width,
+                    height: screenSize.height * 0.4,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [Colors.black, Colors.transparent],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    child: Container(
+                      width: screenSize.width,
+                      height: screenSize.height * 0.3,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 5,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              if (widget.story.attributes.storyType.isNotEmpty)
+                                Chip(
+                                  padding: EdgeInsets.zero,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  label: Text(
+                                    widget.story.attributes.storyType,
+                                  ),
+                                  labelStyle: Theme.of(
+                                    context,
+                                  ).textTheme.labelSmall,
+                                  visualDensity: VisualDensity.compact,
+                                  backgroundColor: Colors.transparent,
+                                  side: BorderSide(width: 0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      20,
+                                    ),
+                                  ),
+                                ),
+                              SizedBox(width: screenSize.width * 0.02),
+                              if (widget.story.attributes.theme.isNotEmpty)
+                                Chip(
+                                  padding: EdgeInsets.zero,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  label: Text(widget.story.attributes.theme),
+                                  labelStyle: Theme.of(
+                                    context,
+                                  ).textTheme.labelSmall,
+                                  visualDensity: VisualDensity.compact,
+                                  backgroundColor: Colors.transparent,
+                                  side: BorderSide(width: 0),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadiusGeometry.circular(
+                                      20,
+                                    ),
+                                  ),
+                                ),
+
+                              SizedBox(width: screenSize.width * 0.02),
+                              if (widget
+                                  .story
+                                  .attributes
+                                  .mainCharacterType
+                                  .isNotEmpty)
+                                Flexible(
+                                  fit: FlexFit.loose,
+                                  child: Chip(
+                                    padding: EdgeInsets.zero,
+                                    materialTapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    label: Text(
+                                      widget.story.attributes.mainCharacterType,
+                                    ),
+                                    labelStyle: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall!
+                                        .copyWith(
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                    visualDensity: VisualDensity.compact,
+                                    backgroundColor: Colors.transparent,
+                                    side: BorderSide(width: 0),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadiusGeometry.circular(20),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
                           Text(
                             widget.story.title,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24.sp,
+                            maxLines: 2,
+                            style: theme.textTheme.headlineMedium?.copyWith(
                               fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(color: Colors.black26, blurRadius: 4),
-                              ],
+                              overflow: TextOverflow.ellipsis,
                             ),
+                          ),
+                          SizedBox(height: screenSize.height * 0.005),
+                          Text(
+                            widget.story.scripture,
+                            maxLines: 1,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                              color: isDark
+                                  ? DarkColors.textSecondary
+                                  : LightColors.textSecondary,
+                            ),
+                          ),
+                          SizedBox(height: screenSize.height * 0.005),
+                          Row(
+                            children: [
+                              Text(
+                                "By ${_story.authorUser?.displayName ?? _story.author ?? "MyItihas AI StoryTeller"}",
+                                maxLines: 1,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  overflow: TextOverflow.ellipsis,
+                                  color: isDark
+                                      ? DarkColors.textPrimary
+                                      : LightColors.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                "  •  ",
+                                maxLines: 1,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  overflow: TextOverflow.ellipsis,
+                                  color: isDark
+                                      ? DarkColors.textPrimary
+                                      : LightColors.textPrimary,
+                                ),
+                              ),
+                              Text(
+                                "${estimateReadingTimeMinutes(widget.story.story)} min read",
+                                maxLines: 1,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  overflow: TextOverflow.ellipsis,
+                                  color: isDark
+                                      ? DarkColors.textPrimary
+                                      : LightColors.textPrimary,
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
-          ),
-          // Story content
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(20.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Attributes chips
-                  Wrap(
-                    spacing: 8.w,
-                    runSpacing: 8.h,
+              SizedBox(height: screenSize.height * 0.01),
+              // Story content
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: RichReadMoreText(
+                  TextSpan(
                     children: [
-                      _AttributeChip(
-                        icon: Icons.book_rounded,
-                        label: widget.story.scripture,
+                      TextSpan(
+                        text: widget.story.story.isNotEmpty
+                            ? widget.story.story[0]
+                            : '',
+                        style: theme.textTheme.bodyMedium!.copyWith(
+                          fontSize:
+                              theme.textTheme.bodyLarge!.fontSize! *
+                              2, // bigger
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.primary,
+                        ),
                       ),
-                      _AttributeChip(
-                        icon: Icons.category_rounded,
-                        label: widget.story.attributes.storyType,
-                      ),
-                      _AttributeChip(
-                        icon: Icons.lightbulb_rounded,
-                        label: widget.story.attributes.theme,
+                      TextSpan(
+                        text: widget.story.story.length > 1
+                            ? widget.story.story.substring(1)
+                            : '',
+                        style: theme.textTheme.bodyMedium,
                       ),
                     ],
                   ),
-                  SizedBox(height: 24.h),
-
-                  // Story section
-                  _SectionHeader(title: 'Story', icon: Icons.auto_stories),
-                  SizedBox(height: 12.h),
-                  AnimatedCrossFade(
-                    firstChild: Text(
-                      widget.story.story.length > 500
-                          ? '${widget.story.story.substring(0, 500)}...'
-                          : widget.story.story,
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        height: 1.7,
-                        color: colorScheme.onSurface.withValues(alpha: 0.85),
-                      ),
-                    ),
-                    secondChild: Text(
-                      widget.story.story,
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        height: 1.7,
-                        color: colorScheme.onSurface.withValues(alpha: 0.85),
-                      ),
-                    ),
-                    crossFadeState: _showFullStory
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    duration: const Duration(milliseconds: 300),
+                  settings: LineModeSettings(
+                    trimLines: 15,
+                    trimCollapsedText: '...Read more',
+                    trimExpandedText: ' Read less ',
                   ),
-                  if (widget.story.story.length > 500)
-                    TextButton(
-                      onPressed: () {
-                        setState(() => _showFullStory = !_showFullStory);
-                      },
-                      child: Text(
-                        _showFullStory
-                            ? t.stories.readLess
-                            : t.stories.readMore,
-                      ),
-                    ),
-                  SizedBox(height: 24.h),
-
-                  // Quote section
-                  if (widget.story.quotes.isNotEmpty) ...[
-                    _QuoteCard(quote: widget.story.quotes),
-                    SizedBox(height: 24.h),
-                  ],
-
-                  // Lesson section
-                  if (widget.story.lesson.isNotEmpty) ...[
-                    _SectionHeader(title: 'Lesson', icon: Icons.school_rounded),
-                    SizedBox(height: 12.h),
-                    Container(
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: colorScheme.tertiaryContainer.withValues(
-                          alpha: 0.3,
-                        ),
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Text(
-                        widget.story.lesson,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          height: 1.6,
-                          color: colorScheme.onTertiaryContainer,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 24.h),
-                  ],
-
-                  // Trivia section
-                  if (widget.story.trivia.isNotEmpty) ...[
-                    _SectionHeader(
-                      title: 'Did You Know?',
-                      icon: Icons.tips_and_updates_rounded,
-                    ),
-                    SizedBox(height: 12.h),
-                    Container(
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: colorScheme.secondaryContainer.withValues(
-                          alpha: 0.3,
-                        ),
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.lightbulb_outline_rounded,
-                            color: colorScheme.secondary,
-                            size: 20.sp,
-                          ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: Text(
-                              widget.story.trivia,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                height: 1.5,
-                                color: colorScheme.onSecondaryContainer,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 24.h),
-                  ],
-
-                  // Activity section
-                  if (widget.story.activity.isNotEmpty) ...[
-                    _SectionHeader(
-                      title: 'Activity',
-                      icon: Icons.edit_note_rounded,
-                    ),
-                    SizedBox(height: 12.h),
-                    Container(
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer.withValues(
-                          alpha: 0.3,
-                        ),
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(
-                          color: colorScheme.primary.withValues(alpha: 0.2),
-                        ),
-                      ),
-                      child: Text(
-                        widget.story.activity,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          height: 1.5,
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      ),
-                    ),
-                  ],
-                  SizedBox(height: 100.h),
-                ],
+                ),
               ),
-            ),
+
+              // Quotes section
+              if (widget.story.quotes.isNotEmpty)
+                SizedBox(height: screenSize.height * 0.02),
+              if (widget.story.quotes.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Quote\n",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize:
+                                theme.textTheme.bodyLarge!.fontSize! *
+                                2, // bigger
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.story.quotes,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              // Trivia section
+              if (widget.story.trivia.isNotEmpty)
+                SizedBox(height: screenSize.height * 0.02),
+              if (widget.story.trivia.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Trivia\n",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize:
+                                theme.textTheme.bodyLarge!.fontSize! *
+                                2, // bigger
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.story.trivia,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              // Lesson section
+              if (widget.story.lesson.isNotEmpty)
+                SizedBox(height: screenSize.height * 0.02),
+              if (widget.story.lesson.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Lesson\n",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize:
+                                theme.textTheme.bodyLarge!.fontSize! *
+                                2, // bigger
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.story.lesson,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              // Activity section
+              if (widget.story.activity.isNotEmpty)
+                SizedBox(height: screenSize.height * 0.02),
+              if (widget.story.activity.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: RichText(
+                    text: TextSpan(
+                      children: [
+                        TextSpan(
+                          text: "Activity\n",
+                          style: theme.textTheme.bodyMedium!.copyWith(
+                            fontSize:
+                                theme.textTheme.bodyLarge!.fontSize! *
+                                2, // bigger
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        TextSpan(
+                          text: widget.story.activity,
+                          style: theme.textTheme.bodyMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              SizedBox(height: screenSize.height * 0.02),
+            ],
           ),
-        ],
-      ),
-      bottomSheet: _BottomActions(
-        isSaved: _isSaved,
-        onSave: _saveStory,
-        onGenerateAnother: () => context.pop(),
-      ),
-    );
-  }
-
-  void _saveStory() {
-    HapticFeedback.mediumImpact();
-    setState(() => _isSaved = true);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.check_circle_rounded, color: Colors.white),
-            SizedBox(width: 12.w),
-            Text('Story saved to your library'),
-          ],
         ),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Theme.of(context).colorScheme.primary,
       ),
     );
-
-    // TODO: Implement actual save to local storage
   }
 
   void _shareStory() {
@@ -364,179 +555,13 @@ Generated with MyItihas - Discover Indian Mythology
   }
 }
 
-class _AttributeChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _AttributeChip({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14.sp, color: colorScheme.primary),
-          SizedBox(width: 6.w),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
+int estimateReadingTimeMinutes(String text, {int wordsPerMinute = 150}) {
+  if (text.trim().isEmpty || wordsPerMinute <= 0) {
+    return 0;
   }
-}
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final IconData icon;
+  final words = text.trim().split(RegExp(r'\s+'));
+  final wordCount = words.length;
 
-  const _SectionHeader({required this.title, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Row(
-      children: [
-        Icon(icon, size: 20.sp, color: colorScheme.primary),
-        SizedBox(width: 8.w),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _QuoteCard extends StatelessWidget {
-  final String quote;
-
-  const _QuoteCard({required this.quote});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Container(
-      padding: EdgeInsets.all(20.w),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            colorScheme.primaryContainer.withValues(alpha: 0.5),
-            colorScheme.secondaryContainer.withValues(alpha: 0.5),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            Icons.format_quote_rounded,
-            size: 32.sp,
-            color: colorScheme.primary.withValues(alpha: 0.5),
-          ),
-          SizedBox(height: 12.h),
-          Text(
-            quote,
-            style: TextStyle(
-              fontSize: 15.sp,
-              fontStyle: FontStyle.italic,
-              height: 1.6,
-              color: colorScheme.onSurface,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BottomActions extends StatelessWidget {
-  final bool isSaved;
-  final VoidCallback onSave;
-  final VoidCallback onGenerateAnother;
-
-  const _BottomActions({
-    required this.isSaved,
-    required this.onSave,
-    required this.onGenerateAnother,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final t = Translations.of(context);
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        16.w,
-        12.h,
-        16.w,
-        12.h + MediaQuery.of(context).padding.bottom,
-      ),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: isSaved ? null : onSave,
-              icon: Icon(
-                isSaved ? Icons.check_rounded : Icons.bookmark_add_outlined,
-              ),
-              label: Text(isSaved ? 'Saved' : t.storyGenerator.saveStory),
-              style: OutlinedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: FilledButton.icon(
-              onPressed: onGenerateAnother,
-              icon: Icon(Icons.add_rounded),
-              label: Text('New Story'),
-              style: FilledButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  return (wordCount / wordsPerMinute).ceil();
 }

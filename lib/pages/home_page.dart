@@ -1,7 +1,10 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:async';
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/features/home/presentation/pages/home_screen_page.dart';
 import 'package:myitihas/pages/Chat/chat_itihas_page.dart';
@@ -17,14 +20,57 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int currentBottomBarIndex = 0;
+  int? _enlargedIndex;
+  Timer? _shrinkTimer;
+  bool _isBottomNavVisible = true;
+  late AnimationController _navAnimationController;
+  late Animation<Offset> _navSlideAnimation;
 
   final List<String> titles = ["Home", "Chat", "Social Feed", "Map", "Profile"];
 
   @override
   void initState() {
     super.initState();
+    _initializeAnimations();
+    _startShrinkTimer(0);
+  }
+
+  void _startShrinkTimer(int index) {
+    _shrinkTimer?.cancel();
+    setState(() => _enlargedIndex = index);
+    _shrinkTimer = Timer(const Duration(milliseconds: 2500), () {
+      if (mounted) {
+        setState(() => _enlargedIndex = null);
+      }
+    });
+  }
+
+  void _initializeAnimations() {
+    // Create animation controller for smooth bottom nav movement
+    _navAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+
+    _navSlideAnimation =
+        Tween<Offset>(
+          begin: Offset.zero,
+          end: const Offset(0, 1), // Slide down to hide
+        ).animate(
+          CurvedAnimation(
+            parent: _navAnimationController,
+            curve: Curves.easeInOut,
+          ),
+        );
+  }
+
+  @override
+  void dispose() {
+    _navAnimationController.dispose();
+    _shrinkTimer?.cancel();
+    super.dispose();
   }
 
   List<Widget> get pages => [
@@ -47,14 +93,32 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: _buildBody(context),
-      bottomNavigationBar: _buildBottomNav(context),
+      body: NotificationListener<ScrollUpdateNotification>(
+        onNotification: (notification) {
+          final direction = notification.scrollDelta! > 0
+              ? ScrollDirection.reverse
+              : ScrollDirection.forward;
+
+          if (direction == ScrollDirection.reverse && _isBottomNavVisible) {
+            setState(() => _isBottomNavVisible = false);
+            _navAnimationController.forward(); // Animate hide
+          } else if (direction == ScrollDirection.forward &&
+              !_isBottomNavVisible) {
+            setState(() => _isBottomNavVisible = true);
+            _navAnimationController.reverse(); // Animate show
+          }
+          return false;
+        },
+        child: _buildBody(context),
+      ),
+      bottomNavigationBar: _buildAnimatedBottomNav(context),
     );
   }
 
   Widget _buildBody(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
+      key: ValueKey<int>(currentBottomBarIndex),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -63,19 +127,18 @@ class _HomePageState extends State<HomePage> {
             colors: [
               Theme.of(context).primaryColor.withAlpha(5),
               Theme.of(context).brightness == Brightness.dark
-                  ? Color(0xFF1E293B)
-                  : Color(0xFFF1F5F9),
+                  ? const Color(0xFF1E293B)
+                  : const Color(0xFFF1F5F9),
             ],
             transform: GradientRotation(3.14 / 1.5),
           ),
         ),
-        key: ValueKey<int>(currentBottomBarIndex),
         child: pages[currentBottomBarIndex],
       ),
     );
   }
 
-  Widget _buildBottomNav(BuildContext context) {
+  Widget _buildAnimatedBottomNav(BuildContext context) {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     // NEW: blue–purple gradient (replace old pinkish one)
@@ -90,82 +153,84 @@ class _HomePageState extends State<HomePage> {
 
     final double barHeight = 9.h;
     final double containerHeight = 13.h;
-
-    return SizedBox(
-      height: containerHeight,
-      child: Stack(
-        clipBehavior: Clip.none,
-        alignment: Alignment.bottomCenter,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 2.w, right: 2.w, bottom: 1.5.h),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(32.sp),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-                child: Container(
-                  height: barHeight,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.black.withOpacity(0.1)
-                        : Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(32.sp),
-                    border: Border.all(
-                      color: Colors.grey.withOpacity(0.25),
-                      width: 1.5,
+    return SlideTransition(
+      position: _navSlideAnimation,
+      child: SizedBox(
+        height: containerHeight,
+        child: Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.bottomCenter,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(left: 2.w, right: 2.w, bottom: 2.5.h),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32.sp),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
+                  child: Container(
+                    height: barHeight,
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.black.withOpacity(0.1)
+                          : Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(32.sp),
+                      border: Border.all(
+                        color: Colors.grey.withOpacity(0.25),
+                        width: 1.5,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            bottom: 3.h,
-            left: 1.w,
-            right: 1.w,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _buildPopupItem(
-                  0,
-                  Icons.home_rounded,
-                  "Home",
-                  isDark,
-                  selectedGradient,
-                ),
-                _buildPopupItem(
-                  1,
-                  Icons.chat_bubble_rounded,
-                  "Chat",
-                  isDark,
-                  selectedGradient,
-                ),
-                _buildPopupItem(
-                  2,
-                  Icons.forum_rounded,
-                  "Social",
-                  isDark,
-                  selectedGradient,
-                ),
-                _buildPopupItem(
-                  3,
-                  Icons.map_rounded,
-                  "Map",
-                  isDark,
-                  selectedGradient,
-                ),
-                _buildPopupItem(
-                  4,
-                  Icons.person_rounded,
-                  "Profile",
-                  isDark,
-                  selectedGradient,
-                ),
-              ],
+            Positioned(
+              bottom: 3.h,
+              left: 1.w,
+              right: 1.w,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  _buildPopupItem(
+                    0,
+                    Icons.home_rounded,
+                    "Home",
+                    isDark,
+                    selectedGradient,
+                  ),
+                  _buildPopupItem(
+                    1,
+                    Icons.chat_bubble_rounded,
+                    "Chat",
+                    isDark,
+                    selectedGradient,
+                  ),
+                  _buildPopupItem(
+                    2,
+                    Icons.forum_rounded,
+                    "Social",
+                    isDark,
+                    selectedGradient,
+                  ),
+                  _buildPopupItem(
+                    3,
+                    Icons.map_rounded,
+                    "Map",
+                    isDark,
+                    selectedGradient,
+                  ),
+                  _buildPopupItem(
+                    4,
+                    Icons.person_rounded,
+                    "Profile",
+                    isDark,
+                    selectedGradient,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -177,10 +242,14 @@ class _HomePageState extends State<HomePage> {
     bool isDark,
     Gradient selectedGradient,
   ) {
-    final bool isSelected = currentBottomBarIndex == index;
+    bool isTabActive = currentBottomBarIndex == index;
+    bool isTemporarilyEnlarged = _enlargedIndex == index;
 
     return GestureDetector(
-      onTap: () => setState(() => currentBottomBarIndex = index),
+      onTap: () {
+        setState(() => currentBottomBarIndex = index);
+        _startShrinkTimer(index);
+      },
       behavior: HitTestBehavior.opaque,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -189,17 +258,21 @@ class _HomePageState extends State<HomePage> {
           AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOutBack,
-            transform: Matrix4.translationValues(0, isSelected ? -1.0.h : 0, 0),
-            width: isSelected ? 13.w : 6.w,
-            height: isSelected ? 13.w : 6.w,
+            transform: Matrix4.translationValues(
+              0,
+              isTemporarilyEnlarged ? -1.0.h : 0,
+              0,
+            ),
+            width: isTemporarilyEnlarged ? 13.w : 10.w,
+            height: isTemporarilyEnlarged ? 13.w : 10.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: isSelected ? selectedGradient : null,
+              gradient: isTabActive ? selectedGradient : null,
             ),
             child: Icon(
               icon,
-              size: isSelected ? 20.sp : 18.sp,
-              color: isSelected
+              size: isTemporarilyEnlarged ? 20.sp : 18.sp,
+              color: isTabActive
                   ? Colors.white
                   : (isDark ? Colors.grey[500] : Colors.grey[600]),
             ),
@@ -211,8 +284,8 @@ class _HomePageState extends State<HomePage> {
               label,
               style: GoogleFonts.inter(
                 fontSize: 13.5.sp,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected
+                fontWeight: isTabActive ? FontWeight.w600 : FontWeight.w500,
+                color: isTabActive
                     ? (isDark ? Colors.white : const Color(0xFF6E48AA))
                     : (isDark ? Colors.grey[500] : Colors.grey[600]),
               ),

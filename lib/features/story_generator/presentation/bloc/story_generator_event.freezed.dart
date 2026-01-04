@@ -55,7 +55,7 @@ extension StoryGeneratorEventPatterns on StoryGeneratorEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initialize value)?  initialize,TResult Function( _TogglePromptType value)?  togglePromptType,TResult Function( _SelectOption value)?  selectOption,TResult Function( _UpdateRawPrompt value)?  updateRawPrompt,TResult Function( _ApplyQuickPrompt value)?  applyQuickPrompt,TResult Function( _Randomize value)?  randomize,TResult Function( _UpdateGeneratorOptions value)?  updateGeneratorOptions,TResult Function( _Generate value)?  generate,TResult Function( _Reset value)?  reset,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initialize value)?  initialize,TResult Function( _TogglePromptType value)?  togglePromptType,TResult Function( _SelectOption value)?  selectOption,TResult Function( _UpdateRawPrompt value)?  updateRawPrompt,TResult Function( _ApplyQuickPrompt value)?  applyQuickPrompt,TResult Function( _Randomize value)?  randomize,TResult Function( _UpdateGeneratorOptions value)?  updateGeneratorOptions,TResult Function( _Generate value)?  generate,TResult Function( _GenerateImage value)?  generateImage,TResult Function( _Reset value)?  reset,TResult Function( _LoadHistory value)?  loadHistory,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Initialize() when initialize != null:
@@ -66,8 +66,10 @@ return updateRawPrompt(_that);case _ApplyQuickPrompt() when applyQuickPrompt != 
 return applyQuickPrompt(_that);case _Randomize() when randomize != null:
 return randomize(_that);case _UpdateGeneratorOptions() when updateGeneratorOptions != null:
 return updateGeneratorOptions(_that);case _Generate() when generate != null:
-return generate(_that);case _Reset() when reset != null:
-return reset(_that);case _:
+return generate(_that);case _GenerateImage() when generateImage != null:
+return generateImage(_that);case _Reset() when reset != null:
+return reset(_that);case _LoadHistory() when loadHistory != null:
+return loadHistory(_that);case _:
   return orElse();
 
 }
@@ -85,7 +87,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initialize value)  initialize,required TResult Function( _TogglePromptType value)  togglePromptType,required TResult Function( _SelectOption value)  selectOption,required TResult Function( _UpdateRawPrompt value)  updateRawPrompt,required TResult Function( _ApplyQuickPrompt value)  applyQuickPrompt,required TResult Function( _Randomize value)  randomize,required TResult Function( _UpdateGeneratorOptions value)  updateGeneratorOptions,required TResult Function( _Generate value)  generate,required TResult Function( _Reset value)  reset,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initialize value)  initialize,required TResult Function( _TogglePromptType value)  togglePromptType,required TResult Function( _SelectOption value)  selectOption,required TResult Function( _UpdateRawPrompt value)  updateRawPrompt,required TResult Function( _ApplyQuickPrompt value)  applyQuickPrompt,required TResult Function( _Randomize value)  randomize,required TResult Function( _UpdateGeneratorOptions value)  updateGeneratorOptions,required TResult Function( _Generate value)  generate,required TResult Function( _GenerateImage value)  generateImage,required TResult Function( _Reset value)  reset,required TResult Function( _LoadHistory value)  loadHistory,}){
 final _that = this;
 switch (_that) {
 case _Initialize():
@@ -96,8 +98,10 @@ return updateRawPrompt(_that);case _ApplyQuickPrompt():
 return applyQuickPrompt(_that);case _Randomize():
 return randomize(_that);case _UpdateGeneratorOptions():
 return updateGeneratorOptions(_that);case _Generate():
-return generate(_that);case _Reset():
-return reset(_that);}
+return generate(_that);case _GenerateImage():
+return generateImage(_that);case _Reset():
+return reset(_that);case _LoadHistory():
+return loadHistory(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -111,7 +115,7 @@ return reset(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initialize value)?  initialize,TResult? Function( _TogglePromptType value)?  togglePromptType,TResult? Function( _SelectOption value)?  selectOption,TResult? Function( _UpdateRawPrompt value)?  updateRawPrompt,TResult? Function( _ApplyQuickPrompt value)?  applyQuickPrompt,TResult? Function( _Randomize value)?  randomize,TResult? Function( _UpdateGeneratorOptions value)?  updateGeneratorOptions,TResult? Function( _Generate value)?  generate,TResult? Function( _Reset value)?  reset,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initialize value)?  initialize,TResult? Function( _TogglePromptType value)?  togglePromptType,TResult? Function( _SelectOption value)?  selectOption,TResult? Function( _UpdateRawPrompt value)?  updateRawPrompt,TResult? Function( _ApplyQuickPrompt value)?  applyQuickPrompt,TResult? Function( _Randomize value)?  randomize,TResult? Function( _UpdateGeneratorOptions value)?  updateGeneratorOptions,TResult? Function( _Generate value)?  generate,TResult? Function( _GenerateImage value)?  generateImage,TResult? Function( _Reset value)?  reset,TResult? Function( _LoadHistory value)?  loadHistory,}){
 final _that = this;
 switch (_that) {
 case _Initialize() when initialize != null:
@@ -122,8 +126,10 @@ return updateRawPrompt(_that);case _ApplyQuickPrompt() when applyQuickPrompt != 
 return applyQuickPrompt(_that);case _Randomize() when randomize != null:
 return randomize(_that);case _UpdateGeneratorOptions() when updateGeneratorOptions != null:
 return updateGeneratorOptions(_that);case _Generate() when generate != null:
-return generate(_that);case _Reset() when reset != null:
-return reset(_that);case _:
+return generate(_that);case _GenerateImage() when generateImage != null:
+return generateImage(_that);case _Reset() when reset != null:
+return reset(_that);case _LoadHistory() when loadHistory != null:
+return loadHistory(_that);case _:
   return null;
 
 }
@@ -140,7 +146,7 @@ return reset(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initialize,TResult Function( bool isRawPrompt)?  togglePromptType,TResult Function( String category,  String value,  String? parentValue)?  selectOption,TResult Function( String text)?  updateRawPrompt,TResult Function( QuickPrompt quickPrompt)?  applyQuickPrompt,TResult Function()?  randomize,TResult Function( StoryLanguage? language,  StoryFormat? format,  StoryLength? length)?  updateGeneratorOptions,TResult Function()?  generate,TResult Function()?  reset,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initialize,TResult Function( bool isRawPrompt)?  togglePromptType,TResult Function( String category,  String value,  String? parentValue)?  selectOption,TResult Function( String text)?  updateRawPrompt,TResult Function( QuickPrompt quickPrompt)?  applyQuickPrompt,TResult Function()?  randomize,TResult Function( StoryLanguage? language,  StoryFormat? format,  StoryLength? length)?  updateGeneratorOptions,TResult Function()?  generate,TResult Function()?  generateImage,TResult Function()?  reset,TResult Function()?  loadHistory,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Initialize() when initialize != null:
 return initialize();case _TogglePromptType() when togglePromptType != null:
@@ -150,8 +156,10 @@ return updateRawPrompt(_that.text);case _ApplyQuickPrompt() when applyQuickPromp
 return applyQuickPrompt(_that.quickPrompt);case _Randomize() when randomize != null:
 return randomize();case _UpdateGeneratorOptions() when updateGeneratorOptions != null:
 return updateGeneratorOptions(_that.language,_that.format,_that.length);case _Generate() when generate != null:
-return generate();case _Reset() when reset != null:
-return reset();case _:
+return generate();case _GenerateImage() when generateImage != null:
+return generateImage();case _Reset() when reset != null:
+return reset();case _LoadHistory() when loadHistory != null:
+return loadHistory();case _:
   return orElse();
 
 }
@@ -169,7 +177,7 @@ return reset();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initialize,required TResult Function( bool isRawPrompt)  togglePromptType,required TResult Function( String category,  String value,  String? parentValue)  selectOption,required TResult Function( String text)  updateRawPrompt,required TResult Function( QuickPrompt quickPrompt)  applyQuickPrompt,required TResult Function()  randomize,required TResult Function( StoryLanguage? language,  StoryFormat? format,  StoryLength? length)  updateGeneratorOptions,required TResult Function()  generate,required TResult Function()  reset,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initialize,required TResult Function( bool isRawPrompt)  togglePromptType,required TResult Function( String category,  String value,  String? parentValue)  selectOption,required TResult Function( String text)  updateRawPrompt,required TResult Function( QuickPrompt quickPrompt)  applyQuickPrompt,required TResult Function()  randomize,required TResult Function( StoryLanguage? language,  StoryFormat? format,  StoryLength? length)  updateGeneratorOptions,required TResult Function()  generate,required TResult Function()  generateImage,required TResult Function()  reset,required TResult Function()  loadHistory,}) {final _that = this;
 switch (_that) {
 case _Initialize():
 return initialize();case _TogglePromptType():
@@ -179,8 +187,10 @@ return updateRawPrompt(_that.text);case _ApplyQuickPrompt():
 return applyQuickPrompt(_that.quickPrompt);case _Randomize():
 return randomize();case _UpdateGeneratorOptions():
 return updateGeneratorOptions(_that.language,_that.format,_that.length);case _Generate():
-return generate();case _Reset():
-return reset();}
+return generate();case _GenerateImage():
+return generateImage();case _Reset():
+return reset();case _LoadHistory():
+return loadHistory();}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -194,7 +204,7 @@ return reset();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initialize,TResult? Function( bool isRawPrompt)?  togglePromptType,TResult? Function( String category,  String value,  String? parentValue)?  selectOption,TResult? Function( String text)?  updateRawPrompt,TResult? Function( QuickPrompt quickPrompt)?  applyQuickPrompt,TResult? Function()?  randomize,TResult? Function( StoryLanguage? language,  StoryFormat? format,  StoryLength? length)?  updateGeneratorOptions,TResult? Function()?  generate,TResult? Function()?  reset,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initialize,TResult? Function( bool isRawPrompt)?  togglePromptType,TResult? Function( String category,  String value,  String? parentValue)?  selectOption,TResult? Function( String text)?  updateRawPrompt,TResult? Function( QuickPrompt quickPrompt)?  applyQuickPrompt,TResult? Function()?  randomize,TResult? Function( StoryLanguage? language,  StoryFormat? format,  StoryLength? length)?  updateGeneratorOptions,TResult? Function()?  generate,TResult? Function()?  generateImage,TResult? Function()?  reset,TResult? Function()?  loadHistory,}) {final _that = this;
 switch (_that) {
 case _Initialize() when initialize != null:
 return initialize();case _TogglePromptType() when togglePromptType != null:
@@ -204,8 +214,10 @@ return updateRawPrompt(_that.text);case _ApplyQuickPrompt() when applyQuickPromp
 return applyQuickPrompt(_that.quickPrompt);case _Randomize() when randomize != null:
 return randomize();case _UpdateGeneratorOptions() when updateGeneratorOptions != null:
 return updateGeneratorOptions(_that.language,_that.format,_that.length);case _Generate() when generate != null:
-return generate();case _Reset() when reset != null:
-return reset();case _:
+return generate();case _GenerateImage() when generateImage != null:
+return generateImage();case _Reset() when reset != null:
+return reset();case _LoadHistory() when loadHistory != null:
+return loadHistory();case _:
   return null;
 
 }
@@ -650,6 +662,38 @@ String toString() {
 /// @nodoc
 
 
+class _GenerateImage implements StoryGeneratorEvent {
+  const _GenerateImage();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GenerateImage);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'StoryGeneratorEvent.generateImage()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
 class _Reset implements StoryGeneratorEvent {
   const _Reset();
   
@@ -671,6 +715,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'StoryGeneratorEvent.reset()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _LoadHistory implements StoryGeneratorEvent {
+  const _LoadHistory();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadHistory);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'StoryGeneratorEvent.loadHistory()';
 }
 
 
