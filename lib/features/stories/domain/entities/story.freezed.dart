@@ -25,16 +25,16 @@ $StoryCopyWith<Story> get copyWith => _$StoryCopyWithImpl<Story>(this as Story, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Story&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.scripture, scripture) || other.scripture == scripture)&&(identical(other.story, story) || other.story == story)&&(identical(other.quotes, quotes) || other.quotes == quotes)&&(identical(other.trivia, trivia) || other.trivia == trivia)&&(identical(other.activity, activity) || other.activity == activity)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&(identical(other.attributes, attributes) || other.attributes == attributes)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.author, author) || other.author == author)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.likes, likes) || other.likes == likes)&&(identical(other.views, views) || other.views == views)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&(identical(other.authorUser, authorUser) || other.authorUser == authorUser)&&(identical(other.commentCount, commentCount) || other.commentCount == commentCount)&&(identical(other.shareCount, shareCount) || other.shareCount == shareCount)&&(identical(other.isLikedByCurrentUser, isLikedByCurrentUser) || other.isLikedByCurrentUser == isLikedByCurrentUser));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Story&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.scripture, scripture) || other.scripture == scripture)&&(identical(other.story, story) || other.story == story)&&(identical(other.quotes, quotes) || other.quotes == quotes)&&(identical(other.trivia, trivia) || other.trivia == trivia)&&(identical(other.activity, activity) || other.activity == activity)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&(identical(other.attributes, attributes) || other.attributes == attributes)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.author, author) || other.author == author)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.likes, likes) || other.likes == likes)&&(identical(other.views, views) || other.views == views)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&(identical(other.authorUser, authorUser) || other.authorUser == authorUser)&&(identical(other.commentCount, commentCount) || other.commentCount == commentCount)&&(identical(other.shareCount, shareCount) || other.shareCount == shareCount)&&(identical(other.isLikedByCurrentUser, isLikedByCurrentUser) || other.isLikedByCurrentUser == isLikedByCurrentUser));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,id,title,scripture,story,quotes,trivia,activity,lesson,attributes,imageUrl,author,publishedAt,likes,views,isFavorite,authorId,authorUser,commentCount,shareCount,isLikedByCurrentUser]);
+int get hashCode => Object.hashAll([runtimeType,id,title,scripture,story,quotes,trivia,activity,lesson,attributes,imageUrl,author,publishedAt,createdAt,likes,views,isFavorite,authorId,authorUser,commentCount,shareCount,isLikedByCurrentUser]);
 
 @override
 String toString() {
-  return 'Story(id: $id, title: $title, scripture: $scripture, story: $story, quotes: $quotes, trivia: $trivia, activity: $activity, lesson: $lesson, attributes: $attributes, imageUrl: $imageUrl, author: $author, publishedAt: $publishedAt, likes: $likes, views: $views, isFavorite: $isFavorite, authorId: $authorId, authorUser: $authorUser, commentCount: $commentCount, shareCount: $shareCount, isLikedByCurrentUser: $isLikedByCurrentUser)';
+  return 'Story(id: $id, title: $title, scripture: $scripture, story: $story, quotes: $quotes, trivia: $trivia, activity: $activity, lesson: $lesson, attributes: $attributes, imageUrl: $imageUrl, author: $author, publishedAt: $publishedAt, createdAt: $createdAt, likes: $likes, views: $views, isFavorite: $isFavorite, authorId: $authorId, authorUser: $authorUser, commentCount: $commentCount, shareCount: $shareCount, isLikedByCurrentUser: $isLikedByCurrentUser)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $StoryCopyWith<$Res>  {
   factory $StoryCopyWith(Story value, $Res Function(Story) _then) = _$StoryCopyWithImpl;
 @useResult
 $Res call({
- String id, String title, String scripture, String story, String quotes, String trivia, String activity, String lesson, StoryAttributes attributes, String? imageUrl, String? author, DateTime? publishedAt, int likes, int views, bool isFavorite, String? authorId, User? authorUser, int commentCount, int shareCount, bool isLikedByCurrentUser
+ String id, String title, String scripture, String story, String quotes, String trivia, String activity, String lesson, StoryAttributes attributes, String? imageUrl, String? author, DateTime? publishedAt, DateTime? createdAt, int likes, int views, bool isFavorite, String? authorId, User? authorUser, int commentCount, int shareCount, bool isLikedByCurrentUser
 });
 
 
@@ -62,7 +62,7 @@ class _$StoryCopyWithImpl<$Res>
 
 /// Create a copy of Story
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? scripture = null,Object? story = null,Object? quotes = null,Object? trivia = null,Object? activity = null,Object? lesson = null,Object? attributes = null,Object? imageUrl = freezed,Object? author = freezed,Object? publishedAt = freezed,Object? likes = null,Object? views = null,Object? isFavorite = null,Object? authorId = freezed,Object? authorUser = freezed,Object? commentCount = null,Object? shareCount = null,Object? isLikedByCurrentUser = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? scripture = null,Object? story = null,Object? quotes = null,Object? trivia = null,Object? activity = null,Object? lesson = null,Object? attributes = null,Object? imageUrl = freezed,Object? author = freezed,Object? publishedAt = freezed,Object? createdAt = freezed,Object? likes = null,Object? views = null,Object? isFavorite = null,Object? authorId = freezed,Object? authorUser = freezed,Object? commentCount = null,Object? shareCount = null,Object? isLikedByCurrentUser = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -76,6 +76,7 @@ as String,attributes: null == attributes ? _self.attributes : attributes // igno
 as StoryAttributes,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String?,publishedAt: freezed == publishedAt ? _self.publishedAt : publishedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,likes: null == likes ? _self.likes : likes // ignore: cast_nullable_to_non_nullable
 as int,views: null == views ? _self.views : views // ignore: cast_nullable_to_non_nullable
 as int,isFavorite: null == isFavorite ? _self.isFavorite : isFavorite // ignore: cast_nullable_to_non_nullable
@@ -190,10 +191,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String scripture,  String story,  String quotes,  String trivia,  String activity,  String lesson,  StoryAttributes attributes,  String? imageUrl,  String? author,  DateTime? publishedAt,  int likes,  int views,  bool isFavorite,  String? authorId,  User? authorUser,  int commentCount,  int shareCount,  bool isLikedByCurrentUser)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String scripture,  String story,  String quotes,  String trivia,  String activity,  String lesson,  StoryAttributes attributes,  String? imageUrl,  String? author,  DateTime? publishedAt,  DateTime? createdAt,  int likes,  int views,  bool isFavorite,  String? authorId,  User? authorUser,  int commentCount,  int shareCount,  bool isLikedByCurrentUser)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Story() when $default != null:
-return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_that.trivia,_that.activity,_that.lesson,_that.attributes,_that.imageUrl,_that.author,_that.publishedAt,_that.likes,_that.views,_that.isFavorite,_that.authorId,_that.authorUser,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser);case _:
+return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_that.trivia,_that.activity,_that.lesson,_that.attributes,_that.imageUrl,_that.author,_that.publishedAt,_that.createdAt,_that.likes,_that.views,_that.isFavorite,_that.authorId,_that.authorUser,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser);case _:
   return orElse();
 
 }
@@ -211,10 +212,10 @@ return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String scripture,  String story,  String quotes,  String trivia,  String activity,  String lesson,  StoryAttributes attributes,  String? imageUrl,  String? author,  DateTime? publishedAt,  int likes,  int views,  bool isFavorite,  String? authorId,  User? authorUser,  int commentCount,  int shareCount,  bool isLikedByCurrentUser)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String scripture,  String story,  String quotes,  String trivia,  String activity,  String lesson,  StoryAttributes attributes,  String? imageUrl,  String? author,  DateTime? publishedAt,  DateTime? createdAt,  int likes,  int views,  bool isFavorite,  String? authorId,  User? authorUser,  int commentCount,  int shareCount,  bool isLikedByCurrentUser)  $default,) {final _that = this;
 switch (_that) {
 case _Story():
-return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_that.trivia,_that.activity,_that.lesson,_that.attributes,_that.imageUrl,_that.author,_that.publishedAt,_that.likes,_that.views,_that.isFavorite,_that.authorId,_that.authorUser,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser);case _:
+return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_that.trivia,_that.activity,_that.lesson,_that.attributes,_that.imageUrl,_that.author,_that.publishedAt,_that.createdAt,_that.likes,_that.views,_that.isFavorite,_that.authorId,_that.authorUser,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -231,10 +232,10 @@ return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String scripture,  String story,  String quotes,  String trivia,  String activity,  String lesson,  StoryAttributes attributes,  String? imageUrl,  String? author,  DateTime? publishedAt,  int likes,  int views,  bool isFavorite,  String? authorId,  User? authorUser,  int commentCount,  int shareCount,  bool isLikedByCurrentUser)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String scripture,  String story,  String quotes,  String trivia,  String activity,  String lesson,  StoryAttributes attributes,  String? imageUrl,  String? author,  DateTime? publishedAt,  DateTime? createdAt,  int likes,  int views,  bool isFavorite,  String? authorId,  User? authorUser,  int commentCount,  int shareCount,  bool isLikedByCurrentUser)?  $default,) {final _that = this;
 switch (_that) {
 case _Story() when $default != null:
-return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_that.trivia,_that.activity,_that.lesson,_that.attributes,_that.imageUrl,_that.author,_that.publishedAt,_that.likes,_that.views,_that.isFavorite,_that.authorId,_that.authorUser,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser);case _:
+return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_that.trivia,_that.activity,_that.lesson,_that.attributes,_that.imageUrl,_that.author,_that.publishedAt,_that.createdAt,_that.likes,_that.views,_that.isFavorite,_that.authorId,_that.authorUser,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser);case _:
   return null;
 
 }
@@ -281,16 +282,16 @@ _$StoryCopyWith<_Story> get copyWith => __$StoryCopyWithImpl<_Story>(this, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Story&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.scripture, scripture) || other.scripture == scripture)&&(identical(other.story, story) || other.story == story)&&(identical(other.quotes, quotes) || other.quotes == quotes)&&(identical(other.trivia, trivia) || other.trivia == trivia)&&(identical(other.activity, activity) || other.activity == activity)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&(identical(other.attributes, attributes) || other.attributes == attributes)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.author, author) || other.author == author)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.likes, likes) || other.likes == likes)&&(identical(other.views, views) || other.views == views)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&(identical(other.authorUser, authorUser) || other.authorUser == authorUser)&&(identical(other.commentCount, commentCount) || other.commentCount == commentCount)&&(identical(other.shareCount, shareCount) || other.shareCount == shareCount)&&(identical(other.isLikedByCurrentUser, isLikedByCurrentUser) || other.isLikedByCurrentUser == isLikedByCurrentUser));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Story&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.scripture, scripture) || other.scripture == scripture)&&(identical(other.story, story) || other.story == story)&&(identical(other.quotes, quotes) || other.quotes == quotes)&&(identical(other.trivia, trivia) || other.trivia == trivia)&&(identical(other.activity, activity) || other.activity == activity)&&(identical(other.lesson, lesson) || other.lesson == lesson)&&(identical(other.attributes, attributes) || other.attributes == attributes)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&(identical(other.author, author) || other.author == author)&&(identical(other.publishedAt, publishedAt) || other.publishedAt == publishedAt)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.likes, likes) || other.likes == likes)&&(identical(other.views, views) || other.views == views)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite)&&(identical(other.authorId, authorId) || other.authorId == authorId)&&(identical(other.authorUser, authorUser) || other.authorUser == authorUser)&&(identical(other.commentCount, commentCount) || other.commentCount == commentCount)&&(identical(other.shareCount, shareCount) || other.shareCount == shareCount)&&(identical(other.isLikedByCurrentUser, isLikedByCurrentUser) || other.isLikedByCurrentUser == isLikedByCurrentUser));
 }
 
 
 @override
-int get hashCode => Object.hashAll([runtimeType,id,title,scripture,story,quotes,trivia,activity,lesson,attributes,imageUrl,author,publishedAt,likes,views,isFavorite,authorId,authorUser,commentCount,shareCount,isLikedByCurrentUser]);
+int get hashCode => Object.hashAll([runtimeType,id,title,scripture,story,quotes,trivia,activity,lesson,attributes,imageUrl,author,publishedAt,createdAt,likes,views,isFavorite,authorId,authorUser,commentCount,shareCount,isLikedByCurrentUser]);
 
 @override
 String toString() {
-  return 'Story(id: $id, title: $title, scripture: $scripture, story: $story, quotes: $quotes, trivia: $trivia, activity: $activity, lesson: $lesson, attributes: $attributes, imageUrl: $imageUrl, author: $author, publishedAt: $publishedAt, likes: $likes, views: $views, isFavorite: $isFavorite, authorId: $authorId, authorUser: $authorUser, commentCount: $commentCount, shareCount: $shareCount, isLikedByCurrentUser: $isLikedByCurrentUser)';
+  return 'Story(id: $id, title: $title, scripture: $scripture, story: $story, quotes: $quotes, trivia: $trivia, activity: $activity, lesson: $lesson, attributes: $attributes, imageUrl: $imageUrl, author: $author, publishedAt: $publishedAt, createdAt: $createdAt, likes: $likes, views: $views, isFavorite: $isFavorite, authorId: $authorId, authorUser: $authorUser, commentCount: $commentCount, shareCount: $shareCount, isLikedByCurrentUser: $isLikedByCurrentUser)';
 }
 
 
@@ -301,7 +302,7 @@ abstract mixin class _$StoryCopyWith<$Res> implements $StoryCopyWith<$Res> {
   factory _$StoryCopyWith(_Story value, $Res Function(_Story) _then) = __$StoryCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String title, String scripture, String story, String quotes, String trivia, String activity, String lesson, StoryAttributes attributes, String? imageUrl, String? author, DateTime? publishedAt, int likes, int views, bool isFavorite, String? authorId, User? authorUser, int commentCount, int shareCount, bool isLikedByCurrentUser
+ String id, String title, String scripture, String story, String quotes, String trivia, String activity, String lesson, StoryAttributes attributes, String? imageUrl, String? author, DateTime? publishedAt, DateTime? createdAt, int likes, int views, bool isFavorite, String? authorId, User? authorUser, int commentCount, int shareCount, bool isLikedByCurrentUser
 });
 
 
@@ -318,7 +319,7 @@ class __$StoryCopyWithImpl<$Res>
 
 /// Create a copy of Story
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? scripture = null,Object? story = null,Object? quotes = null,Object? trivia = null,Object? activity = null,Object? lesson = null,Object? attributes = null,Object? imageUrl = freezed,Object? author = freezed,Object? publishedAt = freezed,Object? likes = null,Object? views = null,Object? isFavorite = null,Object? authorId = freezed,Object? authorUser = freezed,Object? commentCount = null,Object? shareCount = null,Object? isLikedByCurrentUser = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? scripture = null,Object? story = null,Object? quotes = null,Object? trivia = null,Object? activity = null,Object? lesson = null,Object? attributes = null,Object? imageUrl = freezed,Object? author = freezed,Object? publishedAt = freezed,Object? createdAt = freezed,Object? likes = null,Object? views = null,Object? isFavorite = null,Object? authorId = freezed,Object? authorUser = freezed,Object? commentCount = null,Object? shareCount = null,Object? isLikedByCurrentUser = null,}) {
   return _then(_Story(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
@@ -332,6 +333,7 @@ as String,attributes: null == attributes ? _self.attributes : attributes // igno
 as StoryAttributes,imageUrl: freezed == imageUrl ? _self.imageUrl : imageUrl // ignore: cast_nullable_to_non_nullable
 as String?,author: freezed == author ? _self.author : author // ignore: cast_nullable_to_non_nullable
 as String?,publishedAt: freezed == publishedAt ? _self.publishedAt : publishedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,likes: null == likes ? _self.likes : likes // ignore: cast_nullable_to_non_nullable
 as int,views: null == views ? _self.views : views // ignore: cast_nullable_to_non_nullable
 as int,isFavorite: null == isFavorite ? _self.isFavorite : isFavorite // ignore: cast_nullable_to_non_nullable
@@ -382,16 +384,16 @@ $StoryAttributesCopyWith<StoryAttributes> get copyWith => _$StoryAttributesCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryAttributes&&(identical(other.storyType, storyType) || other.storyType == storyType)&&(identical(other.theme, theme) || other.theme == theme)&&(identical(other.mainCharacterType, mainCharacterType) || other.mainCharacterType == mainCharacterType)&&(identical(other.storySetting, storySetting) || other.storySetting == storySetting)&&(identical(other.timeEra, timeEra) || other.timeEra == timeEra)&&(identical(other.narrativePerspective, narrativePerspective) || other.narrativePerspective == narrativePerspective)&&(identical(other.languageStyle, languageStyle) || other.languageStyle == languageStyle)&&(identical(other.emotionalTone, emotionalTone) || other.emotionalTone == emotionalTone)&&(identical(other.narrativeStyle, narrativeStyle) || other.narrativeStyle == narrativeStyle)&&(identical(other.plotStructure, plotStructure) || other.plotStructure == plotStructure)&&(identical(other.storyLength, storyLength) || other.storyLength == storyLength)&&const DeepCollectionEquality().equals(other.references, references)&&const DeepCollectionEquality().equals(other.tags, tags));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryAttributes&&(identical(other.storyType, storyType) || other.storyType == storyType)&&(identical(other.theme, theme) || other.theme == theme)&&(identical(other.mainCharacterType, mainCharacterType) || other.mainCharacterType == mainCharacterType)&&(identical(other.storySetting, storySetting) || other.storySetting == storySetting)&&(identical(other.timeEra, timeEra) || other.timeEra == timeEra)&&(identical(other.narrativePerspective, narrativePerspective) || other.narrativePerspective == narrativePerspective)&&(identical(other.languageStyle, languageStyle) || other.languageStyle == languageStyle)&&(identical(other.emotionalTone, emotionalTone) || other.emotionalTone == emotionalTone)&&(identical(other.narrativeStyle, narrativeStyle) || other.narrativeStyle == narrativeStyle)&&(identical(other.plotStructure, plotStructure) || other.plotStructure == plotStructure)&&(identical(other.storyLength, storyLength) || other.storyLength == storyLength)&&const DeepCollectionEquality().equals(other.references, references)&&const DeepCollectionEquality().equals(other.tags, tags)&&const DeepCollectionEquality().equals(other.characters, characters));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,storyType,theme,mainCharacterType,storySetting,timeEra,narrativePerspective,languageStyle,emotionalTone,narrativeStyle,plotStructure,storyLength,const DeepCollectionEquality().hash(references),const DeepCollectionEquality().hash(tags));
+int get hashCode => Object.hash(runtimeType,storyType,theme,mainCharacterType,storySetting,timeEra,narrativePerspective,languageStyle,emotionalTone,narrativeStyle,plotStructure,storyLength,const DeepCollectionEquality().hash(references),const DeepCollectionEquality().hash(tags),const DeepCollectionEquality().hash(characters));
 
 @override
 String toString() {
-  return 'StoryAttributes(storyType: $storyType, theme: $theme, mainCharacterType: $mainCharacterType, storySetting: $storySetting, timeEra: $timeEra, narrativePerspective: $narrativePerspective, languageStyle: $languageStyle, emotionalTone: $emotionalTone, narrativeStyle: $narrativeStyle, plotStructure: $plotStructure, storyLength: $storyLength, references: $references, tags: $tags)';
+  return 'StoryAttributes(storyType: $storyType, theme: $theme, mainCharacterType: $mainCharacterType, storySetting: $storySetting, timeEra: $timeEra, narrativePerspective: $narrativePerspective, languageStyle: $languageStyle, emotionalTone: $emotionalTone, narrativeStyle: $narrativeStyle, plotStructure: $plotStructure, storyLength: $storyLength, references: $references, tags: $tags, characters: $characters)';
 }
 
 
@@ -402,7 +404,7 @@ abstract mixin class $StoryAttributesCopyWith<$Res>  {
   factory $StoryAttributesCopyWith(StoryAttributes value, $Res Function(StoryAttributes) _then) = _$StoryAttributesCopyWithImpl;
 @useResult
 $Res call({
- String storyType, String theme, String mainCharacterType, String storySetting, String timeEra, String narrativePerspective, String languageStyle, String emotionalTone, String narrativeStyle, String plotStructure, String storyLength, List<String> references, List<String> tags
+ String storyType, String theme, String mainCharacterType, String storySetting, String timeEra, String narrativePerspective, String languageStyle, String emotionalTone, String narrativeStyle, String plotStructure, String storyLength, List<String> references, List<String> tags, List<String> characters
 });
 
 
@@ -419,7 +421,7 @@ class _$StoryAttributesCopyWithImpl<$Res>
 
 /// Create a copy of StoryAttributes
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? storyType = null,Object? theme = null,Object? mainCharacterType = null,Object? storySetting = null,Object? timeEra = null,Object? narrativePerspective = null,Object? languageStyle = null,Object? emotionalTone = null,Object? narrativeStyle = null,Object? plotStructure = null,Object? storyLength = null,Object? references = null,Object? tags = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? storyType = null,Object? theme = null,Object? mainCharacterType = null,Object? storySetting = null,Object? timeEra = null,Object? narrativePerspective = null,Object? languageStyle = null,Object? emotionalTone = null,Object? narrativeStyle = null,Object? plotStructure = null,Object? storyLength = null,Object? references = null,Object? tags = null,Object? characters = null,}) {
   return _then(_self.copyWith(
 storyType: null == storyType ? _self.storyType : storyType // ignore: cast_nullable_to_non_nullable
 as String,theme: null == theme ? _self.theme : theme // ignore: cast_nullable_to_non_nullable
@@ -434,6 +436,7 @@ as String,plotStructure: null == plotStructure ? _self.plotStructure : plotStruc
 as String,storyLength: null == storyLength ? _self.storyLength : storyLength // ignore: cast_nullable_to_non_nullable
 as String,references: null == references ? _self.references : references // ignore: cast_nullable_to_non_nullable
 as List<String>,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
+as List<String>,characters: null == characters ? _self.characters : characters // ignore: cast_nullable_to_non_nullable
 as List<String>,
   ));
 }
@@ -519,10 +522,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String storyType,  String theme,  String mainCharacterType,  String storySetting,  String timeEra,  String narrativePerspective,  String languageStyle,  String emotionalTone,  String narrativeStyle,  String plotStructure,  String storyLength,  List<String> references,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String storyType,  String theme,  String mainCharacterType,  String storySetting,  String timeEra,  String narrativePerspective,  String languageStyle,  String emotionalTone,  String narrativeStyle,  String plotStructure,  String storyLength,  List<String> references,  List<String> tags,  List<String> characters)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryAttributes() when $default != null:
-return $default(_that.storyType,_that.theme,_that.mainCharacterType,_that.storySetting,_that.timeEra,_that.narrativePerspective,_that.languageStyle,_that.emotionalTone,_that.narrativeStyle,_that.plotStructure,_that.storyLength,_that.references,_that.tags);case _:
+return $default(_that.storyType,_that.theme,_that.mainCharacterType,_that.storySetting,_that.timeEra,_that.narrativePerspective,_that.languageStyle,_that.emotionalTone,_that.narrativeStyle,_that.plotStructure,_that.storyLength,_that.references,_that.tags,_that.characters);case _:
   return orElse();
 
 }
@@ -540,10 +543,10 @@ return $default(_that.storyType,_that.theme,_that.mainCharacterType,_that.storyS
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String storyType,  String theme,  String mainCharacterType,  String storySetting,  String timeEra,  String narrativePerspective,  String languageStyle,  String emotionalTone,  String narrativeStyle,  String plotStructure,  String storyLength,  List<String> references,  List<String> tags)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String storyType,  String theme,  String mainCharacterType,  String storySetting,  String timeEra,  String narrativePerspective,  String languageStyle,  String emotionalTone,  String narrativeStyle,  String plotStructure,  String storyLength,  List<String> references,  List<String> tags,  List<String> characters)  $default,) {final _that = this;
 switch (_that) {
 case _StoryAttributes():
-return $default(_that.storyType,_that.theme,_that.mainCharacterType,_that.storySetting,_that.timeEra,_that.narrativePerspective,_that.languageStyle,_that.emotionalTone,_that.narrativeStyle,_that.plotStructure,_that.storyLength,_that.references,_that.tags);case _:
+return $default(_that.storyType,_that.theme,_that.mainCharacterType,_that.storySetting,_that.timeEra,_that.narrativePerspective,_that.languageStyle,_that.emotionalTone,_that.narrativeStyle,_that.plotStructure,_that.storyLength,_that.references,_that.tags,_that.characters);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -560,10 +563,10 @@ return $default(_that.storyType,_that.theme,_that.mainCharacterType,_that.storyS
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String storyType,  String theme,  String mainCharacterType,  String storySetting,  String timeEra,  String narrativePerspective,  String languageStyle,  String emotionalTone,  String narrativeStyle,  String plotStructure,  String storyLength,  List<String> references,  List<String> tags)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String storyType,  String theme,  String mainCharacterType,  String storySetting,  String timeEra,  String narrativePerspective,  String languageStyle,  String emotionalTone,  String narrativeStyle,  String plotStructure,  String storyLength,  List<String> references,  List<String> tags,  List<String> characters)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryAttributes() when $default != null:
-return $default(_that.storyType,_that.theme,_that.mainCharacterType,_that.storySetting,_that.timeEra,_that.narrativePerspective,_that.languageStyle,_that.emotionalTone,_that.narrativeStyle,_that.plotStructure,_that.storyLength,_that.references,_that.tags);case _:
+return $default(_that.storyType,_that.theme,_that.mainCharacterType,_that.storySetting,_that.timeEra,_that.narrativePerspective,_that.languageStyle,_that.emotionalTone,_that.narrativeStyle,_that.plotStructure,_that.storyLength,_that.references,_that.tags,_that.characters);case _:
   return null;
 
 }
@@ -621,7 +624,7 @@ _$StoryAttributesCopyWith<_StoryAttributes> get copyWith => __$StoryAttributesCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryAttributes&&(identical(other.storyType, storyType) || other.storyType == storyType)&&(identical(other.theme, theme) || other.theme == theme)&&(identical(other.mainCharacterType, mainCharacterType) || other.mainCharacterType == mainCharacterType)&&(identical(other.storySetting, storySetting) || other.storySetting == storySetting)&&(identical(other.timeEra, timeEra) || other.timeEra == timeEra)&&(identical(other.narrativePerspective, narrativePerspective) || other.narrativePerspective == narrativePerspective)&&(identical(other.languageStyle, languageStyle) || other.languageStyle == languageStyle)&&(identical(other.emotionalTone, emotionalTone) || other.emotionalTone == emotionalTone)&&(identical(other.narrativeStyle, narrativeStyle) || other.narrativeStyle == narrativeStyle)&&(identical(other.plotStructure, plotStructure) || other.plotStructure == plotStructure)&&(identical(other.storyLength, storyLength) || other.storyLength == storyLength)&&const DeepCollectionEquality().equals(other._references, _references)&&const DeepCollectionEquality().equals(other._tags, _tags)&& const DeepCollectionEquality().equals(other._characters, _characters));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryAttributes&&(identical(other.storyType, storyType) || other.storyType == storyType)&&(identical(other.theme, theme) || other.theme == theme)&&(identical(other.mainCharacterType, mainCharacterType) || other.mainCharacterType == mainCharacterType)&&(identical(other.storySetting, storySetting) || other.storySetting == storySetting)&&(identical(other.timeEra, timeEra) || other.timeEra == timeEra)&&(identical(other.narrativePerspective, narrativePerspective) || other.narrativePerspective == narrativePerspective)&&(identical(other.languageStyle, languageStyle) || other.languageStyle == languageStyle)&&(identical(other.emotionalTone, emotionalTone) || other.emotionalTone == emotionalTone)&&(identical(other.narrativeStyle, narrativeStyle) || other.narrativeStyle == narrativeStyle)&&(identical(other.plotStructure, plotStructure) || other.plotStructure == plotStructure)&&(identical(other.storyLength, storyLength) || other.storyLength == storyLength)&&const DeepCollectionEquality().equals(other._references, _references)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._characters, _characters));
 }
 
 
@@ -630,7 +633,7 @@ int get hashCode => Object.hash(runtimeType,storyType,theme,mainCharacterType,st
 
 @override
 String toString() {
-  return 'StoryAttributes(storyType: $storyType, theme: $theme, mainCharacterType: $mainCharacterType, storySetting: $storySetting, timeEra: $timeEra, narrativePerspective: $narrativePerspective, languageStyle: $languageStyle, emotionalTone: $emotionalTone, narrativeStyle: $narrativeStyle, plotStructure: $plotStructure, storyLength: $storyLength, references: $references, tags: $tags)';
+  return 'StoryAttributes(storyType: $storyType, theme: $theme, mainCharacterType: $mainCharacterType, storySetting: $storySetting, timeEra: $timeEra, narrativePerspective: $narrativePerspective, languageStyle: $languageStyle, emotionalTone: $emotionalTone, narrativeStyle: $narrativeStyle, plotStructure: $plotStructure, storyLength: $storyLength, references: $references, tags: $tags, characters: $characters)';
 }
 
 
@@ -641,7 +644,7 @@ abstract mixin class _$StoryAttributesCopyWith<$Res> implements $StoryAttributes
   factory _$StoryAttributesCopyWith(_StoryAttributes value, $Res Function(_StoryAttributes) _then) = __$StoryAttributesCopyWithImpl;
 @override @useResult
 $Res call({
- String storyType, String theme, String mainCharacterType, String storySetting, String timeEra, String narrativePerspective, String languageStyle, String emotionalTone, String narrativeStyle, String plotStructure, String storyLength, List<String> references, List<String> tags
+ String storyType, String theme, String mainCharacterType, String storySetting, String timeEra, String narrativePerspective, String languageStyle, String emotionalTone, String narrativeStyle, String plotStructure, String storyLength, List<String> references, List<String> tags, List<String> characters
 });
 
 

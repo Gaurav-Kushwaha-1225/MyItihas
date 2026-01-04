@@ -152,6 +152,9 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                           'https://www.transparenttextures.com/patterns/cubes.png',
                           repeat: ImageRepeat.repeat,
                           errorBuilder: (_, _, _) => const SizedBox(),
+                        ),
+                      ),
+                    ),
                     IconButton(
                       icon: const Icon(Icons.arrow_back_ios_rounded),
                       onPressed: () {

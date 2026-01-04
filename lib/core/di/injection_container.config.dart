@@ -89,7 +89,7 @@ import '../../features/story_generator/domain/usecases/get_generated_stories.dar
 import '../../features/story_generator/domain/usecases/randomize_options.dart'
     as _i445;
 import '../../features/story_generator/domain/usecases/update_generated_story.dart'
-    as _i580;
+    as _i31;
 import '../../features/story_generator/presentation/bloc/story_generator_bloc.dart'
     as _i177;
 import '../../services/chat_service.dart' as _i207;
@@ -208,6 +208,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i623.CreatePostBloc>(
       () => _i623.CreatePostBloc(gh<_i90.PostService>()),
+    );
     gh.lazySingleton<_i277.StoryGeneratorRepository>(
       () => _i720.StoryGeneratorRepositoryImpl(
         gh<_i150.RemoteStoryGeneratorDataSource>(),
@@ -264,8 +265,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i445.RandomizeOptions>(
       () => _i445.RandomizeOptions(gh<_i277.StoryGeneratorRepository>()),
     );
-    gh.lazySingleton<_i580.UpdateGeneratedStory>(
-      () => _i580.UpdateGeneratedStory(gh<_i277.StoryGeneratorRepository>()),
+    gh.lazySingleton<_i31.UpdateGeneratedStory>(
+      () => _i31.UpdateGeneratedStory(gh<_i277.StoryGeneratorRepository>()),
     );
     gh.lazySingleton<_i596.GetStories>(
       () => _i596.GetStories(gh<_i909.StoryRepository>()),
@@ -283,6 +284,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i909.StoryRepository>(),
       ),
     );
+    gh.factory<_i177.StoryGeneratorBloc>(
+      () => _i177.StoryGeneratorBloc(
+        generateStory: gh<_i688.GenerateStory>(),
+        generateStoryImage: gh<_i21.GenerateStoryImage>(),
+        getGeneratedStories: gh<_i733.GetGeneratedStories>(),
+        randomizeOptions: gh<_i445.RandomizeOptions>(),
+      ),
+    );
     gh.factory<_i420.FeedBloc>(
       () => _i420.FeedBloc(
         storyRepository: gh<_i909.StoryRepository>(),
@@ -290,14 +299,6 @@ extension GetItInjectableX on _i174.GetIt {
         userRepository: gh<_i721.UserRepository>(),
         postRepository: gh<_i545.PostRepository>(),
         realtimeService: gh<_i253.RealtimeService>(),
-      ),
-    );
-    gh.factory<_i177.StoryGeneratorBloc>(
-      () => _i177.StoryGeneratorBloc(
-        generateStory: gh<_i688.GenerateStory>(),
-        generateStoryImage: gh<_i21.GenerateStoryImage>(),
-        getGeneratedStories: gh<_i733.GetGeneratedStories>(),
-        randomizeOptions: gh<_i445.RandomizeOptions>(),
       ),
     );
     gh.factory<_i790.StoriesBloc>(
@@ -310,18 +311,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i506.NotificationBloc(
         notificationRepository: gh<_i367.NotificationRepository>(),
         userRepository: gh<_i721.UserRepository>(),
-      ),
-    );
-    gh.factory<_i177.StoryGeneratorBloc>(
-      () => _i177.StoryGeneratorBloc(
-        generateStory: gh<_i688.GenerateStory>(),
-        randomizeOptions: gh<_i445.RandomizeOptions>(),
-    gh.factory<_i420.FeedBloc>(
-      () => _i420.FeedBloc(
-        storyRepository: gh<_i909.StoryRepository>(),
-        socialRepository: gh<_i640.SocialRepository>(),
-        userRepository: gh<_i721.UserRepository>(),
-        postRepository: gh<_i545.PostRepository>(),
       ),
     );
     return this;

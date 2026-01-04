@@ -76,7 +76,7 @@ class _StoryGeneratorViewState extends State<_StoryGeneratorView> {
                   centerTitle: true,
                   leading: IconButton(
                     icon: Icon(Icons.arrow_back_rounded),
-                    onPressed: () => context.pop(),
+                    onPressed: () => GoRouter.of(context).pop(),
                   ),
                   actions: [
                     IconButton(

@@ -14,16 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreatePostState {
 
-/// Currently selected post type
- PostType get postType;/// Text content/caption
- String get content;/// Optional title
- String get title;/// Selected media files for image/video posts
- List<File> get mediaFiles;/// Post visibility setting
- PostVisibility get visibility;/// Whether the form is being submitted
- bool get isSubmitting;/// Error message if submission failed
- String? get errorMessage;/// Whether submission was successful
- bool get isSuccess;/// ID of the created post (if successful)
- String? get createdPostId;
+ PostType get postType; String get content; String get title; List<File> get mediaFiles; PostVisibility get visibility; bool get isSubmitting; String? get errorMessage; bool get isSuccess; String? get createdPostId;
 /// Create a copy of CreatePostState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -226,30 +217,20 @@ class _CreatePostState extends CreatePostState {
   const _CreatePostState({this.postType = PostType.text, this.content = '', this.title = '', final  List<File> mediaFiles = const [], this.visibility = PostVisibility.public, this.isSubmitting = false, this.errorMessage, this.isSuccess = false, this.createdPostId}): _mediaFiles = mediaFiles,super._();
   
 
-/// Currently selected post type
 @override@JsonKey() final  PostType postType;
-/// Text content/caption
 @override@JsonKey() final  String content;
-/// Optional title
 @override@JsonKey() final  String title;
-/// Selected media files for image/video posts
  final  List<File> _mediaFiles;
-/// Selected media files for image/video posts
 @override@JsonKey() List<File> get mediaFiles {
   if (_mediaFiles is EqualUnmodifiableListView) return _mediaFiles;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_mediaFiles);
 }
 
-/// Post visibility setting
 @override@JsonKey() final  PostVisibility visibility;
-/// Whether the form is being submitted
 @override@JsonKey() final  bool isSubmitting;
-/// Error message if submission failed
 @override final  String? errorMessage;
-/// Whether submission was successful
 @override@JsonKey() final  bool isSuccess;
-/// ID of the created post (if successful)
 @override final  String? createdPostId;
 
 /// Create a copy of CreatePostState
