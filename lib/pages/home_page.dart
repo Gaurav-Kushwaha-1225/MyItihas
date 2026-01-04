@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void _startShrinkTimer(int index) {
     _shrinkTimer?.cancel();
     setState(() => _enlargedIndex = index);
-    _shrinkTimer = Timer(const Duration(milliseconds: 2500), () {
+    _shrinkTimer = Timer(const Duration(milliseconds: 1000), () {
       if (mounted) {
         setState(() => _enlargedIndex = null);
       }

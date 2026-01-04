@@ -60,6 +60,9 @@ dependencies:
   gradient_borders: ^1.0.2
   video_player: ^2.10.1
   dartz: ^0.10.0
+  permission_handler: ^12.0.1
+  flutter_file_dialog: ^3.0.3
+  flutter_tts: ^4.2.3
 
 dev_dependencies:
   flutter_test:

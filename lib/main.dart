@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
@@ -44,11 +45,11 @@ Future<void> main() async {
   talker.info('RealtimeService initialized');
 
   final SharedPreferences storage = await SharedPreferences.getInstance();
-  
+
   // IMPORTANT: Create router FIRST to register refreshStream
   // This must happen before starting deep link listener
   final GoRouter router = MyItihasRouter().router;
-  
+
   // Now start deep link listener - refreshStream is available
   SupabaseService.authService.startDeepLinkListener();
 
@@ -87,6 +88,11 @@ class MyItihas extends StatelessWidget {
 
                   locale: TranslationProvider.of(context).flutterLocale,
                   supportedLocales: AppLocaleUtils.supportedLocales,
+                  localizationsDelegates: const [
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
 
                   themeMode: state.isDark ? ThemeMode.dark : ThemeMode.light,
                   theme: AppTheme.lightTheme,
