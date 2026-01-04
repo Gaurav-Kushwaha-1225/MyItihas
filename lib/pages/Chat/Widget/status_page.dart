@@ -271,7 +271,6 @@ Widget _glassContainer({
   required Widget child,
   EdgeInsets? margin,
   required bool isDark,
-  final textColor,
 }) {
   return Container(
     margin: margin ?? EdgeInsets.symmetric(horizontal: 2.w),

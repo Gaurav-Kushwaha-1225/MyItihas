@@ -1,4 +1,4 @@
-import 'package:injectable/injectable.dart';
+
 import 'package:myitihas/core/errors/exceptions.dart';
 import 'package:myitihas/features/social/data/datasources/user_data_source.dart';
 import 'package:myitihas/features/social/domain/entities/share.dart';
@@ -35,7 +35,7 @@ abstract class SocialDataSource {
   Future<List<ShareModel>> getStoryShares(String storyId);
 }
 
-@LazySingleton(as: SocialDataSource)
+@Deprecated('Use [SocialRemoteDataSource] for production.')
 class SocialDataSourceImpl implements SocialDataSource {
   final UserDataSource userDataSource;
 

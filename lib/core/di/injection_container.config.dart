@@ -33,6 +33,8 @@ import '../../features/notifications/domain/repositories/notification_repository
     as _i367;
 import '../../features/social/data/datasources/social_data_source.dart'
     as _i1050;
+import '../../features/social/data/datasources/social_remote_data_source.dart'
+    as _i744;
 import '../../features/social/data/datasources/user_data_source.dart' as _i773;
 import '../../features/social/data/datasources/user_remote_data_source.dart'
     as _i210;
@@ -49,6 +51,7 @@ import '../../features/social/domain/repositories/social_repository.dart'
 import '../../features/social/domain/repositories/user_repository.dart'
     as _i721;
 import '../../features/social/presentation/bloc/comment_bloc.dart' as _i62;
+import '../../features/social/presentation/bloc/create_post_bloc.dart' as _i623;
 import '../../features/social/presentation/bloc/feed_bloc.dart' as _i420;
 import '../../features/social/presentation/bloc/notification_bloc.dart'
     as _i506;
@@ -91,9 +94,13 @@ import '../../features/story_generator/presentation/bloc/story_generator_bloc.da
     as _i177;
 import '../../services/chat_service.dart' as _i207;
 import '../../services/follow_service.dart' as _i545;
+import '../../services/notification_service.dart' as _i85;
+import '../../services/post_service.dart' as _i90;
 import '../../services/profile_service.dart' as _i637;
 import '../../services/profile_storage_service.dart' as _i743;
 import '../../services/reading_progress_service.dart' as _i277;
+import '../../services/realtime_service.dart' as _i253;
+import '../../services/social_service.dart' as _i558;
 import '../network/api_client.dart' as _i557;
 import '../network/mock_websocket_service.dart' as _i817;
 import '../network/network_info.dart' as _i932;
@@ -140,6 +147,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i277.ReadingProgressService>(
       () => _i277.ReadingProgressService(),
     );
+    gh.lazySingleton<_i1050.SocialDataSource>(
+      () => _i744.SocialRemoteDataSource(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i773.UserDataSource>(() => _i773.UserDataSourceImpl());
     gh.lazySingleton<_i932.NetworkInfo>(
       () => _i932.NetworkInfoImpl(gh<_i161.InternetConnection>()),
@@ -153,11 +163,24 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i545.FollowService>(
       () => _i545.FollowService(gh<_i454.SupabaseClient>()),
     );
+    gh.lazySingleton<_i85.NotificationService>(
+      () => _i85.NotificationService(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i90.PostService>(
+      () => _i90.PostService(gh<_i454.SupabaseClient>()),
+    );
     gh.lazySingleton<_i637.ProfileService>(
       () => _i637.ProfileService(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i743.ProfileStorageService>(
       () => _i743.ProfileStorageService(gh<_i454.SupabaseClient>()),
+    );
+    gh.lazySingleton<_i253.RealtimeService>(
+      () => _i253.RealtimeService(gh<_i454.SupabaseClient>()),
+      dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i558.SocialService>(
+      () => _i558.SocialService(gh<_i454.SupabaseClient>()),
     );
     gh.lazySingleton<_i210.UserRemoteDataSource>(
       () => _i210.UserRemoteDataSourceSupabase(gh<_i454.SupabaseClient>()),
@@ -183,6 +206,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i277.ReadingProgressService>(),
       ),
     );
+    gh.factory<_i623.CreatePostBloc>(
+      () => _i623.CreatePostBloc(gh<_i90.PostService>()),
     gh.lazySingleton<_i277.StoryGeneratorRepository>(
       () => _i720.StoryGeneratorRepositoryImpl(
         gh<_i150.RemoteStoryGeneratorDataSource>(),
@@ -195,9 +220,6 @@ extension GetItInjectableX on _i174.GetIt {
         localDataSource: gh<_i533.StoryLocalDataSource>(),
         networkInfo: gh<_i932.NetworkInfo>(),
       ),
-    );
-    gh.lazySingleton<_i1050.SocialDataSource>(
-      () => _i1050.SocialDataSourceImpl(gh<_i773.UserDataSource>()),
     );
     gh.factory<_i57.ChatDetailBloc>(
       () => _i57.ChatDetailBloc(
@@ -256,8 +278,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i545.PostRepository>(
       () => _i141.PostRepositoryImpl(
-        userRepository: gh<_i721.UserRepository>(),
+        gh<_i90.PostService>(),
+        gh<_i558.SocialService>(),
+        gh<_i909.StoryRepository>(),
+      ),
+    );
+    gh.factory<_i420.FeedBloc>(
+      () => _i420.FeedBloc(
         storyRepository: gh<_i909.StoryRepository>(),
+        socialRepository: gh<_i640.SocialRepository>(),
+        userRepository: gh<_i721.UserRepository>(),
+        postRepository: gh<_i545.PostRepository>(),
+        realtimeService: gh<_i253.RealtimeService>(),
       ),
     );
     gh.factory<_i177.StoryGeneratorBloc>(
@@ -280,6 +312,10 @@ extension GetItInjectableX on _i174.GetIt {
         userRepository: gh<_i721.UserRepository>(),
       ),
     );
+    gh.factory<_i177.StoryGeneratorBloc>(
+      () => _i177.StoryGeneratorBloc(
+        generateStory: gh<_i688.GenerateStory>(),
+        randomizeOptions: gh<_i445.RandomizeOptions>(),
     gh.factory<_i420.FeedBloc>(
       () => _i420.FeedBloc(
         storyRepository: gh<_i909.StoryRepository>(),

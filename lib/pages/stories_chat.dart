@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:myitihas/pages/stories_details.dart';
-import 'package:myitihas/utils/constants.dart';
 
 class StoryGeneratorPage extends StatefulWidget {
   const StoryGeneratorPage({super.key});
@@ -15,7 +12,7 @@ class _StoryGeneratorPageState extends State<StoryGeneratorPage>
     with SingleTickerProviderStateMixin {
   TextEditingController promptController = TextEditingController();
   bool _isChatStarted = false;
-  bool _sidebarOpen = false;
+  final bool _sidebarOpen = false;
 
   List<Map<String, String>> chatHistory = [];
 

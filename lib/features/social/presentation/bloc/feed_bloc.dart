@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -10,6 +11,7 @@ import 'package:myitihas/features/social/domain/entities/share.dart';
 import 'package:myitihas/features/social/domain/repositories/post_repository.dart';
 import 'package:myitihas/features/social/domain/repositories/social_repository.dart';
 import 'package:myitihas/features/social/domain/repositories/user_repository.dart';
+import 'package:myitihas/services/realtime_service.dart';
 import 'feed_event.dart';
 import 'feed_state.dart';
 
@@ -19,6 +21,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final SocialRepository socialRepository;
   final UserRepository userRepository;
   final PostRepository postRepository;
+  final RealtimeService realtimeService;
+
+  StreamSubscription<SocialCountUpdate>? _realtimeSubscription;
 
   static const int _pageSize = 10;
   int _currentOffset = 0;
@@ -29,6 +34,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     required this.socialRepository,
     required this.userRepository,
     required this.postRepository,
+    required this.realtimeService,
   }) : super(const FeedState.initial()) {
     on<LoadFeedEvent>(_onLoadFeed);
     on<LoadMoreFeedEvent>(_onLoadMore);
@@ -38,6 +44,43 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     on<ToggleBookmarkEvent>(_onToggleBookmark);
     on<AddCommentEvent>(_onAddComment);
     on<ShareContentEvent>(_onShareContent);
+
+    _realtimeSubscription = realtimeService.countUpdates.listen(_onRealtimeUpdate);
+  }
+
+  void _onRealtimeUpdate(SocialCountUpdate update) {
+    final currentState = state;
+    if (currentState is! FeedLoaded) return;
+
+    final updatedItems = currentState.feedItems.map((item) {
+      if (item.id != update.contentId) return item;
+
+      switch (update.countType) {
+        case SocialCountType.like:
+          return update.delta > 0
+              ? item.incrementLikeCount()
+              : item.decrementLikeCount();
+        case SocialCountType.comment:
+          return update.delta > 0
+              ? item.incrementCommentCount()
+              : item.decrementCommentCount();
+        case SocialCountType.share:
+          return update.delta > 0
+              ? item.incrementShareCount()
+              : item;
+        case SocialCountType.bookmark:
+          return item; // Bookmark count not tracked per-item
+      }
+    }).toList();
+
+    // ignore: invalid_use_of_visible_for_testing_member
+    emit(currentState.copyWith(feedItems: updatedItems));
+  }
+
+  @override
+  Future<void> close() {
+    _realtimeSubscription?.cancel();
+    return super.close();
   }
 
   Future<void> _onLoadFeed(LoadFeedEvent event, Emitter<FeedState> emit) async {
@@ -325,7 +368,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     }
   }
 
-  /// Load feed items based on feed type
   Future<List<FeedItem>> _loadFeedItems({
     required FeedType feedType,
     required int limit,

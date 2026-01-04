@@ -8,6 +8,7 @@ import 'package:myitihas/features/home/presentation/bloc/home_bloc.dart';
 import 'package:myitihas/features/home/presentation/bloc/home_event.dart';
 import 'package:myitihas/features/home/presentation/bloc/home_state.dart';
 import 'package:myitihas/features/home/presentation/widgets/continue_reading_section.dart';
+import 'package:myitihas/features/home/presentation/widgets/create_post_card.dart';
 import 'package:myitihas/features/home/presentation/widgets/featured_stories_section.dart';
 import 'package:myitihas/features/home/presentation/widgets/hero_generate_button.dart';
 import 'package:myitihas/features/home/presentation/widgets/saved_stories_section.dart';
@@ -235,6 +236,13 @@ class _HomeScreenViewState extends State<_HomeScreenView>
                       context.push('/home/stories/${story.id}');
                     },
                   ),
+                ),
+              ),
+
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 16.h),
+                  child: const CreatePostCard(),
                 ),
               ),
 

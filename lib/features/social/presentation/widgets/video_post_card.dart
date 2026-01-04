@@ -1,8 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:myitihas/features/social/domain/entities/video_post.dart';
 import 'package:myitihas/features/social/presentation/widgets/author_info_bar.dart';
 import 'package:myitihas/features/social/presentation/widgets/engagement_bar.dart';
+import 'package:myitihas/features/social/presentation/widgets/feed_video_player.dart';
 import 'package:myitihas/i18n/strings.g.dart';
 
 /// A full-screen card for displaying video posts in the social feed.
@@ -151,24 +151,11 @@ class _VideoPostCardState extends State<VideoPostCard>
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Video thumbnail (placeholder for actual video player)
-                _VideoThumbnailSection(post: post),
-
-                // Play button overlay
-                Center(
-                  child: Container(
-                    width: 72,
-                    height: 72,
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.5),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.play_arrow_rounded,
-                      color: Colors.white,
-                      size: 48,
-                    ),
-                  ),
+                FeedVideoPlayer(
+                  videoUrl: post.videoUrl,
+                  thumbnailUrl: post.thumbnailUrl,
+                  isVisible: widget.isVisible,
+                  onDoubleTap: widget.onLike,
                 ),
 
                 // Duration badge
@@ -460,63 +447,6 @@ class _VideoPostCardState extends State<VideoPostCard>
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _VideoThumbnailSection extends StatelessWidget {
-  final VideoPost post;
-
-  const _VideoThumbnailSection({required this.post});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    if (post.thumbnailUrl != null && post.thumbnailUrl!.isNotEmpty) {
-      return CachedNetworkImage(
-        imageUrl: post.thumbnailUrl!,
-        fit: BoxFit.cover,
-        placeholder: (context, url) =>
-            _VideoPlaceholder(colorScheme: colorScheme),
-        errorWidget: (context, url, error) =>
-            _VideoPlaceholder(colorScheme: colorScheme),
-      );
-    }
-
-    return _VideoPlaceholder(colorScheme: colorScheme);
-  }
-}
-
-class _VideoPlaceholder extends StatelessWidget {
-  final ColorScheme colorScheme;
-
-  const _VideoPlaceholder({required this.colorScheme});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey[900],
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.videocam_outlined,
-            size: 64,
-            color: colorScheme.primary.withValues(alpha: 0.5),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            t.feed.tabs.videos,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.7),
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
       ),
     );
   }

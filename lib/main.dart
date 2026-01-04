@@ -11,6 +11,7 @@ import 'package:myitihas/core/logging/talker_setup.dart';
 import 'package:myitihas/core/storage/hive_service.dart';
 import 'package:myitihas/i18n/strings.g.dart';
 import 'package:myitihas/services/supabase_service.dart';
+import 'package:myitihas/services/realtime_service.dart';
 import 'package:myitihas/utils/theme.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +38,10 @@ Future<void> main() async {
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhtYnlnYWVpeHZ6bHloYnRrYm5wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE1NDAzODAsImV4cCI6MjA3NzExNjM4MH0.dqcdiUaixiuFoy5YJ0tmN34M7IBSp8JmiEhYuLKUCKI',
   );
+
+  final realtimeService = getIt<RealtimeService>();
+  realtimeService.initialize();
+  talker.info('RealtimeService initialized');
 
   final SharedPreferences storage = await SharedPreferences.getInstance();
   

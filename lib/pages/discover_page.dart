@@ -22,7 +22,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   bool _isLoading = true;
   String? _errorMessage;
   final int _limit = 20;
-  int _offset = 0;
+  final int _offset = 0;
 
   @override
   void initState() {
