@@ -7,12 +7,16 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/domain/entities/generator_options.dart';
+import 'package:myitihas/features/story_generator/presentation/widgets/generating_overlay.dart';
 import 'package:myitihas/utils/functions.dart';
 import 'package:rich_readmore/rich_readmore.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:myitihas/core/di/injection_container.dart';
 import 'package:myitihas/features/story_generator/domain/usecases/generate_story_image.dart';
 import 'package:myitihas/features/story_generator/domain/usecases/update_generated_story.dart';
+import 'package:myitihas/features/story_generator/domain/usecases/regenerate_story.dart';
+import 'package:myitihas/features/story_generator/domain/repositories/story_generator_repository.dart';
+import 'package:myitihas/features/story_generator/domain/entities/story_prompt.dart';
 import 'package:myitihas/core/logging/talker_setup.dart';
 
 /// Page for displaying a generated story with save and share options
@@ -29,6 +33,7 @@ class GeneratedStoryDetailPage extends StatefulWidget {
 class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
   late Story _story;
   bool _isGeneratingImage = false;
+  bool _isRegenerating = false;
   String? selectedLanguage;
   bool _isDownloading = false;
   bool _isSpeaking = false;
@@ -168,6 +173,90 @@ ${_story.quotes}
     }
   }
 
+  Future<void> _regenerateStory() async {
+    if (_isRegenerating) return;
+    setState(() {
+      _isRegenerating = true;
+    });
+
+    try {
+      final regen = RegenerateStory(getIt<StoryGeneratorRepository>());
+
+      final prompt = StoryPrompt(
+        scripture: _story.scripture.isNotEmpty ? _story.scripture : null,
+        storyType: _story.attributes.storyType.isNotEmpty
+            ? _story.attributes.storyType
+            : null,
+        theme: _story.attributes.theme.isNotEmpty
+            ? _story.attributes.theme
+            : null,
+        mainCharacter: _story.attributes.mainCharacterType.isNotEmpty
+            ? _story.attributes.mainCharacterType
+            : null,
+        setting: _story.attributes.storySetting.isNotEmpty
+            ? _story.attributes.storySetting
+            : null,
+        isRawPrompt: false,
+      );
+
+      final options = GeneratorOptions(
+        language: StoryLanguage.values.firstWhere(
+          (lang) =>
+              lang.name.toLowerCase() ==
+              selectedLanguage?.toLowerCase().replaceAll(' ', ''),
+          orElse: () => StoryLanguage.english,
+        ),
+        length: _story.attributes.storyLength.isNotEmpty
+            ? StoryLength.values.firstWhere(
+                (len) =>
+                    len.name.toLowerCase() ==
+                    _story.attributes.storyLength.toLowerCase(),
+                orElse: () => StoryLength.medium,
+              )
+            : StoryLength.medium,
+        format: _story.attributes.narrativeStyle.isNotEmpty
+            ? StoryFormat.values.firstWhere(
+                (fmt) =>
+                    fmt.name.toLowerCase() ==
+                    _story.attributes.narrativeStyle.toLowerCase(),
+                orElse: () => StoryFormat.narrative,
+              )
+            : StoryFormat.narrative,
+      );
+
+      final result = await regen(
+        RegenerateStoryParams(
+          original: _story,
+          prompt: prompt,
+          options: options,
+        ),
+      );
+
+      result.fold(
+        (failure) {
+          talker.error('Regenerate failed: ${failure.message}');
+        },
+        (generated) async {
+          if (!mounted) return;
+          setState(() {
+            _story = generated;
+          });
+          await _generateImage();
+
+          await _saveOrUpdateStory();
+        },
+      );
+    } catch (e) {
+      talker.error('Error during regenerate: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRegenerating = false;
+        });
+      }
+    }
+  }
+
   @override
   void dispose() {
     _tts.stop();
@@ -181,148 +270,143 @@ ${_story.quotes}
     bool isDark = theme.brightness == Brightness.dark;
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: SingleChildScrollView(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-              colors: [
-                Theme.of(context).primaryColor.withAlpha(5),
-                Theme.of(context).brightness == Brightness.dark
-                    ? const Color(0xFF1E293B)
-                    : const Color(0xFFF1F5F9),
-              ],
-              transform: GradientRotation(3.14 / 1.5),
-            ),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header with back and share
-              Container(
-                height: screenSize.height * 0.115,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withValues(alpha: 0.7),
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    // Pattern overlay
-                    Positioned.fill(
-                      child: Opacity(
-                        opacity: 0.1,
-                        child: Image.network(
-                          'https://www.transparenttextures.com/patterns/cubes.png',
-                          repeat: ImageRepeat.repeat,
-                          errorBuilder: (_, _, _) => const SizedBox(),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_rounded),
-                      onPressed: () => context.pop(),
-                    ),
-                    const Spacer(),
-                    Tooltip(
-                      message: _isSpeaking ? 'Pause reading' : 'Read aloud',
-                      child: IconButton(
-                        icon: Icon(
-                          _isSpeaking
-                              ? Icons.pause_circle_rounded
-                              : Icons.play_circle_rounded,
-                          size: 28,
-                        ),
-                        onPressed: _toggleSpeech,
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        _story.isFavorite
-                            ? Icons.bookmark
-                            : Icons.bookmark_border,
-                      ),
-                      onPressed: () async {
-                        setState(() {
-                          _story = _story.copyWith(
-                            isFavorite: !_story.isFavorite,
-                          );
-                        });
-                        await _saveOrUpdateStory();
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.share),
-                      onPressed: _shareStory,
-                    ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    Theme.of(context).primaryColor.withAlpha(5),
+                    Theme.of(context).brightness == Brightness.dark
+                        ? const Color(0xFF1E293B)
+                        : const Color(0xFFF1F5F9),
                   ],
+                  transform: GradientRotation(3.14 / 1.5),
                 ),
               ),
-
-              // Story image with overlay
-              Stack(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Header with back and share
                   Container(
-                    width: screenSize.width,
-                    height: screenSize.height * 0.4,
+                    height: screenSize.height * 0.115,
                     decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.white.withOpacity(0.15),
-                          blurRadius: 100,
-                          spreadRadius: 0,
-                          offset: const Offset(0, -6),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withValues(alpha: 0.7),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_rounded),
+                          onPressed: () => context.pop(),
+                        ),
+                        const Spacer(),
+                        Tooltip(
+                          message: _isSpeaking ? 'Pause reading' : 'Read aloud',
+                          child: IconButton(
+                            icon: Icon(
+                              _isSpeaking
+                                  ? Icons.pause_circle_rounded
+                                  : Icons.play_circle_rounded,
+                              size: 28,
+                            ),
+                            onPressed: _toggleSpeech,
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            _story.isFavorite
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                          ),
+                          onPressed: () async {
+                            setState(() {
+                              _story = _story.copyWith(
+                                isFavorite: !_story.isFavorite,
+                              );
+                            });
+                            await _saveOrUpdateStory();
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.share),
+                          onPressed: _shareStory,
                         ),
                       ],
                     ),
-                    child: _buildStoryImage(),
                   ),
-                  Container(
-                    width: screenSize.width,
-                    height: screenSize.height * 0.4,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomCenter,
-                        end: Alignment.topCenter,
-                        colors: [Colors.black, Colors.transparent],
+
+                  // Story image with overlay
+                  Stack(
+                    children: [
+                      Container(
+                        width: screenSize.width,
+                        height: screenSize.height * 0.4,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.15),
+                              blurRadius: 100,
+                              spreadRadius: 0,
+                              offset: const Offset(0, -6),
+                            ),
+                          ],
+                        ),
+                        child: _buildStoryImage(),
                       ),
-                    ),
+                      Container(
+                        width: screenSize.width,
+                        height: screenSize.height * 0.4,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [Colors.black, Colors.transparent],
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        child: _buildStoryMetadata(screenSize, theme, isDark),
+                      ),
+                    ],
                   ),
-                  Positioned(
-                    bottom: 0,
-                    child: _buildStoryMetadata(screenSize, theme, isDark),
-                  ),
+
+                  SizedBox(height: screenSize.height * 0.01),
+
+                  // Story content sections
+                  _buildStoryContent(screenSize, theme),
+
+                  // Bottom Action Buttons
+                  _buildBottomActionButtons(theme, isDark),
+                  SizedBox(height: screenSize.height * 0.02),
+
+                  // Language selector
+                  _buildLanguageSelector(theme, isDark),
+                  SizedBox(height: screenSize.height * 0.02),
+
+                  // Story Insights & Interactions
+                  _buildStoryInsightsSection(theme, isDark, screenSize),
+
+                  SizedBox(height: screenSize.height * 0.03),
                 ],
               ),
-
-              SizedBox(height: screenSize.height * 0.01),
-
-              // Story content sections
-              _buildStoryContent(screenSize, theme),
-
-              // Bottom Action Buttons
-              _buildBottomActionButtons(theme, isDark),
-              SizedBox(height: screenSize.height * 0.02),
-
-              // Language selector
-              _buildLanguageSelector(theme, isDark),
-              SizedBox(height: screenSize.height * 0.02),
-
-              // Story Insights & Interactions
-              _buildStoryInsightsSection(theme, isDark, screenSize),
-
-              SizedBox(height: screenSize.height * 0.03),
-            ],
+            ),
           ),
-        ),
+          if (_isRegenerating)
+            GeneratingOverlay(message: "Regenerating your story..."),
+        ],
       ),
     );
   }
@@ -457,11 +541,10 @@ ${_story.quotes}
               ),
               lessStyle: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-              )
+              ),
             ),
           ),
         ),
-
 
         // // Trivia section
         if (_story.trivia.isNotEmpty) ...[
@@ -485,7 +568,7 @@ ${_story.quotes}
                   ),
                 ],
               ),
-              textAlign: TextAlign.justify
+              textAlign: TextAlign.justify,
             ),
           ),
         ],
@@ -494,7 +577,8 @@ ${_story.quotes}
         if (_story.lesson.isNotEmpty) ...[
           SizedBox(height: screenSize.height * 0.02),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            width: screenSize.width,
+            margin: const EdgeInsets.symmetric(horizontal: 10),
             child: RichText(
               text: TextSpan(
                 children: [
@@ -512,11 +596,10 @@ ${_story.quotes}
                   ),
                 ],
               ),
-              textAlign: TextAlign.justify
+              textAlign: TextAlign.justify,
             ),
           ),
         ],
-
 
         if (_story.attributes.references.isNotEmpty) ...[
           SizedBox(height: screenSize.height * 0.01),
@@ -541,7 +624,7 @@ ${_story.quotes}
                   ),
                 ],
               ),
-              textAlign: TextAlign.center
+              textAlign: TextAlign.center,
             ),
           ),
         ],
@@ -852,9 +935,15 @@ ${_story.quotes}
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildActionButton(Icons.refresh_rounded, () {
-            // regenerate the story using the same prompt and others, and update the original one.
-          }, isDark),
+          _buildActionButton(
+            Icons.refresh_rounded,
+            () async {
+              if (_isRegenerating) return;
+              await _regenerateStory();
+            },
+            isDark,
+            isSelected: _isRegenerating,
+          ),
           _buildActionButton(Icons.download_rounded, () async {
             // Download story
             if (_isDownloading) return;

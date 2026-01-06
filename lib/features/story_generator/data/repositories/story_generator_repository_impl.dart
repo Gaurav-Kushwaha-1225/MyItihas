@@ -63,8 +63,10 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
           'language_style': options.language.displayName,
           'emotional_tone': 'Inspiring',
           'narrative_style': options.format.displayName,
-          'plot_structure': '${options.length.displayName} ${options.length.description}',
-          'story_length': '${options.length.displayName} ${options.length.description}',
+          'plot_structure':
+              '${options.length.displayName} ${options.length.description}',
+          'story_length':
+              '${options.length.displayName} ${options.length.description}',
           'tags': [],
         },
         'author_id': author.id,
@@ -194,27 +196,117 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
       attributes: StoryAttributes(
         storyType: row['attributes']['story_type']?.toString() ?? 'General',
         theme: row['attributes']['theme']?.toString() ?? 'Dharma (Duty)',
-        mainCharacterType: row['attributes']['main_character_type']?.toString() ?? 'Protagonist',
-        storySetting: row['attributes']['story_setting']?.toString() ?? 'Ancient India',
+        mainCharacterType:
+            row['attributes']['main_character_type']?.toString() ??
+            'Protagonist',
+        storySetting:
+            row['attributes']['story_setting']?.toString() ?? 'Ancient India',
         timeEra: row['attributes']['time_era']?.toString() ?? 'Ancient',
-        narrativePerspective: row['attributes']['narrative_perspective']?.toString() ?? 'Third Person',
+        narrativePerspective:
+            row['attributes']['narrative_perspective']?.toString() ??
+            'Third Person',
         languageStyle: row['language']?.toString() ?? 'English',
-        emotionalTone: row['attributes']['emotional_tone']?.toString() ?? 'Inspirational',
-        narrativeStyle: row['attributes']['narrative_style']?.toString() ?? 'Narrative',
-        plotStructure: row['attributes']['plot_structure']?.toString() ?? 'Linear',
-        storyLength: row['attributes']['story_length']?.toString() ?? 'Medium',
-        tags: (row['attributes']['tags'] as List<dynamic>? ?? []).map((tag) => tag.toString()).toList(),
+        emotionalTone:
+            row['attributes']['emotional_tone']?.toString() ?? 'Inspirational',
+        narrativeStyle:
+            row['attributes']['narrative_style']?.toString() ?? 'Narrative',
+        plotStructure:
+            row['attributes']['plot_structure']?.toString() ?? 'Linear',
+        storyLength:
+            row['attributes']['story_length']?.toString() ??
+            'Medium ~1000 words',
+        tags: (row['attributes']['tags'] as List<dynamic>? ?? [])
+            .map((tag) => tag.toString())
+            .toList(),
         references: [row['attributes']['references']?.toString() ?? ''],
-        characters: (row['attributes']['characters'] as List<dynamic>? ?? []).map((char) => char.toString()).toList(),
+        characters: (row['attributes']['characters'] as List<dynamic>? ?? [])
+            .map((char) => char.toString())
+            .toList(),
       ),
       imageUrl: row['image_url']?.toString(),
-      createdAt: row['created_at'] != null ? DateTime.parse(row['created_at']?.toString() ?? '') : null,
-      publishedAt: row['published_at'] != null ? DateTime.parse(row['published_at']?.toString() ?? '') : null,
+      createdAt: row['created_at'] != null
+          ? DateTime.parse(row['created_at']?.toString() ?? '')
+          : null,
+      publishedAt: row['published_at'] != null
+          ? DateTime.parse(row['published_at']?.toString() ?? '')
+          : null,
       author: row['author']?.toString(),
       likes: row['likes']?.toInt() ?? 0,
       views: row['views']?.toInt() ?? 0,
       isFavorite: row['is_favourite'] as bool? ?? false,
     );
+  }
+
+  @override
+  Future<Either<Failure, Story>> regenerateStory({
+    required Story original,
+    required StoryPrompt prompt,
+    required GeneratorOptions options,
+  }) async {
+    try {
+      final result = await _remoteDataSource.generateStory(prompt: prompt, options: options);
+      final user = SupabaseService.client.auth.currentUser;
+      final userRepo = UserRemoteDataSourceSupabase(SupabaseService.client);
+      final author = await userRepo.getUserById(user!.id);
+      final title = result['title'] as String? ?? 'Untitled Story';
+      final storyContent = result['story'] as String? ?? '';
+      final moral = result['moral'] as String? ?? '';
+      final reference = result['reference'] as String? ?? "";
+      final characters = result['characters'] as List<dynamic>;
+
+      // Local fallback generation for UI fields not returned by backend
+      final theme = prompt.theme ?? 'Dharma';
+      final scripture = prompt.scripture ?? 'Mahabharata';
+      Map<String, dynamic> storyMap = {
+        'user_id': user.id,
+        'title': title,
+        'content': storyContent,
+        'language': options.language.displayName,
+        'metadata': {},
+        'attributes': {
+          'quotes': _getQuotes(theme),
+          'trivia': _getTrivia(scripture),
+          'activity': _getActivity(theme),
+          'scripture': scripture,
+          'theme': theme,
+          'references': reference,
+          'characters': characters,
+          'moral': moral.isNotEmpty ? moral : _getLesson(theme),
+          'story_type': prompt.storyType,
+          'main_character_type': prompt.mainCharacter,
+          'story_setting': prompt.setting,
+          'time_era': prompt.scriptureSubtype ?? scripture,
+          'narrative_perspective': 'Third Person',
+          'language_style': options.language.displayName,
+          'emotional_tone': 'Inspiring',
+          'narrative_style': options.format.displayName,
+          'plot_structure':
+              '${options.length.displayName} ${options.length.description}',
+          'story_length':
+              '${options.length.displayName} ${options.length.description}',
+          'tags': [],
+        },
+        'author_id': author.id,
+        'comment_count': 0,
+        'share_count': 0,
+        'likes': 0,
+        'views': 0,
+        'published_at': null,
+        'image_url': null,
+        'author': author.displayName,
+        'is_favourite': false,
+      };
+      final response = await SupabaseService.client
+          .from('stories')
+          .update(storyMap)
+          .eq('id', original.id)
+          .single();
+
+      final story = _mapSupabaseRowToStory(response);
+      return Right(story);
+    } catch (e) {
+      return Left(ServerFailure('Failed to regenerate story: ${e.toString()}'));
+    }
   }
 
   // Helper methods ported for local generation of auxiliary fields

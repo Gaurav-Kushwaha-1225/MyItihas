@@ -14,6 +14,7 @@ abstract class StoryGeneratorRepository {
 
   /// Get random options for story generation
   Future<Either<Failure, StoryPrompt>> getRandomOptions();
+
   /// Generate an image for the story
   Future<Either<Failure, String>> generateStoryImage({
     required String title,
@@ -26,4 +27,10 @@ abstract class StoryGeneratorRepository {
 
   /// Get list of generated stories for the current user
   Future<Either<Failure, List<Story>>> getGeneratedStories();
+
+  Future<Either<Failure, Story>> regenerateStory({
+    required Story original,
+    required StoryPrompt prompt,
+    required GeneratorOptions options,
+  });
 }

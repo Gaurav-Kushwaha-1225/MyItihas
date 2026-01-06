@@ -34,7 +34,7 @@ class _GeneratingOverlayState extends State<GeneratingOverlay>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
 
