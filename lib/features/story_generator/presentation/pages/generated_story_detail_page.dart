@@ -1,5 +1,6 @@
-// ignore_for_file: unused_element
+// ignore_for_file: unused_element, unused_field
 
+import 'dart:math' as math;
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -36,8 +37,27 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
   bool _isRegenerating = false;
   String? selectedLanguage;
   bool _isDownloading = false;
-  bool _isSpeaking = false;
   final FlutterTts _tts = FlutterTts();
+
+  late final Future<void> _ttsInitFuture;
+
+  // The exact text we are reading right now
+  String _ttsText = '';
+
+  // Current position (character offset) in _ttsText
+  int _ttsOffset = 0;
+
+  // Base offset of the currently spoken chunk inside _ttsText
+  int _utteranceBaseOffset = 0;
+
+  // Chunk size (Android can tell us the true max; fallback works cross-platform)
+  int _maxSpeechInputLength = 3500;
+
+  // Used to cancel an in-flight speak loop when user pauses/stops
+  int _ttsRunId = 0;
+
+  bool _isPaused = false;
+  bool _isSpeaking = false;
 
   final List<Map<String, String>> languages = StoryLanguage.values.map((lang) {
     return {
@@ -50,58 +70,159 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
   void initState() {
     super.initState();
     _story = widget.story;
+
+    _ttsText = _buildReadAloudText(_story);
+
     _initializeData();
     selectedLanguage = _story.attributes.languageStyle;
-    _initializeTts();
+
+    _ttsInitFuture = _initializeTts();
   }
 
-  void _initializeTts() {
-    _tts.setLanguage('en-US');
-    _tts.setPitch(1.0);
-    _tts.setSpeechRate(0.5);
+  Future<void> _initializeTts() async {
+    await _tts.setLanguage('en-US');
+    await _tts.setPitch(1.0);
+    await _tts.setSpeechRate(0.5);
 
-    // Set completion handler
-    _tts.setCompletionHandler(() {
+    // IMPORTANT: allows us to await speak completion so we can queue chunks safely
+    await _tts.awaitSpeakCompletion(true);
+
+    // Try to get Android max input length (safe to fail on iOS/web/etc)
+    try {
+      final v = await _tts.getMaxSpeechInputLength;
+      if (v is int && v > 0) {
+        _maxSpeechInputLength = v;
+      }
+    } catch (_) {
+      // ignore
+    }
+
+    // Progress is per-utterance (chunk), so we convert it into global offsets
+    _tts.setProgressHandler((String text, int start, int end, String word) {
+      final global = (_utteranceBaseOffset + end).clamp(0, _ttsText.length);
+      if (global > _ttsOffset) {
+        _ttsOffset = global;
+      }
+    });
+
+    _tts.setStartHandler(() {
+      if (!mounted) return;
+      setState(() {
+        _isSpeaking = true;
+        _isPaused = false;
+      });
+    });
+
+    // Don't set _isSpeaking=false here, because we speak multiple chunks sequentially.
+    _tts.setCompletionHandler(() {});
+
+    _tts.setCancelHandler(() {
+      if (!mounted) return;
       setState(() {
         _isSpeaking = false;
+      });
+    });
+
+    _tts.setErrorHandler((msg) {
+      talker.error('TTS error: $msg');
+      if (!mounted) return;
+      setState(() {
+        _isSpeaking = false;
+        _isPaused = false;
       });
     });
   }
 
   Future<void> _toggleSpeech() async {
-    final completeStory =
-        '''${widget.story.title}
+    await _ttsInitFuture;
 
-${widget.story.story}
+    // Always build from the latest story shown on screen
+    final newText = _buildReadAloudText(_story);
 
----
-${_story.quotes}
-''';
-
-    try {
-      if (_isSpeaking) {
-        // Pause reading
-        await _tts.pause();
-        setState(() {
-          _isSpeaking = false;
-        });
-      } else {
-        // Start reading
-        await _tts.speak(completeStory);
-        setState(() {
-          _isSpeaking = true;
-        });
-      }
-    } catch (e) {
-      talker.error('TTS Error: $e');
+    // If story content changed, reset to start (your requirement)
+    if (newText != _ttsText) {
+      await _stopSpeech(resetPosition: true);
+      _ttsText = newText;
     }
+
+    if (_isSpeaking) {
+      await _pauseSpeech();
+      return;
+    }
+
+    // If we reached the end previously, restart from beginning
+    if (_ttsOffset >= _ttsText.length) {
+      _ttsOffset = 0;
+    }
+
+    await _speakFrom(_ttsOffset);
   }
 
-  Future<void> _stopSpeech() async {
+  Future<void> _stopSpeech({bool resetPosition = false}) async {
+    _ttsRunId++; // cancels any running speak loop
     await _tts.stop();
+
+    if (!mounted) return;
     setState(() {
       _isSpeaking = false;
+      _isPaused = false;
+      if (resetPosition) _ttsOffset = 0;
     });
+  }
+
+  Future<void> _pauseSpeech() async {
+    // We use stop() for a reliable pause across engines,
+    // then resume by speaking from _ttsOffset.
+    _ttsRunId++;
+    await _tts.stop();
+
+    if (!mounted) return;
+    setState(() {
+      _isSpeaking = false;
+      _isPaused = true;
+    });
+  }
+
+  Future<void> _speakFrom(int startOffset) async {
+    final runId = ++_ttsRunId;
+
+    if (!mounted) return;
+    setState(() {
+      _isSpeaking = true;
+      _isPaused = false;
+    });
+
+    var pos = startOffset.clamp(0, _ttsText.length);
+
+    try {
+      while (pos < _ttsText.length && runId == _ttsRunId) {
+        pos = _skipWhitespace(_ttsText, pos);
+        if (pos >= _ttsText.length) break;
+
+        final chunk = _nextTtsChunk(_ttsText, pos, _maxSpeechInputLength);
+
+        _utteranceBaseOffset = pos;
+
+        await _tts.speak(chunk);
+
+        if (runId != _ttsRunId) return;
+
+        // Ensure we advance even if some engines don't fire progress perfectly
+        final expected = (pos + chunk.length).clamp(0, _ttsText.length);
+        if (_ttsOffset < expected) _ttsOffset = expected;
+
+        pos = _ttsOffset;
+      }
+    } catch (e) {
+      talker.error('TTS speak loop error: $e');
+    } finally {
+      if (mounted && runId == _ttsRunId) {
+        setState(() {
+          _isSpeaking = false;
+          _isPaused = false;
+        });
+      }
+    }
   }
 
   Future<void> _initializeData() async {
@@ -237,12 +358,15 @@ ${_story.quotes}
           talker.error('Regenerate failed: ${failure.message}');
         },
         (generated) async {
+          await _stopSpeech(resetPosition: true);
           if (!mounted) return;
+
           setState(() {
             _story = generated;
+            _ttsText = _buildReadAloudText(_story); // new story => new TTS text
           });
-          await _generateImage();
 
+          await _generateImage();
           await _saveOrUpdateStory();
         },
       );
@@ -259,6 +383,7 @@ ${_story.quotes}
 
   @override
   void dispose() {
+    _stopSpeech(resetPosition: true);
     _tts.stop();
     super.dispose();
   }
@@ -1051,4 +1176,52 @@ int estimateReadingTimeMinutes(String text, {int wordsPerMinute = 150}) {
   final wordCount = words.length;
 
   return (wordCount / wordsPerMinute).ceil();
+}
+
+String _buildReadAloudText(Story s) {
+  final title = s.title.trim();
+  final story = s.story.trim();
+  final quotes = (s.quotes).trim();
+
+  final parts = <String>[
+    if (title.isNotEmpty) title,
+    if (story.isNotEmpty) story,
+    if (quotes.isNotEmpty) '---\n$quotes',
+  ];
+
+  return parts.join('\n\n');
+}
+
+int _skipWhitespace(String text, int pos) {
+  while (pos < text.length && RegExp(r'\s').hasMatch(text[pos])) {
+    pos++;
+  }
+  return pos;
+}
+
+String _nextTtsChunk(String text, int start, int maxLen) {
+  final remaining = text.length - start;
+  final take = math.min(maxLen, remaining);
+
+  var end = start + take;
+  if (end >= text.length) return text.substring(start);
+
+  final window = text.substring(start, end);
+
+  // Prefer paragraph breaks, then sentence ends, then spaces
+  int cut = window.lastIndexOf('\n');
+  if (cut < 0) {
+    final matches = RegExp(r'[.!?]\s').allMatches(window).toList();
+    if (matches.isNotEmpty) {
+      cut = matches.last.start + 1; // keep punctuation
+    }
+  }
+  if (cut < 0) cut = window.lastIndexOf(' ');
+
+  // Avoid tiny chunks
+  if (cut > 200) {
+    end = start + cut + 1;
+  }
+
+  return text.substring(start, end);
 }
