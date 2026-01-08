@@ -11,8 +11,10 @@ import 'package:timeago/timeago.dart' as timeago;
 class HistoryBottomSheet extends StatelessWidget {
   const HistoryBottomSheet({super.key});
 
-  static Future<void> show(BuildContext context) {
+  static Future<void> show(BuildContext context) async {
     final bloc = context.read<StoryGeneratorBloc>();
+    bloc.add(const StoryGeneratorEvent.loadHistory());
+    await Future.delayed(Duration(milliseconds: 100));
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -164,8 +166,8 @@ class HistoryBottomSheet extends StatelessWidget {
                                   ),
                                   SizedBox(height: 4.h),
                                   Text(
-                                    story.publishedAt != null
-                                        ? timeago.format(story.publishedAt!)
+                                    story.updatedAt != null
+                                        ? timeago.format(story.updatedAt!)
                                         : 'Just now',
                                     style: theme.textTheme.bodySmall?.copyWith(
                                       color: colorScheme.onSurfaceVariant,

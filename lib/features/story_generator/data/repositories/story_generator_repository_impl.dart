@@ -227,6 +227,9 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
       createdAt: row['created_at'] != null
           ? DateTime.parse(row['created_at']?.toString() ?? '')
           : null,
+      updatedAt: row['updated_at'] != null
+          ? DateTime.parse(row['updated_at']?.toString() ?? '')
+          : null,
       publishedAt: row['published_at'] != null
           ? DateTime.parse(row['published_at']?.toString() ?? '')
           : null,
@@ -258,6 +261,7 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
       final theme = prompt.theme ?? 'Dharma';
       final scripture = prompt.scripture ?? 'Mahabharata';
       Map<String, dynamic> storyMap = {
+        'id': original.id, // Ensure we're updating the correct story
         'user_id': user.id,
         'title': title,
         'content': storyContent,
@@ -287,19 +291,13 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
           'tags': [],
         },
         'author_id': author.id,
-        'comment_count': 0,
-        'share_count': 0,
-        'likes': 0,
-        'views': 0,
-        'published_at': null,
-        'image_url': null,
         'author': author.displayName,
-        'is_favourite': false,
       };
       final response = await SupabaseService.client
           .from('stories')
           .update(storyMap)
           .eq('id', original.id)
+          .select()
           .single();
 
       final story = _mapSupabaseRowToStory(response);

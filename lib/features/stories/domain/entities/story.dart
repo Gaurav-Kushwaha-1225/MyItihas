@@ -19,6 +19,7 @@ abstract class Story with _$Story {
     String? author,
     DateTime? publishedAt,
     DateTime? createdAt,
+    DateTime? updatedAt,
     @Default(0) int likes,
     @Default(0) int views,
     @Default(false) bool isFavorite,
