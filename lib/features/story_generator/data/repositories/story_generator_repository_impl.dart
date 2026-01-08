@@ -292,6 +292,7 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
         },
         'author_id': author.id,
         'author': author.displayName,
+        'image_url': null
       };
       final response = await SupabaseService.client
           .from('stories')

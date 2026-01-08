@@ -581,23 +581,23 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
           // Chips for attributes
           Row(
             children: [
-              if (widget.story.attributes.storyType.isNotEmpty)
+              if (_story.attributes.storyType.isNotEmpty)
                 Chip(
-                  label: Text(widget.story.attributes.storyType),
+                  label: Text(_story.attributes.storyType),
                   labelStyle: theme.textTheme.labelSmall,
                   visualDensity: VisualDensity.compact,
                 ),
               SizedBox(width: screenSize.width * 0.02),
-              if (widget.story.attributes.theme.isNotEmpty)
+              if (_story.attributes.theme.isNotEmpty)
                 Chip(
-                  label: Text(widget.story.attributes.theme),
+                  label: Text(_story.attributes.theme),
                   labelStyle: theme.textTheme.labelSmall,
                   visualDensity: VisualDensity.compact,
                 ),
             ],
           ),
           Text(
-            widget.story.title,
+            _story.title,
             maxLines: 2,
             style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
@@ -606,7 +606,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
           ),
           SizedBox(height: screenSize.height * 0.005),
           Text(
-            widget.story.scripture,
+            _story.scripture,
             maxLines: 1,
             style: theme.textTheme.bodySmall?.copyWith(
               overflow: TextOverflow.ellipsis,
@@ -1075,9 +1075,9 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             _isDownloading = true;
             final completeStory =
                 '''
-${widget.story.title}
+${_story.title}
 
-${widget.story.story}
+${_story.story}
 
 ---
 ${_story.quotes}
@@ -1099,9 +1099,9 @@ Generated with MyItihas - Discover Indian Mythology
             // Copy to clipboard
             final completeStory =
                 '''
-${widget.story.title}
+${_story.title}
 
-${widget.story.story}
+${_story.story}
 
 ---
 ${_story.quotes}
@@ -1153,9 +1153,9 @@ Generated with MyItihas - Discover Indian Mythology
     HapticFeedback.lightImpact();
     final shareText =
         '''
-${widget.story.title}
+${_story.title}
 
-${widget.story.story}
+${_story.story}
 
 ---
 ${_story.quotes}
@@ -1163,7 +1163,7 @@ ${_story.quotes}
 Generated with MyItihas - Discover Indian Mythology
 ''';
 
-    Share.share(shareText, subject: widget.story.title);
+    Share.share(shareText, subject: _story.title);
   }
 }
 
@@ -1181,12 +1181,12 @@ int estimateReadingTimeMinutes(String text, {int wordsPerMinute = 150}) {
 String _buildReadAloudText(Story s) {
   final title = s.title.trim();
   final story = s.story.trim();
-  final quotes = (s.quotes).trim();
+  final moral = (s.lesson).trim();
 
   final parts = <String>[
     if (title.isNotEmpty) title,
     if (story.isNotEmpty) story,
-    if (quotes.isNotEmpty) '---\n$quotes',
+    if (moral.isNotEmpty) moral,
   ];
 
   return parts.join('\n\n');
