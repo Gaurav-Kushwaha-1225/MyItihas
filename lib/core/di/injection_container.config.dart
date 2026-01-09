@@ -80,6 +80,8 @@ import '../../features/story_generator/data/repositories/story_generator_reposit
     as _i720;
 import '../../features/story_generator/domain/repositories/story_generator_repository.dart'
     as _i277;
+import '../../features/story_generator/domain/usecases/expand_story.dart'
+    as _i880;
 import '../../features/story_generator/domain/usecases/generate_story.dart'
     as _i688;
 import '../../features/story_generator/domain/usecases/generate_story_image.dart'
@@ -90,6 +92,8 @@ import '../../features/story_generator/domain/usecases/randomize_options.dart'
     as _i445;
 import '../../features/story_generator/domain/usecases/update_generated_story.dart'
     as _i31;
+import '../../features/story_generator/presentation/bloc/story_detail_bloc.dart'
+    as _i324;
 import '../../features/story_generator/presentation/bloc/story_generator_bloc.dart'
     as _i177;
 import '../../services/chat_service.dart' as _i207;
@@ -228,6 +232,9 @@ extension GetItInjectableX on _i174.GetIt {
         webSocketService: gh<_i436.WebSocketService>(),
       ),
     );
+    gh.factory<_i324.StoryDetailBloc>(
+      () => _i324.StoryDetailBloc(gh<_i277.StoryGeneratorRepository>()),
+    );
     gh.factory<_i2.ChatListBloc>(
       () => _i2.ChatListBloc(chatRepository: gh<_i420.ChatRepository>()),
     );
@@ -252,6 +259,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i62.CommentBloc>(
       () => _i62.CommentBloc(socialRepository: gh<_i640.SocialRepository>()),
+    );
+    gh.lazySingleton<_i880.ExpandStory>(
+      () => _i880.ExpandStory(gh<_i277.StoryGeneratorRepository>()),
     );
     gh.lazySingleton<_i688.GenerateStory>(
       () => _i688.GenerateStory(gh<_i277.StoryGeneratorRepository>()),
