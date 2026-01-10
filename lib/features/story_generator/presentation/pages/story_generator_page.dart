@@ -84,7 +84,6 @@ class _StoryGeneratorViewState extends State<_StoryGeneratorView> {
                       tooltip: 'History',
                       onPressed: () {
                         HapticFeedback.lightImpact();
-                        context.pop();
                         HistoryBottomSheet.show(context);
                       },
                     ),

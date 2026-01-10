@@ -2,25 +2,22 @@
 
 import 'dart:math' as math;
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/core/di/injection_container.dart';
+import 'package:myitihas/core/logging/talker_setup.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/domain/entities/generator_options.dart';
 import 'package:myitihas/features/story_generator/presentation/widgets/generating_overlay.dart';
+import 'package:myitihas/features/story_generator/presentation/bloc/story_detail_bloc.dart';
 import 'package:myitihas/utils/functions.dart';
 import 'package:rich_readmore/rich_readmore.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:myitihas/core/di/injection_container.dart';
-import 'package:myitihas/features/story_generator/domain/usecases/generate_story_image.dart';
-import 'package:myitihas/features/story_generator/domain/usecases/update_generated_story.dart';
-import 'package:myitihas/features/story_generator/domain/usecases/regenerate_story.dart';
-import 'package:myitihas/features/story_generator/domain/repositories/story_generator_repository.dart';
-import 'package:myitihas/features/story_generator/domain/entities/story_prompt.dart';
-import 'package:myitihas/core/logging/talker_setup.dart';
 
-/// Page for displaying a generated story with save and share options
 class GeneratedStoryDetailPage extends StatefulWidget {
   final Story story;
 
@@ -32,28 +29,14 @@ class GeneratedStoryDetailPage extends StatefulWidget {
 }
 
 class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
-  late Story _story;
-  bool _isGeneratingImage = false;
-  bool _isRegenerating = false;
-  String? selectedLanguage;
-  bool _isDownloading = false;
+  late final StoryDetailBloc _detailBloc;
   final FlutterTts _tts = FlutterTts();
-
   late final Future<void> _ttsInitFuture;
 
-  // The exact text we are reading right now
   String _ttsText = '';
-
-  // Current position (character offset) in _ttsText
   int _ttsOffset = 0;
-
-  // Base offset of the currently spoken chunk inside _ttsText
   int _utteranceBaseOffset = 0;
-
-  // Chunk size (Android can tell us the true max; fallback works cross-platform)
   int _maxSpeechInputLength = 3500;
-
-  // Used to cancel an in-flight speak loop when user pauses/stops
   int _ttsRunId = 0;
 
   bool _isPaused = false;
@@ -69,322 +52,135 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
   @override
   void initState() {
     super.initState();
-    _story = widget.story;
-
-    _ttsText = _buildReadAloudText(_story);
-
-    _initializeData();
-    selectedLanguage = _story.attributes.languageStyle;
-
+    _detailBloc = getIt<StoryDetailBloc>()
+      ..add(StoryDetailStarted(widget.story));
+    _ttsText = _buildReadAloudText(widget.story);
     _ttsInitFuture = _initializeTts();
   }
 
   Future<void> _initializeTts() async {
     await _tts.setLanguage('en-US');
-    await _tts.setPitch(1.0);
     await _tts.setSpeechRate(0.5);
+    await _tts.setVolume(1.0);
+    await _tts.setPitch(1.0);
 
-    // IMPORTANT: allows us to await speak completion so we can queue chunks safely
-    await _tts.awaitSpeakCompletion(true);
-
-    // Try to get Android max input length (safe to fail on iOS/web/etc)
-    try {
-      final v = await _tts.getMaxSpeechInputLength;
-      if (v is int && v > 0) {
-        _maxSpeechInputLength = v;
-      }
-    } catch (_) {
-      // ignore
+    final maxLen = await _tts.getMaxSpeechInputLength;
+    if (maxLen is int && maxLen > 0) {
+      _maxSpeechInputLength = maxLen;
     }
 
-    // Progress is per-utterance (chunk), so we convert it into global offsets
-    _tts.setProgressHandler((String text, int start, int end, String word) {
-      final global = (_utteranceBaseOffset + end).clamp(0, _ttsText.length);
-      if (global > _ttsOffset) {
-        _ttsOffset = global;
-      }
+    _tts.setStartHandler(() {
+      setState(() => _isSpeaking = true);
     });
 
-    _tts.setStartHandler(() {
-      if (!mounted) return;
+    _tts.setCompletionHandler(() {
+      setState(() => _isSpeaking = false);
+    });
+
+    _tts.setCancelHandler(() {
+      setState(() => _isSpeaking = false);
+    });
+
+    _tts.setPauseHandler(() {
+      setState(() {
+        _isSpeaking = false;
+        _isPaused = true;
+      });
+    });
+
+    _tts.setContinueHandler(() {
       setState(() {
         _isSpeaking = true;
         _isPaused = false;
       });
     });
 
-    // Don't set _isSpeaking=false here, because we speak multiple chunks sequentially.
-    _tts.setCompletionHandler(() {});
-
-    _tts.setCancelHandler(() {
-      if (!mounted) return;
-      setState(() {
-        _isSpeaking = false;
-      });
-    });
-
-    _tts.setErrorHandler((msg) {
-      talker.error('TTS error: $msg');
-      if (!mounted) return;
-      setState(() {
-        _isSpeaking = false;
-        _isPaused = false;
-      });
+    _tts.setProgressHandler((String text, int start, int end, String word) {
+      final absolute = _utteranceBaseOffset + end;
+      _ttsOffset = absolute;
     });
   }
 
-  Future<void> _toggleSpeech() async {
+  Future<void> _toggleSpeech(Story story) async {
     await _ttsInitFuture;
 
-    // Always build from the latest story shown on screen
-    final newText = _buildReadAloudText(_story);
-
-    // If story content changed, reset to start (your requirement)
-    if (newText != _ttsText) {
-      await _stopSpeech(resetPosition: true);
-      _ttsText = newText;
-    }
-
     if (_isSpeaking) {
-      await _pauseSpeech();
+      _ttsRunId++;
+      await _tts.pause();
+      setState(() {
+        _isSpeaking = false;
+        _isPaused = true;
+      });
       return;
     }
 
-    // If we reached the end previously, restart from beginning
-    if (_ttsOffset >= _ttsText.length) {
-      _ttsOffset = 0;
+    if (_isPaused) {
+      setState(() {
+        _isPaused = false;
+        _isSpeaking = true;
+      });
+      _ttsRunId++;
+      await _speakFromOffset();
+      return;
     }
 
-    await _speakFrom(_ttsOffset);
+    _ttsRunId++;
+    setState(() {
+      _isPaused = false;
+      _isSpeaking = true;
+    });
+    await _speakFromOffset();
   }
 
-  Future<void> _stopSpeech({bool resetPosition = false}) async {
-    _ttsRunId++; // cancels any running speak loop
-    await _tts.stop();
+  Future<void> _speakFromOffset() async {
+    final runId = _ttsRunId;
 
-    if (!mounted) return;
+    _ttsOffset = _skipWhitespace(_ttsText, _ttsOffset);
+
+    while (_ttsOffset < _ttsText.length) {
+      if (runId != _ttsRunId) return;
+
+      final chunk = _nextTtsChunk(_ttsText, _ttsOffset, _maxSpeechInputLength);
+      _utteranceBaseOffset = _ttsOffset;
+
+      await _tts.speak(chunk);
+
+      while (_isSpeaking) {
+        if (runId != _ttsRunId) return;
+        await Future.delayed(const Duration(milliseconds: 120));
+      }
+
+      if (_isPaused) return;
+
+      _ttsOffset = _utteranceBaseOffset + chunk.length;
+      _ttsOffset = _skipWhitespace(_ttsText, _ttsOffset);
+    }
+
     setState(() {
       _isSpeaking = false;
       _isPaused = false;
-      if (resetPosition) _ttsOffset = 0;
+      _ttsOffset = 0;
     });
   }
 
-  Future<void> _pauseSpeech() async {
-    // We use stop() for a reliable pause across engines,
-    // then resume by speaking from _ttsOffset.
+  Future<void> _stopSpeech({required bool resetPosition}) async {
     _ttsRunId++;
     await _tts.stop();
 
-    if (!mounted) return;
     setState(() {
       _isSpeaking = false;
-      _isPaused = true;
-    });
-  }
-
-  Future<void> _speakFrom(int startOffset) async {
-    final runId = ++_ttsRunId;
-
-    if (!mounted) return;
-    setState(() {
-      _isSpeaking = true;
       _isPaused = false;
+      if (resetPosition) {
+        _ttsOffset = 0;
+      }
     });
-
-    var pos = startOffset.clamp(0, _ttsText.length);
-
-    try {
-      while (pos < _ttsText.length && runId == _ttsRunId) {
-        pos = _skipWhitespace(_ttsText, pos);
-        if (pos >= _ttsText.length) break;
-
-        final chunk = _nextTtsChunk(_ttsText, pos, _maxSpeechInputLength);
-
-        _utteranceBaseOffset = pos;
-
-        await _tts.speak(chunk);
-
-        if (runId != _ttsRunId) return;
-
-        // Ensure we advance even if some engines don't fire progress perfectly
-        final expected = (pos + chunk.length).clamp(0, _ttsText.length);
-        if (_ttsOffset < expected) _ttsOffset = expected;
-
-        pos = _ttsOffset;
-      }
-    } catch (e) {
-      talker.error('TTS speak loop error: $e');
-    } finally {
-      if (mounted && runId == _ttsRunId) {
-        setState(() {
-          _isSpeaking = false;
-          _isPaused = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _initializeData() async {
-    if (_story.imageUrl == null) {
-      await _generateImage();
-      // Both now use the same upsert logic in the repository
-      await _saveOrUpdateStory();
-    }
-  }
-
-  Future<void> _generateImage() async {
-    setState(() {
-      _isGeneratingImage = true;
-    });
-
-    try {
-      final generateImage = getIt<GenerateStoryImage>();
-      final result = await generateImage(
-        GenerateStoryImageParams(
-          title: _story.title,
-          story: _story.story,
-          moral: _story.lesson,
-        ),
-      );
-
-      result.fold(
-        (failure) {
-          talker.error('Failed to generate image: ${failure.message}');
-          setState(() {
-            _isGeneratingImage = false;
-          });
-        },
-        (imageUrl) {
-          if (!mounted) return;
-          setState(() {
-            imageUrl = imageUrl.split(',')[1];
-            _story = _story.copyWith(imageUrl: imageUrl);
-            _isGeneratingImage = false;
-          });
-        },
-      );
-    } catch (e) {
-      talker.error('Error in image generation flow: $e');
-      if (mounted) {
-        setState(() {
-          _isGeneratingImage = false;
-        });
-      }
-    }
-  }
-
-  Future<void> _saveOrUpdateStory() async {
-    try {
-      final upsertStory = getIt<UpdateGeneratedStory>();
-      final result = await upsertStory(_story);
-      result.fold(
-        (failure) => talker.error('Failed to save story: ${failure.message}'),
-        (savedStory) {
-          talker.info('Story saved/updated successfully');
-          if (mounted) {
-            setState(() {
-              _story = savedStory;
-            });
-          }
-        },
-      );
-    } catch (e) {
-      talker.error('Error saving story: $e');
-    }
-  }
-
-  Future<void> _regenerateStory() async {
-    if (_isRegenerating) return;
-    setState(() {
-      _isRegenerating = true;
-    });
-
-    try {
-      final regen = RegenerateStory(getIt<StoryGeneratorRepository>());
-
-      final prompt = StoryPrompt(
-        scripture: _story.scripture.isNotEmpty ? _story.scripture : null,
-        storyType: _story.attributes.storyType.isNotEmpty
-            ? _story.attributes.storyType
-            : null,
-        theme: _story.attributes.theme.isNotEmpty
-            ? _story.attributes.theme
-            : null,
-        mainCharacter: _story.attributes.mainCharacterType.isNotEmpty
-            ? _story.attributes.mainCharacterType
-            : null,
-        setting: _story.attributes.storySetting.isNotEmpty
-            ? _story.attributes.storySetting
-            : null,
-        isRawPrompt: false,
-      );
-
-      final options = GeneratorOptions(
-        language: StoryLanguage.values.firstWhere(
-          (lang) =>
-              lang.name.toLowerCase() ==
-              selectedLanguage?.toLowerCase().replaceAll(' ', ''),
-          orElse: () => StoryLanguage.english,
-        ),
-        length: _story.attributes.storyLength.isNotEmpty
-            ? StoryLength.values.firstWhere(
-                (len) =>
-                    len.name.toLowerCase() ==
-                    _story.attributes.storyLength.toLowerCase(),
-                orElse: () => StoryLength.medium,
-              )
-            : StoryLength.medium,
-        format: _story.attributes.narrativeStyle.isNotEmpty
-            ? StoryFormat.values.firstWhere(
-                (fmt) =>
-                    fmt.name.toLowerCase() ==
-                    _story.attributes.narrativeStyle.toLowerCase(),
-                orElse: () => StoryFormat.narrative,
-              )
-            : StoryFormat.narrative,
-      );
-
-      final result = await regen(
-        RegenerateStoryParams(
-          original: _story,
-          prompt: prompt,
-          options: options,
-        ),
-      );
-
-      result.fold(
-        (failure) {
-          talker.error('Regenerate failed: ${failure.message}');
-        },
-        (generated) async {
-          await _stopSpeech(resetPosition: true);
-          if (!mounted) return;
-
-          setState(() {
-            _story = generated;
-            _ttsText = _buildReadAloudText(_story); // new story => new TTS text
-          });
-
-          await _generateImage();
-          await _saveOrUpdateStory();
-        },
-      );
-    } catch (e) {
-      talker.error('Error during regenerate: $e');
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isRegenerating = false;
-        });
-      }
-    }
   }
 
   @override
   void dispose() {
     _stopSpeech(resetPosition: true);
     _tts.stop();
+    _detailBloc.close();
     super.dispose();
   }
 
@@ -392,172 +188,211 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
-    bool isDark = theme.brightness == Brightness.dark;
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Theme.of(context).primaryColor.withAlpha(5),
-                    Theme.of(context).brightness == Brightness.dark
-                        ? const Color(0xFF1E293B)
-                        : const Color(0xFFF1F5F9),
-                  ],
-                  transform: GradientRotation(3.14 / 1.5),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header with back and share
-                  Container(
-                    height: screenSize.height * 0.115,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.black.withValues(alpha: 0.7),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back_ios_rounded),
-                          onPressed: () => context.pop(),
-                        ),
-                        const Spacer(),
-                        Tooltip(
-                          message: _isSpeaking ? 'Pause reading' : 'Read aloud',
-                          child: IconButton(
-                            icon: Icon(
-                              _isSpeaking
-                                  ? Icons.pause_circle_rounded
-                                  : Icons.play_circle_rounded,
-                              size: 28,
-                            ),
-                            onPressed: _toggleSpeech,
-                          ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            _story.isFavorite
-                                ? Icons.bookmark
-                                : Icons.bookmark_border,
-                          ),
-                          onPressed: () async {
-                            setState(() {
-                              _story = _story.copyWith(
-                                isFavorite: !_story.isFavorite,
-                              );
-                            });
-                            await _saveOrUpdateStory();
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.share),
-                          onPressed: _shareStory,
-                        ),
+    final isDark = theme.brightness == Brightness.dark;
+
+    return BlocConsumer<StoryDetailBloc, StoryDetailState>(
+      bloc: _detailBloc,
+      listenWhen: (prev, curr) =>
+          prev.story?.story != curr.story?.story ||
+          prev.story?.title != curr.story?.title,
+      listener: (context, state) async {
+        final story = state.story;
+        if (story == null) return;
+
+        await _stopSpeech(resetPosition: true);
+        _ttsText = _buildReadAloudText(story);
+
+        if (state.errorMessage != null && context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+        }
+      },
+      builder: (context, state) {
+        final story = state.story;
+
+        if (story == null) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Theme.of(context).primaryColor.withAlpha(5),
+                        isDark
+                            ? const Color(0xFF1E293B)
+                            : const Color(0xFFF1F5F9),
                       ],
+                      transform: const GradientRotation(3.14 / 1.5),
                     ),
                   ),
-
-                  // Story image with overlay
-                  Stack(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Header
                       Container(
-                        width: screenSize.width,
-                        height: screenSize.height * 0.4,
+                        height: screenSize.height * 0.115,
                         decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.15),
-                              blurRadius: 100,
-                              spreadRadius: 0,
-                              offset: const Offset(0, -6),
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withValues(alpha: 0.7),
+                              Colors.transparent,
+                            ],
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.arrow_back_ios_rounded),
+                              onPressed: () => context.pop(),
+                            ),
+                            const Spacer(),
+                            Tooltip(
+                              message: _isSpeaking
+                                  ? 'Pause reading'
+                                  : 'Read aloud',
+                              child: IconButton(
+                                icon: Icon(
+                                  _isSpeaking
+                                      ? Icons.pause_circle_rounded
+                                      : Icons.play_circle_rounded,
+                                  size: 28,
+                                ),
+                                onPressed: () => _toggleSpeech(story),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                story.isFavorite
+                                    ? Icons.bookmark
+                                    : Icons.bookmark_border,
+                              ),
+                              onPressed: () => _detailBloc.add(
+                                const StoryDetailToggleFavorite(),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.share),
+                              onPressed: () => _shareStory(story),
                             ),
                           ],
                         ),
-                        child: _buildStoryImage(),
                       ),
-                      Container(
-                        width: screenSize.width,
-                        height: screenSize.height * 0.4,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            colors: [Colors.black, Colors.transparent],
+
+                      // Story image with overlay
+                      Stack(
+                        children: [
+                          Container(
+                            width: screenSize.width,
+                            height: screenSize.height * 0.4,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.white.withOpacity(0.15),
+                                  blurRadius: 100,
+                                  spreadRadius: 0,
+                                  offset: const Offset(0, -6),
+                                ),
+                              ],
+                            ),
+                            child: _buildStoryImage(story, state),
                           ),
-                        ),
+                          Container(
+                            width: screenSize.width,
+                            height: screenSize.height * 0.4,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [Colors.black, Colors.transparent],
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            child: _buildStoryMetadata(
+                              story,
+                              screenSize,
+                              theme,
+                              isDark,
+                            ),
+                          ),
+                        ],
                       ),
-                      Positioned(
-                        bottom: 0,
-                        child: _buildStoryMetadata(screenSize, theme, isDark),
+
+                      SizedBox(height: screenSize.height * 0.01),
+
+                      // Story content (Chapters)
+                      _buildStoryContent(state, screenSize, theme),
+
+                      // Bottom actions
+                      _buildBottomActionButtons(state, story, theme, isDark),
+
+                      SizedBox(height: screenSize.height * 0.02),
+
+                      // Language selector (BLoC)
+                      _buildLanguageSelector(state, theme, isDark),
+
+                      SizedBox(height: screenSize.height * 0.02),
+
+                      // Story Insights & Interactions
+                      _buildStoryInsightsSection(
+                        state,
+                        theme,
+                        isDark,
+                        screenSize,
                       ),
+
+                      SizedBox(height: screenSize.height * 0.03),
                     ],
                   ),
-
-                  SizedBox(height: screenSize.height * 0.01),
-
-                  // Story content sections
-                  _buildStoryContent(screenSize, theme),
-
-                  // Bottom Action Buttons
-                  _buildBottomActionButtons(theme, isDark),
-                  SizedBox(height: screenSize.height * 0.02),
-
-                  // Language selector
-                  _buildLanguageSelector(theme, isDark),
-                  SizedBox(height: screenSize.height * 0.02),
-
-                  // Story Insights & Interactions
-                  _buildStoryInsightsSection(theme, isDark, screenSize),
-
-                  SizedBox(height: screenSize.height * 0.03),
-                ],
+                ),
               ),
-            ),
+              if (state.isRegenerating)
+                const GeneratingOverlay(message: "Regenerating your story..."),
+            ],
           ),
-          if (_isRegenerating)
-            GeneratingOverlay(message: "Regenerating your story..."),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  Widget _buildStoryImage() {
-    if (_story.imageUrl != null) {
+  Widget _buildStoryImage(Story story, StoryDetailState state) {
+    if (story.imageUrl != null) {
       return Image.memory(
         base64Decode(
-          _story.imageUrl!.split(',').length > 1
-              ? _story.imageUrl!.split(',')[1]
-              : _story.imageUrl!,
+          story.imageUrl!.split(',').length > 1
+              ? story.imageUrl!.split(',')[1]
+              : story.imageUrl!,
         ),
         fit: BoxFit.cover,
         errorBuilder: (context, error, stackTrace) =>
             Image.asset("assets/logo.png", fit: BoxFit.cover),
       );
-    } else if (_isGeneratingImage) {
-      return Center(
+    } else if (state.isGeneratingImage) {
+      return const Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const CircularProgressIndicator(color: Colors.white),
-            const SizedBox(height: 16),
+            CircularProgressIndicator(color: Colors.white),
+            SizedBox(height: 16),
             Text(
               "Painting your story...",
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w500,
               ),
@@ -569,7 +404,12 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
     return Image.asset("assets/logo.png", fit: BoxFit.cover);
   }
 
-  Widget _buildStoryMetadata(Size screenSize, ThemeData theme, bool isDark) {
+  Widget _buildStoryMetadata(
+    Story story,
+    Size screenSize,
+    ThemeData theme,
+    bool isDark,
+  ) {
     return Container(
       width: screenSize.width,
       height: screenSize.height * 0.3,
@@ -578,26 +418,25 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Chips for attributes
           Row(
             children: [
-              if (_story.attributes.storyType.isNotEmpty)
+              if (story.attributes.storyType.isNotEmpty)
                 Chip(
-                  label: Text(_story.attributes.storyType),
+                  label: Text(story.attributes.storyType),
                   labelStyle: theme.textTheme.labelSmall,
                   visualDensity: VisualDensity.compact,
                 ),
               SizedBox(width: screenSize.width * 0.02),
-              if (_story.attributes.theme.isNotEmpty)
+              if (story.attributes.theme.isNotEmpty)
                 Chip(
-                  label: Text(_story.attributes.theme),
+                  label: Text(story.attributes.theme),
                   labelStyle: theme.textTheme.labelSmall,
                   visualDensity: VisualDensity.compact,
                 ),
             ],
           ),
           Text(
-            _story.title,
+            story.title,
             maxLines: 2,
             style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
@@ -606,7 +445,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
           ),
           SizedBox(height: screenSize.height * 0.005),
           Text(
-            _story.scripture,
+            story.scripture,
             maxLines: 1,
             style: theme.textTheme.bodySmall?.copyWith(
               overflow: TextOverflow.ellipsis,
@@ -616,14 +455,9 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
           Row(
             children: [
               Text(
-                "By ${_story.authorUser?.displayName ?? _story.author ?? 'MyItihas AI'}",
+                "By ${story.authorUser?.displayName ?? story.author ?? 'MyItihas AI'}",
                 style: theme.textTheme.bodyMedium,
               ),
-              // Text(" • ", style: theme.textTheme.bodyMedium),
-              // Text(
-              //   "${estimateReadingTimeMinutes(_story.story).toString()} min read",
-              //   style: theme.textTheme.bodyMedium,
-              // ),
             ],
           ),
         ],
@@ -631,48 +465,38 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
     );
   }
 
-  Widget _buildStoryContent(Size screenSize, ThemeData theme) {
+  Widget _buildStoryContent(
+    StoryDetailState state,
+    Size screenSize,
+    ThemeData theme,
+  ) {
+    final story = state.story!;
+    final chaptersToShow = state.chapters.take(state.visibleChapters).toList();
+
     return Column(
       children: [
-        // Main story
+        // Chapters list
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: RichReadMoreText(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: _story.story.isNotEmpty ? _story.story[0] : '',
-                  style: theme.textTheme.bodyMedium!.copyWith(
-                    fontSize: theme.textTheme.bodyLarge!.fontSize! * 2,
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.primary,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (int i = 0; i < chaptersToShow.length; i++) ...[
+                _buildChapterCard(
+                  chapter: chaptersToShow[i],
+                  theme: theme,
+                  isLastVisible: i == chaptersToShow.length - 1,
+                  canReadMore: true,
+                  numberOfChapters: chaptersToShow.length,
                 ),
-                TextSpan(
-                  text: _story.story.length > 1
-                      ? _story.story.substring(1)
-                      : '',
-                  style: theme.textTheme.bodyMedium,
-                ),
+                SizedBox(height: screenSize.height * 0.02),
               ],
-            ),
-            settings: LineModeSettings(
-              trimLines: 15,
-              trimCollapsedText: "read more",
-              trimExpandedText: "read less",
-              textAlign: TextAlign.justify,
-              moreStyle: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-              lessStyle: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            ],
           ),
         ),
 
-        // // Trivia section
-        if (_story.trivia.isNotEmpty) ...[
+        // Trivia section
+        if (story.trivia.isNotEmpty) ...[
           SizedBox(height: screenSize.height * 0.02),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -688,7 +512,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                     ),
                   ),
                   TextSpan(
-                    text: _story.trivia,
+                    text: story.trivia,
                     style: theme.textTheme.bodyMedium,
                   ),
                 ],
@@ -699,7 +523,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
         ],
 
         // Lesson section
-        if (_story.lesson.isNotEmpty) ...[
+        if (story.lesson.isNotEmpty) ...[
           SizedBox(height: screenSize.height * 0.02),
           Container(
             width: screenSize.width,
@@ -716,7 +540,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                     ),
                   ),
                   TextSpan(
-                    text: _story.lesson,
+                    text: story.lesson,
                     style: theme.textTheme.bodyMedium,
                   ),
                 ],
@@ -726,25 +550,17 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
           ),
         ],
 
-        if (_story.attributes.references.isNotEmpty) ...[
+        if (story.attributes.references.isNotEmpty) ...[
           SizedBox(height: screenSize.height * 0.01),
-          Divider(),
+          const Divider(),
           SizedBox(height: screenSize.height * 0.01),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: RichText(
               text: TextSpan(
                 children: [
-                  // TextSpan(
-                  //   text: 'Source\n',
-                  //   style: theme.textTheme.bodyMedium!.copyWith(
-                  //     fontSize: theme.textTheme.bodyLarge!.fontSize! * 2,
-                  //     fontWeight: FontWeight.bold,
-                  //     color: theme.colorScheme.primary,
-                  //   ),
-                  // ),
                   TextSpan(
-                    text: _story.attributes.references[0],
+                    text: story.attributes.references[0],
                     style: theme.textTheme.bodyLarge,
                   ),
                 ],
@@ -754,38 +570,91 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
           ),
         ],
 
-        // Activity section
-        // if (_story.activity.isNotEmpty) ...[
-        //   SizedBox(height: screenSize.height * 0.02),
-        //   Container(
-        //     padding: const EdgeInsets.symmetric(horizontal: 10),
-        //     child: RichText(
-        //       text: TextSpan(
-        //         children: [
-        //           TextSpan(
-        //             text: 'Activities\n',
-        //             style: theme.textTheme.bodyMedium!.copyWith(
-        //               fontSize: theme.textTheme.bodyLarge!.fontSize! * 2,
-        //               fontWeight: FontWeight.bold,
-        //               color: theme.colorScheme.primary,
-        //             ),
-        //           ),
-        //           TextSpan(
-        //             text: _story.activity,
-        //             style: theme.textTheme.bodyMedium,
-        //           ),
-        //         ],
-        //       ),
-        //       textAlign: TextAlign.justify
-        //     ),
-        //   ),
-        // ],
         SizedBox(height: screenSize.height * 0.02),
       ],
     );
   }
 
-  Widget _buildLanguageSelector(ThemeData theme, bool isDark) {
+  Widget _buildChapterCard({
+    required StoryChapter chapter,
+    required ThemeData theme,
+    required bool isLastVisible,
+    required bool canReadMore,
+    required int numberOfChapters,
+  }) {
+    final screenSize = MediaQuery.of(context).size;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (numberOfChapters > 1)
+          Text(
+            chapter.title,
+            style: theme.textTheme.bodyMedium!.copyWith(
+              fontSize: theme.textTheme.bodyLarge!.fontSize! * 2,
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        SizedBox(height: screenSize.height * 0.01),
+        if (numberOfChapters == 1)
+          RichReadMoreText(
+            TextSpan(
+              text: chapter.content[0],
+              style: theme.textTheme.bodyMedium!.copyWith(
+                fontSize: theme.textTheme.bodyLarge!.fontSize! * 2,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
+              children: [
+                TextSpan(
+                  text: chapter.content.substring(1),
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ],
+            ),
+            settings: LineModeSettings(
+              trimLines: 14,
+              trimCollapsedText: "read more",
+              trimExpandedText: "read less",
+              textAlign: TextAlign.justify,
+              moreStyle: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+              lessStyle: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        if (numberOfChapters != 1)
+          RichReadMoreText(
+            TextSpan(
+              text: chapter.content
+                  .replaceAll(RegExp(r'---[^-]*---  \n\n'), '')
+                  .replaceAll(RegExp(r'  \n\n---'), ''),
+              style: theme.textTheme.bodyMedium,
+            ),
+            settings: LineModeSettings(
+              trimLines: 14,
+              trimCollapsedText: "read more",
+              trimExpandedText: "read less",
+              textAlign: TextAlign.justify,
+              moreStyle: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+              lessStyle: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildLanguageSelector(
+    StoryDetailState state,
+    ThemeData theme,
+    bool isDark,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 10),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -816,7 +685,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             ],
           ),
           DropdownButton<String>(
-            value: selectedLanguage,
+            value: state.selectedLanguage,
             icon: Icon(
               Icons.keyboard_arrow_down_rounded,
               color: theme.colorScheme.primary,
@@ -832,7 +701,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             }).toList(),
             onChanged: (String? newValue) {
               if (newValue != null) {
-                setState(() => selectedLanguage = newValue);
+                _detailBloc.add(StoryDetailLanguageChanged(newValue));
               }
             },
           ),
@@ -842,6 +711,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
   }
 
   Widget _buildStoryInsightsSection(
+    StoryDetailState state,
     ThemeData theme,
     bool isDark,
     Size screenSize,
@@ -882,8 +752,10 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             title: 'Expand Story',
             description:
                 'Continue the narrative with the next chapter of your tale',
-            buttonText: 'Continue Story',
-            onTap: () {},
+            buttonText: state.isExpanding ? 'Continuing...' : 'Continue Story',
+            onTap: state.isExpanding
+                ? null
+                : () => _detailBloc.add(const StoryDetailReadMorePressed()),
             screenSize: screenSize,
           ),
           SizedBox(height: screenSize.height * 0.02),
@@ -896,7 +768,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                 'Explore the personalities and roles of story characters',
             buttonText: 'Get Details',
             showDropdown: true,
-            onTap: () {},
+            onTap: null,
             screenSize: screenSize,
           ),
           SizedBox(height: screenSize.height * 0.02),
@@ -907,7 +779,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             title: 'Discuss Story',
             description: 'Chat about themes, meanings, and interpretations',
             buttonText: 'Start Discussion',
-            onTap: () {},
+            onTap: null,
             screenSize: screenSize,
           ),
         ],
@@ -922,10 +794,11 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
     required String title,
     required String description,
     required String buttonText,
-    required VoidCallback onTap,
+    required VoidCallback? onTap,
     required Size screenSize,
     bool showDropdown = false,
   }) {
+    final story = _detailBloc.state.story;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(10),
@@ -961,7 +834,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             overflow: TextOverflow.ellipsis,
           ),
           SizedBox(height: screenSize.height * 0.01),
-          if (showDropdown) ...[
+          if (showDropdown && story != null) ...[
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
@@ -982,13 +855,13 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                   ),
                   iconSize: 18,
                   value: null,
-                  items: _story.attributes.characters.map((char) {
+                  items: story.attributes.characters.map((char) {
                     return DropdownMenuItem<String>(
                       value: char,
                       child: Text(char, style: theme.textTheme.bodySmall),
                     );
                   }).toList(),
-                  onChanged: (v) {},
+                  onChanged: (_) {},
                 ),
               ),
             ),
@@ -1054,7 +927,12 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
     );
   }
 
-  Widget _buildBottomActionButtons(ThemeData theme, bool isDark) {
+  Widget _buildBottomActionButtons(
+    StoryDetailState state,
+    Story story,
+    ThemeData theme,
+    bool isDark,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -1062,49 +940,52 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
         children: [
           _buildActionButton(
             Icons.refresh_rounded,
-            () async {
-              if (_isRegenerating) return;
-              await _regenerateStory();
-            },
+            () => _detailBloc.add(const StoryDetailRegenerateRequested()),
             isDark,
-            isSelected: _isRegenerating,
+            isSelected: state.isRegenerating,
           ),
-          _buildActionButton(Icons.download_rounded, () async {
-            // Download story
-            if (_isDownloading) return;
-            _isDownloading = true;
-            final completeStory =
-                '''
-${_story.title}
+          _buildActionButton(
+            Icons.download_rounded,
+            () async {
+              if (state.isDownloading) return;
 
-${_story.story}
+              _detailBloc.add(const StoryDetailDownloadStatusChanged(true));
+
+              final completeStory =
+                  '''
+${story.title}
+
+${story.story}
 
 ---
-${_story.quotes}
+${story.quotes}
 
 Generated with MyItihas - Discover Indian Mythology
                 ''';
-            await downloadTextFile(
-              textContent: completeStory,
-              fileName: _story.title,
-              onStatusChange: (message, color) {
-                setState(() {
-                  print(message);
-                  _isDownloading = false;
-                });
-              },
-            );
-          }, isDark),
+
+              await downloadTextFile(
+                textContent: completeStory,
+                fileName: story.title,
+                onStatusChange: (message, color) {
+                  talker.info(message);
+                  _detailBloc.add(
+                    const StoryDetailDownloadStatusChanged(false),
+                  );
+                },
+              );
+            },
+            isDark,
+            isSelected: state.isDownloading,
+          ),
           _buildActionButton(Icons.content_copy_rounded, () {
-            // Copy to clipboard
             final completeStory =
                 '''
-${_story.title}
+${story.title}
 
-${_story.story}
+${story.story}
 
 ---
-${_story.quotes}
+${story.quotes}
 
 Generated with MyItihas - Discover Indian Mythology
                 ''';
@@ -1149,21 +1030,21 @@ Generated with MyItihas - Discover Indian Mythology
     );
   }
 
-  void _shareStory() {
+  void _shareStory(Story story) {
     HapticFeedback.lightImpact();
     final shareText =
         '''
-${_story.title}
+${story.title}
 
-${_story.story}
+${story.story}
 
 ---
-${_story.quotes}
+${story.quotes}
 
 Generated with MyItihas - Discover Indian Mythology
 ''';
 
-    Share.share(shareText, subject: _story.title);
+    Share.share(shareText, subject: story.title);
   }
 }
 
@@ -1208,17 +1089,15 @@ String _nextTtsChunk(String text, int start, int maxLen) {
 
   final window = text.substring(start, end);
 
-  // Prefer paragraph breaks, then sentence ends, then spaces
   int cut = window.lastIndexOf('\n');
   if (cut < 0) {
     final matches = RegExp(r'[.!?]\s').allMatches(window).toList();
     if (matches.isNotEmpty) {
-      cut = matches.last.start + 1; // keep punctuation
+      cut = matches.last.start + 1;
     }
   }
   if (cut < 0) cut = window.lastIndexOf(' ');
 
-  // Avoid tiny chunks
   if (cut > 200) {
     end = start + cut + 1;
   }

@@ -240,6 +240,34 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
     );
   }
 
+
+@override
+Future<Either<Failure, String>> expandStory({
+  required Story story,
+  required int currentChapter,
+  required String storyLanguage,
+}) async {
+  try {
+    final result = await _remoteDataSource.interactWithStory(
+      storyTitle: story.title,
+      storyContent: story.story,
+      interactionType: 'expand',
+      characterName: null,
+      currentChapter: currentChapter,
+      storyLanguage: storyLanguage,
+    );
+
+    final chapterText = result['response']?.toString();
+    if (chapterText == null || chapterText.trim().isEmpty) {
+      return Left(ServerFailure('Empty expand response from server'));
+    }
+
+    return Right(chapterText);
+  } catch (e) {
+    return Left(ServerFailure('Failed to expand story: ${e.toString()}'));
+  }
+}
+
   @override
   Future<Either<Failure, Story>> regenerateStory({
     required Story original,

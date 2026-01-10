@@ -33,4 +33,10 @@ abstract class StoryGeneratorRepository {
     required StoryPrompt prompt,
     required GeneratorOptions options,
   });
+
+  Future<Either<Failure, String>> expandStory({
+    required Story story,
+    required int currentChapter,
+    required String storyLanguage,
+  });
 }
