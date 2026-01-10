@@ -34,13 +34,16 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
       final title = result['title'] as String? ?? 'Untitled Story';
       final storyContent = result['story'] as String? ?? '';
       final moral = result['moral'] as String? ?? '';
-      final reference = result['reference'] as String? ?? "";
-      final characters = result['characters'] as List<dynamic>;
+      final reference = result['reference'] as String? ?? '';
+      final characters = (result['characters'] as List<dynamic>? ?? const [])
+          .map((e) => e.toString())
+          .toList();
 
       // Local fallback generation for UI fields not returned by backend
       final theme = prompt.theme ?? 'Dharma';
       final scripture = prompt.scripture ?? 'Mahabharata';
-      Map<String, dynamic> storyMap = {
+
+      final storyMap = {
         'user_id': user.id,
         'title': title,
         'content': storyContent,
@@ -54,6 +57,7 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
           'theme': theme,
           'references': reference,
           'characters': characters,
+          'character_details': <String, dynamic>{},
           'moral': moral.isNotEmpty ? moral : _getLesson(theme),
           'story_type': prompt.storyType,
           'main_character_type': prompt.mainCharacter,
@@ -67,7 +71,7 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
               '${options.length.displayName} ${options.length.description}',
           'story_length':
               '${options.length.displayName} ${options.length.description}',
-          'tags': [],
+          'tags': <String>[],
         },
         'author_id': author.id,
         'comment_count': 0,
@@ -79,14 +83,14 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
         'author': author.displayName,
         'is_favourite': false,
       };
+
       final response = await SupabaseService.client
           .from('stories')
           .insert(storyMap)
           .select()
           .single();
 
-      final story = _mapSupabaseRowToStory(response);
-      return Right(story);
+      return Right(_mapSupabaseRowToStory(response));
     } catch (e) {
       return Left(ServerFailure('Failed to generate story: ${e.toString()}'));
     }
@@ -95,7 +99,6 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
   @override
   Future<Either<Failure, StoryPrompt>> getRandomOptions() async {
     try {
-      // Reuse mock data source for random options since there's no backend endpoint for this
       final options = await _mockDataSource.getRandomOptions();
       return Right(options);
     } catch (e) {
@@ -139,6 +142,9 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
         'title': story.title,
         'content': story.story,
         'image_url': story.imageUrl,
+        'language': story.attributes.languageStyle,
+        'attributes': _attributesToMap(story),
+        'is_favourite': story.isFavorite,
         'updated_at': DateTime.now().toIso8601String(),
       };
 
@@ -150,9 +156,7 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
 
       return Right(_mapSupabaseRowToStory(response));
     } catch (e) {
-      return Left(
-        ServerFailure('Failed to save generated story: ${e.toString()}'),
-      );
+      return Left(ServerFailure('Failed to save story: ${e.toString()}'));
     }
   }
 
@@ -171,7 +175,7 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
           .order('updated_at', ascending: false);
 
       final stories = (response as List<dynamic>)
-          .map((row) => _mapSupabaseRowToStory(row))
+          .map((row) => _mapSupabaseRowToStory(row as Map<String, dynamic>))
           .toList();
 
       return Right(stories);
@@ -182,91 +186,130 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
     }
   }
 
+  Map<String, dynamic> _attributesToMap(Story story) {
+    final a = story.attributes;
+    return {
+      'story_type': a.storyType,
+      'theme': a.theme,
+      'main_character_type': a.mainCharacterType,
+      'story_setting': a.storySetting,
+      'time_era': a.timeEra,
+      'narrative_perspective': a.narrativePerspective,
+      'language_style': a.languageStyle,
+      'emotional_tone': a.emotionalTone,
+      'narrative_style': a.narrativeStyle,
+      'plot_structure': a.plotStructure,
+      'story_length': a.storyLength,
+      'references': a.references,
+      'tags': a.tags,
+      'characters': a.characters,
+      'character_details': a.characterDetails,
+      // keep the old scalar UI fields too if your UI depends on them
+      'quotes': story.quotes,
+      'trivia': story.trivia,
+      'activity': story.activity,
+      'scripture': story.scripture,
+      'moral': story.lesson,
+    };
+  }
+
   Story _mapSupabaseRowToStory(Map<String, dynamic> row) {
+    final attr =
+        (row['attributes'] as Map?)?.cast<String, dynamic>() ??
+        <String, dynamic>{};
+    final characterDetails =
+        (attr['character_details'] as Map?)?.cast<String, dynamic>() ??
+        <String, dynamic>{};
+
     return Story(
       id: row['id']!.toString(),
-      authorId: row['user_id']!.toString(),
+      authorId: row['user_id']?.toString(),
       title: row['title']?.toString() ?? 'Untitled Story',
       story: row['content']?.toString() ?? '',
-      scripture: row['attributes']['scripture']?.toString() ?? 'Scripture',
-      quotes: row['attributes']['quotes']?.toString() ?? '',
-      trivia: row['attributes']['trivia']?.toString() ?? '',
-      activity: row['attributes']['activity']?.toString() ?? '',
-      lesson: row['attributes']['moral']?.toString() ?? '',
+      scripture: attr['scripture']?.toString() ?? 'Scripture',
+      quotes: attr['quotes']?.toString() ?? '',
+      trivia: attr['trivia']?.toString() ?? '',
+      activity: attr['activity']?.toString() ?? '',
+      lesson: attr['moral']?.toString() ?? '',
       attributes: StoryAttributes(
-        storyType: row['attributes']['story_type']?.toString() ?? 'General',
-        theme: row['attributes']['theme']?.toString() ?? 'Dharma (Duty)',
+        storyType: attr['story_type']?.toString() ?? 'General',
+        theme: attr['theme']?.toString() ?? 'Dharma (Duty)',
         mainCharacterType:
-            row['attributes']['main_character_type']?.toString() ??
-            'Protagonist',
-        storySetting:
-            row['attributes']['story_setting']?.toString() ?? 'Ancient India',
-        timeEra: row['attributes']['time_era']?.toString() ?? 'Ancient',
+            attr['main_character_type']?.toString() ?? 'Protagonist',
+        storySetting: attr['story_setting']?.toString() ?? 'Ancient India',
+        timeEra: attr['time_era']?.toString() ?? 'Ancient',
         narrativePerspective:
-            row['attributes']['narrative_perspective']?.toString() ??
-            'Third Person',
-        languageStyle: row['language']?.toString() ?? 'English',
-        emotionalTone:
-            row['attributes']['emotional_tone']?.toString() ?? 'Inspirational',
-        narrativeStyle:
-            row['attributes']['narrative_style']?.toString() ?? 'Narrative',
-        plotStructure:
-            row['attributes']['plot_structure']?.toString() ?? 'Linear',
-        storyLength:
-            row['attributes']['story_length']?.toString() ??
-            'Medium ~1000 words',
-        tags: (row['attributes']['tags'] as List<dynamic>? ?? [])
+            attr['narrative_perspective']?.toString() ?? 'Third Person',
+        languageStyle:
+            row['language']?.toString() ??
+            attr['language_style']?.toString() ??
+            'English',
+        emotionalTone: attr['emotional_tone']?.toString() ?? 'Inspirational',
+        narrativeStyle: attr['narrative_style']?.toString() ?? 'Narrative',
+        plotStructure: attr['plot_structure']?.toString() ?? 'Linear',
+        storyLength: attr['story_length']?.toString() ?? 'Medium ~1000 words',
+        tags: (attr['tags'] as List<dynamic>? ?? const [])
             .map((tag) => tag.toString())
             .toList(),
-        references: [row['attributes']['references']?.toString() ?? ''],
-        characters: (row['attributes']['characters'] as List<dynamic>? ?? [])
+        references: (attr['references'] is List)
+            ? (attr['references'] as List<dynamic>)
+                  .map((e) => e.toString())
+                  .toList()
+            : [attr['references']?.toString() ?? ''],
+        characters: (attr['characters'] as List<dynamic>? ?? const [])
             .map((char) => char.toString())
             .toList(),
+        characterDetails: characterDetails,
       ),
       imageUrl: row['image_url']?.toString(),
       createdAt: row['created_at'] != null
-          ? DateTime.parse(row['created_at']?.toString() ?? '')
+          ? DateTime.tryParse(row['created_at'].toString())
           : null,
       updatedAt: row['updated_at'] != null
-          ? DateTime.parse(row['updated_at']?.toString() ?? '')
+          ? DateTime.tryParse(row['updated_at'].toString())
           : null,
       publishedAt: row['published_at'] != null
-          ? DateTime.parse(row['published_at']?.toString() ?? '')
+          ? DateTime.tryParse(row['published_at'].toString())
           : null,
       author: row['author']?.toString(),
-      likes: row['likes']?.toInt() ?? 0,
-      views: row['views']?.toInt() ?? 0,
+      likes: (row['likes'] is int)
+          ? row['likes'] as int
+          : (row['likes'] as num?)?.toInt() ?? 0,
+      views: (row['views'] is int)
+          ? row['views'] as int
+          : (row['views'] as num?)?.toInt() ?? 0,
       isFavorite: row['is_favourite'] as bool? ?? false,
+      commentCount: (row['comment_count'] as num?)?.toInt() ?? 0,
+      shareCount: (row['share_count'] as num?)?.toInt() ?? 0,
     );
   }
 
+  @override
+  Future<Either<Failure, String>> expandStory({
+    required Story story,
+    required int currentChapter,
+    required String storyLanguage,
+  }) async {
+    try {
+      final result = await _remoteDataSource.interactWithStory(
+        storyTitle: story.title,
+        storyContent: story.story,
+        interactionType: 'expand',
+        characterName: null,
+        currentChapter: currentChapter,
+        storyLanguage: storyLanguage,
+      );
 
-@override
-Future<Either<Failure, String>> expandStory({
-  required Story story,
-  required int currentChapter,
-  required String storyLanguage,
-}) async {
-  try {
-    final result = await _remoteDataSource.interactWithStory(
-      storyTitle: story.title,
-      storyContent: story.story,
-      interactionType: 'expand',
-      characterName: null,
-      currentChapter: currentChapter,
-      storyLanguage: storyLanguage,
-    );
+      final chapterText = result['response']?.toString();
+      if (chapterText == null || chapterText.trim().isEmpty) {
+        return Left(ServerFailure('Empty expand response from server'));
+      }
 
-    final chapterText = result['response']?.toString();
-    if (chapterText == null || chapterText.trim().isEmpty) {
-      return Left(ServerFailure('Empty expand response from server'));
+      return Right(chapterText);
+    } catch (e) {
+      return Left(ServerFailure('Failed to expand story: ${e.toString()}'));
     }
-
-    return Right(chapterText);
-  } catch (e) {
-    return Left(ServerFailure('Failed to expand story: ${e.toString()}'));
   }
-}
 
   @override
   Future<Either<Failure, Story>> regenerateStory({
@@ -275,21 +318,27 @@ Future<Either<Failure, String>> expandStory({
     required GeneratorOptions options,
   }) async {
     try {
-      final result = await _remoteDataSource.generateStory(prompt: prompt, options: options);
+      final result = await _remoteDataSource.generateStory(
+        prompt: prompt,
+        options: options,
+      );
+
       final user = SupabaseService.client.auth.currentUser;
       final userRepo = UserRemoteDataSourceSupabase(SupabaseService.client);
       final author = await userRepo.getUserById(user!.id);
       final title = result['title'] as String? ?? 'Untitled Story';
       final storyContent = result['story'] as String? ?? '';
       final moral = result['moral'] as String? ?? '';
-      final reference = result['reference'] as String? ?? "";
-      final characters = result['characters'] as List<dynamic>;
+      final reference = result['reference'] as String? ?? '';
+      final characters = (result['characters'] as List<dynamic>? ?? const [])
+          .map((e) => e.toString())
+          .toList();
 
-      // Local fallback generation for UI fields not returned by backend
       final theme = prompt.theme ?? 'Dharma';
       final scripture = prompt.scripture ?? 'Mahabharata';
-      Map<String, dynamic> storyMap = {
-        'id': original.id, // Ensure we're updating the correct story
+
+      final storyMap = {
+        'id': original.id,
         'user_id': user.id,
         'title': title,
         'content': storyContent,
@@ -303,6 +352,7 @@ Future<Either<Failure, String>> expandStory({
           'theme': theme,
           'references': reference,
           'characters': characters,
+          'character_details': <String, dynamic>{}, // reset on regenerate
           'moral': moral.isNotEmpty ? moral : _getLesson(theme),
           'story_type': prompt.storyType,
           'main_character_type': prompt.mainCharacter,
@@ -316,11 +366,12 @@ Future<Either<Failure, String>> expandStory({
               '${options.length.displayName} ${options.length.description}',
           'story_length':
               '${options.length.displayName} ${options.length.description}',
-          'tags': [],
+          'tags': <String>[],
         },
         'author_id': author.id,
         'author': author.displayName,
-        'image_url': null
+        'image_url': null,
+        'updated_at': DateTime.now().toIso8601String(),
       };
       final response = await SupabaseService.client
           .from('stories')
@@ -329,10 +380,41 @@ Future<Either<Failure, String>> expandStory({
           .select()
           .single();
 
-      final story = _mapSupabaseRowToStory(response);
-      return Right(story);
+      return Right(_mapSupabaseRowToStory(response));
     } catch (e) {
       return Left(ServerFailure('Failed to regenerate story: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, dynamic>>> getCharacterDetails({
+    required Story story,
+    required String characterName,
+    required int currentChapter,
+    required String storyLanguage,
+  }) async {
+    try {
+      final result = await _remoteDataSource.interactWithStory(
+        storyTitle: story.title,
+        storyContent: story.story,
+        interactionType: 'characters',
+        characterName: characterName,
+        currentChapter: currentChapter,
+        storyLanguage: storyLanguage,
+      );
+
+      // The endpoint returns the full character object (NOT wrapped in {response: ...}).
+      if (result.isEmpty) {
+        return Left(
+          ServerFailure('Empty character details response from server'),
+        );
+      }
+
+      return Right(result);
+    } catch (e) {
+      return Left(
+        ServerFailure('Failed to get character details: ${e.toString()}'),
+      );
     }
   }
 

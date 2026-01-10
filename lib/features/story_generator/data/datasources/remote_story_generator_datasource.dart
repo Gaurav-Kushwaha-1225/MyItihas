@@ -70,7 +70,10 @@ class RemoteStoryGeneratorDataSource {
         '$_baseUrl/generate_story',
         data: requestBody,
         options: Options(
-          headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
           receiveTimeout: const Duration(seconds: 180), // Extended timeout
         ),
       );
@@ -105,46 +108,49 @@ class RemoteStoryGeneratorDataSource {
     }
   }
 
-Future<Map<String, dynamic>> interactWithStory({
-  required String storyTitle,
-  required String storyContent,
-  required String interactionType, // e.g. "expand"
-  String? characterName,
-  required int currentChapter,
-  required String storyLanguage,
-}) async {
-  try {
-    final requestBody = {
-      'story_title': storyTitle,
-      'story_content': storyContent,
-      'interaction_type': interactionType,
-      'character_name': characterName,
-      'current_chapter': currentChapter,
-      'story_language': storyLanguage,
-    };
+  Future<Map<String, dynamic>> interactWithStory({
+    required String storyTitle,
+    required String storyContent,
+    required String interactionType, // e.g. "expand"
+    String? characterName,
+    required int currentChapter,
+    required String storyLanguage,
+  }) async {
+    try {
+      final requestBody = {
+        'story_title': storyTitle,
+        'story_content': storyContent,
+        'interaction_type': interactionType,
+        'character_name': characterName,
+        'current_chapter': currentChapter,
+        'story_language': storyLanguage,
+      };
 
-    final response = await _dio.post(
-      '$_baseUrl/interact_with_story',
-      data: requestBody,
-      options: Options(
-        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-        receiveTimeout: const Duration(seconds: 180),
-      ),
-    );
-
-    if (response.statusCode == 200) {
-      final data = response.data;
-      if (data is Map<String, dynamic>) return data;
-      throw Exception('Unexpected response format: ${data.runtimeType}');
-    } else {
-      throw Exception(
-        'Failed to interact with story: ${response.statusCode} ${response.statusMessage}',
+      final response = await _dio.post(
+        '$_baseUrl/interact_with_story',
+        data: requestBody,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          receiveTimeout: const Duration(seconds: 180),
+        ),
       );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map<String, dynamic>) return data;
+        throw Exception('Unexpected response format: ${data.runtimeType}');
+      } else {
+        throw Exception(
+          'Failed to interact with story: ${response.statusCode} ${response.statusMessage}',
+        );
+      }
+    } catch (e) {
+      throw Exception('Network error: $e');
     }
-  } catch (e) {
-    throw Exception('Network error: $e');
   }
-}
 
   Future<String> generateStoryImage({
     required String title,
@@ -156,7 +162,10 @@ Future<Map<String, dynamic>> interactWithStory({
         '$_baseUrl/generate_story_image',
         data: {'title': title, 'story': story, 'moral': moral},
         options: Options(
-          headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
           receiveTimeout: const Duration(seconds: 180),
         ),
       );

@@ -6,7 +6,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myitihas/core/di/injection_container.dart';
 import 'package:myitihas/core/logging/talker_setup.dart';
@@ -14,6 +13,7 @@ import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/domain/entities/generator_options.dart';
 import 'package:myitihas/features/story_generator/presentation/widgets/generating_overlay.dart';
 import 'package:myitihas/features/story_generator/presentation/bloc/story_detail_bloc.dart';
+import 'package:myitihas/features/story_generator/presentation/bloc/story_tts_cubit.dart';
 import 'package:myitihas/utils/functions.dart';
 import 'package:rich_readmore/rich_readmore.dart';
 import 'package:share_plus/share_plus.dart';
@@ -30,17 +30,10 @@ class GeneratedStoryDetailPage extends StatefulWidget {
 
 class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
   late final StoryDetailBloc _detailBloc;
-  final FlutterTts _tts = FlutterTts();
-  late final Future<void> _ttsInitFuture;
 
-  String _ttsText = '';
-  int _ttsOffset = 0;
-  int _utteranceBaseOffset = 0;
-  int _maxSpeechInputLength = 3500;
-  int _ttsRunId = 0;
-
-  bool _isPaused = false;
-  bool _isSpeaking = false;
+  late final StoryTtsCubit _ttsCubit;
+  String? selectedCharacter;
+  late final TextEditingController selectedCharacterController;
 
   final List<Map<String, String>> languages = StoryLanguage.values.map((lang) {
     return {
@@ -54,132 +47,19 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
     super.initState();
     _detailBloc = getIt<StoryDetailBloc>()
       ..add(StoryDetailStarted(widget.story));
-    _ttsText = _buildReadAloudText(widget.story);
-    _ttsInitFuture = _initializeTts();
+    selectedCharacterController = TextEditingController();
+
+    _ttsCubit = StoryTtsCubit();
+    _ttsCubit.initialize(language: 'en-US');
+    _ttsCubit.setText(_buildReadAloudText(widget.story), stopIfSpeaking: false);
   }
 
-  Future<void> _initializeTts() async {
-    await _tts.setLanguage('en-US');
-    await _tts.setSpeechRate(0.5);
-    await _tts.setVolume(1.0);
-    await _tts.setPitch(1.0);
-
-    final maxLen = await _tts.getMaxSpeechInputLength;
-    if (maxLen is int && maxLen > 0) {
-      _maxSpeechInputLength = maxLen;
-    }
-
-    _tts.setStartHandler(() {
-      setState(() => _isSpeaking = true);
-    });
-
-    _tts.setCompletionHandler(() {
-      setState(() => _isSpeaking = false);
-    });
-
-    _tts.setCancelHandler(() {
-      setState(() => _isSpeaking = false);
-    });
-
-    _tts.setPauseHandler(() {
-      setState(() {
-        _isSpeaking = false;
-        _isPaused = true;
-      });
-    });
-
-    _tts.setContinueHandler(() {
-      setState(() {
-        _isSpeaking = true;
-        _isPaused = false;
-      });
-    });
-
-    _tts.setProgressHandler((String text, int start, int end, String word) {
-      final absolute = _utteranceBaseOffset + end;
-      _ttsOffset = absolute;
-    });
-  }
-
-  Future<void> _toggleSpeech(Story story) async {
-    await _ttsInitFuture;
-
-    if (_isSpeaking) {
-      _ttsRunId++;
-      await _tts.pause();
-      setState(() {
-        _isSpeaking = false;
-        _isPaused = true;
-      });
-      return;
-    }
-
-    if (_isPaused) {
-      setState(() {
-        _isPaused = false;
-        _isSpeaking = true;
-      });
-      _ttsRunId++;
-      await _speakFromOffset();
-      return;
-    }
-
-    _ttsRunId++;
-    setState(() {
-      _isPaused = false;
-      _isSpeaking = true;
-    });
-    await _speakFromOffset();
-  }
-
-  Future<void> _speakFromOffset() async {
-    final runId = _ttsRunId;
-
-    _ttsOffset = _skipWhitespace(_ttsText, _ttsOffset);
-
-    while (_ttsOffset < _ttsText.length) {
-      if (runId != _ttsRunId) return;
-
-      final chunk = _nextTtsChunk(_ttsText, _ttsOffset, _maxSpeechInputLength);
-      _utteranceBaseOffset = _ttsOffset;
-
-      await _tts.speak(chunk);
-
-      while (_isSpeaking) {
-        if (runId != _ttsRunId) return;
-        await Future.delayed(const Duration(milliseconds: 120));
-      }
-
-      if (_isPaused) return;
-
-      _ttsOffset = _utteranceBaseOffset + chunk.length;
-      _ttsOffset = _skipWhitespace(_ttsText, _ttsOffset);
-    }
-
-    setState(() {
-      _isSpeaking = false;
-      _isPaused = false;
-      _ttsOffset = 0;
-    });
-  }
-
-  Future<void> _stopSpeech({required bool resetPosition}) async {
-    _ttsRunId++;
-    await _tts.stop();
-
-    setState(() {
-      _isSpeaking = false;
-      _isPaused = false;
-      if (resetPosition) {
-        _ttsOffset = 0;
-      }
-    });
-  }
+  Future<void> _toggleSpeech() => _ttsCubit.toggle();
 
   @override
   void dispose() {
-    _stopSpeech(resetPosition: true);
-    _tts.stop();
+    selectedCharacterController.dispose();
+    _ttsCubit.close();
     _detailBloc.close();
     super.dispose();
   }
@@ -199,8 +79,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
         final story = state.story;
         if (story == null) return;
 
-        await _stopSpeech(resetPosition: true);
-        _ttsText = _buildReadAloudText(story);
+        await _ttsCubit.setText(_buildReadAloudText(story));
 
         if (state.errorMessage != null && context.mounted) {
           ScaffoldMessenger.of(
@@ -261,19 +140,24 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                               onPressed: () => context.pop(),
                             ),
                             const Spacer(),
-                            Tooltip(
-                              message: _isSpeaking
-                                  ? 'Pause reading'
-                                  : 'Read aloud',
-                              child: IconButton(
-                                icon: Icon(
-                                  _isSpeaking
-                                      ? Icons.pause_circle_rounded
-                                      : Icons.play_circle_rounded,
-                                  size: 28,
-                                ),
-                                onPressed: () => _toggleSpeech(story),
-                              ),
+                            BlocBuilder<StoryTtsCubit, StoryTtsState>(
+                              bloc: _ttsCubit,
+                              builder: (context, ttsState) {
+                                return Tooltip(
+                                  message: ttsState.isSpeaking
+                                      ? 'Pause reading'
+                                      : 'Read aloud',
+                                  child: IconButton(
+                                    icon: Icon(
+                                      ttsState.isSpeaking
+                                          ? Icons.pause_circle_rounded
+                                          : Icons.play_circle_rounded,
+                                      size: 28,
+                                    ),
+                                    onPressed: () => _toggleSpeech(),
+                                  ),
+                                );
+                              },
                             ),
                             IconButton(
                               icon: Icon(
@@ -351,6 +235,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
 
                       // Story Insights & Interactions
                       _buildStoryInsightsSection(
+                        context,
                         state,
                         theme,
                         isDark,
@@ -711,6 +596,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
   }
 
   Widget _buildStoryInsightsSection(
+    BuildContext context,
     StoryDetailState state,
     ThemeData theme,
     bool isDark,
@@ -759,17 +645,12 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             screenSize: screenSize,
           ),
           SizedBox(height: screenSize.height * 0.02),
-          _buildInsightCard(
+          _buildCharacterDetailsCard(
+            state: state,
             theme: theme,
             isDark: isDark,
-            icon: Icons.person_pin_rounded,
-            title: 'Character Details',
-            description:
-                'Explore the personalities and roles of story characters',
-            buttonText: 'Get Details',
-            showDropdown: true,
-            onTap: null,
             screenSize: screenSize,
+            context: context,
           ),
           SizedBox(height: screenSize.height * 0.02),
           _buildInsightCard(
@@ -927,6 +808,189 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
     );
   }
 
+  Widget _buildCharacterDetailsCard({
+    required BuildContext context,
+    required StoryDetailState state,
+    required ThemeData theme,
+    required bool isDark,
+    required Size screenSize,
+  }) {
+    final story = state.story;
+    final characters = story?.attributes.characters ?? const <String>[];
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B).withOpacity(0.3) : Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.05)
+              : Colors.black.withOpacity(0.05),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.person_pin_rounded,
+            size: 32,
+            color: Color(0xFFA78BFA),
+          ),
+          SizedBox(height: screenSize.height * 0.005),
+          Text(
+            'Character Details',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: screenSize.height * 0.01),
+          Text(
+            'Explore the personalities and roles of story characters',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.secondaryHeaderColor,
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: screenSize.height * 0.01),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.black26 : Colors.grey[100],
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withOpacity(0.1)
+                    : Colors.black.withOpacity(0.1),
+              ),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                isExpanded: true,
+                hint: Text(
+                  'Select character',
+                  style: theme.textTheme.bodySmall,
+                ),
+                iconSize: 18,
+                value: selectedCharacter,
+                items: characters.map((char) {
+                  return DropdownMenuItem<String>(
+                    value: char,
+                    child: Text(char, style: theme.textTheme.bodySmall),
+                  );
+                }).toList(),
+                onChanged: (char) {
+                  setState(() {
+                    selectedCharacter = char;
+                    selectedCharacterController.text = char ?? '';
+                  });
+                },
+              ),
+            ),
+          ),
+          SizedBox(height: screenSize.height * 0.01),
+          Container(
+            height: screenSize.height * 0.06,
+            decoration: BoxDecoration(
+              color: isDark ? Colors.black26 : Colors.grey[100],
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withOpacity(0.1)
+                    : Colors.black.withOpacity(0.1),
+              ),
+            ),
+            alignment: Alignment.center,
+            child: TextField(
+              controller: selectedCharacterController,
+              decoration: InputDecoration(
+                fillColor: Colors.transparent,
+                hintText: 'Or enter character',
+                hintStyle: theme.textTheme.bodySmall,
+                border: InputBorder.none,
+                isDense: true,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+              ),
+              autofocus: false,
+              style: theme.textTheme.bodySmall,
+              textAlign: TextAlign.left,
+              textAlignVertical: TextAlignVertical.center,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF00B4DB), Color(0xFF9055FF)],
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ElevatedButton(
+              onPressed: () => _openCharacterDetailsBottomSheet(
+                context,
+                characterName:
+                    selectedCharacter ?? selectedCharacterController.text,
+                theme: theme,
+                isDark: isDark,
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 8),
+              ),
+              child: Text(
+                'Get Character Details',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openCharacterDetailsBottomSheet(
+    BuildContext context, {
+    required String characterName,
+    required ThemeData theme,
+    required bool isDark,
+  }) async {
+    HapticFeedback.lightImpact();
+    _detailBloc.add(StoryDetailCharacterDetailsRequested(characterName));
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return BlocProvider.value(
+          value: _detailBloc,
+          child: _CharacterDetailsBottomSheet(isDark: isDark, theme: theme),
+        );
+      },
+    );
+
+    if (mounted) {
+      _detailBloc.add(const StoryDetailCharacterDetailsClosed());
+    }
+  }
+
   Widget _buildBottomActionButtons(
     StoryDetailState state,
     Story story,
@@ -1045,6 +1109,327 @@ Generated with MyItihas - Discover Indian Mythology
 ''';
 
     Share.share(shareText, subject: story.title);
+  }
+}
+
+class _CharacterDetailsBottomSheet extends StatelessWidget {
+  final bool isDark;
+  final ThemeData theme;
+
+  const _CharacterDetailsBottomSheet({
+    required this.isDark,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = isDark ? const Color(0xFF0B1220) : Colors.white;
+    final Size screenSize = MediaQuery.of(context).size;
+
+    return DraggableScrollableSheet(
+      initialChildSize: 0.78,
+      minChildSize: 0.4,
+      maxChildSize: 0.92,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withOpacity(0.08)
+                  : Colors.black.withOpacity(0.08),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.35),
+                blurRadius: 25,
+                offset: const Offset(0, -6),
+              ),
+            ],
+          ),
+          child: BlocBuilder<StoryDetailBloc, StoryDetailState>(
+            builder: (context, state) {
+              final details = state.selectedCharacterDetails;
+              final title =
+                  (details?['name'] ??
+                          state.selectedCharacterName ??
+                          'Character')
+                      .toString();
+          
+              return Column(
+                children: [
+                  SizedBox(height: screenSize.height * 0.015),
+                  Container(
+                    width: 42,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.white.withOpacity(0.2)
+                          : Colors.black.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  SizedBox(height: screenSize.height * 0.015),
+                  Text(
+                    "$title's Character Details",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF00B4DB),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: screenSize.height * 0.02),
+          
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: _buildBody(
+                        context,
+                        state,
+                        details,
+                        scrollController,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildBody(
+    BuildContext context,
+    StoryDetailState state,
+    Map<String, dynamic>? details,
+    ScrollController scrollController,
+  ) {
+    final Size screenSize = MediaQuery.of(context).size;
+    if (state.isFetchingCharacter) {
+      return Center(
+        child: Column(
+          children:  [
+            Center(child: CircularProgressIndicator()),
+            SizedBox(height: screenSize.height * 0.1),
+            Center(child: Text('Loading character details...')),
+          ],
+        ),
+      );
+    }
+
+    if ((details == null) || (details.length == 2)) {
+      return Center(
+        child: Column(
+          children: [
+            Text(
+              state.errorMessage ?? 'Select a character to view details.',
+              style: theme.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    final appearance = (details['appearance'] ?? '').toString();
+    final role = (details['role'] ?? '').toString();
+    final scripture = (details['scripture_background'] ?? '').toString();
+
+    final traits =
+        (details['personality_traits'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        const <String>[];
+    final actions =
+        (details['key_actions'] as List?)?.map((e) => e.toString()).toList() ??
+        const <String>[];
+    final divine =
+        (details['divine_attributes'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        const <String>[];
+    final relationships =
+        (details['relationships'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        const <String>[];
+
+    return ListView(
+      controller: scrollController,
+      children: [
+        if (appearance.isNotEmpty) _InfoCard(
+          isDark: isDark,
+          theme: theme,
+          icon: Icons.remove_red_eye_outlined,
+          title: 'Appearance',
+          child: Text(
+            appearance,
+            style: theme.textTheme.bodyMedium,
+          ),
+        ),
+        SizedBox(height: screenSize.height * 0.01),
+        if (traits.isNotEmpty)
+          _ListCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.favorite_rounded,
+            title: 'Personality Traits',
+            items: traits,
+          ),
+        if (traits.isNotEmpty) SizedBox(height: screenSize.height * 0.01),
+        if (actions.isNotEmpty)
+          _ListCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.star_rounded,
+            title: 'Key Actions in the Story',
+            items: actions,
+          ),
+        if (actions.isNotEmpty) SizedBox(height: screenSize.height * 0.01),
+        if (role.isNotEmpty)
+          _InfoCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.theater_comedy_rounded,
+            title: 'Role in the Narrative',
+            child: Text(role, style: theme.textTheme.bodyMedium),
+          ),
+        if (role.isNotEmpty) SizedBox(height: screenSize.height * 0.01),
+        if (scripture.isNotEmpty)
+          _InfoCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.menu_book_rounded,
+            title: 'Scripture Background',
+            child: Text(scripture, style: theme.textTheme.bodyMedium),
+          ),
+        if (scripture.isNotEmpty) SizedBox(height: screenSize.height * 0.01),
+        if (divine.isNotEmpty)
+          _ListCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.auto_awesome_rounded,
+            title: 'Divine Attributes',
+            items: divine,
+          ),
+        if (divine.isNotEmpty) SizedBox(height: screenSize.height * 0.01),
+        if (relationships.isNotEmpty)
+          _ListCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.link_rounded,
+            title: 'Relationships',
+            items: relationships,
+          ),
+        SizedBox(height: screenSize.height * 0.02),
+      ],
+    );
+  }
+}
+
+class _InfoCard extends StatelessWidget {
+  final bool isDark;
+  final ThemeData theme;
+  final IconData icon;
+  final String title;
+  final Widget child;
+
+  const _InfoCard({
+    required this.isDark,
+    required this.theme,
+    required this.icon,
+    required this.title,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.08)
+              : Colors.black.withOpacity(0.08),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: const Color(0xFF00B4DB)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  title,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF00B4DB),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: screenSize.height * 0.01),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class _ListCard extends StatelessWidget {
+  final bool isDark;
+  final ThemeData theme;
+  final IconData icon;
+  final String title;
+  final List<String> items;
+
+  const _ListCard({
+    required this.isDark,
+    required this.theme,
+    required this.icon,
+    required this.title,
+    required this.items,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return _InfoCard(
+      isDark: isDark,
+      theme: theme,
+      icon: icon,
+      title: title,
+      child: Column(
+        children: [
+          for (final item in items)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(item, style: theme.textTheme.bodyMedium),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
   }
 }
 

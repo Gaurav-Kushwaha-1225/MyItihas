@@ -39,4 +39,11 @@ abstract class StoryGeneratorRepository {
     required int currentChapter,
     required String storyLanguage,
   });
+
+  Future<Either<Failure, Map<String, dynamic>>> getCharacterDetails({
+    required Story story,
+    required String characterName,
+    required int currentChapter,
+    required String storyLanguage,
+  });
 }

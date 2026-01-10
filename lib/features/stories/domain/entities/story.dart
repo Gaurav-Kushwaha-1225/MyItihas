@@ -50,5 +50,6 @@ abstract class StoryAttributes with _$StoryAttributes {
     @Default([]) List<String> references,
     @Default([]) List<String> tags,
     @Default([]) List<String> characters,
+    @Default({}) Map<String, dynamic> characterDetails,
   }) = _StoryAttributes;
 }

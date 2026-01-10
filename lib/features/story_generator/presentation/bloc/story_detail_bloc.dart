@@ -56,6 +56,17 @@ class StoryDetailDownloadStatusChanged extends StoryDetailEvent {
   const StoryDetailDownloadStatusChanged(this.isDownloading);
 }
 
+/// Fetch character details for a given character (cache-first).
+class StoryDetailCharacterDetailsRequested extends StoryDetailEvent {
+  final String characterName;
+  const StoryDetailCharacterDetailsRequested(this.characterName);
+}
+
+/// Clear currently selected character details (optional).
+class StoryDetailCharacterDetailsClosed extends StoryDetailEvent {
+  const StoryDetailCharacterDetailsClosed();
+}
+
 /// State for StoryDetailBloc.
 class StoryDetailState {
   final Story? story;
@@ -72,6 +83,11 @@ class StoryDetailState {
   final bool isSaving;
   final bool isDownloading;
 
+  /// Character details bottom-sheet
+  final bool isFetchingCharacter;
+  final String? selectedCharacterName;
+  final Map<String, dynamic>? selectedCharacterDetails;
+
   /// Display name shown in dropdown (e.g., "English")
   final String selectedLanguage;
 
@@ -86,22 +102,28 @@ class StoryDetailState {
     required this.isExpanding,
     required this.isSaving,
     required this.isDownloading,
+    required this.isFetchingCharacter,
+    required this.selectedCharacterName,
+    required this.selectedCharacterDetails,
     required this.selectedLanguage,
     required this.errorMessage,
   });
 
   factory StoryDetailState.initial() => const StoryDetailState(
-        story: null,
-        chapters: [],
-        visibleChapters: 1,
-        isGeneratingImage: false,
-        isRegenerating: false,
-        isExpanding: false,
-        isSaving: false,
-        isDownloading: false,
-        selectedLanguage: 'English',
-        errorMessage: null,
-      );
+    story: null,
+    chapters: [],
+    visibleChapters: 1,
+    isGeneratingImage: false,
+    isRegenerating: false,
+    isExpanding: false,
+    isSaving: false,
+    isDownloading: false,
+    isFetchingCharacter: false,
+    selectedCharacterName: null,
+    selectedCharacterDetails: null,
+    selectedLanguage: 'English',
+    errorMessage: null,
+  );
 
   StoryDetailState copyWith({
     Story? story,
@@ -112,8 +134,12 @@ class StoryDetailState {
     bool? isExpanding,
     bool? isSaving,
     bool? isDownloading,
+    bool? isFetchingCharacter,
+    String? selectedCharacterName,
+    Map<String, dynamic>? selectedCharacterDetails,
     String? selectedLanguage,
     String? errorMessage,
+    bool clearSelectedCharacterDetails = false,
   }) {
     return StoryDetailState(
       story: story ?? this.story,
@@ -124,6 +150,13 @@ class StoryDetailState {
       isExpanding: isExpanding ?? this.isExpanding,
       isSaving: isSaving ?? this.isSaving,
       isDownloading: isDownloading ?? this.isDownloading,
+      isFetchingCharacter: isFetchingCharacter ?? this.isFetchingCharacter,
+      selectedCharacterName: clearSelectedCharacterDetails
+          ? null
+          : (selectedCharacterName ?? this.selectedCharacterName),
+      selectedCharacterDetails: clearSelectedCharacterDetails
+          ? null
+          : (selectedCharacterDetails ?? this.selectedCharacterDetails),
       selectedLanguage: selectedLanguage ?? this.selectedLanguage,
       errorMessage: errorMessage,
     );
@@ -143,6 +176,8 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
     on<StoryDetailReadMorePressed>(_onReadMorePressed);
     on<StoryDetailExpandRequested>(_onExpandRequested);
     on<StoryDetailDownloadStatusChanged>(_onDownloadStatusChanged);
+    on<StoryDetailCharacterDetailsRequested>(_onCharacterDetailsRequested);
+    on<StoryDetailCharacterDetailsClosed>(_onCharacterDetailsClosed);
   }
 
   Future<void> _onStarted(
@@ -152,8 +187,9 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
     final story = event.story;
 
     final chapters = _parseChapters(story.story);
-    final selectedLanguage =
-        (story.attributes.languageStyle.isNotEmpty) ? story.attributes.languageStyle : 'English';
+    final selectedLanguage = (story.attributes.languageStyle.isNotEmpty)
+        ? story.attributes.languageStyle
+        : 'English';
 
     emit(
       state.copyWith(
@@ -188,10 +224,22 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
       (failure) {
         talker.error('Failed to update favorite: ${failure.message}');
         // rollback
-        emit(state.copyWith(story: story, isSaving: false, errorMessage: failure.message));
+        emit(
+          state.copyWith(
+            story: story,
+            isSaving: false,
+            errorMessage: failure.message,
+          ),
+        );
       },
       (savedStory) {
-        emit(state.copyWith(story: savedStory, isSaving: false, errorMessage: null));
+        emit(
+          state.copyWith(
+            story: savedStory,
+            isSaving: false,
+            errorMessage: null,
+          ),
+        );
       },
     );
   }
@@ -200,7 +248,9 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
     StoryDetailLanguageChanged event,
     Emitter<StoryDetailState> emit,
   ) async {
-    emit(state.copyWith(selectedLanguage: event.languageName, errorMessage: null));
+    emit(
+      state.copyWith(selectedLanguage: event.languageName, errorMessage: null),
+    );
   }
 
   Future<void> _onRegenerate(
@@ -215,12 +265,18 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
     try {
       final prompt = StoryPrompt(
         scripture: original.scripture.isNotEmpty ? original.scripture : null,
-        storyType: original.attributes.storyType.isNotEmpty ? original.attributes.storyType : null,
-        theme: original.attributes.theme.isNotEmpty ? original.attributes.theme : null,
+        storyType: original.attributes.storyType.isNotEmpty
+            ? original.attributes.storyType
+            : null,
+        theme: original.attributes.theme.isNotEmpty
+            ? original.attributes.theme
+            : null,
         mainCharacter: original.attributes.mainCharacterType.isNotEmpty
             ? original.attributes.mainCharacterType
             : null,
-        setting: original.attributes.storySetting.isNotEmpty ? original.attributes.storySetting : null,
+        setting: original.attributes.storySetting.isNotEmpty
+            ? original.attributes.storySetting
+            : null,
         isRawPrompt: false,
       );
 
@@ -258,7 +314,12 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
       await result.fold(
         (failure) async {
           talker.error('Regenerate failed: ${failure.message}');
-          emit(state.copyWith(isRegenerating: false, errorMessage: failure.message));
+          emit(
+            state.copyWith(
+              isRegenerating: false,
+              errorMessage: failure.message,
+            ),
+          );
         },
         (regenerated) async {
           final chapters = _parseChapters(regenerated.story);
@@ -270,6 +331,7 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
               visibleChapters: chapters.isEmpty ? 0 : 1,
               isRegenerating: false,
               errorMessage: null,
+              clearSelectedCharacterDetails: true,
             ),
           );
 
@@ -301,11 +363,17 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
     await result.fold(
       (failure) async {
         talker.error('Image gen failed: ${failure.message}');
-        emit(state.copyWith(isGeneratingImage: false, errorMessage: failure.message));
+        emit(
+          state.copyWith(
+            isGeneratingImage: false,
+            errorMessage: failure.message,
+          ),
+        );
       },
       (imageUrl) async {
-        final normalized =
-            imageUrl.contains(',') ? imageUrl.split(',').last : imageUrl;
+        final normalized = imageUrl.contains(',')
+            ? imageUrl.split(',').last
+            : imageUrl;
         final updated = story.copyWith(imageUrl: normalized);
 
         emit(state.copyWith(story: updated, isSaving: true));
@@ -314,10 +382,23 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
         saved.fold(
           (failure) {
             talker.error('Failed to save image: ${failure.message}');
-            emit(state.copyWith(isGeneratingImage: false, isSaving: false, errorMessage: failure.message));
+            emit(
+              state.copyWith(
+                isGeneratingImage: false,
+                isSaving: false,
+                errorMessage: failure.message,
+              ),
+            );
           },
           (savedStory) {
-            emit(state.copyWith(story: savedStory, isGeneratingImage: false, isSaving: false, errorMessage: null));
+            emit(
+              state.copyWith(
+                story: savedStory,
+                isGeneratingImage: false,
+                isSaving: false,
+                errorMessage: null,
+              ),
+            );
           },
         );
       },
@@ -385,10 +466,18 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
         saved.fold(
           (failure) {
             talker.error('Failed to save expanded story: ${failure.message}');
-            emit(state.copyWith(isSaving: false, errorMessage: failure.message));
+            emit(
+              state.copyWith(isSaving: false, errorMessage: failure.message),
+            );
           },
           (savedStory) {
-            emit(state.copyWith(story: savedStory, isSaving: false, errorMessage: null));
+            emit(
+              state.copyWith(
+                story: savedStory,
+                isSaving: false,
+                errorMessage: null,
+              ),
+            );
           },
         );
       },
@@ -402,9 +491,114 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
     emit(state.copyWith(isDownloading: event.isDownloading));
   }
 
+  Future<void> _onCharacterDetailsRequested(
+    StoryDetailCharacterDetailsRequested event,
+    Emitter<StoryDetailState> emit,
+  ) async {
+    final story = state.story;
+    if (story == null || state.isFetchingCharacter) return;
+
+    final key = _normalizeCharacterKey(event.characterName);
+    final cached = story.attributes.characterDetails[key];
+
+    // Cache hit
+    if (cached != null && cached.isNotEmpty && cached.length > 2) {
+      emit(
+        state.copyWith(
+          isFetchingCharacter: false,
+          selectedCharacterName: event.characterName,
+          selectedCharacterDetails: cached.cast<String, dynamic>(),
+          errorMessage: null,
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        isFetchingCharacter: true,
+        selectedCharacterName: event.characterName,
+        selectedCharacterDetails: null,
+        errorMessage: null,
+      ),
+    );
+
+    final currentChapter = state.chapters.isEmpty ? 1 : state.chapters.length;
+
+    final result = await _repo.getCharacterDetails(
+      story: story,
+      characterName: event.characterName,
+      currentChapter: currentChapter,
+      storyLanguage: state.selectedLanguage,
+    );
+
+    await result.fold(
+      (failure) async {
+        talker.error('Character details failed: ${failure.message}');
+        emit(
+          state.copyWith(
+            isFetchingCharacter: false,
+            errorMessage: failure.message,
+          ),
+        );
+      },
+      (details) async {
+        final updatedMap = {...story.attributes.characterDetails, key: details};
+
+        final updatedStory = story.copyWith(
+          attributes: story.attributes.copyWith(characterDetails: updatedMap),
+        );
+
+        // Optimistic update so sheet renders immediately
+        emit(
+          state.copyWith(
+            story: updatedStory,
+            isFetchingCharacter: false,
+            selectedCharacterName: event.characterName,
+            selectedCharacterDetails: details,
+            isSaving: true,
+            errorMessage: null,
+          ),
+        );
+
+        final saved = await _repo.updateStory(updatedStory);
+        saved.fold(
+          (failure) {
+            talker.error(
+              'Failed to save character details: ${failure.message}',
+            );
+            emit(
+              state.copyWith(isSaving: false, errorMessage: failure.message),
+            );
+          },
+          (savedStory) {
+            emit(
+              state.copyWith(
+                story: savedStory,
+                isSaving: false,
+                errorMessage: null,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _onCharacterDetailsClosed(
+    StoryDetailCharacterDetailsClosed event,
+    Emitter<StoryDetailState> emit,
+  ) async {
+    emit(state.copyWith(clearSelectedCharacterDetails: true));
+  }
+
   // -------------------------
   // Helpers
   // -------------------------
+
+  String _normalizeCharacterKey(String name) {
+    return name.trim().toLowerCase();
+  }
 
   List<StoryChapter> _parseChapters(String full) {
     final content = full.trim();
@@ -429,18 +623,21 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
       int number = i + 1;
       int startLine = 0;
 
-      final m = RegExp(r'^Chapter\s+(\d+)\s*$', caseSensitive: false)
-          .firstMatch(lines.first.trim());
+      final m = RegExp(
+        r'^Chapter\s+(\d+)\s*$',
+        caseSensitive: false,
+      ).firstMatch(lines.first.trim());
       if (m != null) {
         number = int.tryParse(m.group(1) ?? '') ?? number;
         startLine = 1;
       }
 
       final body = lines.skip(startLine).join('\n').trim();
-      chapters.add(StoryChapter(number: number, content: body.isEmpty ? chunk : body));
+      chapters.add(
+        StoryChapter(number: number, content: body.isEmpty ? chunk : body),
+      );
     }
 
-    // Ensure sequential numbering for display (optional)
     chapters.sort((a, b) => a.number.compareTo(b.number));
     return chapters;
   }
