@@ -8,7 +8,10 @@ enum StoryLanguage {
   hindi('Hindi', 'hi'),
   tamil('Tamil', 'ta'),
   telugu('Telugu', 'te'),
-  sanskrit('Sanskrit', 'sa');
+  sanskrit('Sanskrit', 'sa'),
+  bengali('Bengali', 'bn'),
+  marathi('Marathi', 'mr'),
+  gujarati('Gujarati', 'gu');
 
   final String displayName;
   final String code;

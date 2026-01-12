@@ -410,7 +410,7 @@ class _NewChatPageState extends State<NewChatPage> {
     if (avatarUrl != null && avatarUrl.isNotEmpty) {
       return CircleAvatar(
         backgroundImage: NetworkImage(avatarUrl),
-        onBackgroundImageError: (_, __) {
+        onBackgroundImageError: (_, _) {
           // Fallback handled by the next widget
         },
         child: null,

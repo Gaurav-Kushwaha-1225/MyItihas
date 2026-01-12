@@ -30,10 +30,12 @@ import 'package:myitihas/features/social/presentation/pages/followers_page.dart'
 import 'package:myitihas/features/social/presentation/pages/following_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_list_page.dart';
 import 'package:myitihas/features/chat/presentation/pages/chat_view_page.dart';
+import 'package:myitihas/features/social/presentation/pages/create_post_page.dart';
 import 'package:myitihas/features/stories/presentation/pages/story_detail_route_page.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/presentation/pages/story_generator_page.dart';
 import 'package:myitihas/features/story_generator/presentation/pages/generated_story_detail_page.dart';
+import 'package:myitihas/features/home/presentation/pages/activity_history_page.dart';
 import 'package:myitihas/services/supabase_service.dart';
 import 'package:myitihas/config/go_router_refresh.dart';
 
@@ -363,6 +365,16 @@ class SocialFeedRoute extends GoRouteData with $SocialFeedRoute {
   }
 }
 
+@TypedGoRoute<CreatePostRoute>(path: '/create-post')
+class CreatePostRoute extends GoRouteData with $CreatePostRoute {
+  const CreatePostRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const CreatePostPage();
+  }
+}
+
 @TypedGoRoute<ProfileRoute>(path: '/profile/:userId')
 class ProfileRoute extends GoRouteData with $ProfileRoute {
   final String userId;
@@ -467,6 +479,17 @@ class GeneratedStoryResultRoute extends GoRouteData
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return GeneratedStoryDetailPage(story: $extra);
+  }
+}
+
+/// Activity History page
+@TypedGoRoute<ActivityHistoryRoute>(path: '/activity')
+class ActivityHistoryRoute extends GoRouteData with $ActivityHistoryRoute {
+  const ActivityHistoryRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const ActivityHistoryPage();
   }
 }
 

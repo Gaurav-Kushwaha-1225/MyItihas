@@ -341,7 +341,7 @@ class _NewGroupPageState extends State<NewGroupPage> {
                     ? CircleAvatar(
                         radius: 6.w,
                         backgroundImage: NetworkImage(avatarUrl),
-                        onBackgroundImageError: (_, __) {},
+                        onBackgroundImageError: (_, _) {},
                         backgroundColor: accentColor.withOpacity(0.2),
                       )
                     : Container(

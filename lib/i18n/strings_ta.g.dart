@@ -53,6 +53,7 @@ class TranslationsTa with BaseTranslations<AppLocale, Translations> implements T
 	@override late final _TranslationsNotificationTa notification = _TranslationsNotificationTa._(_root);
 	@override late final _TranslationsProfileTa profile = _TranslationsProfileTa._(_root);
 	@override late final _TranslationsFeedTa feed = _TranslationsFeedTa._(_root);
+	@override late final _TranslationsHomeScreenTa homeScreen = _TranslationsHomeScreenTa._(_root);
 }
 
 // Path: app
@@ -444,6 +445,46 @@ class _TranslationsFeedTa implements TranslationsFeedEn {
 	@override String get noVideosAvailable => 'வீடியோக்கள் எதுவும் இல்லை';
 }
 
+// Path: homeScreen
+class _TranslationsHomeScreenTa implements TranslationsHomeScreenEn {
+	_TranslationsHomeScreenTa._(this._root);
+
+	final TranslationsTa _root; // ignore: unused_field
+
+	// Translations
+	@override String get greeting => 'வணக்கம்';
+	@override String get quoteOfTheDay => 'இன்றைய மேற்கோள்';
+	@override String get shareQuote => 'மேற்கோளைப் பகிரவும்';
+	@override String get copyQuote => 'மேற்கோளை நகலெடுக்கவும்';
+	@override String get quoteCopied => 'மேற்கோள் கிளிப்போர்டில் நகலெடுக்கப்பட்டது';
+	@override String get featuredStories => 'சிறப்புக் கதைகள்';
+	@override String get quickActions => 'விரைவு செயல்கள்';
+	@override String get generateStory => 'கதை உருவாக்கு';
+	@override String get chatWithKrishna => 'கிருஷ்ணருடன் அரட்டை';
+	@override String get myActivity => 'என் செயல்பாடு';
+	@override String get continueReading => 'படிப்பைத் தொடரவும்';
+	@override String get savedStories => 'சேமித்த கதைகள்';
+	@override String get seeAll => 'அனைத்தையும் காண்க';
+	@override String get startReading => 'படிக்கத் தொடங்குங்கள்';
+	@override String get exploreStories => 'உங்கள் பயணத்தைத் தொடங்க கதைகளை ஆராயுங்கள்';
+	@override String get saveForLater => 'நீங்கள் விரும்பும் கதைகளை புக்மார்க் செய்யுங்கள்';
+	@override String get noActivityYet => 'இதுவரை செயல்பாடு இல்லை';
+	@override String get minLeft => '{{count}} நிமிடம் மீதம்';
+	@override String get activityHistory => 'செயல்பாட்டு வரலாறு';
+	@override String get storyGenerated => 'கதை உருவாக்கப்பட்டது';
+	@override String get storyRead => 'கதை படிக்கப்பட்டது';
+	@override String get storyBookmarked => 'கதை புக்மார்க் செய்யப்பட்டது';
+	@override String get storyShared => 'கதை பகிரப்பட்டது';
+	@override String get storyCompleted => 'கதை முடிக்கப்பட்டது';
+	@override String get today => 'இன்று';
+	@override String get yesterday => 'நேற்று';
+	@override String get thisWeek => 'இந்த வாரம்';
+	@override String get earlier => 'முன்னர்';
+	@override String get noContinueReading => 'படிக்க எதுவும் இல்லை';
+	@override String get noSavedStories => 'சேமித்த கதைகள் இல்லை';
+	@override String get bookmarkStoriesToSave => 'சேமிக்க கதைகளை புக்மார்க் செய்யவும்';
+}
+
 // Path: storyGenerator.storyLength
 class _TranslationsStoryGeneratorStoryLengthTa implements TranslationsStoryGeneratorStoryLengthEn {
 	_TranslationsStoryGeneratorStoryLengthTa._(this._root);
@@ -779,6 +820,37 @@ extension on TranslationsTa {
 			'feed.tabs.text' => 'சிந்தனைகள்',
 			'feed.tapToShowCaption' => 'தலைப்பைக் காட்ட தட்டவும்',
 			'feed.noVideosAvailable' => 'வீடியோக்கள் எதுவும் இல்லை',
+			'homeScreen.greeting' => 'வணக்கம்',
+			'homeScreen.quoteOfTheDay' => 'இன்றைய மேற்கோள்',
+			'homeScreen.shareQuote' => 'மேற்கோளைப் பகிரவும்',
+			'homeScreen.copyQuote' => 'மேற்கோளை நகலெடுக்கவும்',
+			'homeScreen.quoteCopied' => 'மேற்கோள் கிளிப்போர்டில் நகலெடுக்கப்பட்டது',
+			'homeScreen.featuredStories' => 'சிறப்புக் கதைகள்',
+			'homeScreen.quickActions' => 'விரைவு செயல்கள்',
+			'homeScreen.generateStory' => 'கதை உருவாக்கு',
+			'homeScreen.chatWithKrishna' => 'கிருஷ்ணருடன் அரட்டை',
+			'homeScreen.myActivity' => 'என் செயல்பாடு',
+			'homeScreen.continueReading' => 'படிப்பைத் தொடரவும்',
+			'homeScreen.savedStories' => 'சேமித்த கதைகள்',
+			'homeScreen.seeAll' => 'அனைத்தையும் காண்க',
+			'homeScreen.startReading' => 'படிக்கத் தொடங்குங்கள்',
+			'homeScreen.exploreStories' => 'உங்கள் பயணத்தைத் தொடங்க கதைகளை ஆராயுங்கள்',
+			'homeScreen.saveForLater' => 'நீங்கள் விரும்பும் கதைகளை புக்மார்க் செய்யுங்கள்',
+			'homeScreen.noActivityYet' => 'இதுவரை செயல்பாடு இல்லை',
+			'homeScreen.minLeft' => '{{count}} நிமிடம் மீதம்',
+			'homeScreen.activityHistory' => 'செயல்பாட்டு வரலாறு',
+			'homeScreen.storyGenerated' => 'கதை உருவாக்கப்பட்டது',
+			'homeScreen.storyRead' => 'கதை படிக்கப்பட்டது',
+			'homeScreen.storyBookmarked' => 'கதை புக்மார்க் செய்யப்பட்டது',
+			'homeScreen.storyShared' => 'கதை பகிரப்பட்டது',
+			'homeScreen.storyCompleted' => 'கதை முடிக்கப்பட்டது',
+			'homeScreen.today' => 'இன்று',
+			'homeScreen.yesterday' => 'நேற்று',
+			'homeScreen.thisWeek' => 'இந்த வாரம்',
+			'homeScreen.earlier' => 'முன்னர்',
+			'homeScreen.noContinueReading' => 'படிக்க எதுவும் இல்லை',
+			'homeScreen.noSavedStories' => 'சேமித்த கதைகள் இல்லை',
+			'homeScreen.bookmarkStoriesToSave' => 'சேமிக்க கதைகளை புக்மார்க் செய்யவும்',
 			_ => null,
 		};
 	}

@@ -1,5 +1,6 @@
 base_locale: en
 fallback_strategy: base_locale
+lazy: false
 input_directory: lib/i18n
 input_file_pattern: .i18n.json
 output_directory: lib/i18n

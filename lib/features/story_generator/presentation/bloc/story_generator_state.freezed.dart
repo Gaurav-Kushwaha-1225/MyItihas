@@ -22,7 +22,12 @@ mixin _$StoryGeneratorState {
  String? get generatingMessage;/// The generated story (if any)
  Story? get generatedStory;/// Error message (if any)
  String? get errorMessage;/// Current quick prompt index in carousel
- int get currentQuickPromptIndex;
+ int get currentQuickPromptIndex;/// Whether an image is being generated
+ bool get isGeneratingImage;/// The generated story image URL
+ String? get storyImageUrl;/// Error message for image generation
+ String? get imageGenerationError;/// List of generated stories history
+ List<Story> get history;/// Whether history is being loaded
+ bool get isLoadingHistory;
 /// Create a copy of StoryGeneratorState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -33,16 +38,16 @@ $StoryGeneratorStateCopyWith<StoryGeneratorState> get copyWith => _$StoryGenerat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryGeneratorState&&(identical(other.prompt, prompt) || other.prompt == prompt)&&(identical(other.options, options) || other.options == options)&&(identical(other.isLoadingOptions, isLoadingOptions) || other.isLoadingOptions == isLoadingOptions)&&(identical(other.isGenerating, isGenerating) || other.isGenerating == isGenerating)&&(identical(other.generatingMessage, generatingMessage) || other.generatingMessage == generatingMessage)&&(identical(other.generatedStory, generatedStory) || other.generatedStory == generatedStory)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.currentQuickPromptIndex, currentQuickPromptIndex) || other.currentQuickPromptIndex == currentQuickPromptIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryGeneratorState&&(identical(other.prompt, prompt) || other.prompt == prompt)&&(identical(other.options, options) || other.options == options)&&(identical(other.isLoadingOptions, isLoadingOptions) || other.isLoadingOptions == isLoadingOptions)&&(identical(other.isGenerating, isGenerating) || other.isGenerating == isGenerating)&&(identical(other.generatingMessage, generatingMessage) || other.generatingMessage == generatingMessage)&&(identical(other.generatedStory, generatedStory) || other.generatedStory == generatedStory)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.currentQuickPromptIndex, currentQuickPromptIndex) || other.currentQuickPromptIndex == currentQuickPromptIndex)&&(identical(other.isGeneratingImage, isGeneratingImage) || other.isGeneratingImage == isGeneratingImage)&&(identical(other.storyImageUrl, storyImageUrl) || other.storyImageUrl == storyImageUrl)&&(identical(other.imageGenerationError, imageGenerationError) || other.imageGenerationError == imageGenerationError)&&const DeepCollectionEquality().equals(other.history, history)&&(identical(other.isLoadingHistory, isLoadingHistory) || other.isLoadingHistory == isLoadingHistory));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,prompt,options,isLoadingOptions,isGenerating,generatingMessage,generatedStory,errorMessage,currentQuickPromptIndex);
+int get hashCode => Object.hash(runtimeType,prompt,options,isLoadingOptions,isGenerating,generatingMessage,generatedStory,errorMessage,currentQuickPromptIndex,isGeneratingImage,storyImageUrl,imageGenerationError,const DeepCollectionEquality().hash(history),isLoadingHistory);
 
 @override
 String toString() {
-  return 'StoryGeneratorState(prompt: $prompt, options: $options, isLoadingOptions: $isLoadingOptions, isGenerating: $isGenerating, generatingMessage: $generatingMessage, generatedStory: $generatedStory, errorMessage: $errorMessage, currentQuickPromptIndex: $currentQuickPromptIndex)';
+  return 'StoryGeneratorState(prompt: $prompt, options: $options, isLoadingOptions: $isLoadingOptions, isGenerating: $isGenerating, generatingMessage: $generatingMessage, generatedStory: $generatedStory, errorMessage: $errorMessage, currentQuickPromptIndex: $currentQuickPromptIndex, isGeneratingImage: $isGeneratingImage, storyImageUrl: $storyImageUrl, imageGenerationError: $imageGenerationError, history: $history, isLoadingHistory: $isLoadingHistory)';
 }
 
 
@@ -53,7 +58,7 @@ abstract mixin class $StoryGeneratorStateCopyWith<$Res>  {
   factory $StoryGeneratorStateCopyWith(StoryGeneratorState value, $Res Function(StoryGeneratorState) _then) = _$StoryGeneratorStateCopyWithImpl;
 @useResult
 $Res call({
- StoryPrompt prompt, GeneratorOptions options, bool isLoadingOptions, bool isGenerating, String? generatingMessage, Story? generatedStory, String? errorMessage, int currentQuickPromptIndex
+ StoryPrompt prompt, GeneratorOptions options, bool isLoadingOptions, bool isGenerating, String? generatingMessage, Story? generatedStory, String? errorMessage, int currentQuickPromptIndex, bool isGeneratingImage, String? storyImageUrl, String? imageGenerationError, List<Story> history, bool isLoadingHistory
 });
 
 
@@ -70,7 +75,7 @@ class _$StoryGeneratorStateCopyWithImpl<$Res>
 
 /// Create a copy of StoryGeneratorState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? prompt = null,Object? options = null,Object? isLoadingOptions = null,Object? isGenerating = null,Object? generatingMessage = freezed,Object? generatedStory = freezed,Object? errorMessage = freezed,Object? currentQuickPromptIndex = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? prompt = null,Object? options = null,Object? isLoadingOptions = null,Object? isGenerating = null,Object? generatingMessage = freezed,Object? generatedStory = freezed,Object? errorMessage = freezed,Object? currentQuickPromptIndex = null,Object? isGeneratingImage = null,Object? storyImageUrl = freezed,Object? imageGenerationError = freezed,Object? history = null,Object? isLoadingHistory = null,}) {
   return _then(_self.copyWith(
 prompt: null == prompt ? _self.prompt : prompt // ignore: cast_nullable_to_non_nullable
 as StoryPrompt,options: null == options ? _self.options : options // ignore: cast_nullable_to_non_nullable
@@ -80,7 +85,12 @@ as bool,generatingMessage: freezed == generatingMessage ? _self.generatingMessag
 as String?,generatedStory: freezed == generatedStory ? _self.generatedStory : generatedStory // ignore: cast_nullable_to_non_nullable
 as Story?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,currentQuickPromptIndex: null == currentQuickPromptIndex ? _self.currentQuickPromptIndex : currentQuickPromptIndex // ignore: cast_nullable_to_non_nullable
-as int,
+as int,isGeneratingImage: null == isGeneratingImage ? _self.isGeneratingImage : isGeneratingImage // ignore: cast_nullable_to_non_nullable
+as bool,storyImageUrl: freezed == storyImageUrl ? _self.storyImageUrl : storyImageUrl // ignore: cast_nullable_to_non_nullable
+as String?,imageGenerationError: freezed == imageGenerationError ? _self.imageGenerationError : imageGenerationError // ignore: cast_nullable_to_non_nullable
+as String?,history: null == history ? _self.history : history // ignore: cast_nullable_to_non_nullable
+as List<Story>,isLoadingHistory: null == isLoadingHistory ? _self.isLoadingHistory : isLoadingHistory // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of StoryGeneratorState
@@ -195,10 +205,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( StoryPrompt prompt,  GeneratorOptions options,  bool isLoadingOptions,  bool isGenerating,  String? generatingMessage,  Story? generatedStory,  String? errorMessage,  int currentQuickPromptIndex)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( StoryPrompt prompt,  GeneratorOptions options,  bool isLoadingOptions,  bool isGenerating,  String? generatingMessage,  Story? generatedStory,  String? errorMessage,  int currentQuickPromptIndex,  bool isGeneratingImage,  String? storyImageUrl,  String? imageGenerationError,  List<Story> history,  bool isLoadingHistory)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryGeneratorState() when $default != null:
-return $default(_that.prompt,_that.options,_that.isLoadingOptions,_that.isGenerating,_that.generatingMessage,_that.generatedStory,_that.errorMessage,_that.currentQuickPromptIndex);case _:
+return $default(_that.prompt,_that.options,_that.isLoadingOptions,_that.isGenerating,_that.generatingMessage,_that.generatedStory,_that.errorMessage,_that.currentQuickPromptIndex,_that.isGeneratingImage,_that.storyImageUrl,_that.imageGenerationError,_that.history,_that.isLoadingHistory);case _:
   return orElse();
 
 }
@@ -216,10 +226,10 @@ return $default(_that.prompt,_that.options,_that.isLoadingOptions,_that.isGenera
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( StoryPrompt prompt,  GeneratorOptions options,  bool isLoadingOptions,  bool isGenerating,  String? generatingMessage,  Story? generatedStory,  String? errorMessage,  int currentQuickPromptIndex)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( StoryPrompt prompt,  GeneratorOptions options,  bool isLoadingOptions,  bool isGenerating,  String? generatingMessage,  Story? generatedStory,  String? errorMessage,  int currentQuickPromptIndex,  bool isGeneratingImage,  String? storyImageUrl,  String? imageGenerationError,  List<Story> history,  bool isLoadingHistory)  $default,) {final _that = this;
 switch (_that) {
 case _StoryGeneratorState():
-return $default(_that.prompt,_that.options,_that.isLoadingOptions,_that.isGenerating,_that.generatingMessage,_that.generatedStory,_that.errorMessage,_that.currentQuickPromptIndex);case _:
+return $default(_that.prompt,_that.options,_that.isLoadingOptions,_that.isGenerating,_that.generatingMessage,_that.generatedStory,_that.errorMessage,_that.currentQuickPromptIndex,_that.isGeneratingImage,_that.storyImageUrl,_that.imageGenerationError,_that.history,_that.isLoadingHistory);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -236,10 +246,10 @@ return $default(_that.prompt,_that.options,_that.isLoadingOptions,_that.isGenera
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( StoryPrompt prompt,  GeneratorOptions options,  bool isLoadingOptions,  bool isGenerating,  String? generatingMessage,  Story? generatedStory,  String? errorMessage,  int currentQuickPromptIndex)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( StoryPrompt prompt,  GeneratorOptions options,  bool isLoadingOptions,  bool isGenerating,  String? generatingMessage,  Story? generatedStory,  String? errorMessage,  int currentQuickPromptIndex,  bool isGeneratingImage,  String? storyImageUrl,  String? imageGenerationError,  List<Story> history,  bool isLoadingHistory)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryGeneratorState() when $default != null:
-return $default(_that.prompt,_that.options,_that.isLoadingOptions,_that.isGenerating,_that.generatingMessage,_that.generatedStory,_that.errorMessage,_that.currentQuickPromptIndex);case _:
+return $default(_that.prompt,_that.options,_that.isLoadingOptions,_that.isGenerating,_that.generatingMessage,_that.generatedStory,_that.errorMessage,_that.currentQuickPromptIndex,_that.isGeneratingImage,_that.storyImageUrl,_that.imageGenerationError,_that.history,_that.isLoadingHistory);case _:
   return null;
 
 }
@@ -251,7 +261,7 @@ return $default(_that.prompt,_that.options,_that.isLoadingOptions,_that.isGenera
 
 
 class _StoryGeneratorState extends StoryGeneratorState {
-  const _StoryGeneratorState({this.prompt = const StoryPrompt(), this.options = const GeneratorOptions(), this.isLoadingOptions = false, this.isGenerating = false, this.generatingMessage, this.generatedStory, this.errorMessage, this.currentQuickPromptIndex = 0}): super._();
+  const _StoryGeneratorState({this.prompt = const StoryPrompt(), this.options = const GeneratorOptions(), this.isLoadingOptions = false, this.isGenerating = false, this.generatingMessage, this.generatedStory, this.errorMessage, this.currentQuickPromptIndex = 0, this.isGeneratingImage = false, this.storyImageUrl, this.imageGenerationError, final  List<Story> history = const [], this.isLoadingHistory = false}): _history = history,super._();
   
 
 /// Current story prompt configuration
@@ -270,6 +280,23 @@ class _StoryGeneratorState extends StoryGeneratorState {
 @override final  String? errorMessage;
 /// Current quick prompt index in carousel
 @override@JsonKey() final  int currentQuickPromptIndex;
+/// Whether an image is being generated
+@override@JsonKey() final  bool isGeneratingImage;
+/// The generated story image URL
+@override final  String? storyImageUrl;
+/// Error message for image generation
+@override final  String? imageGenerationError;
+/// List of generated stories history
+ final  List<Story> _history;
+/// List of generated stories history
+@override@JsonKey() List<Story> get history {
+  if (_history is EqualUnmodifiableListView) return _history;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_history);
+}
+
+/// Whether history is being loaded
+@override@JsonKey() final  bool isLoadingHistory;
 
 /// Create a copy of StoryGeneratorState
 /// with the given fields replaced by the non-null parameter values.
@@ -281,16 +308,16 @@ _$StoryGeneratorStateCopyWith<_StoryGeneratorState> get copyWith => __$StoryGene
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryGeneratorState&&(identical(other.prompt, prompt) || other.prompt == prompt)&&(identical(other.options, options) || other.options == options)&&(identical(other.isLoadingOptions, isLoadingOptions) || other.isLoadingOptions == isLoadingOptions)&&(identical(other.isGenerating, isGenerating) || other.isGenerating == isGenerating)&&(identical(other.generatingMessage, generatingMessage) || other.generatingMessage == generatingMessage)&&(identical(other.generatedStory, generatedStory) || other.generatedStory == generatedStory)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.currentQuickPromptIndex, currentQuickPromptIndex) || other.currentQuickPromptIndex == currentQuickPromptIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryGeneratorState&&(identical(other.prompt, prompt) || other.prompt == prompt)&&(identical(other.options, options) || other.options == options)&&(identical(other.isLoadingOptions, isLoadingOptions) || other.isLoadingOptions == isLoadingOptions)&&(identical(other.isGenerating, isGenerating) || other.isGenerating == isGenerating)&&(identical(other.generatingMessage, generatingMessage) || other.generatingMessage == generatingMessage)&&(identical(other.generatedStory, generatedStory) || other.generatedStory == generatedStory)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.currentQuickPromptIndex, currentQuickPromptIndex) || other.currentQuickPromptIndex == currentQuickPromptIndex)&&(identical(other.isGeneratingImage, isGeneratingImage) || other.isGeneratingImage == isGeneratingImage)&&(identical(other.storyImageUrl, storyImageUrl) || other.storyImageUrl == storyImageUrl)&&(identical(other.imageGenerationError, imageGenerationError) || other.imageGenerationError == imageGenerationError)&&const DeepCollectionEquality().equals(other._history, _history)&&(identical(other.isLoadingHistory, isLoadingHistory) || other.isLoadingHistory == isLoadingHistory));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,prompt,options,isLoadingOptions,isGenerating,generatingMessage,generatedStory,errorMessage,currentQuickPromptIndex);
+int get hashCode => Object.hash(runtimeType,prompt,options,isLoadingOptions,isGenerating,generatingMessage,generatedStory,errorMessage,currentQuickPromptIndex,isGeneratingImage,storyImageUrl,imageGenerationError,const DeepCollectionEquality().hash(_history),isLoadingHistory);
 
 @override
 String toString() {
-  return 'StoryGeneratorState(prompt: $prompt, options: $options, isLoadingOptions: $isLoadingOptions, isGenerating: $isGenerating, generatingMessage: $generatingMessage, generatedStory: $generatedStory, errorMessage: $errorMessage, currentQuickPromptIndex: $currentQuickPromptIndex)';
+  return 'StoryGeneratorState(prompt: $prompt, options: $options, isLoadingOptions: $isLoadingOptions, isGenerating: $isGenerating, generatingMessage: $generatingMessage, generatedStory: $generatedStory, errorMessage: $errorMessage, currentQuickPromptIndex: $currentQuickPromptIndex, isGeneratingImage: $isGeneratingImage, storyImageUrl: $storyImageUrl, imageGenerationError: $imageGenerationError, history: $history, isLoadingHistory: $isLoadingHistory)';
 }
 
 
@@ -301,7 +328,7 @@ abstract mixin class _$StoryGeneratorStateCopyWith<$Res> implements $StoryGenera
   factory _$StoryGeneratorStateCopyWith(_StoryGeneratorState value, $Res Function(_StoryGeneratorState) _then) = __$StoryGeneratorStateCopyWithImpl;
 @override @useResult
 $Res call({
- StoryPrompt prompt, GeneratorOptions options, bool isLoadingOptions, bool isGenerating, String? generatingMessage, Story? generatedStory, String? errorMessage, int currentQuickPromptIndex
+ StoryPrompt prompt, GeneratorOptions options, bool isLoadingOptions, bool isGenerating, String? generatingMessage, Story? generatedStory, String? errorMessage, int currentQuickPromptIndex, bool isGeneratingImage, String? storyImageUrl, String? imageGenerationError, List<Story> history, bool isLoadingHistory
 });
 
 
@@ -318,7 +345,7 @@ class __$StoryGeneratorStateCopyWithImpl<$Res>
 
 /// Create a copy of StoryGeneratorState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? prompt = null,Object? options = null,Object? isLoadingOptions = null,Object? isGenerating = null,Object? generatingMessage = freezed,Object? generatedStory = freezed,Object? errorMessage = freezed,Object? currentQuickPromptIndex = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? prompt = null,Object? options = null,Object? isLoadingOptions = null,Object? isGenerating = null,Object? generatingMessage = freezed,Object? generatedStory = freezed,Object? errorMessage = freezed,Object? currentQuickPromptIndex = null,Object? isGeneratingImage = null,Object? storyImageUrl = freezed,Object? imageGenerationError = freezed,Object? history = null,Object? isLoadingHistory = null,}) {
   return _then(_StoryGeneratorState(
 prompt: null == prompt ? _self.prompt : prompt // ignore: cast_nullable_to_non_nullable
 as StoryPrompt,options: null == options ? _self.options : options // ignore: cast_nullable_to_non_nullable
@@ -328,7 +355,12 @@ as bool,generatingMessage: freezed == generatingMessage ? _self.generatingMessag
 as String?,generatedStory: freezed == generatedStory ? _self.generatedStory : generatedStory // ignore: cast_nullable_to_non_nullable
 as Story?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,currentQuickPromptIndex: null == currentQuickPromptIndex ? _self.currentQuickPromptIndex : currentQuickPromptIndex // ignore: cast_nullable_to_non_nullable
-as int,
+as int,isGeneratingImage: null == isGeneratingImage ? _self.isGeneratingImage : isGeneratingImage // ignore: cast_nullable_to_non_nullable
+as bool,storyImageUrl: freezed == storyImageUrl ? _self.storyImageUrl : storyImageUrl // ignore: cast_nullable_to_non_nullable
+as String?,imageGenerationError: freezed == imageGenerationError ? _self.imageGenerationError : imageGenerationError // ignore: cast_nullable_to_non_nullable
+as String?,history: null == history ? _self._history : history // ignore: cast_nullable_to_non_nullable
+as List<Story>,isLoadingHistory: null == isLoadingHistory ? _self.isLoadingHistory : isLoadingHistory // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

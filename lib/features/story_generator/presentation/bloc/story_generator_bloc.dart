@@ -6,6 +6,8 @@ import 'package:myitihas/core/usecases/usecase.dart';
 import 'package:myitihas/features/story_generator/domain/entities/generator_options.dart';
 import 'package:myitihas/features/story_generator/domain/entities/story_prompt.dart';
 import 'package:myitihas/features/story_generator/domain/usecases/generate_story.dart';
+import 'package:myitihas/features/story_generator/domain/usecases/generate_story_image.dart';
+import 'package:myitihas/features/story_generator/domain/usecases/get_generated_stories.dart';
 import 'package:myitihas/features/story_generator/domain/usecases/randomize_options.dart';
 
 import 'story_generator_event.dart';
@@ -19,10 +21,14 @@ export 'story_generator_state.dart';
 class StoryGeneratorBloc
     extends Bloc<StoryGeneratorEvent, StoryGeneratorState> {
   final GenerateStory generateStory;
+  final GenerateStoryImage generateStoryImage;
+  final GetGeneratedStories getGeneratedStories;
   final RandomizeOptions randomizeOptions;
 
   StoryGeneratorBloc({
     required this.generateStory,
+    required this.generateStoryImage,
+    required this.getGeneratedStories,
     required this.randomizeOptions,
   }) : super(const StoryGeneratorState()) {
     on<StoryGeneratorEvent>((event, emit) async {
@@ -40,8 +46,63 @@ class StoryGeneratorBloc
             _onUpdateGeneratorOptions(language, format, length, emit),
         generate: () => _onGenerate(emit),
         reset: () => _onReset(emit),
+        generateImage: () => _onGenerateImage(emit),
+        loadHistory: () => _onLoadHistory(emit),
       );
     });
+  }
+
+  Future<void> _onLoadHistory(Emitter<StoryGeneratorState> emit) async {
+    talker.info('Loading generated stories history');
+    emit(state.copyWith(isLoadingHistory: true));
+
+    final result = await getGeneratedStories(NoParams());
+
+    result.fold(
+      (failure) {
+        talker.error('Failed to load history: ${failure.message}');
+        emit(state.copyWith(isLoadingHistory: false));
+      },
+      (stories) {
+        talker.info('Loaded ${stories.length} stories from history');
+        emit(state.copyWith(isLoadingHistory: false, history: stories));
+      },
+    );
+  }
+
+  Future<void> _onGenerateImage(Emitter<StoryGeneratorState> emit) async {
+    final story = state.generatedStory;
+    if (story == null) {
+      talker.warning('Cannot generate image: no story generated yet');
+      return;
+    }
+
+    talker.info('Starting story image generation');
+    emit(state.copyWith(isGeneratingImage: true, imageGenerationError: null));
+
+    final result = await generateStoryImage(
+      GenerateStoryImageParams(
+        title: story.title,
+        story: story.story,
+        moral: story.lesson,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        talker.error('Failed to generate story image: ${failure.message}');
+        emit(
+          state.copyWith(
+            isGeneratingImage: false,
+            imageGenerationError: failure.message,
+          ),
+        );
+      },
+      (imageUrl) {
+        talker.info('Story image generated successfully');
+        emit(state.copyWith(isGeneratingImage: false, storyImageUrl: imageUrl));
+      },
+    );
   }
 
   Future<void> _onInitialize(Emitter<StoryGeneratorState> emit) async {

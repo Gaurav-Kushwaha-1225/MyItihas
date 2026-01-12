@@ -1,0 +1,544 @@
+Analyzing MyItihas...                                           
+
+   info • Don't invoke 'print' in production code • lib/config/go_router_refresh.dart:53:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/config/go_router_refresh.dart:66:5 • avoid_print
+   info • 'Share' is deprecated and shouldn't be used. Use SharePlus instead • lib/features/home/presentation/bloc/home_bloc.dart:136:13 • deprecated_member_use
+   info • 'share' is deprecated and shouldn't be used. Use SharePlus.instance.share() instead • lib/features/home/presentation/bloc/home_bloc.dart:136:19 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/social/presentation/pages/followers_page.dart:86:58 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/social/presentation/pages/followers_page.dart:127:46 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/social/presentation/pages/followers_page.dart:145:50 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/social/presentation/pages/following_page.dart:86:58 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/social/presentation/pages/following_page.dart:127:46 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/social/presentation/pages/following_page.dart:145:50 • deprecated_member_use
+warning • The declaration '_showFollowersSheet' isn't referenced • lib/features/social/presentation/pages/profile_page.dart:739:8 • unused_element
+warning • The declaration '_showFollowingSheet' isn't referenced • lib/features/social/presentation/pages/profile_page.dart:785:8 • unused_element
+   info • The import of 'dart:typed_data' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/services.dart' • lib/features/social/presentation/utils/share_preview_generator.dart:2:8 • unnecessary_import
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/social/presentation/widgets/author_info_bar.dart:234:39 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/social/presentation/widgets/engagement_bar.dart:266:72 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/social/presentation/widgets/engagement_bar.dart:266:95 • deprecated_member_use
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/social/presentation/widgets/engagement_bar.dart:266:114 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/social/presentation/widgets/engagement_bar.dart:266:138 • deprecated_member_use
+   info • Use a 'SizedBox' to add whitespace to a layout • lib/features/social/presentation/widgets/enhanced_story_card.dart:125:15 • sized_box_for_whitespace
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/stories/presentation/pages/story_detail_page.dart:144:47 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/stories/presentation/pages/story_detail_page.dart:291:37 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/stories/presentation/pages/story_detail_page.dart:292:37 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/stories/presentation/pages/story_detail_page.dart:306:41 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/stories/presentation/pages/story_detail_page.dart:307:41 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/stories/presentation/pages/story_detail_page.dart:316:41 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/stories/presentation/pages/story_detail_page.dart:317:41 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/stories/presentation/pages/story_detail_page.dart:326:41 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/features/stories/presentation/pages/story_detail_page.dart:327:41 • deprecated_member_use_from_same_package
+   info • Missing type annotation • lib/features/story_generator/presentation/bloc/story_generator_bloc.dart:174:5 • strict_top_level_inference
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/story_generator/presentation/pages/generated_story_detail_page.dart:191:47 • deprecated_member_use
+   info • 'Share' is deprecated and shouldn't be used. Use SharePlus instead • lib/features/story_generator/presentation/pages/generated_story_detail_page.dart:530:5 • deprecated_member_use
+   info • 'share' is deprecated and shouldn't be used. Use SharePlus.instance.share() instead • lib/features/story_generator/presentation/pages/generated_story_detail_page.dart:530:11 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/story_generator/presentation/widgets/history_bottom_sheet.dart:48:51 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/story_generator/presentation/widgets/history_bottom_sheet.dart:75:63 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/story_generator/presentation/widgets/history_bottom_sheet.dart:107:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/story_generator/presentation/widgets/history_bottom_sheet.dart:110:63 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/story_generator/presentation/widgets/history_bottom_sheet.dart:120:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/features/story_generator/presentation/widgets/history_bottom_sheet.dart:126:66 • deprecated_member_use
+   info • 'groupValue' is deprecated and shouldn't be used. Use a RadioGroup ancestor to manage group value instead. This feature was deprecated after v3.32.0-0.0.pre • lib/features/story_generator/presentation/widgets/more_options_bottom_sheet.dart:261:23 • deprecated_member_use
+   info • 'onChanged' is deprecated and shouldn't be used. Use RadioGroup to handle value change instead. This feature was deprecated after v3.32.0-0.0.pre • lib/features/story_generator/presentation/widgets/more_options_bottom_sheet.dart:262:23 • deprecated_member_use
+  error • Missing concrete implementations of 'getter class Translations with BaseTranslations<AppLocale, Translations>.app', 'getter class Translations with BaseTranslations<AppLocale, Translations>.auth', 'getter class Translations with BaseTranslations<AppLocale, Translations>.chat', 'getter class Translations with BaseTranslations<AppLocale, Translations>.common', and 13 more • lib/i18n/strings_bn.g.dart:14:7 • non_abstract_class_inherits_abstract_member
+  error • Missing concrete implementations of 'getter class Translations with BaseTranslations<AppLocale, Translations>.app', 'getter class Translations with BaseTranslations<AppLocale, Translations>.auth', 'getter class Translations with BaseTranslations<AppLocale, Translations>.chat', 'getter class Translations with BaseTranslations<AppLocale, Translations>.common', and 13 more • lib/i18n/strings_gu.g.dart:14:7 • non_abstract_class_inherits_abstract_member
+  error • Missing concrete implementations of 'getter class Translations with BaseTranslations<AppLocale, Translations>.app', 'getter class Translations with BaseTranslations<AppLocale, Translations>.auth', 'getter class Translations with BaseTranslations<AppLocale, Translations>.chat', 'getter class Translations with BaseTranslations<AppLocale, Translations>.common', and 13 more • lib/i18n/strings_mr.g.dart:14:7 • non_abstract_class_inherits_abstract_member
+  error • Missing concrete implementations of 'getter class Translations with BaseTranslations<AppLocale, Translations>.app', 'getter class Translations with BaseTranslations<AppLocale, Translations>.auth', 'getter class Translations with BaseTranslations<AppLocale, Translations>.chat', 'getter class Translations with BaseTranslations<AppLocale, Translations>.common', and 13 more • lib/i18n/strings_sa.g.dart:14:7 • non_abstract_class_inherits_abstract_member
+   info • The private field _selectedUserIds could be 'final' • lib/pages/Chat/Widget/add_group_members_page.dart:30:15 • prefer_final_fields
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/add_group_members_page.dart:127:36 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/add_group_members_page.dart:127:61 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/add_group_members_page.dart:161:64 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/add_group_members_page.dart:165:64 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/add_group_members_page.dart:255:30 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/add_group_members_page.dart:255:51 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/add_group_members_page.dart:256:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/add_group_members_page.dart:256:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/add_group_members_page.dart:257:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/add_group_members_page.dart:257:62 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/add_group_members_page.dart:289:37 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/add_group_members_page.dart:331:70 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/add_group_members_page.dart:335:70 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:206:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:206:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:208:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:209:11 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:211:24 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:212:29 • deprecated_member_use
+   info • 'onPopInvoked' is deprecated and shouldn't be used. Use onPopInvokedWithResult instead. This feature was deprecated after v3.22.0-12.0.pre • lib/pages/Chat/Widget/chat_detail_page.dart:216:7 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:223:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:223:56 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:241:46 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:242:17 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:246:23 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:246:50 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:247:23 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:248:46 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:260:33 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:261:33 • deprecated_member_use_from_same_package
+   info • Statements in an if should be enclosed in a block • lib/pages/Chat/Widget/chat_detail_page.dart:284:33 • curly_braces_in_flow_control_structures
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:321:55 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:338:58 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:366:67 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:392:37 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:462:53 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:496:25 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:499:33 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:549:38 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:582:33 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:603:31 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:604:31 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:614:31 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:615:31 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/chat_detail_page.dart:631:34 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:722:40 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/chat_detail_page.dart:746:30 • deprecated_member_use
+warning • The value of the local variable 'conversationId' isn't used • lib/pages/Chat/Widget/create_group_page.dart:103:13 • unused_local_variable
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:140:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:140:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:142:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:143:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:145:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:146:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:154:19 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:155:19 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:181:41 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:182:41 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:199:15 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/create_group_page.dart:216:56 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/create_group_page.dart:223:48 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/create_group_page.dart:225:50 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:252:45 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/create_group_page.dart:273:33 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/create_group_page.dart:277:38 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/create_group_page.dart:278:37 • deprecated_member_use
+   info • Unnecessary use of multiple underscores • lib/pages/Chat/Widget/create_group_page.dart:335:59 • unnecessary_underscores
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/create_group_page.dart:336:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/create_group_page.dart:343:52 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/edit_group_page.dart:187:30 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/edit_group_page.dart:187:51 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/edit_group_page.dart:188:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/edit_group_page.dart:188:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/edit_group_page.dart:190:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/edit_group_page.dart:191:11 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/edit_group_page.dart:252:43 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/edit_group_page.dart:330:39 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/edit_group_page.dart:356:39 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/edit_group_page.dart:417:27 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/pages/Chat/Widget/group_profile_page.dart:100:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/pages/Chat/Widget/group_profile_page.dart:120:7 • avoid_print
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/group_profile_page.dart:135:30 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/group_profile_page.dart:135:51 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/group_profile_page.dart:136:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/group_profile_page.dart:136:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/group_profile_page.dart:138:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/group_profile_page.dart:139:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/group_profile_page.dart:143:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/group_profile_page.dart:144:11 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/group_profile_page.dart:223:43 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/group_profile_page.dart:291:41 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/group_profile_page.dart:340:41 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/group_profile_page.dart:374:56 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/group_profile_page.dart:377:56 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/group_profile_page.dart:408:48 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/group_profile_page.dart:411:50 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/group_profile_page.dart:444:41 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/group_profile_page.dart:500:29 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/group_profile_page.dart:516:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/group_profile_page.dart:537:43 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/pages/Chat/Widget/group_profile_page.dart:642:13 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/pages/Chat/Widget/group_profile_page.dart:645:11 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/pages/Chat/Widget/group_profile_page.dart:646:11 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/pages/Chat/Widget/group_profile_page.dart:651:13 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/pages/Chat/Widget/group_profile_page.dart:697:32 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/pages/Chat/Widget/group_profile_page.dart:703:32 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/pages/Chat/Widget/group_profile_page.dart:752:32 • use_build_context_synchronously
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/pages/Chat/Widget/group_profile_page.dart:764:32 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/group_profile_page.dart:778:27 • deprecated_member_use
+warning • The value of the field '_chatService' isn't used • lib/pages/Chat/Widget/new_chat_page.dart:19:21 • unused_field
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:104:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:104:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:109:15 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:110:15 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:136:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:137:35 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:173:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:185:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:185:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:187:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:188:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:189:30 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:189:51 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:198:29 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:198:54 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:223:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:223:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:225:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:226:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:228:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:229:11 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/new_chat_page.dart:244:43 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:253:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:253:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:255:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:256:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:258:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_chat_page.dart:259:11 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/new_chat_page.dart:389:34 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/pages/Chat/Widget/new_chat_page.dart:394:9 • avoid_print
+   info • Unnecessary use of multiple underscores • lib/pages/Chat/Widget/new_chat_page.dart:413:37 • unnecessary_underscores
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/new_chat_page.dart:422:36 • deprecated_member_use
+   info • The private field _selectedCountryCode could be 'final' • lib/pages/Chat/Widget/new_contact_page.dart:19:10 • prefer_final_fields
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:24:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:24:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:26:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:27:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:28:30 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:28:51 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:30:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:31:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:34:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:35:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:38:33 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:38:54 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:46:19 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:47:19 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:77:45 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:78:45 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:106:15 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:125:37 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/new_contact_page.dart:176:38 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:180:31 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:181:31 • deprecated_member_use_from_same_package
+   info • Don't invoke 'print' in production code • lib/pages/Chat/Widget/new_contact_page.dart:226:19 • avoid_print
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:238:27 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:239:27 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/new_contact_page.dart:245:63 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/new_contact_page.dart:285:24 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:288:27 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_contact_page.dart:288:52 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:98:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:98:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:100:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:101:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:102:30 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:102:51 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:104:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:105:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:107:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:108:11 • deprecated_member_use_from_same_package
+warning • The value of the local variable 'secondaryTextColor' isn't used • lib/pages/Chat/Widget/new_group_page.dart:109:11 • unused_local_variable
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:110:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:111:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:120:19 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:121:19 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:151:45 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:152:45 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:183:15 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:195:35 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/new_group_page.dart:199:40 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/new_group_page.dart:200:39 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:293:31 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:294:31 • deprecated_member_use_from_same_package
+   info • Unnecessary use of multiple underscores • lib/pages/Chat/Widget/new_group_page.dart:344:53 • unnecessary_underscores
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/new_group_page.dart:345:54 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/new_group_page.dart:352:46 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:368:32 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/new_group_page.dart:371:43 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/profile_detail_page.dart:22:30 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/profile_detail_page.dart:22:51 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/profile_detail_page.dart:23:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/profile_detail_page.dart:23:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/profile_detail_page.dart:25:18 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/profile_detail_page.dart:25:45 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/profile_detail_page.dart:30:18 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/profile_detail_page.dart:30:43 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/profile_detail_page.dart:67:44 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/profile_detail_page.dart:77:42 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/profile_detail_page.dart:105:28 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/profile_detail_page.dart:184:41 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/profile_detail_page.dart:239:28 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/profile_detail_page.dart:259:26 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/status_page.dart:12:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/status_page.dart:12:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/Widget/status_page.dart:91:32 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/status_page.dart:91:57 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/status_page.dart:156:40 • deprecated_member_use
+warning • A value for optional parameter 'textColor' isn't ever given • lib/pages/Chat/Widget/status_page.dart:274:9 • unused_element_parameter
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/status_page.dart:282:28 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/status_page.dart:283:28 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/status_page.dart:288:30 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/status_page.dart:289:30 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/status_page.dart:302:30 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/Widget/status_page.dart:303:30 • deprecated_member_use
+   info • The private field _userProfiles could be 'final' • lib/pages/Chat/chat_itihas_page.dart:38:37 • prefer_final_fields
+   info • Don't invoke 'print' in production code • lib/pages/Chat/chat_itihas_page.dart:81:13 • avoid_print
+   info • Don't invoke 'print' in production code • lib/pages/Chat/chat_itihas_page.dart:118:7 • avoid_print
+warning • The declaration '_formatChatTime' isn't referenced • lib/pages/Chat/chat_itihas_page.dart:123:10 • unused_element
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:230:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:230:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:232:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:233:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:237:28 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:253:13 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:308:38 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:309:38 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:313:40 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:314:39 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:323:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:334:48 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:340:46 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:348:50 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:404:39 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:405:39 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:420:41 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:421:41 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:460:33 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:461:33 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:469:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:470:35 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:479:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:480:35 • deprecated_member_use_from_same_package
+warning • The value of the local variable 'result' isn't used • lib/pages/Chat/chat_itihas_page.dart:515:35 • unused_local_variable
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:540:54 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:541:53 • deprecated_member_use
+   info • Unnecessary use of multiple underscores • lib/pages/Chat/chat_itihas_page.dart:557:71 • unnecessary_underscores
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:559:49 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:560:49 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Chat/chat_itihas_page.dart:569:47 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:592:50 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:596:51 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:620:49 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:621:49 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:625:51 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:647:47 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:648:47 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:670:53 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:671:53 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:685:53 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:686:53 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:759:27 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:765:27 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Chat/chat_itihas_page.dart:765:54 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:33:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:33:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:34:30 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:34:64 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:36:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:37:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:41:28 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:58:44 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:59:15 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:63:21 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:63:48 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:64:21 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:65:44 • deprecated_member_use
+warning • The declaration '_subtitle' isn't referenced • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:141:10 • unused_element
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:143:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:143:57 • deprecated_member_use_from_same_package
+warning • The declaration '_sectionTitle' isn't referenced • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:178:10 • unused_element
+warning • The declaration '_descriptionText' isn't referenced • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:200:10 • unused_element
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:202:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:202:57 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:267:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:313:54 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:318:48 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:321:36 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:321:61 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:328:38 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:349:34 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:349:62 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:351:57 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:382:54 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:389:40 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:397:42 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:411:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:412:35 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeetha_detail_page.dart:420:48 • deprecated_member_use
+warning • Unused import: 'package:myitihas/i18n/strings.g.dart' • lib/pages/Map/Widget/shaktipeethas_section.dart:4:8 • unused_import
+warning • The value of the local variable 'textColor' isn't used • lib/pages/Map/Widget/shaktipeethas_section.dart:218:11 • unused_local_variable
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeethas_section.dart:218:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeethas_section.dart:218:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeethas_section.dart:257:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeethas_section.dart:257:57 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeethas_section.dart:310:38 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeethas_section.dart:313:26 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeethas_section.dart:313:51 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeethas_section.dart:320:28 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeethas_section.dart:341:53 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeethas_section.dart:347:36 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/Widget/shaktipeethas_section.dart:356:40 • deprecated_member_use
+warning • The value of the local variable 'textColor' isn't used • lib/pages/Map/Widget/shaktipeethas_section.dart:371:11 • unused_local_variable
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeethas_section.dart:371:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeethas_section.dart:371:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeethas_section.dart:380:22 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/Widget/shaktipeethas_section.dart:380:48 • deprecated_member_use_from_same_package
+   info • 'scale' is deprecated and shouldn't be used. Use scaleByVector3, scaleByVector4, or scaleByDouble instead • lib/pages/Map/akhanda_bharat_map_page.dart:49:51 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:70:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:70:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:71:30 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:71:64 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:73:11 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:74:11 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:82:28 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:99:44 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:100:15 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:104:21 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:104:48 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:105:21 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:106:44 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:186:51 • deprecated_member_use
+   info • Unnecessary use of multiple underscores • lib/pages/Map/akhanda_bharat_map_page.dart:216:63 • unnecessary_underscores
+   info • Unnecessary use of multiple underscores • lib/pages/Map/akhanda_bharat_map_page.dart:216:67 • unnecessary_underscores
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:249:59 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:265:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:324:52 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:325:51 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:367:43 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:368:43 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:418:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:419:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:441:52 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:442:51 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:490:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:495:44 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:496:43 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:505:46 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:518:52 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:524:50 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:530:54 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:612:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:613:31 • deprecated_member_use
+warning • The declaration '_glassTopBar' isn't referenced • lib/pages/Map/akhanda_bharat_map_page.dart:621:10 • unused_element
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:629:33 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:631:52 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/Map/akhanda_bharat_map_page.dart:657:39 • deprecated_member_use
+warning • The declaration '_heroTitle' isn't referenced • lib/pages/Map/akhanda_bharat_map_page.dart:671:10 • unused_element
+warning • The declaration '_subtitle' isn't referenced • lib/pages/Map/akhanda_bharat_map_page.dart:695:10 • unused_element
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:697:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:697:57 • deprecated_member_use_from_same_package
+warning • The declaration '_imageCard' isn't referenced • lib/pages/Map/akhanda_bharat_map_page.dart:734:10 • unused_element
+warning • The declaration '_sectionTitle' isn't referenced • lib/pages/Map/akhanda_bharat_map_page.dart:746:10 • unused_element
+warning • The declaration '_descriptionText' isn't referenced • lib/pages/Map/akhanda_bharat_map_page.dart:810:10 • unused_element
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:812:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:812:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:838:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/Map/akhanda_bharat_map_page.dart:838:57 • deprecated_member_use_from_same_package
+   info • Don't invoke 'print' in production code • lib/pages/auth/login_page.dart:98:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/pages/auth/login_page.dart:99:7 • avoid_print
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:154:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:154:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:155:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:155:56 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:157:18 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:157:43 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:164:39 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:164:60 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/login_page.dart:184:38 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/login_page.dart:214:40 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/login_page.dart:228:38 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/pages/auth/login_page.dart:292:21 • avoid_print
+   info • Don't invoke 'print' in production code • lib/pages/auth/login_page.dart:318:21 • avoid_print
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:366:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:366:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:367:38 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:367:59 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:368:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:368:56 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:370:18 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/login_page.dart:370:43 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/login_page.dart:442:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/login_page.dart:492:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/login_page.dart:499:44 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/login_page.dart:585:44 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/login_page.dart:623:46 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/pages/auth/reset_password_page.dart:100:7 • avoid_print
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/reset_password_page.dart:114:30 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/reset_password_page.dart:114:51 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/reset_password_page.dart:115:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/reset_password_page.dart:115:56 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/reset_password_page.dart:117:18 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/reset_password_page.dart:117:43 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/reset_password_page.dart:119:18 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/reset_password_page.dart:119:45 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/reset_password_page.dart:151:40 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/reset_password_page.dart:153:59 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/reset_password_page.dart:286:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/reset_password_page.dart:320:42 • deprecated_member_use
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/signup_page.dart:162:32 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/signup_page.dart:162:57 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/signup_page.dart:163:38 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/signup_page.dart:163:59 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/signup_page.dart:164:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/signup_page.dart:164:56 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/signup_page.dart:166:18 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/auth/signup_page.dart:166:43 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/signup_page.dart:237:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/signup_page.dart:284:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/signup_page.dart:334:42 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/signup_page.dart:341:44 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/auth/signup_page.dart:405:44 • deprecated_member_use
+   info • The private field _offset could be 'final' • lib/pages/discover_page.dart:25:7 • prefer_final_fields
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/discover_page.dart:168:58 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/discover_page.dart:209:69 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/discover_page.dart:227:77 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/settings_page.dart:182:56 • deprecated_member_use
+warning • Unused import: 'package:google_fonts/google_fonts.dart' • lib/pages/stories_chat.dart:3:8 • unused_import
+warning • Unused import: 'package:myitihas/pages/stories_details.dart' • lib/pages/stories_chat.dart:4:8 • unused_import
+warning • Unused import: 'package:myitihas/utils/constants.dart' • lib/pages/stories_chat.dart:5:8 • unused_import
+   info • The private field _sidebarOpen could be 'final' • lib/pages/stories_chat.dart:18:8 • prefer_final_fields
+warning • The value of the field '_sidebarOpen' isn't used • lib/pages/stories_chat.dart:18:8 • unused_field
+warning • The value of the local variable 'text' isn't used • lib/pages/stories_details.dart:23:18 • unused_local_variable
+warning • The value of the local variable 'reference' isn't used • lib/pages/stories_details.dart:25:18 • unused_local_variable
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:82:37 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:83:37 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:116:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:117:35 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:122:39 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:123:39 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:137:37 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:138:37 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:149:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:150:35 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:155:37 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:156:37 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:178:41 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:179:41 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:261:39 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:261:60 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:266:35 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:267:35 • deprecated_member_use_from_same_package
+   info • 'DarkColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:324:25 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:324:60 • deprecated_member_use_from_same_package
+   info • 'LightColors' is deprecated and shouldn't be used. Use Material 3 ColorScheme and GradientExtension instead • lib/pages/stories_details.dart:326:35 • deprecated_member_use_from_same_package
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/stories_details.dart:365:61 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/pages/stories_details.dart:404:29 • deprecated_member_use
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:64:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:71:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:75:11 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:79:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:94:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:95:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:96:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:97:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:98:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:99:5 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:104:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:113:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:117:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:122:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:166:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:172:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:179:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:181:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:189:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:191:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:197:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:313:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:323:9 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:539:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:552:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:554:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/auth_service.dart:568:7 • avoid_print
+   info • The imported package 'uuid' isn't a dependency of the importing package • lib/services/chat_service.dart:11:8 • depend_on_referenced_packages
+
+540 issues found. (ran in 5.2s)

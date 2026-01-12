@@ -44,6 +44,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final TranslationsCommonEn common = TranslationsCommonEn._(_root);
 	late final TranslationsNavigationEn navigation = TranslationsNavigationEn._(_root);
 	late final TranslationsHomeEn home = TranslationsHomeEn._(_root);
+	late final TranslationsHomeScreenEn homeScreen = TranslationsHomeScreenEn._(_root);
 	late final TranslationsStoriesEn stories = TranslationsStoriesEn._(_root);
 	late final TranslationsStoryGeneratorEn storyGenerator = TranslationsStoryGeneratorEn._(_root);
 	late final TranslationsChatEn chat = TranslationsChatEn._(_root);
@@ -209,6 +210,108 @@ class TranslationsHomeEn {
 
 	/// en: 'Home Content'
 	String get content => 'Home Content';
+}
+
+// Path: homeScreen
+class TranslationsHomeScreenEn {
+	TranslationsHomeScreenEn._(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// en: 'Hello'
+	String get greeting => 'Hello';
+
+	/// en: 'Quote of the Day'
+	String get quoteOfTheDay => 'Quote of the Day';
+
+	/// en: 'Share Quote'
+	String get shareQuote => 'Share Quote';
+
+	/// en: 'Copy Quote'
+	String get copyQuote => 'Copy Quote';
+
+	/// en: 'Quote copied to clipboard'
+	String get quoteCopied => 'Quote copied to clipboard';
+
+	/// en: 'Featured Stories'
+	String get featuredStories => 'Featured Stories';
+
+	/// en: 'Quick Actions'
+	String get quickActions => 'Quick Actions';
+
+	/// en: 'Generate Story'
+	String get generateStory => 'Generate Story';
+
+	/// en: 'Chat with Krishna'
+	String get chatWithKrishna => 'Chat with Krishna';
+
+	/// en: 'My Activity'
+	String get myActivity => 'My Activity';
+
+	/// en: 'Continue Reading'
+	String get continueReading => 'Continue Reading';
+
+	/// en: 'Saved Stories'
+	String get savedStories => 'Saved Stories';
+
+	/// en: 'See All'
+	String get seeAll => 'See All';
+
+	/// en: 'Start Reading'
+	String get startReading => 'Start Reading';
+
+	/// en: 'Explore stories to start your journey'
+	String get exploreStories => 'Explore stories to start your journey';
+
+	/// en: 'Bookmark stories you love'
+	String get saveForLater => 'Bookmark stories you love';
+
+	/// en: 'No activity yet'
+	String get noActivityYet => 'No activity yet';
+
+	/// en: '{{count}} min left'
+	String get minLeft => '{{count}} min left';
+
+	/// en: 'Activity History'
+	String get activityHistory => 'Activity History';
+
+	/// en: 'Generated a story'
+	String get storyGenerated => 'Generated a story';
+
+	/// en: 'Read a story'
+	String get storyRead => 'Read a story';
+
+	/// en: 'Bookmarked a story'
+	String get storyBookmarked => 'Bookmarked a story';
+
+	/// en: 'Shared a story'
+	String get storyShared => 'Shared a story';
+
+	/// en: 'Completed a story'
+	String get storyCompleted => 'Completed a story';
+
+	/// en: 'Today'
+	String get today => 'Today';
+
+	/// en: 'Yesterday'
+	String get yesterday => 'Yesterday';
+
+	/// en: 'This Week'
+	String get thisWeek => 'This Week';
+
+	/// en: 'Earlier'
+	String get earlier => 'Earlier';
+
+	/// en: 'Nothing to read yet'
+	String get noContinueReading => 'Nothing to read yet';
+
+	/// en: 'No saved stories yet'
+	String get noSavedStories => 'No saved stories yet';
+
+	/// en: 'Bookmark stories to save them'
+	String get bookmarkStoriesToSave => 'Bookmark stories to save them';
 }
 
 // Path: stories
@@ -1084,6 +1187,37 @@ extension on Translations {
 			'home.exploreStories' => 'Explore Stories',
 			'home.generateStory' => 'Generate Story',
 			'home.content' => 'Home Content',
+			'homeScreen.greeting' => 'Hello',
+			'homeScreen.quoteOfTheDay' => 'Quote of the Day',
+			'homeScreen.shareQuote' => 'Share Quote',
+			'homeScreen.copyQuote' => 'Copy Quote',
+			'homeScreen.quoteCopied' => 'Quote copied to clipboard',
+			'homeScreen.featuredStories' => 'Featured Stories',
+			'homeScreen.quickActions' => 'Quick Actions',
+			'homeScreen.generateStory' => 'Generate Story',
+			'homeScreen.chatWithKrishna' => 'Chat with Krishna',
+			'homeScreen.myActivity' => 'My Activity',
+			'homeScreen.continueReading' => 'Continue Reading',
+			'homeScreen.savedStories' => 'Saved Stories',
+			'homeScreen.seeAll' => 'See All',
+			'homeScreen.startReading' => 'Start Reading',
+			'homeScreen.exploreStories' => 'Explore stories to start your journey',
+			'homeScreen.saveForLater' => 'Bookmark stories you love',
+			'homeScreen.noActivityYet' => 'No activity yet',
+			'homeScreen.minLeft' => '{{count}} min left',
+			'homeScreen.activityHistory' => 'Activity History',
+			'homeScreen.storyGenerated' => 'Generated a story',
+			'homeScreen.storyRead' => 'Read a story',
+			'homeScreen.storyBookmarked' => 'Bookmarked a story',
+			'homeScreen.storyShared' => 'Shared a story',
+			'homeScreen.storyCompleted' => 'Completed a story',
+			'homeScreen.today' => 'Today',
+			'homeScreen.yesterday' => 'Yesterday',
+			'homeScreen.thisWeek' => 'This Week',
+			'homeScreen.earlier' => 'Earlier',
+			'homeScreen.noContinueReading' => 'Nothing to read yet',
+			'homeScreen.noSavedStories' => 'No saved stories yet',
+			'homeScreen.bookmarkStoriesToSave' => 'Bookmark stories to save them',
 			'stories.title' => 'Stories',
 			'stories.searchHint' => 'Search by title or author...',
 			'stories.sortBy' => 'Sort by',

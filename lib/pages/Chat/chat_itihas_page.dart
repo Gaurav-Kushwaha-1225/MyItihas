@@ -35,7 +35,7 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
 
   // Real conversation data
   List<Conversation> _conversations = [];
-  Map<String, Map<String, dynamic>> _userProfiles =
+  final Map<String, Map<String, dynamic>> _userProfiles =
       {}; // conversationId -> user profile
   bool _isLoading = true;
   String? _currentUserId;
@@ -554,7 +554,7 @@ class _ChatItihasPageState extends State<ChatItihasPage> {
                                           backgroundImage: NetworkImage(
                                             avatarUrl,
                                           ),
-                                          onBackgroundImageError: (_, __) {},
+                                          onBackgroundImageError: (_, _) {},
                                           backgroundColor: isDark
                                               ? DarkColors.glassBg
                                               : LightColors.glassBg,

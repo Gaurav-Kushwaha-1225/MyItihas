@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
-import 'package:myitihas/i18n/strings.g.dart';
 import 'package:myitihas/utils/constants.dart';
 import 'package:sizer/sizer.dart';
 

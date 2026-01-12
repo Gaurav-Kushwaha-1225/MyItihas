@@ -25,6 +25,7 @@ List<RouteBase> get $appRoutes => [
   $settingsRoute,
   $editProfileRoute,
   $socialFeedRoute,
+  $createPostRoute,
   $profileRoute,
   $followersRoute,
   $followingRoute,
@@ -32,6 +33,7 @@ List<RouteBase> get $appRoutes => [
   $chatListRoute,
   $mapRoute,
   $storyGeneratorRoute,
+  $activityHistoryRoute,
   $shaktiPeethaRoute,
 ];
 
@@ -571,6 +573,32 @@ mixin $SocialFeedRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
+RouteBase get $createPostRoute => GoRouteData.$route(
+  path: '/create-post',
+  factory: $CreatePostRoute._fromState,
+);
+
+mixin $CreatePostRoute on GoRouteData {
+  static CreatePostRoute _fromState(GoRouterState state) =>
+      const CreatePostRoute();
+
+  @override
+  String get location => GoRouteData.$location('/create-post');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
 RouteBase get $profileRoute => GoRouteData.$route(
   path: '/profile/:userId',
   factory: $ProfileRoute._fromState,
@@ -818,6 +846,32 @@ mixin $GeneratedStoryResultRoute on GoRouteData {
   @override
   void replace(BuildContext context) =>
       context.replace(location, extra: _self.$extra);
+}
+
+RouteBase get $activityHistoryRoute => GoRouteData.$route(
+  path: '/activity',
+  factory: $ActivityHistoryRoute._fromState,
+);
+
+mixin $ActivityHistoryRoute on GoRouteData {
+  static ActivityHistoryRoute _fromState(GoRouterState state) =>
+      const ActivityHistoryRoute();
+
+  @override
+  String get location => GoRouteData.$location('/activity');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
 }
 
 RouteBase get $shaktiPeethaRoute => GoRouteData.$route(

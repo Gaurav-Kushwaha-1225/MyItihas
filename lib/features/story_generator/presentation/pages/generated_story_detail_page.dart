@@ -1,12 +1,23 @@
+// ignore_for_file: unused_element, unused_field
+
+import 'dart:math' as math;
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/core/di/injection_container.dart';
+import 'package:myitihas/core/logging/talker_setup.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
-import 'package:myitihas/i18n/strings.g.dart';
+import 'package:myitihas/features/story_generator/domain/entities/generator_options.dart';
+import 'package:myitihas/features/story_generator/presentation/widgets/generating_overlay.dart';
+import 'package:myitihas/features/story_generator/presentation/bloc/story_detail_bloc.dart';
+import 'package:myitihas/features/story_generator/presentation/bloc/story_tts_cubit.dart';
+import 'package:myitihas/utils/functions.dart';
+import 'package:rich_readmore/rich_readmore.dart';
 import 'package:share_plus/share_plus.dart';
 
-/// Page for displaying a generated story with save and share options
 class GeneratedStoryDetailPage extends StatefulWidget {
   final Story story;
 
@@ -18,525 +29,1463 @@ class GeneratedStoryDetailPage extends StatefulWidget {
 }
 
 class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
-  bool _isSaved = false;
-  bool _showFullStory = false;
+  late final StoryDetailBloc _detailBloc;
+
+  late final StoryTtsCubit _ttsCubit;
+  String? selectedCharacter;
+  late final TextEditingController selectedCharacterController;
+
+  final List<Map<String, String>> languages = StoryLanguage.values.map((lang) {
+    return {
+      'name': "${lang.name[0].toUpperCase()}${lang.name.substring(1)}",
+      'code': lang.code,
+    };
+  }).toList();
+
+  @override
+  void initState() {
+    super.initState();
+    _detailBloc = getIt<StoryDetailBloc>()
+      ..add(StoryDetailStarted(widget.story));
+    selectedCharacterController = TextEditingController();
+
+    _ttsCubit = StoryTtsCubit();
+    _ttsCubit.initialize(language: 'en-US');
+    _ttsCubit.setText(_buildReadAloudText(widget.story), stopIfSpeaking: false);
+  }
+
+  Future<void> _toggleSpeech() => _ttsCubit.toggle();
+
+  @override
+  void dispose() {
+    selectedCharacterController.dispose();
+    _ttsCubit.close();
+    _detailBloc.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final t = Translations.of(context);
+    final screenSize = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // App bar with gradient
-          SliverAppBar(
-            expandedHeight: 200.h,
-            pinned: true,
-            stretch: true,
-            backgroundColor: colorScheme.surface,
-            leading: IconButton(
-              icon: Container(
-                padding: EdgeInsets.all(8.w),
-                decoration: BoxDecoration(
-                  color: colorScheme.surface.withValues(alpha: 0.9),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.arrow_back_rounded,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-              onPressed: () => context.pop(),
-            ),
-            actions: [
-              IconButton(
-                icon: Container(
-                  padding: EdgeInsets.all(8.w),
+    return BlocConsumer<StoryDetailBloc, StoryDetailState>(
+      bloc: _detailBloc,
+      listenWhen: (prev, curr) =>
+          prev.story?.story != curr.story?.story ||
+          prev.story?.title != curr.story?.title,
+      listener: (context, state) async {
+        final story = state.story;
+        if (story == null) return;
+
+        await _ttsCubit.setText(_buildReadAloudText(story));
+
+        if (state.errorMessage != null && context.mounted) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+        }
+      },
+      builder: (context, state) {
+        final story = state.story;
+
+        if (story == null) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Container(
                   decoration: BoxDecoration(
-                    color: colorScheme.surface.withValues(alpha: 0.9),
-                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Theme.of(context).primaryColor.withAlpha(5),
+                        isDark
+                            ? const Color(0xFF1E293B)
+                            : const Color(0xFFF1F5F9),
+                      ],
+                      transform: const GradientRotation(3.14 / 1.5),
+                    ),
                   ),
-                  child: Icon(
-                    Icons.share_rounded,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                onPressed: _shareStory,
-              ),
-            ],
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [colorScheme.primary, colorScheme.secondary],
-                  ),
-                ),
-                child: Stack(
-                  children: [
-                    // Pattern overlay
-                    Positioned.fill(
-                      child: Opacity(
-                        opacity: 0.1,
-                        child: Image.network(
-                          'https://www.transparenttextures.com/patterns/cubes.png',
-                          repeat: ImageRepeat.repeat,
-                          errorBuilder: (_, __, ___) => const SizedBox(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header
+                      Container(
+                        height: screenSize.height * 0.115,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withValues(alpha: 0.7),
+                              Colors.transparent,
+                            ],
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.arrow_back_ios_rounded),
+                              onPressed: () => context.pop(),
+                            ),
+                            const Spacer(),
+                            BlocBuilder<StoryTtsCubit, StoryTtsState>(
+                              bloc: _ttsCubit,
+                              builder: (context, ttsState) {
+                                return Tooltip(
+                                  message: ttsState.isSpeaking
+                                      ? 'Pause reading'
+                                      : 'Read aloud',
+                                  child: IconButton(
+                                    icon: Icon(
+                                      ttsState.isSpeaking
+                                          ? Icons.pause_circle_rounded
+                                          : Icons.play_circle_rounded,
+                                      size: 28,
+                                    ),
+                                    onPressed: () => _toggleSpeech(),
+                                  ),
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                story.isFavorite
+                                    ? Icons.bookmark
+                                    : Icons.bookmark_border,
+                              ),
+                              onPressed: () => _detailBloc.add(
+                                const StoryDetailToggleFavorite(),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.share),
+                              onPressed: () => _shareStory(story),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    // Content
-                    Positioned(
-                      bottom: 60.h,
-                      left: 20.w,
-                      right: 20.w,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+
+                      // Story image with overlay
+                      Stack(
                         children: [
                           Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 6.h,
-                            ),
+                            width: screenSize.width,
+                            height: screenSize.height * 0.4,
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(20.r),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.auto_awesome,
-                                  size: 14.sp,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(width: 6.w),
-                                Text(
-                                  'AI Generated',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.white.withOpacity(0.15),
+                                  blurRadius: 100,
+                                  spreadRadius: 0,
+                                  offset: const Offset(0, -6),
                                 ),
                               ],
                             ),
+                            child: _buildStoryImage(story, state),
                           ),
-                          SizedBox(height: 12.h),
-                          Text(
-                            widget.story.title,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24.sp,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                Shadow(color: Colors.black26, blurRadius: 4),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          // Story content
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.all(20.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Attributes chips
-                  Wrap(
-                    spacing: 8.w,
-                    runSpacing: 8.h,
-                    children: [
-                      _AttributeChip(
-                        icon: Icons.book_rounded,
-                        label: widget.story.scripture,
-                      ),
-                      _AttributeChip(
-                        icon: Icons.category_rounded,
-                        label: widget.story.attributes.storyType,
-                      ),
-                      _AttributeChip(
-                        icon: Icons.lightbulb_rounded,
-                        label: widget.story.attributes.theme,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 24.h),
-
-                  // Story section
-                  _SectionHeader(title: 'Story', icon: Icons.auto_stories),
-                  SizedBox(height: 12.h),
-                  AnimatedCrossFade(
-                    firstChild: Text(
-                      widget.story.story.length > 500
-                          ? '${widget.story.story.substring(0, 500)}...'
-                          : widget.story.story,
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        height: 1.7,
-                        color: colorScheme.onSurface.withValues(alpha: 0.85),
-                      ),
-                    ),
-                    secondChild: Text(
-                      widget.story.story,
-                      style: TextStyle(
-                        fontSize: 15.sp,
-                        height: 1.7,
-                        color: colorScheme.onSurface.withValues(alpha: 0.85),
-                      ),
-                    ),
-                    crossFadeState: _showFullStory
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    duration: const Duration(milliseconds: 300),
-                  ),
-                  if (widget.story.story.length > 500)
-                    TextButton(
-                      onPressed: () {
-                        setState(() => _showFullStory = !_showFullStory);
-                      },
-                      child: Text(
-                        _showFullStory
-                            ? t.stories.readLess
-                            : t.stories.readMore,
-                      ),
-                    ),
-                  SizedBox(height: 24.h),
-
-                  // Quote section
-                  if (widget.story.quotes.isNotEmpty) ...[
-                    _QuoteCard(quote: widget.story.quotes),
-                    SizedBox(height: 24.h),
-                  ],
-
-                  // Lesson section
-                  if (widget.story.lesson.isNotEmpty) ...[
-                    _SectionHeader(title: 'Lesson', icon: Icons.school_rounded),
-                    SizedBox(height: 12.h),
-                    Container(
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: colorScheme.tertiaryContainer.withValues(
-                          alpha: 0.3,
-                        ),
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Text(
-                        widget.story.lesson,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          height: 1.6,
-                          color: colorScheme.onTertiaryContainer,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 24.h),
-                  ],
-
-                  // Trivia section
-                  if (widget.story.trivia.isNotEmpty) ...[
-                    _SectionHeader(
-                      title: 'Did You Know?',
-                      icon: Icons.tips_and_updates_rounded,
-                    ),
-                    SizedBox(height: 12.h),
-                    Container(
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: colorScheme.secondaryContainer.withValues(
-                          alpha: 0.3,
-                        ),
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.lightbulb_outline_rounded,
-                            color: colorScheme.secondary,
-                            size: 20.sp,
-                          ),
-                          SizedBox(width: 12.w),
-                          Expanded(
-                            child: Text(
-                              widget.story.trivia,
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                height: 1.5,
-                                color: colorScheme.onSecondaryContainer,
+                          Container(
+                            width: screenSize.width,
+                            height: screenSize.height * 0.4,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [Colors.black, Colors.transparent],
                               ),
                             ),
                           ),
+                          Positioned(
+                            bottom: 0,
+                            child: _buildStoryMetadata(
+                              story,
+                              screenSize,
+                              theme,
+                              isDark,
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                    SizedBox(height: 24.h),
-                  ],
 
-                  // Activity section
-                  if (widget.story.activity.isNotEmpty) ...[
-                    _SectionHeader(
-                      title: 'Activity',
-                      icon: Icons.edit_note_rounded,
-                    ),
-                    SizedBox(height: 12.h),
-                    Container(
-                      padding: EdgeInsets.all(16.w),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primaryContainer.withValues(
-                          alpha: 0.3,
-                        ),
-                        borderRadius: BorderRadius.circular(12.r),
-                        border: Border.all(
-                          color: colorScheme.primary.withValues(alpha: 0.2),
-                        ),
+                      SizedBox(height: screenSize.height * 0.01),
+
+                      // Story content (Chapters)
+                      _buildStoryContent(state, screenSize, theme),
+
+                      // Bottom actions
+                      _buildBottomActionButtons(state, story, theme, isDark),
+
+                      SizedBox(height: screenSize.height * 0.02),
+
+                      // Language selector (BLoC)
+                      _buildLanguageSelector(state, theme, isDark),
+
+                      SizedBox(height: screenSize.height * 0.02),
+
+                      // Story Insights & Interactions
+                      _buildStoryInsightsSection(
+                        context,
+                        state,
+                        theme,
+                        isDark,
+                        screenSize,
                       ),
-                      child: Text(
-                        widget.story.activity,
-                        style: TextStyle(
-                          fontSize: 14.sp,
-                          height: 1.5,
-                          color: colorScheme.onPrimaryContainer,
-                        ),
-                      ),
+
+                      SizedBox(height: screenSize.height * 0.03),
+                    ],
+                  ),
+                ),
+              ),
+              if (state.isRegenerating)
+                const GeneratingOverlay(message: "Regenerating your story..."),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildStoryImage(Story story, StoryDetailState state) {
+    if (story.imageUrl != null) {
+      return Image.memory(
+        base64Decode(
+          story.imageUrl!.split(',').length > 1
+              ? story.imageUrl!.split(',')[1]
+              : story.imageUrl!,
+        ),
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) =>
+            Image.asset("assets/logo.png", fit: BoxFit.cover),
+      );
+    } else if (state.isGeneratingImage) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(color: Colors.white),
+            SizedBox(height: 16),
+            Text(
+              "Painting your story...",
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return Image.asset("assets/logo.png", fit: BoxFit.cover);
+  }
+
+  Widget _buildStoryMetadata(
+    Story story,
+    Size screenSize,
+    ThemeData theme,
+    bool isDark,
+  ) {
+    return Container(
+      width: screenSize.width,
+      height: screenSize.height * 0.3,
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              if (story.attributes.storyType.isNotEmpty)
+                Chip(
+                  label: Text(story.attributes.storyType),
+                  labelStyle: theme.textTheme.labelSmall,
+                  visualDensity: VisualDensity.compact,
+                ),
+              SizedBox(width: screenSize.width * 0.02),
+              if (story.attributes.theme.isNotEmpty)
+                Chip(
+                  label: Text(story.attributes.theme),
+                  labelStyle: theme.textTheme.labelSmall,
+                  visualDensity: VisualDensity.compact,
+                ),
+            ],
+          ),
+          Text(
+            story.title,
+            maxLines: 2,
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          SizedBox(height: screenSize.height * 0.005),
+          Text(
+            story.scripture,
+            maxLines: 1,
+            style: theme.textTheme.bodySmall?.copyWith(
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          SizedBox(height: screenSize.height * 0.005),
+          Row(
+            children: [
+              Text(
+                "By ${story.authorUser?.displayName ?? story.author ?? 'MyItihas AI'}",
+                style: theme.textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStoryContent(
+    StoryDetailState state,
+    Size screenSize,
+    ThemeData theme,
+  ) {
+    final story = state.story!;
+    final chaptersToShow = state.chapters.take(state.visibleChapters).toList();
+
+    return Column(
+      children: [
+        // Chapters list
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (int i = 0; i < chaptersToShow.length; i++) ...[
+                _buildChapterCard(
+                  chapter: chaptersToShow[i],
+                  theme: theme,
+                  isLastVisible: i == chaptersToShow.length - 1,
+                  canReadMore: true,
+                  numberOfChapters: chaptersToShow.length,
+                ),
+                SizedBox(height: screenSize.height * 0.02),
+              ],
+            ],
+          ),
+        ),
+
+        // Trivia section
+        if (story.trivia.isNotEmpty) ...[
+          SizedBox(height: screenSize.height * 0.02),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Trivia\n',
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: theme.textTheme.bodyLarge!.fontSize! * 2,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
                     ),
-                  ],
-                  SizedBox(height: 100.h),
+                  ),
+                  TextSpan(
+                    text: story.trivia,
+                    style: theme.textTheme.bodyMedium,
+                  ),
                 ],
+              ),
+              textAlign: TextAlign.justify,
+            ),
+          ),
+        ],
+
+        // Lesson section
+        if (story.lesson.isNotEmpty) ...[
+          SizedBox(height: screenSize.height * 0.02),
+          Container(
+            width: screenSize.width,
+            margin: const EdgeInsets.symmetric(horizontal: 10),
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Moral\n',
+                    style: theme.textTheme.bodyMedium!.copyWith(
+                      fontSize: theme.textTheme.bodyLarge!.fontSize! * 2,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  TextSpan(
+                    text: story.lesson,
+                    style: theme.textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.justify,
+            ),
+          ),
+        ],
+
+        if (story.attributes.references.isNotEmpty) ...[
+          SizedBox(height: screenSize.height * 0.01),
+          const Divider(),
+          SizedBox(height: screenSize.height * 0.01),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: story.attributes.references[0],
+                    style: theme.textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+
+        SizedBox(height: screenSize.height * 0.02),
+      ],
+    );
+  }
+
+  Widget _buildChapterCard({
+    required StoryChapter chapter,
+    required ThemeData theme,
+    required bool isLastVisible,
+    required bool canReadMore,
+    required int numberOfChapters,
+  }) {
+    final screenSize = MediaQuery.of(context).size;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (numberOfChapters > 1)
+          Text(
+            chapter.title,
+            style: theme.textTheme.bodyMedium!.copyWith(
+              fontSize: theme.textTheme.bodyLarge!.fontSize! * 2,
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        SizedBox(height: screenSize.height * 0.01),
+        if (numberOfChapters == 1)
+          RichReadMoreText(
+            TextSpan(
+              text: chapter.content[0],
+              style: theme.textTheme.bodyMedium!.copyWith(
+                fontSize: theme.textTheme.bodyLarge!.fontSize! * 2,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
+              ),
+              children: [
+                TextSpan(
+                  text: chapter.content.substring(1),
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ],
+            ),
+            settings: LineModeSettings(
+              trimLines: 14,
+              trimCollapsedText: "read more",
+              trimExpandedText: "read less",
+              textAlign: TextAlign.justify,
+              moreStyle: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+              lessStyle: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        if (numberOfChapters != 1)
+          RichReadMoreText(
+            TextSpan(
+              text: chapter.content
+                  .replaceAll(RegExp(r'---[^-]*---  \n\n'), '')
+                  .replaceAll(RegExp(r'  \n\n---'), ''),
+              style: theme.textTheme.bodyMedium,
+            ),
+            settings: LineModeSettings(
+              trimLines: 14,
+              trimCollapsedText: "read more",
+              trimExpandedText: "read less",
+              textAlign: TextAlign.justify,
+              moreStyle: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+              lessStyle: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildLanguageSelector(
+    StoryDetailState state,
+    ThemeData theme,
+    bool isDark,
+  ) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: isDark
+            ? const Color(0xFF1E293B).withOpacity(0.5)
+            : Colors.white.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.1)
+              : Colors.black.withOpacity(0.05),
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.translate, size: 18, color: theme.colorScheme.primary),
+              const SizedBox(width: 12),
+              Text(
+                'Translation',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          DropdownButton<String>(
+            value: state.selectedLanguage,
+            icon: Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: theme.colorScheme.primary,
+            ),
+            underline: const SizedBox(),
+            borderRadius: BorderRadius.circular(15),
+            dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+            items: languages.map((lang) {
+              return DropdownMenuItem<String>(
+                value: lang['name'],
+                child: Text(lang['name']!, style: theme.textTheme.bodyMedium),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                _detailBloc.add(StoryDetailLanguageChanged(newValue));
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStoryInsightsSection(
+    BuildContext context,
+    StoryDetailState state,
+    ThemeData theme,
+    bool isDark,
+    Size screenSize,
+  ) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'Story Insights & Interactions',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: screenSize.height * 0.02),
+          _buildInsightCard(
+            theme: theme,
+            isDark: isDark,
+            icon: Icons.zoom_out_map_rounded,
+            title: 'Expand Story',
+            description:
+                'Continue the narrative with the next chapter of your tale',
+            buttonText: state.isExpanding ? 'Continuing...' : 'Continue Story',
+            onTap: state.isExpanding
+                ? null
+                : () => _detailBloc.add(const StoryDetailReadMorePressed()),
+            screenSize: screenSize,
+          ),
+          SizedBox(height: screenSize.height * 0.02),
+          _buildCharacterDetailsCard(
+            state: state,
+            theme: theme,
+            isDark: isDark,
+            screenSize: screenSize,
+            context: context,
+          ),
+          SizedBox(height: screenSize.height * 0.02),
+          _buildInsightCard(
+            theme: theme,
+            isDark: isDark,
+            icon: Icons.forum_rounded,
+            title: 'Discuss Story',
+            description: 'Chat about themes, meanings, and interpretations',
+            buttonText: 'Start Discussion',
+            onTap: null,
+            screenSize: screenSize,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInsightCard({
+    required ThemeData theme,
+    required bool isDark,
+    required IconData icon,
+    required String title,
+    required String description,
+    required String buttonText,
+    required VoidCallback? onTap,
+    required Size screenSize,
+    bool showDropdown = false,
+  }) {
+    final story = _detailBloc.state.story;
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B).withOpacity(0.3) : Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.05)
+              : Colors.black.withOpacity(0.05),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 32, color: const Color(0xFFA78BFA)),
+          SizedBox(height: screenSize.height * 0.01),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: screenSize.height * 0.005),
+          Text(
+            description,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.secondaryHeaderColor,
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: screenSize.height * 0.01),
+          if (showDropdown && story != null) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: isDark ? Colors.black26 : Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isDark
+                      ? Colors.white.withOpacity(0.1)
+                      : Colors.black.withOpacity(0.1),
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  hint: Text(
+                    'Select character',
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  iconSize: 18,
+                  value: null,
+                  items: story.attributes.characters.map((char) {
+                    return DropdownMenuItem<String>(
+                      value: char,
+                      child: Text(char, style: theme.textTheme.bodySmall),
+                    );
+                  }).toList(),
+                  onChanged: (_) {},
+                ),
+              ),
+            ),
+            SizedBox(height: screenSize.height * 0.01),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 0),
+              height: screenSize.height * 0.05,
+              decoration: BoxDecoration(
+                color: isDark ? Colors.black26 : Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(
+                  color: isDark
+                      ? Colors.white.withOpacity(0.1)
+                      : Colors.black.withOpacity(0.1),
+                ),
+              ),
+              alignment: Alignment.center,
+              child: TextField(
+                decoration: InputDecoration(
+                  fillColor: Colors.transparent,
+                  hintText: 'Or enter character',
+                  hintStyle: theme.textTheme.bodySmall?.copyWith(fontSize: 10),
+                  border: InputBorder.none,
+                  isDense: true,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                ),
+                style: theme.textTheme.bodySmall,
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF00B4DB), Color(0xFF9055FF)],
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ElevatedButton(
+              onPressed: onTap,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 8),
+              ),
+              child: Text(
+                buttonText,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
         ],
       ),
-      bottomSheet: _BottomActions(
-        isSaved: _isSaved,
-        onSave: _saveStory,
-        onGenerateAnother: () => context.pop(),
-      ),
     );
   }
 
-  void _saveStory() {
-    HapticFeedback.mediumImpact();
-    setState(() => _isSaved = true);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Icon(Icons.check_circle_rounded, color: Colors.white),
-            SizedBox(width: 12.w),
-            Text('Story saved to your library'),
-          ],
+  Widget _buildCharacterDetailsCard({
+    required BuildContext context,
+    required StoryDetailState state,
+    required ThemeData theme,
+    required bool isDark,
+    required Size screenSize,
+  }) {
+    final story = state.story;
+    final characters = story?.attributes.characters ?? const <String>[];
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B).withOpacity(0.3) : Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.05)
+              : Colors.black.withOpacity(0.05),
         ),
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: Theme.of(context).colorScheme.primary,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.person_pin_rounded,
+            size: 32,
+            color: Color(0xFFA78BFA),
+          ),
+          SizedBox(height: screenSize.height * 0.005),
+          Text(
+            'Character Details',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: screenSize.height * 0.01),
+          Text(
+            'Explore the personalities and roles of story characters',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: theme.secondaryHeaderColor,
+            ),
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: screenSize.height * 0.01),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: isDark ? Colors.black26 : Colors.grey[100],
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withOpacity(0.1)
+                    : Colors.black.withOpacity(0.1),
+              ),
+            ),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<String>(
+                isExpanded: true,
+                hint: Text(
+                  'Select character',
+                  style: theme.textTheme.bodySmall,
+                ),
+                iconSize: 18,
+                value: selectedCharacter,
+                items: characters.map((char) {
+                  return DropdownMenuItem<String>(
+                    value: char,
+                    child: Text(char, style: theme.textTheme.bodySmall),
+                  );
+                }).toList(),
+                onChanged: (char) {
+                  setState(() {
+                    selectedCharacter = char;
+                    selectedCharacterController.text = char ?? '';
+                  });
+                },
+              ),
+            ),
+          ),
+          SizedBox(height: screenSize.height * 0.01),
+          Container(
+            height: screenSize.height * 0.06,
+            decoration: BoxDecoration(
+              color: isDark ? Colors.black26 : Colors.grey[100],
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withOpacity(0.1)
+                    : Colors.black.withOpacity(0.1),
+              ),
+            ),
+            alignment: Alignment.center,
+            child: TextField(
+              controller: selectedCharacterController,
+              decoration: InputDecoration(
+                fillColor: Colors.transparent,
+                hintText: 'Or enter character',
+                hintStyle: theme.textTheme.bodySmall,
+                border: InputBorder.none,
+                isDense: true,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                focusColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+              ),
+              autofocus: false,
+              style: theme.textTheme.bodySmall,
+              textAlign: TextAlign.left,
+              textAlignVertical: TextAlignVertical.center,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF00B4DB), Color(0xFF9055FF)],
+              ),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: ElevatedButton(
+              onPressed: () => _openCharacterDetailsBottomSheet(
+                context,
+                characterName:
+                    selectedCharacter ?? selectedCharacterController.text,
+                theme: theme,
+                isDark: isDark,
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                padding: const EdgeInsets.symmetric(vertical: 8),
+              ),
+              child: Text(
+                'Get Character Details',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
-
-    // TODO: Implement actual save to local storage
   }
 
-  void _shareStory() {
+  Future<void> _openCharacterDetailsBottomSheet(
+    BuildContext context, {
+    required String characterName,
+    required ThemeData theme,
+    required bool isDark,
+  }) async {
+    HapticFeedback.lightImpact();
+    _detailBloc.add(StoryDetailCharacterDetailsRequested(characterName));
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return BlocProvider.value(
+          value: _detailBloc,
+          child: _CharacterDetailsBottomSheet(isDark: isDark, theme: theme),
+        );
+      },
+    );
+
+    if (mounted) {
+      _detailBloc.add(const StoryDetailCharacterDetailsClosed());
+    }
+  }
+
+  Widget _buildBottomActionButtons(
+    StoryDetailState state,
+    Story story,
+    ThemeData theme,
+    bool isDark,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildActionButton(
+            Icons.refresh_rounded,
+            () => _detailBloc.add(const StoryDetailRegenerateRequested()),
+            isDark,
+            isSelected: state.isRegenerating,
+          ),
+          _buildActionButton(
+            Icons.download_rounded,
+            () async {
+              if (state.isDownloading) return;
+
+              _detailBloc.add(const StoryDetailDownloadStatusChanged(true));
+
+              final completeStory =
+                  '''
+${story.title}
+
+${story.story}
+
+---
+${story.quotes}
+
+Generated with MyItihas - Discover Indian Mythology
+                ''';
+
+              await downloadTextFile(
+                textContent: completeStory,
+                fileName: story.title,
+                onStatusChange: (message, color) {
+                  talker.info(message);
+                  _detailBloc.add(
+                    const StoryDetailDownloadStatusChanged(false),
+                  );
+                },
+              );
+            },
+            isDark,
+            isSelected: state.isDownloading,
+          ),
+          _buildActionButton(Icons.content_copy_rounded, () {
+            final completeStory =
+                '''
+${story.title}
+
+${story.story}
+
+---
+${story.quotes}
+
+Generated with MyItihas - Discover Indian Mythology
+                ''';
+            Clipboard.setData(ClipboardData(text: completeStory));
+          }, isDark),
+          _buildActionButton(Icons.publish_rounded, () {}, isDark),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+    IconData icon,
+    VoidCallback onTap,
+    bool isDark, {
+    bool isSelected = false,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? (isDark
+                    ? Colors.white.withOpacity(0.15)
+                    : Colors.black.withOpacity(0.1))
+              : Colors.transparent,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: isDark
+                ? Colors.white.withOpacity(0.1)
+                : Colors.black.withOpacity(0.05),
+          ),
+        ),
+        child: Icon(
+          icon,
+          size: 20,
+          color: isDark ? Colors.white : Colors.black87,
+        ),
+      ),
+    );
+  }
+
+  void _shareStory(Story story) {
     HapticFeedback.lightImpact();
     final shareText =
         '''
-${widget.story.title}
+${story.title}
 
-${widget.story.story}
+${story.story}
 
 ---
-${widget.story.quotes}
+${story.quotes}
 
 Generated with MyItihas - Discover Indian Mythology
 ''';
 
-    Share.share(shareText, subject: widget.story.title);
+    Share.share(shareText, subject: story.title);
   }
 }
 
-class _AttributeChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
+class _CharacterDetailsBottomSheet extends StatelessWidget {
+  final bool isDark;
+  final ThemeData theme;
 
-  const _AttributeChip({required this.icon, required this.label});
+  const _CharacterDetailsBottomSheet({
+    required this.isDark,
+    required this.theme,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final bg = isDark ? const Color(0xFF0B1220) : Colors.white;
+    final Size screenSize = MediaQuery.of(context).size;
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
-        borderRadius: BorderRadius.circular(20.r),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 14.sp, color: colorScheme.primary),
-          SizedBox(width: 6.w),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12.sp,
-              color: colorScheme.onSurfaceVariant,
+    return DraggableScrollableSheet(
+      initialChildSize: 0.78,
+      minChildSize: 0.4,
+      maxChildSize: 0.92,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withOpacity(0.08)
+                  : Colors.black.withOpacity(0.08),
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.35),
+                blurRadius: 25,
+                offset: const Offset(0, -6),
+              ),
+            ],
           ),
-        ],
-      ),
+          child: BlocBuilder<StoryDetailBloc, StoryDetailState>(
+            builder: (context, state) {
+              final details = state.selectedCharacterDetails;
+              final title =
+                  (details?['name'] ??
+                          state.selectedCharacterName ??
+                          'Character')
+                      .toString();
+          
+              return Column(
+                children: [
+                  SizedBox(height: screenSize.height * 0.015),
+                  Container(
+                    width: 42,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: isDark
+                          ? Colors.white.withOpacity(0.2)
+                          : Colors.black.withOpacity(0.15),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  SizedBox(height: screenSize.height * 0.015),
+                  Text(
+                    "$title's Character Details",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      color: const Color(0xFF00B4DB),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: screenSize.height * 0.02),
+          
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      child: _buildBody(
+                        context,
+                        state,
+                        details,
+                        scrollController,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        );
+      },
     );
   }
-}
 
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final IconData icon;
+  Widget _buildBody(
+    BuildContext context,
+    StoryDetailState state,
+    Map<String, dynamic>? details,
+    ScrollController scrollController,
+  ) {
+    final Size screenSize = MediaQuery.of(context).size;
+    if (state.isFetchingCharacter) {
+      return Center(
+        child: Column(
+          children:  [
+            Center(child: CircularProgressIndicator()),
+            SizedBox(height: screenSize.height * 0.1),
+            Center(child: Text('Loading character details...')),
+          ],
+        ),
+      );
+    }
 
-  const _SectionHeader({required this.title, required this.icon});
+    if ((details == null) || (details.length == 2)) {
+      return Center(
+        child: Column(
+          children: [
+            Text(
+              state.errorMessage ?? 'Select a character to view details.',
+              style: theme.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final appearance = (details['appearance'] ?? '').toString();
+    final role = (details['role'] ?? '').toString();
+    final scripture = (details['scripture_background'] ?? '').toString();
 
-    return Row(
+    final traits =
+        (details['personality_traits'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        const <String>[];
+    final actions =
+        (details['key_actions'] as List?)?.map((e) => e.toString()).toList() ??
+        const <String>[];
+    final divine =
+        (details['divine_attributes'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        const <String>[];
+    final relationships =
+        (details['relationships'] as List?)
+            ?.map((e) => e.toString())
+            .toList() ??
+        const <String>[];
+
+    return ListView(
+      controller: scrollController,
       children: [
-        Icon(icon, size: 20.sp, color: colorScheme.primary),
-        SizedBox(width: 8.w),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 18.sp,
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
+        if (appearance.isNotEmpty) _InfoCard(
+          isDark: isDark,
+          theme: theme,
+          icon: Icons.remove_red_eye_outlined,
+          title: 'Appearance',
+          child: Text(
+            appearance,
+            style: theme.textTheme.bodyMedium,
           ),
         ),
+        SizedBox(height: screenSize.height * 0.01),
+        if (traits.isNotEmpty)
+          _ListCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.favorite_rounded,
+            title: 'Personality Traits',
+            items: traits,
+          ),
+        if (traits.isNotEmpty) SizedBox(height: screenSize.height * 0.01),
+        if (actions.isNotEmpty)
+          _ListCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.star_rounded,
+            title: 'Key Actions in the Story',
+            items: actions,
+          ),
+        if (actions.isNotEmpty) SizedBox(height: screenSize.height * 0.01),
+        if (role.isNotEmpty)
+          _InfoCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.theater_comedy_rounded,
+            title: 'Role in the Narrative',
+            child: Text(role, style: theme.textTheme.bodyMedium),
+          ),
+        if (role.isNotEmpty) SizedBox(height: screenSize.height * 0.01),
+        if (scripture.isNotEmpty)
+          _InfoCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.menu_book_rounded,
+            title: 'Scripture Background',
+            child: Text(scripture, style: theme.textTheme.bodyMedium),
+          ),
+        if (scripture.isNotEmpty) SizedBox(height: screenSize.height * 0.01),
+        if (divine.isNotEmpty)
+          _ListCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.auto_awesome_rounded,
+            title: 'Divine Attributes',
+            items: divine,
+          ),
+        if (divine.isNotEmpty) SizedBox(height: screenSize.height * 0.01),
+        if (relationships.isNotEmpty)
+          _ListCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.link_rounded,
+            title: 'Relationships',
+            items: relationships,
+          ),
+        SizedBox(height: screenSize.height * 0.02),
       ],
     );
   }
 }
 
-class _QuoteCard extends StatelessWidget {
-  final String quote;
+class _InfoCard extends StatelessWidget {
+  final bool isDark;
+  final ThemeData theme;
+  final IconData icon;
+  final String title;
+  final Widget child;
 
-  const _QuoteCard({required this.quote});
+  const _InfoCard({
+    required this.isDark,
+    required this.theme,
+    required this.icon,
+    required this.title,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
+    final Size screenSize = MediaQuery.of(context).size;
     return Container(
-      padding: EdgeInsets.all(20.w),
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            colorScheme.primaryContainer.withValues(alpha: 0.5),
-            colorScheme.secondaryContainer.withValues(alpha: 0.5),
-          ],
+        color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: isDark
+              ? Colors.white.withOpacity(0.08)
+              : Colors.black.withOpacity(0.08),
         ),
-        borderRadius: BorderRadius.circular(16.r),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.format_quote_rounded,
-            size: 32.sp,
-            color: colorScheme.primary.withValues(alpha: 0.5),
+          Row(
+            children: [
+              Icon(icon, color: const Color(0xFF00B4DB)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  title,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    color: const Color(0xFF00B4DB),
+                  ),
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 12.h),
-          Text(
-            quote,
-            style: TextStyle(
-              fontSize: 15.sp,
-              fontStyle: FontStyle.italic,
-              height: 1.6,
-              color: colorScheme.onSurface,
-            ),
-            textAlign: TextAlign.center,
-          ),
+          SizedBox(height: screenSize.height * 0.01),
+          child,
         ],
       ),
     );
   }
 }
 
-class _BottomActions extends StatelessWidget {
-  final bool isSaved;
-  final VoidCallback onSave;
-  final VoidCallback onGenerateAnother;
+class _ListCard extends StatelessWidget {
+  final bool isDark;
+  final ThemeData theme;
+  final IconData icon;
+  final String title;
+  final List<String> items;
 
-  const _BottomActions({
-    required this.isSaved,
-    required this.onSave,
-    required this.onGenerateAnother,
+  const _ListCard({
+    required this.isDark,
+    required this.theme,
+    required this.icon,
+    required this.title,
+    required this.items,
   });
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final t = Translations.of(context);
-
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-        16.w,
-        12.h,
-        16.w,
-        12.h + MediaQuery.of(context).padding.bottom,
-      ),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Row(
+    return _InfoCard(
+      isDark: isDark,
+      theme: theme,
+      icon: icon,
+      title: title,
+      child: Column(
         children: [
-          Expanded(
-            child: OutlinedButton.icon(
-              onPressed: isSaved ? null : onSave,
-              icon: Icon(
-                isSaved ? Icons.check_rounded : Icons.bookmark_add_outlined,
-              ),
-              label: Text(isSaved ? 'Saved' : t.storyGenerator.saveStory),
-              style: OutlinedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: FilledButton.icon(
-              onPressed: onGenerateAnother,
-              icon: Icon(Icons.add_rounded),
-              label: Text('New Story'),
-              style: FilledButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 14.h),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
+          for (final item in items)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.chevron_right_rounded,
+                    color: isDark ? Colors.white70 : Colors.black54,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(item, style: theme.textTheme.bodyMedium),
+                  ),
+                ],
               ),
             ),
-          ),
         ],
       ),
     );
   }
+}
+
+int estimateReadingTimeMinutes(String text, {int wordsPerMinute = 150}) {
+  if (text.trim().isEmpty || wordsPerMinute <= 0) {
+    return 0;
+  }
+
+  final words = text.trim().split(RegExp(r'\s+'));
+  final wordCount = words.length;
+
+  return (wordCount / wordsPerMinute).ceil();
+}
+
+String _buildReadAloudText(Story s) {
+  final title = s.title.trim();
+  final story = s.story.trim();
+  final moral = (s.lesson).trim();
+
+  final parts = <String>[
+    if (title.isNotEmpty) title,
+    if (story.isNotEmpty) story,
+    if (moral.isNotEmpty) moral,
+  ];
+
+  return parts.join('\n\n');
+}
+
+int _skipWhitespace(String text, int pos) {
+  while (pos < text.length && RegExp(r'\s').hasMatch(text[pos])) {
+    pos++;
+  }
+  return pos;
+}
+
+String _nextTtsChunk(String text, int start, int maxLen) {
+  final remaining = text.length - start;
+  final take = math.min(maxLen, remaining);
+
+  var end = start + take;
+  if (end >= text.length) return text.substring(start);
+
+  final window = text.substring(start, end);
+
+  int cut = window.lastIndexOf('\n');
+  if (cut < 0) {
+    final matches = RegExp(r'[.!?]\s').allMatches(window).toList();
+    if (matches.isNotEmpty) {
+      cut = matches.last.start + 1;
+    }
+  }
+  if (cut < 0) cut = window.lastIndexOf(' ');
+
+  if (cut > 200) {
+    end = start + cut + 1;
+  }
+
+  return text.substring(start, end);
 }

@@ -207,15 +207,30 @@ class _NotificationTile extends StatelessWidget {
 
     switch (notification.type) {
       case notif.NotificationType.storyLike:
-        return t.notification.likedYourStory.replaceAll('{{actorName}}', actorName);
+        return t.notification.likedYourStory.replaceAll(
+          '{{actorName}}',
+          actorName,
+        );
       case notif.NotificationType.storyComment:
-        return t.notification.commentedOnYourStory.replaceAll('{{actorName}}', actorName);
+        return t.notification.commentedOnYourStory.replaceAll(
+          '{{actorName}}',
+          actorName,
+        );
       case notif.NotificationType.commentReply:
-        return t.notification.repliedToYourComment.replaceAll('{{actorName}}', actorName);
+        return t.notification.repliedToYourComment.replaceAll(
+          '{{actorName}}',
+          actorName,
+        );
       case notif.NotificationType.follow:
-        return t.notification.startedFollowingYou.replaceAll('{{actorName}}', actorName);
+        return t.notification.startedFollowingYou.replaceAll(
+          '{{actorName}}',
+          actorName,
+        );
       case notif.NotificationType.directMessage:
-        return t.notification.sentYouAMessage.replaceAll('{{actorName}}', actorName);
+        return t.notification.sentYouAMessage.replaceAll(
+          '{{actorName}}',
+          actorName,
+        );
     }
   }
 }
