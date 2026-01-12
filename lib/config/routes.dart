@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/pages/Chat/Widget/chatbot.dart';
 import 'package:myitihas/pages/Map/Widget/shaktipeetha_detail_page.dart';
 
 import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
+import 'package:myitihas/pages/home_content_page.dart';
 import 'package:myitihas/pages/home_page.dart';
 import 'package:myitihas/pages/discover_page.dart';
 import 'package:myitihas/pages/splash.dart';
@@ -500,5 +502,15 @@ class ShaktiPeethaRoute extends GoRouteData with $ShaktiPeethaRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const ShaktiPeethaDetailPage();
+  }
+}
+
+@TypedGoRoute<ChatbotRoute>(path: '/chatbot')
+class ChatbotRoute extends GoRouteData with $ChatbotRoute {
+  const ChatbotRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const ChatPage();
   }
 }

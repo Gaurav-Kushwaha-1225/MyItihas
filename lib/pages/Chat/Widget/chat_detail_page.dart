@@ -494,7 +494,7 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
     return Container(
       key: ValueKey("NormalHeader"),
       decoration: BoxDecoration(
-        color: isDark ? DarkColors.glassBg : Colors.white,
+        color: isDark ? Colors.blue.shade400.withAlpha(35) : Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
@@ -629,7 +629,9 @@ class _ChatDetailPageState extends State<ChatDetailPage> {
   // ... (Selection Header and Status Icon helpers remain the same)
   Widget _buildSelectionHeader(bool isDark) {
     Color iconColor = isDark ? Colors.white : Colors.black87;
-    Color selectionBg = isDark ? DarkColors.glassBg : Colors.grey.shade100;
+    Color selectionBg = isDark
+        ? Colors.blue.shade400.withAlpha(35)
+        : Colors.grey.shade100;
     return Container(
       key: ValueKey("SelectionHeader"),
       color: selectionBg,

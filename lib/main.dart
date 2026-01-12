@@ -16,7 +16,7 @@ import 'package:myitihas/services/realtime_service.dart';
 import 'package:myitihas/utils/theme.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sizer/sizer.dart'; // Import sizer
+import 'package:sizer/sizer.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
