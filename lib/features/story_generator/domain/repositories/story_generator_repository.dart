@@ -1,6 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:myitihas/core/errors/failures.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
+import 'package:myitihas/features/story_generator/domain/entities/story_chat_message.dart';
 import '../entities/story_prompt.dart';
 import '../entities/generator_options.dart';
 
@@ -45,5 +46,16 @@ abstract class StoryGeneratorRepository {
     required String characterName,
     required int currentChapter,
     required String storyLanguage,
+  });
+
+  Future<Either<Failure, StoryChatConversation>> getOrCreateStoryChat({
+    required Story story,
+  });
+
+  Future<Either<Failure, StoryChatConversation>> sendStoryChatMessage({
+    required Story story,
+    required StoryChatConversation conversation,
+    required String message,
+    required String language, // ISO code like "en" or "hi"
   });
 }

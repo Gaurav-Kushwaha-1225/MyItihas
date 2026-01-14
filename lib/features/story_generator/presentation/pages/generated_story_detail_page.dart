@@ -660,7 +660,11 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             title: 'Discuss Story',
             description: 'Chat about themes, meanings, and interpretations',
             buttonText: 'Start Discussion',
-            onTap: null,
+            onTap: () => _openDiscussStoryBottomSheet(
+              context,
+              theme: theme,
+              isDark: isDark,
+            ),
             screenSize: screenSize,
           ),
         ],
@@ -936,13 +940,17 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
               borderRadius: BorderRadius.circular(12),
             ),
             child: ElevatedButton(
-              onPressed: () => _openCharacterDetailsBottomSheet(
-                context,
-                characterName:
-                    selectedCharacter ?? selectedCharacterController.text,
-                theme: theme,
-                isDark: isDark,
-              ),
+              onPressed:
+                  (selectedCharacter != null ||
+                      selectedCharacterController.text.isNotEmpty)
+                  ? () => _openCharacterDetailsBottomSheet(
+                      context,
+                      characterName:
+                          selectedCharacter ?? selectedCharacterController.text,
+                      theme: theme,
+                      isDark: isDark,
+                    )
+                  : () => {},
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.transparent,
                 shadowColor: Colors.transparent,
@@ -988,6 +996,31 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
 
     if (mounted) {
       _detailBloc.add(const StoryDetailCharacterDetailsClosed());
+    }
+  }
+
+  Future<void> _openDiscussStoryBottomSheet(
+    BuildContext context, {
+    required ThemeData theme,
+    required bool isDark,
+  }) async {
+    HapticFeedback.lightImpact();
+    _detailBloc.add(const StoryDetailChatOpened());
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) {
+        return BlocProvider.value(
+          value: _detailBloc,
+          child: _DiscussStoryBottomSheet(isDark: isDark, theme: theme),
+        );
+      },
+    );
+
+    if (mounted) {
+      _detailBloc.add(const StoryDetailChatClosed());
     }
   }
 
@@ -1156,7 +1189,7 @@ class _CharacterDetailsBottomSheet extends StatelessWidget {
                           state.selectedCharacterName ??
                           'Character')
                       .toString();
-          
+
               return Column(
                 children: [
                   SizedBox(height: screenSize.height * 0.015),
@@ -1182,7 +1215,7 @@ class _CharacterDetailsBottomSheet extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: screenSize.height * 0.02),
-          
+
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -1213,9 +1246,10 @@ class _CharacterDetailsBottomSheet extends StatelessWidget {
     if (state.isFetchingCharacter) {
       return Center(
         child: Column(
-          children:  [
+          children: [
+            SizedBox(height: screenSize.height * 0.2),
             Center(child: CircularProgressIndicator()),
-            SizedBox(height: screenSize.height * 0.1),
+            SizedBox(height: screenSize.height * 0.05),
             Center(child: Text('Loading character details...')),
           ],
         ),
@@ -1262,16 +1296,14 @@ class _CharacterDetailsBottomSheet extends StatelessWidget {
     return ListView(
       controller: scrollController,
       children: [
-        if (appearance.isNotEmpty) _InfoCard(
-          isDark: isDark,
-          theme: theme,
-          icon: Icons.remove_red_eye_outlined,
-          title: 'Appearance',
-          child: Text(
-            appearance,
-            style: theme.textTheme.bodyMedium,
+        if (appearance.isNotEmpty)
+          _InfoCard(
+            isDark: isDark,
+            theme: theme,
+            icon: Icons.remove_red_eye_outlined,
+            title: 'Appearance',
+            child: Text(appearance, style: theme.textTheme.bodyMedium),
           ),
-        ),
         SizedBox(height: screenSize.height * 0.01),
         if (traits.isNotEmpty)
           _ListCard(
@@ -1328,6 +1360,385 @@ class _CharacterDetailsBottomSheet extends StatelessWidget {
           ),
         SizedBox(height: screenSize.height * 0.02),
       ],
+    );
+  }
+}
+
+class _DiscussStoryBottomSheet extends StatefulWidget {
+  final bool isDark;
+  final ThemeData theme;
+
+  const _DiscussStoryBottomSheet({required this.isDark, required this.theme});
+
+  @override
+  State<_DiscussStoryBottomSheet> createState() =>
+      _DiscussStoryBottomSheetState();
+}
+
+class _DiscussStoryBottomSheetState extends State<_DiscussStoryBottomSheet> {
+  final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  void _send(BuildContext context) {
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
+
+    context.read<StoryDetailBloc>().add(StoryDetailChatMessageSubmitted(text));
+    _controller.clear();
+    _focusNode.requestFocus();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final Color bg = widget.isDark ? const Color(0xFF0B1220) : Colors.white;
+    final Size screenSize = MediaQuery.of(context).size;
+    return DraggableScrollableSheet(
+      initialChildSize: 0.78,
+      minChildSize: 0.4,
+      maxChildSize: 0.92,
+      builder: (context, scrollController) {
+        return Container(
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+            border: Border.all(
+              color: widget.isDark
+                  ? Colors.white.withOpacity(0.08)
+                  : Colors.black.withOpacity(0.08),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.35),
+                blurRadius: 25,
+                offset: const Offset(0, -6),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+            child: BlocBuilder<StoryDetailBloc, StoryDetailState>(
+              builder: (context, state) {
+                final conv = state.chatConversation;
+                final messages = conv?.messages ?? const [];
+
+                return Column(
+                  children: [
+                    SizedBox(height: screenSize.height * 0.015),
+                    Container(
+                      width: 42,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: widget.isDark
+                            ? Colors.white.withOpacity(0.2)
+                            : Colors.black.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    SizedBox(height: screenSize.height * 0.015),
+                    Text(
+                      'Discuss Story',
+                      style: widget.theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                        color: const Color(0xFF00B4DB),
+                      ),
+                    ),
+                    SizedBox(height: screenSize.height * 0.02),
+
+                    if (state.chatError != null)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
+                        child: _ChatErrorBanner(
+                          isDark: widget.isDark,
+                          theme: widget.theme,
+                          text: state.chatError!,
+                        ),
+                      ),
+
+                    Expanded(
+                      child: state.isChatLoading && conv == null
+                          ? ListView(
+                              controller: scrollController,
+                              children: [
+                                SizedBox(height: screenSize.height * 0.2),
+                                Center(child: CircularProgressIndicator()),
+                                SizedBox(height: screenSize.height * 0.05),
+                                Center(child: Text('Loading discussion...')),
+                              ],
+                            )
+                          : ListView.builder(
+                              controller: scrollController,
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                              itemCount:
+                                  messages.length +
+                                  (state.isChatSending ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                // typing indicator
+                                if (state.isChatSending &&
+                                    index == messages.length) {
+                                  return _ChatBubble(
+                                    isDark: widget.isDark,
+                                    theme: widget.theme,
+                                    isUser: false,
+                                    text: '...',
+                                    isTyping: true,
+                                  );
+                                }
+
+                                final m = messages[index];
+                                final isUser = m.sender.toLowerCase() == 'user';
+                                return _ChatBubble(
+                                  isDark: widget.isDark,
+                                  theme: widget.theme,
+                                  isUser: isUser,
+                                  text: m.text,
+                                );
+                              },
+                            ),
+                    ),
+
+                    _ChatComposer(
+                      isDark: widget.isDark,
+                      theme: widget.theme,
+                      controller: _controller,
+                      focusNode: _focusNode,
+                      isSending: state.isChatSending,
+                      onSend: () => _send(context),
+                      onSubmitted: () => _send(context),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ChatComposer extends StatelessWidget {
+  final bool isDark;
+  final ThemeData theme;
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final bool isSending;
+  final VoidCallback onSend;
+  final VoidCallback onSubmitted;
+
+  const _ChatComposer({
+    required this.isDark,
+    required this.theme,
+    required this.controller,
+    required this.focusNode,
+    required this.isSending,
+    required this.onSend,
+    required this.onSubmitted,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final border = isDark
+        ? Colors.white.withOpacity(0.08)
+        : Colors.black.withOpacity(0.08);
+
+    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+
+    return SafeArea(
+      top: false,
+      child: AnimatedPadding(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+        padding: EdgeInsets.only(bottom: bottomInset),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border(top: BorderSide(color: border)),
+          ),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 6,
+                  child: TextField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    textInputAction: TextInputAction.send,
+                    minLines: 1,
+                    maxLines: 4,
+                    onSubmitted: (_) => onSubmitted(),
+
+                    scrollPadding: EdgeInsets.only(bottom: bottomInset + 80),
+
+                    decoration: InputDecoration(
+                      hintText: 'Ask about the story...',
+                      hintStyle: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.secondaryHeaderColor,
+                      ),
+                      border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.zero),
+                      ),
+                      focusedBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.zero),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.zero),
+                      ),
+                    ),
+                  ),
+                ),
+
+                SizedBox(
+                  width: 50,
+                  child: GestureDetector(
+                    onTap: isSending ? null : onSend,
+                    child: Container(
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF00B4DB), Color(0xFF9055FF)],
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.25),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: Center(
+                        child: isSending
+                            ? const SizedBox(
+                                width: 23,
+                                height: 23,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(
+                                Icons.send_rounded,
+                                color: Colors.white,
+                                size: 23,
+                              ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ChatBubble extends StatelessWidget {
+  final bool isDark;
+  final ThemeData theme;
+  final bool isUser;
+  final String text;
+  final bool isTyping;
+
+  const _ChatBubble({
+    required this.isDark,
+    required this.theme,
+    required this.isUser,
+    required this.text,
+    this.isTyping = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final maxWidth = MediaQuery.of(context).size.width * 0.78;
+
+    final userGradient = const LinearGradient(
+      colors: [Color(0xFF00B4DB), Color(0xFF9055FF)],
+    );
+
+    final botColor = isDark ? const Color(0xFF111C33) : const Color(0xFFF1F5F9);
+
+    final bubble = Container(
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        gradient: isUser ? userGradient : null,
+        color: isUser ? null : botColor,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: isUser
+              ? Colors.white.withOpacity(0.10)
+              : (isDark
+                    ? Colors.white.withOpacity(0.06)
+                    : Colors.black.withOpacity(0.06)),
+        ),
+      ),
+      child: Text(
+        text,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: isUser ? Colors.white : null,
+          fontStyle: isTyping ? FontStyle.italic : FontStyle.normal,
+        ),
+      ),
+    );
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Align(
+        alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+        child: bubble,
+      ),
+    );
+  }
+}
+
+class _ChatErrorBanner extends StatelessWidget {
+  final bool isDark;
+  final ThemeData theme;
+  final String text;
+
+  const _ChatErrorBanner({
+    required this.isDark,
+    required this.theme,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: 10),
+      decoration: BoxDecoration(
+        color: isDark
+            ? Colors.red.withOpacity(0.12)
+            : Colors.red.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: isDark
+              ? Colors.red.withOpacity(0.25)
+              : Colors.red.withOpacity(0.18),
+        ),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.error_outline_rounded, size: 18, color: Colors.red),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: isDark ? Colors.red[200] : Colors.red[700],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

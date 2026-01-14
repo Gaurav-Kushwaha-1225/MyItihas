@@ -152,6 +152,49 @@ class RemoteStoryGeneratorDataSource {
     }
   }
 
+  Future<String> chat({
+    required List<Map<String, dynamic>> messages,
+    required String mode, // e.g. "story_scholar"
+    Map<String, dynamic>? storyContext,
+    required String language, // e.g. "en"
+  }) async {
+    try {
+      final requestBody = {
+        'messages': messages,
+        'provider': 'openrouter',
+        'mode': mode,
+        'story_context': storyContext,
+        'language': language,
+      };
+
+      final response = await _dio.post(
+        '$_baseUrl/chat',
+        data: requestBody,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          receiveTimeout: const Duration(seconds: 180),
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        if (data is Map<String, dynamic>) {
+          return (data['response'] ?? data['error'] ?? '').toString();
+        }
+        throw Exception('Unexpected response format: ${data.runtimeType}');
+      }
+
+      throw Exception(
+        'Failed to chat: ${response.statusCode} ${response.statusMessage}',
+      );
+    } catch (e) {
+      throw Exception('Network error: $e');
+    }
+  }
+
   Future<String> generateStoryImage({
     required String title,
     required String story,

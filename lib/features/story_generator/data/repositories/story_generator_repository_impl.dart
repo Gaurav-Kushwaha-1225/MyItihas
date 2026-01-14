@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import 'package:myitihas/core/errors/failures.dart';
 import 'package:myitihas/features/social/data/datasources/user_remote_data_source.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
+import 'package:myitihas/features/story_generator/domain/entities/story_chat_message.dart';
 import 'package:myitihas/features/story_generator/domain/entities/story_prompt.dart';
 import 'package:myitihas/features/story_generator/domain/entities/generator_options.dart';
 import 'package:myitihas/features/story_generator/domain/repositories/story_generator_repository.dart';
@@ -474,5 +475,120 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
     };
     return lessons[theme] ??
         'Every story carries within it seeds of wisdom. Water these seeds with reflection, and watch understanding bloom.';
+  }
+
+  static const String _storyChatTable = 'story_chats';
+
+  @override
+  Future<Either<Failure, StoryChatConversation>> getOrCreateStoryChat({
+    required Story story,
+  }) async {
+    try {
+      final user = SupabaseService.client.auth.currentUser;
+      if (user == null) {
+        return Left(ServerFailure('User not authenticated'));
+      }
+
+      final existing = await SupabaseService.client
+          .from(_storyChatTable)
+          .select()
+          .eq('story_id', story.id)
+          .eq('user_id', user.id)
+          .limit(1);
+
+      if (existing.isNotEmpty) {
+        return Right(
+          StoryChatConversation.fromSupabaseRow(
+            existing.first,
+          ),
+        );
+      }
+
+      final now = DateTime.now();
+      final initial = StoryChatMessage(
+        sender: 'bot',
+        text:
+            "Let's discuss “${story.title}”. Ask me anything about the story, characters, themes, or events.",
+        timestamp: now,
+        storyContext: _buildStoryContext(story),
+      );
+
+      final insertBody = {
+        'story_id': story.id,
+        'user_id': user.id,
+        'messages': [initial.toJson()],
+      };
+
+      final row = await SupabaseService.client
+          .from(_storyChatTable)
+          .insert(insertBody)
+          .select()
+          .single();
+
+      return Right(StoryChatConversation.fromSupabaseRow(row));
+    } catch (e) {
+      return Left(ServerFailure('Failed to load story chat: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, StoryChatConversation>> sendStoryChatMessage({
+    required Story story,
+    required StoryChatConversation conversation,
+    required String message,
+    required String language,
+  }) async {
+    try {
+      final user = SupabaseService.client.auth.currentUser;
+      if (user == null) {
+        return Left(ServerFailure('User not authenticated'));
+      }
+
+      final now = DateTime.now();
+
+      final updatedMessages = <StoryChatMessage>[
+        ...conversation.messages,
+        StoryChatMessage(sender: 'user', text: message, timestamp: now),
+      ];
+
+      final botText = await _remoteDataSource.chat(
+        messages: updatedMessages.map((m) => m.toJson()).toList(),
+        mode: 'story_scholar',
+        storyContext: _buildStoryContext(story),
+        language: language,
+      );
+
+      final withBot = <StoryChatMessage>[
+        ...updatedMessages,
+        StoryChatMessage(sender: 'bot', text: botText, timestamp: DateTime.now()),
+      ];
+
+      final updateBody = {
+        'messages': withBot.map((m) => m.toJson()).toList(),
+        'updated_at': DateTime.now().toIso8601String(),
+      };
+
+      final row = await SupabaseService.client
+          .from(_storyChatTable)
+          .update(updateBody)
+          .eq('id', conversation.id)
+          .select()
+          .single();
+
+      return Right(StoryChatConversation.fromSupabaseRow(row));
+    } catch (e) {
+      return Left(ServerFailure('Failed to send message: ${e.toString()}'));
+    }
+  }
+
+  Map<String, dynamic> _buildStoryContext(Story story) {
+    return {
+      'title': story.title,
+      'story': story.story,
+      'scripture': story.scripture,
+      'theme': story.attributes.theme,
+      'moral': story.lesson,
+      'characters': story.attributes.characters,
+    };
   }
 }

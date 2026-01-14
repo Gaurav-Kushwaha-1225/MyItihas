@@ -3,8 +3,11 @@ import 'package:injectable/injectable.dart';
 import 'package:myitihas/core/logging/talker_setup.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/domain/entities/generator_options.dart';
+import 'package:myitihas/features/story_generator/domain/entities/story_chat_message.dart';
 import 'package:myitihas/features/story_generator/domain/entities/story_prompt.dart';
 import 'package:myitihas/features/story_generator/domain/repositories/story_generator_repository.dart';
+
+const Object _kUnset = Object();
 
 /// A lightweight view-model for chapter rendering.
 class StoryChapter {
@@ -67,6 +70,22 @@ class StoryDetailCharacterDetailsClosed extends StoryDetailEvent {
   const StoryDetailCharacterDetailsClosed();
 }
 
+/// Open the story chat (loads conversation cache-first).
+class StoryDetailChatOpened extends StoryDetailEvent {
+  const StoryDetailChatOpened();
+}
+
+/// Send a message in the story chat.
+class StoryDetailChatMessageSubmitted extends StoryDetailEvent {
+  final String message;
+  const StoryDetailChatMessageSubmitted(this.message);
+}
+
+/// Close chat (optional: clears errors).
+class StoryDetailChatClosed extends StoryDetailEvent {
+  const StoryDetailChatClosed();
+}
+
 /// State for StoryDetailBloc.
 class StoryDetailState {
   final Story? story;
@@ -88,6 +107,12 @@ class StoryDetailState {
   final String? selectedCharacterName;
   final Map<String, dynamic>? selectedCharacterDetails;
 
+  // Story chat bottom-sheet
+  final bool isChatLoading;
+  final bool isChatSending;
+  final StoryChatConversation? chatConversation;
+  final String? chatError;
+
   /// Display name shown in dropdown (e.g., "English")
   final String selectedLanguage;
 
@@ -105,6 +130,10 @@ class StoryDetailState {
     required this.isFetchingCharacter,
     required this.selectedCharacterName,
     required this.selectedCharacterDetails,
+    required this.isChatLoading,
+    required this.isChatSending,
+    required this.chatConversation,
+    required this.chatError,
     required this.selectedLanguage,
     required this.errorMessage,
   });
@@ -121,6 +150,10 @@ class StoryDetailState {
     isFetchingCharacter: false,
     selectedCharacterName: null,
     selectedCharacterDetails: null,
+    isChatLoading: false,
+    isChatSending: false,
+    chatConversation: null,
+    chatError: null,
     selectedLanguage: 'English',
     errorMessage: null,
   );
@@ -137,9 +170,13 @@ class StoryDetailState {
     bool? isFetchingCharacter,
     String? selectedCharacterName,
     Map<String, dynamic>? selectedCharacterDetails,
-    String? selectedLanguage,
-    String? errorMessage,
     bool clearSelectedCharacterDetails = false,
+    bool? isChatLoading,
+    bool? isChatSending,
+    Object? chatConversation = _kUnset,
+    Object? chatError = _kUnset,
+    String? selectedLanguage,
+    Object? errorMessage = _kUnset,
   }) {
     return StoryDetailState(
       story: story ?? this.story,
@@ -157,8 +194,16 @@ class StoryDetailState {
       selectedCharacterDetails: clearSelectedCharacterDetails
           ? null
           : (selectedCharacterDetails ?? this.selectedCharacterDetails),
+      isChatLoading: isChatLoading ?? this.isChatLoading,
+      isChatSending: isChatSending ?? this.isChatSending,
+      chatConversation: chatConversation == _kUnset
+          ? this.chatConversation
+          : chatConversation as StoryChatConversation?,
+      chatError: chatError == _kUnset ? this.chatError : chatError as String?,
       selectedLanguage: selectedLanguage ?? this.selectedLanguage,
-      errorMessage: errorMessage,
+      errorMessage: errorMessage == _kUnset
+          ? this.errorMessage
+          : errorMessage as String?,
     );
   }
 }
@@ -177,6 +222,9 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
     on<StoryDetailExpandRequested>(_onExpandRequested);
     on<StoryDetailDownloadStatusChanged>(_onDownloadStatusChanged);
     on<StoryDetailCharacterDetailsRequested>(_onCharacterDetailsRequested);
+    on<StoryDetailChatOpened>(_onChatOpened);
+    on<StoryDetailChatMessageSubmitted>(_onChatMessageSubmitted);
+    on<StoryDetailChatClosed>(_onChatClosed);
     on<StoryDetailCharacterDetailsClosed>(_onCharacterDetailsClosed);
   }
 
@@ -519,6 +567,10 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
         isFetchingCharacter: true,
         selectedCharacterName: event.characterName,
         selectedCharacterDetails: null,
+        isChatLoading: false,
+        isChatSending: false,
+        chatConversation: null,
+        chatError: null,
         errorMessage: null,
       ),
     );
@@ -583,6 +635,99 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
         );
       },
     );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Story Chat (Discuss Story)
+  // ---------------------------------------------------------------------------
+
+  Future<void> _onChatOpened(
+    StoryDetailChatOpened event,
+    Emitter<StoryDetailState> emit,
+  ) async {
+    final story = state.story;
+    if (story == null || state.isChatLoading) return;
+
+    emit(state.copyWith(isChatLoading: true, chatError: null));
+
+    final result = await _repo.getOrCreateStoryChat(story: story);
+    result.fold(
+      (failure) {
+        talker.error('Chat load failed: ${failure.message}');
+        emit(state.copyWith(isChatLoading: false, chatError: failure.message));
+      },
+      (conversation) {
+        emit(
+          state.copyWith(
+            isChatLoading: false,
+            chatConversation: conversation,
+            chatError: null,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onChatMessageSubmitted(
+    StoryDetailChatMessageSubmitted event,
+    Emitter<StoryDetailState> emit,
+  ) async {
+    final story = state.story;
+    final conversation = state.chatConversation;
+    if (story == null || conversation == null || state.isChatSending) return;
+
+    final text = event.message.trim();
+    if (text.isEmpty) return;
+
+    emit(state.copyWith(isChatSending: true, chatError: null));
+
+    final result = await _repo.sendStoryChatMessage(
+      story: story,
+      conversation: conversation,
+      message: text,
+      language: _languageToCode(state.selectedLanguage),
+    );
+
+    result.fold(
+      (failure) {
+        talker.error('Chat send failed: ${failure.message}');
+        emit(state.copyWith(isChatSending: false, chatError: failure.message));
+      },
+      (updatedConversation) {
+        emit(
+          state.copyWith(
+            isChatSending: false,
+            chatConversation: updatedConversation,
+            chatError: null,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onChatClosed(
+    StoryDetailChatClosed event,
+    Emitter<StoryDetailState> emit,
+  ) async {
+    emit(state.copyWith(chatError: null));
+  }
+
+  String _languageToCode(String displayName) {
+    final t = displayName.trim().toLowerCase();
+    if (t.startsWith('hindi')) return 'hi';
+    if (t.startsWith('english')) return 'en';
+    if (t.startsWith('tamil')) return 'ta';
+    if (t.startsWith('telugu')) return 'te';
+    if (t.startsWith('marathi')) return 'mr';
+    if (t.startsWith('bengali')) return 'bn';
+    if (t.startsWith('gujarati')) return 'gu';
+    if (t.startsWith('kannada')) return 'kn';
+    if (t.startsWith('malayalam')) return 'ml';
+    if (t.startsWith('punjabi')) return 'pa';
+    if (t.startsWith('odia')) return 'or';
+    if (t.startsWith('urdu')) return 'ur';
+    // Default to english like the web client.
+    return 'en';
   }
 
   Future<void> _onCharacterDetailsClosed(
