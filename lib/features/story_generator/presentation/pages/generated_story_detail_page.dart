@@ -30,6 +30,7 @@ class GeneratedStoryDetailPage extends StatefulWidget {
 
 class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
   late final StoryDetailBloc _detailBloc;
+  bool isTranslated = false;
 
   late final StoryTtsCubit _ttsCubit;
   String? selectedCharacter;
@@ -50,7 +51,11 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
     selectedCharacterController = TextEditingController();
 
     _ttsCubit = StoryTtsCubit();
-    _ttsCubit.initialize(language: 'en-US');
+    final baseLangCode = languageNameToCode(
+      widget.story.attributes.languageStyle,
+    );
+    _ttsCubit.initialize(language: ttsLocaleForLangCode(baseLangCode));
+
     _ttsCubit.setText(_buildReadAloudText(widget.story), stopIfSpeaking: false);
   }
 
@@ -74,12 +79,23 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
       bloc: _detailBloc,
       listenWhen: (prev, curr) =>
           prev.story?.story != curr.story?.story ||
-          prev.story?.title != curr.story?.title,
+          prev.story?.title != curr.story?.title ||
+          prev.selectedLanguage != curr.selectedLanguage,
       listener: (context, state) async {
         final story = state.story;
         if (story == null) return;
 
-        await _ttsCubit.setText(_buildReadAloudText(story));
+        final selectedCode = languageNameToCode(state.selectedLanguage);
+        final hasTranslation = story.attributes.translations.containsKey(
+          selectedCode,
+        );
+
+        final effectiveCode = hasTranslation
+            ? selectedCode
+            : languageNameToCode(story.attributes.languageStyle);
+
+        await _ttsCubit.setLanguageByCode(effectiveCode);
+        await _ttsCubit.setText(_buildReadAloudTextForState(story, state));
 
         if (state.errorMessage != null && context.mounted) {
           ScaffoldMessenger.of(
@@ -213,6 +229,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                               screenSize,
                               theme,
                               isDark,
+                              state,
                             ),
                           ),
                         ],
@@ -249,6 +266,8 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
               ),
               if (state.isRegenerating)
                 const GeneratingOverlay(message: "Regenerating your story..."),
+              if (state.isTranslating)
+                const GeneratingOverlay(message: "Translating your story..."),
             ],
           ),
         );
@@ -294,6 +313,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
     Size screenSize,
     ThemeData theme,
     bool isDark,
+    dynamic state,
   ) {
     return Container(
       width: screenSize.width,
@@ -321,7 +341,15 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             ],
           ),
           Text(
-            story.title,
+            isTranslated
+                ? story
+                          .attributes
+                          .translations[languageNameToCode(
+                            state.selectedLanguage,
+                          )]
+                          ?.title ??
+                      story.title
+                : story.title,
             maxLines: 2,
             style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
@@ -425,7 +453,15 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                     ),
                   ),
                   TextSpan(
-                    text: story.lesson,
+                    text: isTranslated
+                        ? story
+                                  .attributes
+                                  .translations[languageNameToCode(
+                                    state.selectedLanguage,
+                                  )]
+                                  ?.moral ??
+                              story.lesson
+                        : story.lesson,
                     style: theme.textTheme.bodyMedium,
                   ),
                 ],
@@ -584,11 +620,14 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                 child: Text(lang['name']!, style: theme.textTheme.bodyMedium),
               );
             }).toList(),
-            onChanged: (String? newValue) {
-              if (newValue != null) {
-                _detailBloc.add(StoryDetailLanguageChanged(newValue));
-              }
-            },
+            onChanged: state.isTranslating
+                ? null
+                : (String? newValue) {
+                    if (newValue != null) {
+                      _detailBloc.add(StoryDetailLanguageChanged(newValue));
+                      isTranslated = true;
+                    }
+                  },
           ),
         ],
       ),
@@ -1844,6 +1883,23 @@ class _ListCard extends StatelessWidget {
   }
 }
 
+String _buildReadAloudTextForState(Story s, StoryDetailState state) {
+  final selectedCode = languageNameToCode(state.selectedLanguage);
+  final translated = s.attributes.translations[selectedCode];
+
+  final title = (translated?.title ?? s.title).trim();
+  final story = (translated?.story ?? s.story).trim();
+  final moral = (translated?.moral ?? s.lesson).trim();
+
+  final parts = <String>[
+    if (title.isNotEmpty) title,
+    if (story.isNotEmpty) story,
+    if (moral.isNotEmpty) moral,
+  ];
+
+  return parts.join('\n\n');
+}
+
 int estimateReadingTimeMinutes(String text, {int wordsPerMinute = 150}) {
   if (text.trim().isEmpty || wordsPerMinute <= 0) {
     return 0;
@@ -1899,4 +1955,16 @@ String _nextTtsChunk(String text, int start, int maxLen) {
   }
 
   return text.substring(start, end);
+}
+
+String languageNameToCode(String name) {
+  final lower = name.toLowerCase();
+  if (lower.contains('english')) return 'en';
+  if (lower.contains('hindi')) return 'hi';
+  if (lower.contains('tamil')) return 'ta';
+  if (lower.contains('telugu')) return 'te';
+  if (lower.contains('bengali')) return 'bn';
+  if (lower.contains('marathi')) return 'mr';
+  if (lower.contains('gujarati')) return 'gu';
+  return 'en';
 }

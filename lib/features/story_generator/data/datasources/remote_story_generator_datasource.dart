@@ -231,4 +231,32 @@ class RemoteStoryGeneratorDataSource {
       throw Exception('Image generation error: $e');
     }
   }
+
+  Future<Map<String, dynamic>> translateStory({
+    required String title,
+    required String content,
+    required String moral,
+    required String targetLang,
+  }) async {
+    final response = await _dio.post(
+      '$_baseUrl/translate_story',
+      data: {
+        'title': title,
+        // send BOTH (website expects story; your request sample uses content)
+        'story': content,
+        'content': content,
+        'moral': moral,
+        'target_lang': targetLang,
+      },
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        receiveTimeout: const Duration(seconds: 180),
+      ),
+    );
+
+    return (response.data as Map<String, dynamic>);
+  }
 }

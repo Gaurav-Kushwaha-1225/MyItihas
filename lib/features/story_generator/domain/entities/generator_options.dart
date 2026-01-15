@@ -8,7 +8,6 @@ enum StoryLanguage {
   hindi('Hindi', 'hi'),
   tamil('Tamil', 'ta'),
   telugu('Telugu', 'te'),
-  sanskrit('Sanskrit', 'sa'),
   bengali('Bengali', 'bn'),
   marathi('Marathi', 'mr'),
   gujarati('Gujarati', 'gu');

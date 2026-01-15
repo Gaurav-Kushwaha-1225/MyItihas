@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:myitihas/features/social/domain/entities/user.dart';
+import 'package:myitihas/features/story_generator/domain/entities/story_translation.dart';
 
 part 'story.freezed.dart';
 
@@ -51,5 +52,6 @@ abstract class StoryAttributes with _$StoryAttributes {
     @Default([]) List<String> tags,
     @Default([]) List<String> characters,
     @Default({}) Map<String, dynamic> characterDetails,
+    @Default({}) Map<String, TranslatedStory> translations,
   }) = _StoryAttributes;
 }

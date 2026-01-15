@@ -54,7 +54,7 @@ class StoryTtsState {
       text: text ?? this.text,
       maxSpeechInputLength: maxSpeechInputLength ?? this.maxSpeechInputLength,
       language: language ?? this.language,
-      error: clearError ? null : error,
+      error: clearError ? null : (error ?? this.error),
     );
   }
 }
@@ -77,10 +77,14 @@ class StoryTtsCubit extends Cubit<StoryTtsState> {
       await _tts.setPitch(1.0);
 
       final maxLen = await _tts.getMaxSpeechInputLength;
-      final maxSpeech = (maxLen is int && maxLen > 0) ? maxLen : state.maxSpeechInputLength;
+      final maxSpeech = (maxLen is int && maxLen > 0)
+          ? maxLen
+          : state.maxSpeechInputLength;
 
       _tts.setStartHandler(() {
-        emit(state.copyWith(isSpeaking: true, isPaused: false, clearError: true));
+        emit(
+          state.copyWith(isSpeaking: true, isPaused: false, clearError: true),
+        );
       });
 
       // Fires per utterance chunk
@@ -105,17 +109,58 @@ class StoryTtsCubit extends Cubit<StoryTtsState> {
         emit(state.copyWith(offset: absolute));
       });
 
-      emit(state.copyWith(isReady: true, maxSpeechInputLength: maxSpeech, language: language, clearError: true));
+      emit(
+        state.copyWith(
+          isReady: true,
+          maxSpeechInputLength: maxSpeech,
+          language: language,
+          clearError: true,
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(error: 'TTS init failed: $e'));
     }
+  }
+
+  Future<void> setLanguage(
+    String language, {
+    bool stopIfSpeaking = true,
+  }) async {
+    try {
+      if (!state.isReady) {
+        await initialize(language: language);
+        return;
+      }
+      if (stopIfSpeaking) {
+        await stop(resetPosition: false);
+      }
+      await _tts.setLanguage(language);
+      emit(state.copyWith(language: language, clearError: true));
+    } catch (e) {
+      emit(state.copyWith(error: 'TTS setLanguage failed: $e'));
+    }
+  }
+
+  Future<void> setLanguageByCode(String code, {bool stopIfSpeaking = true}) {
+    return setLanguage(
+      ttsLocaleForLangCode(code),
+      stopIfSpeaking: stopIfSpeaking,
+    );
   }
 
   Future<void> setText(String text, {bool stopIfSpeaking = true}) async {
     if (stopIfSpeaking) {
       await stop(resetPosition: true);
     }
-    emit(state.copyWith(text: text, offset: 0, isPaused: false, isSpeaking: false, clearError: true));
+    emit(
+      state.copyWith(
+        text: text,
+        offset: 0,
+        isPaused: false,
+        isSpeaking: false,
+        clearError: true,
+      ),
+    );
   }
 
   Future<void> toggle() async {
@@ -154,7 +199,11 @@ class StoryTtsCubit extends Cubit<StoryTtsState> {
     while (offset < state.text.length) {
       if (runId != _runId) return; // canceled
 
-      final chunk = _nextTtsChunk(state.text, offset, state.maxSpeechInputLength);
+      final chunk = _nextTtsChunk(
+        state.text,
+        offset,
+        state.maxSpeechInputLength,
+      );
       _utteranceBaseOffset = offset;
 
       await _tts.speak(chunk);
@@ -219,5 +268,35 @@ class StoryTtsCubit extends Cubit<StoryTtsState> {
       await _tts.stop();
     } catch (_) {}
     return super.close();
+  }
+}
+
+String ttsLocaleForLangCode(String code) {
+  final c = code.trim().toLowerCase();
+  switch (c) {
+    case 'en':
+      return 'en-US';
+    case 'hi':
+      return 'hi-IN';
+    case 'ta':
+      return 'ta-IN';
+    case 'te':
+      return 'te-IN';
+    case 'bn':
+      return 'bn-IN';
+    case 'mr':
+      return 'mr-IN';
+    case 'gu':
+      return 'gu-IN';
+    case 'kn':
+      return 'kn-IN';
+    case 'ml':
+      return 'ml-IN';
+    case 'pa':
+      return 'pa-IN';
+    case 'ur':
+      return 'ur-IN';
+    default:
+      return 'en-US';
   }
 }
