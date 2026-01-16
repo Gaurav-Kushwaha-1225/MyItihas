@@ -17,6 +17,8 @@ import 'package:myitihas/features/story_generator/presentation/bloc/story_tts_cu
 import 'package:myitihas/utils/functions.dart';
 import 'package:rich_readmore/rich_readmore.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:myitihas/features/social/presentation/widgets/share_to_feed_dialog.dart';
+import 'package:myitihas/i18n/strings.g.dart';
 
 class GeneratedStoryDetailPage extends StatefulWidget {
   final Story story;
@@ -185,9 +187,40 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                                 const StoryDetailToggleFavorite(),
                               ),
                             ),
-                            IconButton(
+                            PopupMenuButton<String>(
                               icon: const Icon(Icons.share),
-                              onPressed: () => _shareStory(story),
+                              onSelected: (value) {
+                                if (value == 'share') {
+                                  _shareStory(story);
+                                } else if (value == 'share_to_feed') {
+                                  showShareToFeedDialog(
+                                    context: context,
+                                    story: story,
+                                  );
+                                }
+                              },
+                              itemBuilder: (context) => [
+                                PopupMenuItem(
+                                  value: 'share',
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.share_outlined),
+                                      const SizedBox(width: 12),
+                                      Text(Translations.of(context).common.share),
+                                    ],
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  value: 'share_to_feed',
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.feed_outlined),
+                                      const SizedBox(width: 12),
+                                      Text(Translations.of(context).homeScreen.shareToFeed),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

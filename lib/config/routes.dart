@@ -4,7 +4,6 @@ import 'package:myitihas/pages/Chat/Widget/chatbot.dart';
 import 'package:myitihas/pages/Map/Widget/shaktipeetha_detail_page.dart';
 
 import 'package:myitihas/pages/Map/akhanda_bharat_map_page.dart';
-import 'package:myitihas/pages/home_content_page.dart';
 import 'package:myitihas/pages/home_page.dart';
 import 'package:myitihas/pages/discover_page.dart';
 import 'package:myitihas/pages/splash.dart';
@@ -37,6 +36,7 @@ import 'package:myitihas/features/stories/presentation/pages/story_detail_route_
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/presentation/pages/story_generator_page.dart';
 import 'package:myitihas/features/story_generator/presentation/pages/generated_story_detail_page.dart';
+import 'package:myitihas/features/story_generator/presentation/pages/generated_story_by_id_page.dart';
 import 'package:myitihas/features/home/presentation/pages/activity_history_page.dart';
 import 'package:myitihas/services/supabase_service.dart';
 import 'package:myitihas/config/go_router_refresh.dart';
@@ -460,7 +460,10 @@ class MapRoute extends GoRouteData with $MapRoute {
 /// Story Generator route with result sub-route
 @TypedGoRoute<StoryGeneratorRoute>(
   path: '/story-generator',
-  routes: [TypedGoRoute<GeneratedStoryResultRoute>(path: 'result')],
+  routes: [
+    TypedGoRoute<GeneratedStoryResultRoute>(path: 'result'),
+    TypedGoRoute<GeneratedStoryByIdRoute>(path: ':storyId'),
+  ],
 )
 class StoryGeneratorRoute extends GoRouteData with $StoryGeneratorRoute {
   const StoryGeneratorRoute();
@@ -481,6 +484,19 @@ class GeneratedStoryResultRoute extends GoRouteData
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return GeneratedStoryDetailPage(story: $extra);
+  }
+}
+
+/// Generated story by ID - fetches story from database
+class GeneratedStoryByIdRoute extends GoRouteData
+    with $GeneratedStoryByIdRoute {
+  final String storyId;
+
+  const GeneratedStoryByIdRoute({required this.storyId});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return GeneratedStoryByIdPage(storyId: storyId);
   }
 }
 

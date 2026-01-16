@@ -11,8 +11,10 @@ import 'package:myitihas/features/home/presentation/widgets/continue_reading_sec
 import 'package:myitihas/features/home/presentation/widgets/create_post_card.dart';
 import 'package:myitihas/features/home/presentation/widgets/featured_stories_section.dart';
 import 'package:myitihas/features/home/presentation/widgets/hero_generate_button.dart';
+import 'package:myitihas/features/home/presentation/widgets/my_generated_stories_section.dart';
 import 'package:myitihas/features/home/presentation/widgets/saved_stories_section.dart';
 import 'package:myitihas/features/home/presentation/widgets/secondary_actions_row.dart';
+import 'package:myitihas/features/social/presentation/widgets/share_to_feed_dialog.dart';
 import 'package:myitihas/i18n/strings.g.dart';
 
 /// Main HomeScreen page - the primary landing experience
@@ -290,7 +292,7 @@ class _HomeScreenViewState extends State<_HomeScreenView>
                   padding: EdgeInsets.only(top: 12.h),
                   child: SecondaryActionsRow(
                     onChatWithKrishna: () {
-                      context.go('/chat-itihas');
+                      context.push('/chatbot');
                     },
                     onMyActivity: () {
                       context.push('/activity');
@@ -316,6 +318,29 @@ class _HomeScreenViewState extends State<_HomeScreenView>
                     onExplore: () {
                       // Navigate to stories or social feed
                       context.go('/home');
+                    },
+                  ),
+                ),
+              ),
+
+              // My Generated Stories
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 20.h),
+                  child: MyGeneratedStoriesSection(
+                    stories: state.myGeneratedStories,
+                    isLoading: state.isMyGeneratedStoriesLoading,
+                    onStoryTap: (story) {
+                      context.push('/story-generator/${story.id}');
+                    },
+                    onShareToFeed: (story) {
+                      showShareToFeedDialog(context: context, story: story);
+                    },
+                    onSeeAll: () {
+                      context.push('/story-generator');
+                    },
+                    onCreateNew: () {
+                      context.push('/story-generator');
                     },
                   ),
                 ),

@@ -121,6 +121,29 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
   }
 
   @override
+  Future<Either<Failure, Story>> getStoryById(String storyId) async {
+    try {
+      final user = SupabaseService.client.auth.currentUser;
+      if (user == null) {
+        return Left(ServerFailure('User not authenticated'));
+      }
+
+      final response = await SupabaseService.client
+          .from('stories')
+          .select()
+          .eq('id', storyId)
+          .eq('author_id', user.id)
+          .single();
+
+      return Right(_mapSupabaseRowToStory(response));
+    } catch (e) {
+      return Left(
+        ServerFailure('Failed to fetch story: ${e.toString()}'),
+      );
+    }
+  }
+
+  @override
   Future<Either<Failure, String>> generateStoryImage({
     required String title,
     required String story,

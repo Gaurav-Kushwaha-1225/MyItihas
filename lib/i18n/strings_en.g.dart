@@ -25,43 +25,38 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 		    overrides: overrides ?? {},
 		    cardinalResolver: cardinalResolver,
 		    ordinalResolver: ordinalResolver,
-		  ) {
-		$meta.setFlatMapFunction(_flatMapFunction);
-	}
+		  );
 
 	/// Metadata for the translations of <en>.
 	@override final TranslationMetadata<AppLocale, Translations> $meta;
-
-	/// Access flat map
-	dynamic operator[](String key) => $meta.getTranslation(key);
 
 	late final Translations _root = this; // ignore: unused_field
 
 	Translations $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => Translations(meta: meta ?? this.$meta);
 
 	// Translations
-	late final TranslationsAppEn app = TranslationsAppEn._(_root);
-	late final TranslationsCommonEn common = TranslationsCommonEn._(_root);
-	late final TranslationsNavigationEn navigation = TranslationsNavigationEn._(_root);
-	late final TranslationsHomeEn home = TranslationsHomeEn._(_root);
-	late final TranslationsHomeScreenEn homeScreen = TranslationsHomeScreenEn._(_root);
-	late final TranslationsStoriesEn stories = TranslationsStoriesEn._(_root);
-	late final TranslationsStoryGeneratorEn storyGenerator = TranslationsStoryGeneratorEn._(_root);
-	late final TranslationsChatEn chat = TranslationsChatEn._(_root);
-	late final TranslationsMapEn map = TranslationsMapEn._(_root);
-	late final TranslationsCommunityEn community = TranslationsCommunityEn._(_root);
-	late final TranslationsSettingsEn settings = TranslationsSettingsEn._(_root);
-	late final TranslationsAuthEn auth = TranslationsAuthEn._(_root);
-	late final TranslationsErrorEn error = TranslationsErrorEn._(_root);
-	late final TranslationsSubscriptionEn subscription = TranslationsSubscriptionEn._(_root);
-	late final TranslationsNotificationEn notification = TranslationsNotificationEn._(_root);
-	late final TranslationsProfileEn profile = TranslationsProfileEn._(_root);
-	late final TranslationsFeedEn feed = TranslationsFeedEn._(_root);
+	late final TranslationsAppEn app = TranslationsAppEn.internal(_root);
+	late final TranslationsCommonEn common = TranslationsCommonEn.internal(_root);
+	late final TranslationsNavigationEn navigation = TranslationsNavigationEn.internal(_root);
+	late final TranslationsHomeEn home = TranslationsHomeEn.internal(_root);
+	late final TranslationsHomeScreenEn homeScreen = TranslationsHomeScreenEn.internal(_root);
+	late final TranslationsStoriesEn stories = TranslationsStoriesEn.internal(_root);
+	late final TranslationsStoryGeneratorEn storyGenerator = TranslationsStoryGeneratorEn.internal(_root);
+	late final TranslationsChatEn chat = TranslationsChatEn.internal(_root);
+	late final TranslationsMapEn map = TranslationsMapEn.internal(_root);
+	late final TranslationsCommunityEn community = TranslationsCommunityEn.internal(_root);
+	late final TranslationsSettingsEn settings = TranslationsSettingsEn.internal(_root);
+	late final TranslationsAuthEn auth = TranslationsAuthEn.internal(_root);
+	late final TranslationsErrorEn error = TranslationsErrorEn.internal(_root);
+	late final TranslationsSubscriptionEn subscription = TranslationsSubscriptionEn.internal(_root);
+	late final TranslationsNotificationEn notification = TranslationsNotificationEn.internal(_root);
+	late final TranslationsProfileEn profile = TranslationsProfileEn.internal(_root);
+	late final TranslationsFeedEn feed = TranslationsFeedEn.internal(_root);
 }
 
 // Path: app
 class TranslationsAppEn {
-	TranslationsAppEn._(this._root);
+	TranslationsAppEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -76,7 +71,7 @@ class TranslationsAppEn {
 
 // Path: common
 class TranslationsCommonEn {
-	TranslationsCommonEn._(this._root);
+	TranslationsCommonEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -134,12 +129,12 @@ class TranslationsCommonEn {
 	String get no => 'No';
 
 	/// en: 'Read the full story'
-	String get read_full_story => 'Read the full story';
+	String get readFullStory => 'Read the full story';
 }
 
 // Path: navigation
 class TranslationsNavigationEn {
-	TranslationsNavigationEn._(this._root);
+	TranslationsNavigationEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -169,7 +164,7 @@ class TranslationsNavigationEn {
 
 // Path: home
 class TranslationsHomeEn {
-	TranslationsHomeEn._(this._root);
+	TranslationsHomeEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -214,7 +209,7 @@ class TranslationsHomeEn {
 
 // Path: homeScreen
 class TranslationsHomeScreenEn {
-	TranslationsHomeScreenEn._(this._root);
+	TranslationsHomeScreenEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -272,7 +267,7 @@ class TranslationsHomeScreenEn {
 	String get noActivityYet => 'No activity yet';
 
 	/// en: '{{count}} min left'
-	String get minLeft => '{{count}} min left';
+	String minLeft({required Object count}) => '${count} min left';
 
 	/// en: 'Activity History'
 	String get activityHistory => 'Activity History';
@@ -312,11 +307,38 @@ class TranslationsHomeScreenEn {
 
 	/// en: 'Bookmark stories to save them'
 	String get bookmarkStoriesToSave => 'Bookmark stories to save them';
+
+	/// en: 'My Stories'
+	String get myGeneratedStories => 'My Stories';
+
+	/// en: 'No stories created yet'
+	String get noGeneratedStoriesYet => 'No stories created yet';
+
+	/// en: 'Generate your first story using AI'
+	String get createYourFirstStory => 'Generate your first story using AI';
+
+	/// en: 'Share to Feed'
+	String get shareToFeed => 'Share to Feed';
+
+	/// en: 'Story shared to feed'
+	String get sharedToFeed => 'Story shared to feed';
+
+	/// en: 'Share Story'
+	String get shareStoryTitle => 'Share Story';
+
+	/// en: 'Add a caption for your story (optional)'
+	String get shareStoryMessage => 'Add a caption for your story (optional)';
+
+	/// en: 'Caption'
+	String get shareStoryCaption => 'Caption';
+
+	/// en: 'What would you like to say about this story?'
+	String get shareStoryHint => 'What would you like to say about this story?';
 }
 
 // Path: stories
 class TranslationsStoriesEn {
-	TranslationsStoriesEn._(this._root);
+	TranslationsStoriesEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -374,12 +396,12 @@ class TranslationsStoriesEn {
 	String get tags => 'Tags';
 
 	/// en: 'Failed to load story'
-	String get failed_to_load => 'Failed to load story';
+	String get failedToLoad => 'Failed to load story';
 }
 
 // Path: storyGenerator
 class TranslationsStoryGeneratorEn {
-	TranslationsStoryGeneratorEn._(this._root);
+	TranslationsStoryGeneratorEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -505,15 +527,15 @@ class TranslationsStoryGeneratorEn {
 	/// en: 'Story Format'
 	String get storyFormat => 'Story Format';
 
-	late final TranslationsStoryGeneratorStoryLengthEn storyLength = TranslationsStoryGeneratorStoryLengthEn._(_root);
-	late final TranslationsStoryGeneratorFormatEn format = TranslationsStoryGeneratorFormatEn._(_root);
-	late final TranslationsStoryGeneratorHintsEn hints = TranslationsStoryGeneratorHintsEn._(_root);
-	late final TranslationsStoryGeneratorErrorsEn errors = TranslationsStoryGeneratorErrorsEn._(_root);
+	late final TranslationsStoryGeneratorStoryLengthEn storyLength = TranslationsStoryGeneratorStoryLengthEn.internal(_root);
+	late final TranslationsStoryGeneratorFormatEn format = TranslationsStoryGeneratorFormatEn.internal(_root);
+	late final TranslationsStoryGeneratorHintsEn hints = TranslationsStoryGeneratorHintsEn.internal(_root);
+	late final TranslationsStoryGeneratorErrorsEn errors = TranslationsStoryGeneratorErrorsEn.internal(_root);
 }
 
 // Path: chat
 class TranslationsChatEn {
-	TranslationsChatEn._(this._root);
+	TranslationsChatEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -550,12 +572,12 @@ class TranslationsChatEn {
 	String get noMessages => 'No messages yet. Start a conversation!';
 
 	/// en: 'Chat List Page'
-	String get list_page => 'Chat List Page';
+	String get listPage => 'Chat List Page';
 }
 
 // Path: map
 class TranslationsMapEn {
-	TranslationsMapEn._(this._root);
+	TranslationsMapEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -585,7 +607,7 @@ class TranslationsMapEn {
 
 // Path: community
 class TranslationsCommunityEn {
-	TranslationsCommunityEn._(this._root);
+	TranslationsCommunityEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -633,7 +655,7 @@ class TranslationsCommunityEn {
 
 // Path: settings
 class TranslationsSettingsEn {
-	TranslationsSettingsEn._(this._root);
+	TranslationsSettingsEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -678,7 +700,7 @@ class TranslationsSettingsEn {
 
 // Path: auth
 class TranslationsAuthEn {
-	TranslationsAuthEn._(this._root);
+	TranslationsAuthEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -726,7 +748,7 @@ class TranslationsAuthEn {
 
 // Path: error
 class TranslationsErrorEn {
-	TranslationsErrorEn._(this._root);
+	TranslationsErrorEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -759,7 +781,7 @@ class TranslationsErrorEn {
 
 // Path: subscription
 class TranslationsSubscriptionEn {
-	TranslationsSubscriptionEn._(this._root);
+	TranslationsSubscriptionEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -792,7 +814,7 @@ class TranslationsSubscriptionEn {
 
 // Path: notification
 class TranslationsNotificationEn {
-	TranslationsNotificationEn._(this._root);
+	TranslationsNotificationEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -814,24 +836,24 @@ class TranslationsNotificationEn {
 	String get retry => 'Retry';
 
 	/// en: '{{actorName}} liked your story'
-	String get likedYourStory => '{{actorName}} liked your story';
+	String likedYourStory({required Object actorName}) => '${actorName} liked your story';
 
 	/// en: '{{actorName}} commented on your story'
-	String get commentedOnYourStory => '{{actorName}} commented on your story';
+	String commentedOnYourStory({required Object actorName}) => '${actorName} commented on your story';
 
 	/// en: '{{actorName}} replied to your comment'
-	String get repliedToYourComment => '{{actorName}} replied to your comment';
+	String repliedToYourComment({required Object actorName}) => '${actorName} replied to your comment';
 
 	/// en: '{{actorName}} started following you'
-	String get startedFollowingYou => '{{actorName}} started following you';
+	String startedFollowingYou({required Object actorName}) => '${actorName} started following you';
 
 	/// en: '{{actorName}} sent you a message'
-	String get sentYouAMessage => '{{actorName}} sent you a message';
+	String sentYouAMessage({required Object actorName}) => '${actorName} sent you a message';
 }
 
 // Path: profile
 class TranslationsProfileEn {
-	TranslationsProfileEn._(this._root);
+	TranslationsProfileEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -858,7 +880,7 @@ class TranslationsProfileEn {
 
 // Path: feed
 class TranslationsFeedEn {
-	TranslationsFeedEn._(this._root);
+	TranslationsFeedEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -991,16 +1013,16 @@ class TranslationsFeedEn {
 	String get removedFromBookmarks => 'Removed from bookmarks';
 
 	/// en: 'Unlike, {{count}} likes'
-	String get unlike => 'Unlike, {{count}} likes';
+	String unlike({required Object count}) => 'Unlike, ${count} likes';
 
 	/// en: 'Like, {{count}} likes'
-	String get like => 'Like, {{count}} likes';
+	String like({required Object count}) => 'Like, ${count} likes';
 
 	/// en: '{{count}} comments'
-	String get commentCount => '{{count}} comments';
+	String commentCount({required Object count}) => '${count} comments';
 
 	/// en: 'Share, {{count}} shares'
-	String get shareCount => 'Share, {{count}} shares';
+	String shareCount({required Object count}) => 'Share, ${count} shares';
 
 	/// en: 'Remove bookmark'
 	String get removeBookmark => 'Remove bookmark';
@@ -1023,7 +1045,7 @@ class TranslationsFeedEn {
 	/// en: 'Quote from MyItihas'
 	String get quoteFromMyitihas => 'Quote from MyItihas';
 
-	late final TranslationsFeedTabsEn tabs = TranslationsFeedTabsEn._(_root);
+	late final TranslationsFeedTabsEn tabs = TranslationsFeedTabsEn.internal(_root);
 
 	/// en: 'Tap to show caption'
 	String get tapToShowCaption => 'Tap to show caption';
@@ -1034,7 +1056,7 @@ class TranslationsFeedEn {
 
 // Path: storyGenerator.storyLength
 class TranslationsStoryGeneratorStoryLengthEn {
-	TranslationsStoryGeneratorStoryLengthEn._(this._root);
+	TranslationsStoryGeneratorStoryLengthEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -1055,7 +1077,7 @@ class TranslationsStoryGeneratorStoryLengthEn {
 
 // Path: storyGenerator.format
 class TranslationsStoryGeneratorFormatEn {
-	TranslationsStoryGeneratorFormatEn._(this._root);
+	TranslationsStoryGeneratorFormatEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -1076,7 +1098,7 @@ class TranslationsStoryGeneratorFormatEn {
 
 // Path: storyGenerator.hints
 class TranslationsStoryGeneratorHintsEn {
-	TranslationsStoryGeneratorHintsEn._(this._root);
+	TranslationsStoryGeneratorHintsEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -1100,7 +1122,7 @@ class TranslationsStoryGeneratorHintsEn {
 
 // Path: storyGenerator.errors
 class TranslationsStoryGeneratorErrorsEn {
-	TranslationsStoryGeneratorErrorsEn._(this._root);
+	TranslationsStoryGeneratorErrorsEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -1115,7 +1137,7 @@ class TranslationsStoryGeneratorErrorsEn {
 
 // Path: feed.tabs
 class TranslationsFeedTabsEn {
-	TranslationsFeedTabsEn._(this._root);
+	TranslationsFeedTabsEn.internal(this._root);
 
 	final Translations _root; // ignore: unused_field
 
@@ -1138,309 +1160,4 @@ class TranslationsFeedTabsEn {
 
 	/// en: 'Thoughts'
 	String get text => 'Thoughts';
-}
-
-/// The flat map containing all translations for locale <en>.
-/// Only for edge cases! For simple maps, use the map function of this library.
-///
-/// The Dart AOT compiler has issues with very large switch statements,
-/// so the map is split into smaller functions (512 entries each).
-extension on Translations {
-	dynamic _flatMapFunction(String path) {
-		return switch (path) {
-			'app.name' => 'MyItihas',
-			'app.tagline' => 'Discover Indian Mythology',
-			'common.ok' => 'OK',
-			'common.cancel' => 'Cancel',
-			'common.confirm' => 'Confirm',
-			'common.delete' => 'Delete',
-			'common.edit' => 'Edit',
-			'common.save' => 'Save',
-			'common.share' => 'Share',
-			'common.search' => 'Search',
-			'common.loading' => 'Loading...',
-			'common.error' => 'Error',
-			'common.retry' => 'Retry',
-			'common.back' => 'Back',
-			'common.next' => 'Next',
-			'common.finish' => 'Finish',
-			'common.skip' => 'Skip',
-			'common.yes' => 'Yes',
-			'common.no' => 'No',
-			'common.read_full_story' => 'Read the full story',
-			'navigation.home' => 'Home',
-			'navigation.stories' => 'Stories',
-			'navigation.chat' => 'Chat',
-			'navigation.map' => 'Map',
-			'navigation.community' => 'Community',
-			'navigation.settings' => 'Settings',
-			'navigation.profile' => 'Profile',
-			'home.title' => 'MyItihas',
-			'home.storyGenerator' => 'Story Generator',
-			'home.chatItihas' => 'ChatItihas',
-			'home.communityStories' => 'Community Stories',
-			'home.maps' => 'Maps',
-			'home.greetingMorning' => 'Good Morning',
-			'home.continueReading' => 'Continue reading',
-			'home.greetingAfternoon' => 'Good Afternoon',
-			'home.greetingEvening' => 'Good Evening',
-			'home.exploreStories' => 'Explore Stories',
-			'home.generateStory' => 'Generate Story',
-			'home.content' => 'Home Content',
-			'homeScreen.greeting' => 'Hello',
-			'homeScreen.quoteOfTheDay' => 'Quote of the Day',
-			'homeScreen.shareQuote' => 'Share Quote',
-			'homeScreen.copyQuote' => 'Copy Quote',
-			'homeScreen.quoteCopied' => 'Quote copied to clipboard',
-			'homeScreen.featuredStories' => 'Featured Stories',
-			'homeScreen.quickActions' => 'Quick Actions',
-			'homeScreen.generateStory' => 'Generate Story',
-			'homeScreen.chatWithKrishna' => 'Chat with Krishna',
-			'homeScreen.myActivity' => 'My Activity',
-			'homeScreen.continueReading' => 'Continue Reading',
-			'homeScreen.savedStories' => 'Saved Stories',
-			'homeScreen.seeAll' => 'See All',
-			'homeScreen.startReading' => 'Start Reading',
-			'homeScreen.exploreStories' => 'Explore stories to start your journey',
-			'homeScreen.saveForLater' => 'Bookmark stories you love',
-			'homeScreen.noActivityYet' => 'No activity yet',
-			'homeScreen.minLeft' => '{{count}} min left',
-			'homeScreen.activityHistory' => 'Activity History',
-			'homeScreen.storyGenerated' => 'Generated a story',
-			'homeScreen.storyRead' => 'Read a story',
-			'homeScreen.storyBookmarked' => 'Bookmarked a story',
-			'homeScreen.storyShared' => 'Shared a story',
-			'homeScreen.storyCompleted' => 'Completed a story',
-			'homeScreen.today' => 'Today',
-			'homeScreen.yesterday' => 'Yesterday',
-			'homeScreen.thisWeek' => 'This Week',
-			'homeScreen.earlier' => 'Earlier',
-			'homeScreen.noContinueReading' => 'Nothing to read yet',
-			'homeScreen.noSavedStories' => 'No saved stories yet',
-			'homeScreen.bookmarkStoriesToSave' => 'Bookmark stories to save them',
-			'stories.title' => 'Stories',
-			'stories.searchHint' => 'Search by title or author...',
-			'stories.sortBy' => 'Sort by',
-			'stories.sortNewest' => 'Newest First',
-			'stories.sortOldest' => 'Oldest First',
-			'stories.sortPopular' => 'Most Popular',
-			'stories.noStories' => 'No stories found',
-			'stories.loadingStories' => 'Loading stories...',
-			'stories.errorLoadingStories' => 'Failed to load stories',
-			'stories.storyDetails' => 'Story Details',
-			'stories.continueReading' => 'Continue reading',
-			'stories.readMore' => 'Read More',
-			'stories.readLess' => 'Read Less',
-			'stories.author' => 'Author',
-			'stories.publishedOn' => 'Published on',
-			'stories.category' => 'Category',
-			'stories.tags' => 'Tags',
-			'stories.failed_to_load' => 'Failed to load story',
-			'storyGenerator.title' => 'Story Generator',
-			'storyGenerator.subtitle' => 'Create your own mythological story',
-			'storyGenerator.quickStart' => 'Quick Start',
-			'storyGenerator.interactive' => 'Interactive',
-			'storyGenerator.rawPrompt' => 'Raw Prompt',
-			'storyGenerator.yourStoryPrompt' => 'Your Story Prompt',
-			'storyGenerator.writeYourPrompt' => 'Write Your Prompt',
-			'storyGenerator.selectScripture' => 'Select Scripture',
-			'storyGenerator.selectStoryType' => 'Select Story Type',
-			'storyGenerator.selectCharacter' => 'Select Character',
-			'storyGenerator.selectTheme' => 'Select Theme',
-			'storyGenerator.selectSetting' => 'Select Setting',
-			'storyGenerator.selectLanguage' => 'Select Language',
-			'storyGenerator.selectLength' => 'Story Length',
-			'storyGenerator.moreOptions' => 'More Options',
-			'storyGenerator.random' => 'Random',
-			'storyGenerator.generate' => 'Generate Story',
-			'storyGenerator.generating' => 'Generating your story...',
-			'storyGenerator.creatingYourStory' => 'Creating Your Story',
-			'storyGenerator.consultingScriptures' => 'Consulting the ancient scriptures...',
-			'storyGenerator.weavingTale' => 'Weaving your tale...',
-			'storyGenerator.addingWisdom' => 'Adding divine wisdom...',
-			'storyGenerator.polishingNarrative' => 'Polishing the narrative...',
-			'storyGenerator.almostThere' => 'Almost there...',
-			'storyGenerator.generatedStory' => 'Your Generated Story',
-			'storyGenerator.aiGenerated' => 'AI Generated',
-			'storyGenerator.regenerate' => 'Regenerate',
-			'storyGenerator.saveStory' => 'Save Story',
-			'storyGenerator.shareStory' => 'Share Story',
-			'storyGenerator.newStory' => 'New Story',
-			'storyGenerator.saved' => 'Saved',
-			'storyGenerator.storySaved' => 'Story saved to your library',
-			'storyGenerator.story' => 'Story',
-			'storyGenerator.lesson' => 'Lesson',
-			'storyGenerator.didYouKnow' => 'Did You Know?',
-			'storyGenerator.activity' => 'Activity',
-			'storyGenerator.optionalRefine' => 'Optional: Refine with options',
-			'storyGenerator.applyOptions' => 'Apply Options',
-			'storyGenerator.language' => 'Language',
-			'storyGenerator.storyFormat' => 'Story Format',
-			'storyGenerator.storyLength.short' => 'Short',
-			'storyGenerator.storyLength.medium' => 'Medium',
-			'storyGenerator.storyLength.long' => 'Long',
-			'storyGenerator.storyLength.epic' => 'Epic',
-			'storyGenerator.format.narrative' => 'Narrative',
-			'storyGenerator.format.dialogue' => 'Dialogue-based',
-			'storyGenerator.format.poetic' => 'Poetic',
-			'storyGenerator.format.scriptural' => 'Scriptural',
-			'storyGenerator.hints.krishnaTeaching' => 'Tell me a story about Krishna teaching Arjuna...',
-			'storyGenerator.hints.warriorRedemption' => 'Write an epic tale of a warrior seeking redemption...',
-			'storyGenerator.hints.sageWisdom' => 'Create a story about the wisdom of the sages...',
-			'storyGenerator.hints.devotedSeeker' => 'Narrate the journey of a devoted seeker...',
-			'storyGenerator.hints.divineIntervention' => 'Share the legend of divine intervention...',
-			'storyGenerator.errors.incompletePrompt' => 'Please complete all required options',
-			'storyGenerator.errors.generationFailed' => 'Failed to generate story. Please try again.',
-			'chat.title' => 'ChatItihas',
-			'chat.subtitle' => 'Chat with AI about mythology',
-			'chat.friendMode' => 'Friend Mode',
-			'chat.philosophicalMode' => 'Philosophical Mode',
-			'chat.typeMessage' => 'Type your message...',
-			'chat.send' => 'Send',
-			'chat.newChat' => 'New Chat',
-			'chat.chatHistory' => 'Chat History',
-			'chat.clearChat' => 'Clear Chat',
-			'chat.noMessages' => 'No messages yet. Start a conversation!',
-			'chat.list_page' => 'Chat List Page',
-			'map.title' => 'Akhanda Bharata',
-			'map.subtitle' => 'Explore historical locations',
-			'map.searchLocation' => 'Search location...',
-			'map.viewDetails' => 'View Details',
-			'map.showRoute' => 'Show Route',
-			'map.historicalInfo' => 'Historical Information',
-			'map.nearbyPlaces' => 'Nearby Places',
-			'community.title' => 'Community',
-			'community.trending' => 'Trending',
-			'community.following' => 'Following',
-			'community.followers' => 'Followers',
-			'community.posts' => 'Posts',
-			'community.follow' => 'Follow',
-			'community.unfollow' => 'Unfollow',
-			'community.shareYourStory' => 'Share your story...',
-			'community.post' => 'Post',
-			'community.like' => 'Like',
-			'community.comment' => 'Comment',
-			'community.comments' => 'Comments',
-			'community.noPostsYet' => 'No posts yet',
-			'settings.title' => 'Settings',
-			'settings.language' => 'Language',
-			'settings.theme' => 'Theme',
-			'settings.themeLight' => 'Light',
-			'settings.themeDark' => 'Dark',
-			'settings.themeSystem' => 'System Default',
-			'settings.notifications' => 'Notifications',
-			'settings.account' => 'Account',
-			'settings.privacy' => 'Privacy',
-			'settings.about' => 'About',
-			'settings.version' => 'Version',
-			'settings.logout' => 'Logout',
-			'auth.login' => 'Login',
-			'auth.signup' => 'Sign Up',
-			'auth.email' => 'Email',
-			'auth.password' => 'Password',
-			'auth.confirmPassword' => 'Confirm Password',
-			'auth.forgotPassword' => 'Forgot Password?',
-			'auth.resetPassword' => 'Reset Password',
-			'auth.dontHaveAccount' => 'Don\'t have an account?',
-			'auth.alreadyHaveAccount' => 'Already have an account?',
-			'auth.loginSuccess' => 'Login successful',
-			'auth.signupSuccess' => 'Sign up successful',
-			'auth.loginError' => 'Login failed',
-			'auth.signupError' => 'Sign up failed',
-			'error.network' => 'No internet connection',
-			'error.server' => 'Server error occurred',
-			'error.cache' => 'Failed to load cached data',
-			'error.timeout' => 'Request timed out',
-			'error.notFound' => 'Resource not found',
-			'error.validation' => 'Validation failed',
-			'error.unexpected' => 'An unexpected error occurred',
-			'error.tryAgain' => 'Please try again',
-			'subscription.free' => 'Free',
-			'subscription.plus' => 'Plus',
-			'subscription.pro' => 'Pro',
-			'subscription.upgradeToPro' => 'Upgrade to Pro',
-			'subscription.features' => 'Features',
-			'subscription.subscribe' => 'Subscribe',
-			'subscription.currentPlan' => 'Current Plan',
-			'subscription.managePlan' => 'Manage Plan',
-			'notification.title' => 'Notifications',
-			'notification.markAllRead' => 'Mark all read',
-			'notification.noNotifications' => 'No notifications yet',
-			'notification.errorPrefix' => 'Error:',
-			'notification.retry' => 'Retry',
-			'notification.likedYourStory' => '{{actorName}} liked your story',
-			'notification.commentedOnYourStory' => '{{actorName}} commented on your story',
-			'notification.repliedToYourComment' => '{{actorName}} replied to your comment',
-			'notification.startedFollowingYou' => '{{actorName}} started following you',
-			'notification.sentYouAMessage' => '{{actorName}} sent you a message',
-			'profile.followers' => 'Followers',
-			'profile.following' => 'Following',
-			'profile.unfollow' => 'Unfollow',
-			'profile.follow' => 'Follow',
-			'profile.about' => 'About',
-			'profile.stories' => 'Stories',
-			'feed.loading' => 'Loading stories...',
-			'feed.errorTitle' => 'Oops! Something went wrong',
-			'feed.tryAgain' => 'Try Again',
-			'feed.noStoriesAvailable' => 'No stories available',
-			'feed.noImagesAvailable' => 'No image posts available',
-			'feed.noTextPostsAvailable' => 'No text posts available',
-			'feed.noContentAvailable' => 'No content available',
-			'feed.refresh' => 'Refresh',
-			'feed.comments' => 'Comments',
-			'feed.commentsComingSoon' => 'Comments coming soon',
-			'feed.addCommentHint' => 'Add a comment...',
-			'feed.shareStory' => 'Share Story',
-			'feed.sharePost' => 'Share Post',
-			'feed.shareThought' => 'Share Thought',
-			'feed.shareAsImage' => 'Share as Image',
-			'feed.shareAsImageSubtitle' => 'Create a beautiful preview card',
-			'feed.shareLink' => 'Share Link',
-			'feed.shareLinkSubtitle' => 'Copy or share the story link',
-			'feed.shareImageLinkSubtitle' => 'Copy or share the post link',
-			'feed.shareTextLinkSubtitle' => 'Copy or share the thought link',
-			'feed.shareAsText' => 'Share as Text',
-			'feed.shareAsTextSubtitle' => 'Share the story excerpt',
-			'feed.shareQuote' => 'Share Quote',
-			'feed.shareQuoteSubtitle' => 'Share as a quotable text',
-			'feed.shareWithImage' => 'Share with Image',
-			'feed.shareWithImageSubtitle' => 'Share the image with caption',
-			'feed.copyLink' => 'Copy Link',
-			'feed.copyLinkSubtitle' => 'Copy link to clipboard',
-			'feed.copyText' => 'Copy Text',
-			'feed.copyTextSubtitle' => 'Copy the quote to clipboard',
-			'feed.linkCopied' => 'Link copied to clipboard',
-			'feed.textCopied' => 'Text copied to clipboard',
-			'feed.sendToUser' => 'Send to User',
-			'feed.sendToUserSubtitle' => 'Share directly with a friend',
-			'feed.chooseFormat' => 'Choose Format',
-			'feed.linkPreview' => 'Link Preview',
-			'feed.linkPreviewSize' => '1200 × 630',
-			'feed.storyFormat' => 'Story Format',
-			'feed.storyFormatSize' => '1080 × 1920 (Instagram/Stories)',
-			'feed.generatingPreview' => 'Generating preview...',
-			'feed.bookmarked' => 'Bookmarked',
-			'feed.removedFromBookmarks' => 'Removed from bookmarks',
-			'feed.unlike' => 'Unlike, {{count}} likes',
-			'feed.like' => 'Like, {{count}} likes',
-			'feed.commentCount' => '{{count}} comments',
-			'feed.shareCount' => 'Share, {{count}} shares',
-			'feed.removeBookmark' => 'Remove bookmark',
-			'feed.addBookmark' => 'Bookmark',
-			'feed.quote' => 'Quote',
-			'feed.quoteCopied' => 'Quote copied to clipboard',
-			'feed.copy' => 'Copy',
-			'feed.tapToViewFullQuote' => 'Tap to view full quote',
-			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
-			'feed.tabs.all' => 'All',
-			'feed.tabs.stories' => 'Stories',
-			'feed.tabs.posts' => 'Posts',
-			'feed.tabs.videos' => 'Videos',
-			'feed.tabs.images' => 'Images',
-			'feed.tabs.text' => 'Thoughts',
-			'feed.tapToShowCaption' => 'Tap to show caption',
-			'feed.noVideosAvailable' => 'No videos available',
-			_ => null,
-		};
-	}
 }

@@ -11,7 +11,7 @@ import 'package:slang/generated.dart';
 import 'strings.g.dart';
 
 // Path: <root>
-class TranslationsTa with BaseTranslations<AppLocale, Translations> implements Translations {
+class TranslationsTa extends Translations with BaseTranslations<AppLocale, Translations> {
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
 	TranslationsTa({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
@@ -21,15 +21,11 @@ class TranslationsTa with BaseTranslations<AppLocale, Translations> implements T
 		    overrides: overrides ?? {},
 		    cardinalResolver: cardinalResolver,
 		    ordinalResolver: ordinalResolver,
-		  ) {
-		$meta.setFlatMapFunction(_flatMapFunction);
-	}
+		  ),
+		  super(cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
 
 	/// Metadata for the translations of <ta>.
 	@override final TranslationMetadata<AppLocale, Translations> $meta;
-
-	/// Access flat map
-	@override dynamic operator[](String key) => $meta.getTranslation(key);
 
 	late final TranslationsTa _root = this; // ignore: unused_field
 
@@ -57,8 +53,8 @@ class TranslationsTa with BaseTranslations<AppLocale, Translations> implements T
 }
 
 // Path: app
-class _TranslationsAppTa implements TranslationsAppEn {
-	_TranslationsAppTa._(this._root);
+class _TranslationsAppTa extends TranslationsAppEn {
+	_TranslationsAppTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -68,8 +64,8 @@ class _TranslationsAppTa implements TranslationsAppEn {
 }
 
 // Path: common
-class _TranslationsCommonTa implements TranslationsCommonEn {
-	_TranslationsCommonTa._(this._root);
+class _TranslationsCommonTa extends TranslationsCommonEn {
+	_TranslationsCommonTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -91,12 +87,12 @@ class _TranslationsCommonTa implements TranslationsCommonEn {
 	@override String get skip => 'தவிர்';
 	@override String get yes => 'ஆம்';
 	@override String get no => 'இல்லை';
-	@override String get read_full_story => 'Read the full story';
+	@override String get readFullStory => 'Read the full story';
 }
 
 // Path: navigation
-class _TranslationsNavigationTa implements TranslationsNavigationEn {
-	_TranslationsNavigationTa._(this._root);
+class _TranslationsNavigationTa extends TranslationsNavigationEn {
+	_TranslationsNavigationTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -111,8 +107,8 @@ class _TranslationsNavigationTa implements TranslationsNavigationEn {
 }
 
 // Path: home
-class _TranslationsHomeTa implements TranslationsHomeEn {
-	_TranslationsHomeTa._(this._root);
+class _TranslationsHomeTa extends TranslationsHomeEn {
+	_TranslationsHomeTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -132,8 +128,8 @@ class _TranslationsHomeTa implements TranslationsHomeEn {
 }
 
 // Path: stories
-class _TranslationsStoriesTa implements TranslationsStoriesEn {
-	_TranslationsStoriesTa._(this._root);
+class _TranslationsStoriesTa extends TranslationsStoriesEn {
+	_TranslationsStoriesTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -155,12 +151,12 @@ class _TranslationsStoriesTa implements TranslationsStoriesEn {
 	@override String get publishedOn => 'வெளியிடப்பட்டது';
 	@override String get category => 'வகை';
 	@override String get tags => 'குறிச்சொற்கள்';
-	@override String get failed_to_load => 'Failed to load story';
+	@override String get failedToLoad => 'Failed to load story';
 }
 
 // Path: storyGenerator
-class _TranslationsStoryGeneratorTa implements TranslationsStoryGeneratorEn {
-	_TranslationsStoryGeneratorTa._(this._root);
+class _TranslationsStoryGeneratorTa extends TranslationsStoryGeneratorEn {
+	_TranslationsStoryGeneratorTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -212,8 +208,8 @@ class _TranslationsStoryGeneratorTa implements TranslationsStoryGeneratorEn {
 }
 
 // Path: chat
-class _TranslationsChatTa implements TranslationsChatEn {
-	_TranslationsChatTa._(this._root);
+class _TranslationsChatTa extends TranslationsChatEn {
+	_TranslationsChatTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -228,12 +224,12 @@ class _TranslationsChatTa implements TranslationsChatEn {
 	@override String get chatHistory => 'அரட்டை வரலாறு';
 	@override String get clearChat => 'அரட்டையை அழி';
 	@override String get noMessages => 'இன்னும் செய்திகள் இல்லை. உரையாடலைத் தொடங்குங்கள்!';
-	@override String get list_page => 'Chat List Page';
+	@override String get listPage => 'Chat List Page';
 }
 
 // Path: map
-class _TranslationsMapTa implements TranslationsMapEn {
-	_TranslationsMapTa._(this._root);
+class _TranslationsMapTa extends TranslationsMapEn {
+	_TranslationsMapTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -248,8 +244,8 @@ class _TranslationsMapTa implements TranslationsMapEn {
 }
 
 // Path: community
-class _TranslationsCommunityTa implements TranslationsCommunityEn {
-	_TranslationsCommunityTa._(this._root);
+class _TranslationsCommunityTa extends TranslationsCommunityEn {
+	_TranslationsCommunityTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -270,8 +266,8 @@ class _TranslationsCommunityTa implements TranslationsCommunityEn {
 }
 
 // Path: settings
-class _TranslationsSettingsTa implements TranslationsSettingsEn {
-	_TranslationsSettingsTa._(this._root);
+class _TranslationsSettingsTa extends TranslationsSettingsEn {
+	_TranslationsSettingsTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -291,8 +287,8 @@ class _TranslationsSettingsTa implements TranslationsSettingsEn {
 }
 
 // Path: auth
-class _TranslationsAuthTa implements TranslationsAuthEn {
-	_TranslationsAuthTa._(this._root);
+class _TranslationsAuthTa extends TranslationsAuthEn {
+	_TranslationsAuthTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -313,8 +309,8 @@ class _TranslationsAuthTa implements TranslationsAuthEn {
 }
 
 // Path: error
-class _TranslationsErrorTa implements TranslationsErrorEn {
-	_TranslationsErrorTa._(this._root);
+class _TranslationsErrorTa extends TranslationsErrorEn {
+	_TranslationsErrorTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -330,8 +326,8 @@ class _TranslationsErrorTa implements TranslationsErrorEn {
 }
 
 // Path: subscription
-class _TranslationsSubscriptionTa implements TranslationsSubscriptionEn {
-	_TranslationsSubscriptionTa._(this._root);
+class _TranslationsSubscriptionTa extends TranslationsSubscriptionEn {
+	_TranslationsSubscriptionTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -347,8 +343,8 @@ class _TranslationsSubscriptionTa implements TranslationsSubscriptionEn {
 }
 
 // Path: notification
-class _TranslationsNotificationTa implements TranslationsNotificationEn {
-	_TranslationsNotificationTa._(this._root);
+class _TranslationsNotificationTa extends TranslationsNotificationEn {
+	_TranslationsNotificationTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -358,16 +354,16 @@ class _TranslationsNotificationTa implements TranslationsNotificationEn {
 	@override String get noNotifications => 'இன்னும் அறிவிப்புகள் இல்லை';
 	@override String get errorPrefix => 'பிழை:';
 	@override String get retry => 'மீண்டும் முயற்சிக்கவும்';
-	@override String get likedYourStory => '{{actorName}} உங்கள் கதையை விரும்பினார்';
-	@override String get commentedOnYourStory => '{{actorName}} உங்கள் கதையில் கருத்து தெரிவித்தார்';
-	@override String get repliedToYourComment => '{{actorName}} உங்கள் கருத்துக்கு பதிலளித்தார்';
-	@override String get startedFollowingYou => '{{actorName}} உங்களை பின்தொடரத் தொடங்கினார்';
-	@override String get sentYouAMessage => '{{actorName}} உங்களுக்கு ஒரு செய்தியை அனுப்பினார்';
+	@override String likedYourStory({required Object actorName}) => '${actorName} உங்கள் கதையை விரும்பினார்';
+	@override String commentedOnYourStory({required Object actorName}) => '${actorName} உங்கள் கதையில் கருத்து தெரிவித்தார்';
+	@override String repliedToYourComment({required Object actorName}) => '${actorName} உங்கள் கருத்துக்கு பதிலளித்தார்';
+	@override String startedFollowingYou({required Object actorName}) => '${actorName} உங்களை பின்தொடரத் தொடங்கினார்';
+	@override String sentYouAMessage({required Object actorName}) => '${actorName} உங்களுக்கு ஒரு செய்தியை அனுப்பினார்';
 }
 
 // Path: profile
-class _TranslationsProfileTa implements TranslationsProfileEn {
-	_TranslationsProfileTa._(this._root);
+class _TranslationsProfileTa extends TranslationsProfileEn {
+	_TranslationsProfileTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -381,8 +377,8 @@ class _TranslationsProfileTa implements TranslationsProfileEn {
 }
 
 // Path: feed
-class _TranslationsFeedTa implements TranslationsFeedEn {
-	_TranslationsFeedTa._(this._root);
+class _TranslationsFeedTa extends TranslationsFeedEn {
+	_TranslationsFeedTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -429,10 +425,10 @@ class _TranslationsFeedTa implements TranslationsFeedEn {
 	@override String get generatingPreview => 'முன்னோட்டம் உருவாக்கப்படுகிறது...';
 	@override String get bookmarked => 'புக் மார்க் செய்யப்பட்டது';
 	@override String get removedFromBookmarks => 'புக் மார்கிலிருந்து நீக்கப்பட்டது';
-	@override String get unlike => 'Unlike, {{count}} likes';
-	@override String get like => 'Like, {{count}} likes';
-	@override String get commentCount => '{{count}} comments';
-	@override String get shareCount => 'Share, {{count}} shares';
+	@override String unlike({required Object count}) => 'Unlike, ${count} likes';
+	@override String like({required Object count}) => 'Like, ${count} likes';
+	@override String commentCount({required Object count}) => '${count} comments';
+	@override String shareCount({required Object count}) => 'Share, ${count} shares';
 	@override String get removeBookmark => 'Remove bookmark';
 	@override String get addBookmark => 'Bookmark';
 	@override String get quote => 'Quote';
@@ -446,8 +442,8 @@ class _TranslationsFeedTa implements TranslationsFeedEn {
 }
 
 // Path: homeScreen
-class _TranslationsHomeScreenTa implements TranslationsHomeScreenEn {
-	_TranslationsHomeScreenTa._(this._root);
+class _TranslationsHomeScreenTa extends TranslationsHomeScreenEn {
+	_TranslationsHomeScreenTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -469,7 +465,7 @@ class _TranslationsHomeScreenTa implements TranslationsHomeScreenEn {
 	@override String get exploreStories => 'உங்கள் பயணத்தைத் தொடங்க கதைகளை ஆராயுங்கள்';
 	@override String get saveForLater => 'நீங்கள் விரும்பும் கதைகளை புக்மார்க் செய்யுங்கள்';
 	@override String get noActivityYet => 'இதுவரை செயல்பாடு இல்லை';
-	@override String get minLeft => '{{count}} நிமிடம் மீதம்';
+	@override String minLeft({required Object count}) => '${count} நிமிடம் மீதம்';
 	@override String get activityHistory => 'செயல்பாட்டு வரலாறு';
 	@override String get storyGenerated => 'கதை உருவாக்கப்பட்டது';
 	@override String get storyRead => 'கதை படிக்கப்பட்டது';
@@ -486,8 +482,8 @@ class _TranslationsHomeScreenTa implements TranslationsHomeScreenEn {
 }
 
 // Path: storyGenerator.storyLength
-class _TranslationsStoryGeneratorStoryLengthTa implements TranslationsStoryGeneratorStoryLengthEn {
-	_TranslationsStoryGeneratorStoryLengthTa._(this._root);
+class _TranslationsStoryGeneratorStoryLengthTa extends TranslationsStoryGeneratorStoryLengthEn {
+	_TranslationsStoryGeneratorStoryLengthTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -499,8 +495,8 @@ class _TranslationsStoryGeneratorStoryLengthTa implements TranslationsStoryGener
 }
 
 // Path: storyGenerator.format
-class _TranslationsStoryGeneratorFormatTa implements TranslationsStoryGeneratorFormatEn {
-	_TranslationsStoryGeneratorFormatTa._(this._root);
+class _TranslationsStoryGeneratorFormatTa extends TranslationsStoryGeneratorFormatEn {
+	_TranslationsStoryGeneratorFormatTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -512,8 +508,8 @@ class _TranslationsStoryGeneratorFormatTa implements TranslationsStoryGeneratorF
 }
 
 // Path: storyGenerator.hints
-class _TranslationsStoryGeneratorHintsTa implements TranslationsStoryGeneratorHintsEn {
-	_TranslationsStoryGeneratorHintsTa._(this._root);
+class _TranslationsStoryGeneratorHintsTa extends TranslationsStoryGeneratorHintsEn {
+	_TranslationsStoryGeneratorHintsTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -526,8 +522,8 @@ class _TranslationsStoryGeneratorHintsTa implements TranslationsStoryGeneratorHi
 }
 
 // Path: storyGenerator.errors
-class _TranslationsStoryGeneratorErrorsTa implements TranslationsStoryGeneratorErrorsEn {
-	_TranslationsStoryGeneratorErrorsTa._(this._root);
+class _TranslationsStoryGeneratorErrorsTa extends TranslationsStoryGeneratorErrorsEn {
+	_TranslationsStoryGeneratorErrorsTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -537,8 +533,8 @@ class _TranslationsStoryGeneratorErrorsTa implements TranslationsStoryGeneratorE
 }
 
 // Path: feed.tabs
-class _TranslationsFeedTabsTa implements TranslationsFeedTabsEn {
-	_TranslationsFeedTabsTa._(this._root);
+class _TranslationsFeedTabsTa extends TranslationsFeedTabsEn {
+	_TranslationsFeedTabsTa._(TranslationsTa root) : this._root = root, super.internal(root);
 
 	final TranslationsTa _root; // ignore: unused_field
 
@@ -549,309 +545,4 @@ class _TranslationsFeedTabsTa implements TranslationsFeedTabsEn {
 	@override String get videos => 'வீடியோக்கள்';
 	@override String get images => 'படங்கள்';
 	@override String get text => 'சிந்தனைகள்';
-}
-
-/// The flat map containing all translations for locale <ta>.
-/// Only for edge cases! For simple maps, use the map function of this library.
-///
-/// The Dart AOT compiler has issues with very large switch statements,
-/// so the map is split into smaller functions (512 entries each).
-extension on TranslationsTa {
-	dynamic _flatMapFunction(String path) {
-		return switch (path) {
-			'app.name' => 'மைஇதிஹாஸ்',
-			'app.tagline' => 'இந்திய புராணங்களைக் கண்டறியவும்',
-			'common.ok' => 'சரி',
-			'common.cancel' => 'ரத்துசெய்',
-			'common.confirm' => 'உறுதிப்படுத்து',
-			'common.delete' => 'நீக்கு',
-			'common.edit' => 'திருத்து',
-			'common.save' => 'சேமி',
-			'common.share' => 'பகிர்',
-			'common.search' => 'தேடு',
-			'common.loading' => 'ஏற்றுகிறது...',
-			'common.error' => 'பிழை',
-			'common.retry' => 'மீண்டும் முயற்சி',
-			'common.back' => 'பின்',
-			'common.next' => 'அடுத்து',
-			'common.finish' => 'முடி',
-			'common.skip' => 'தவிர்',
-			'common.yes' => 'ஆம்',
-			'common.no' => 'இல்லை',
-			'common.read_full_story' => 'Read the full story',
-			'navigation.home' => 'முகப்பு',
-			'navigation.stories' => 'கதைகள்',
-			'navigation.chat' => 'அரட்டை',
-			'navigation.map' => 'வரைபடம்',
-			'navigation.community' => 'சமூகம்',
-			'navigation.settings' => 'அமைப்புகள்',
-			'navigation.profile' => 'சுயவிவரம்',
-			'home.title' => 'மைஇதிஹாஸ்',
-			'home.storyGenerator' => 'கதை உருவாக்கி',
-			'home.chatItihas' => 'அரட்டைஇதிஹாஸ்',
-			'home.communityStories' => 'சமூக கதைகள்',
-			'home.maps' => 'வரைபடங்கள்',
-			'home.greetingMorning' => 'காலை வணக்கம்',
-			'home.continueReading' => 'படிப்பதைத் தொடரவும்',
-			'home.greetingAfternoon' => 'மதிய வணக்கம்',
-			'home.greetingEvening' => 'மாலை வணக்கம்',
-			'home.exploreStories' => 'கதைகளை ஆராயுங்கள்',
-			'home.generateStory' => 'கதை உருவாக்கு',
-			'home.content' => 'Home Content',
-			'stories.title' => 'கதைகள்',
-			'stories.searchHint' => 'தலைப்பு அல்லது ஆசிரியரால் தேடவும்...',
-			'stories.sortBy' => 'வரிசைப்படுத்து',
-			'stories.sortNewest' => 'புதியது முதலில்',
-			'stories.sortOldest' => 'பழையது முதலில்',
-			'stories.sortPopular' => 'மிகவும் பிரபலமான',
-			'stories.noStories' => 'கதைகள் எதுவும் இல்லை',
-			'stories.loadingStories' => 'கதைகள் ஏற்றப்படுகின்றன...',
-			'stories.errorLoadingStories' => 'கதைகளை ஏற்ற முடியவில்லை',
-			'stories.storyDetails' => 'கதை விவரங்கள்',
-			'stories.continueReading' => 'படிப்பதைத் தொடரவும்',
-			'stories.readMore' => 'மேலும் படிக்க',
-			'stories.readLess' => 'குறைவாக படிக்க',
-			'stories.author' => 'ஆசிரியர்',
-			'stories.publishedOn' => 'வெளியிடப்பட்டது',
-			'stories.category' => 'வகை',
-			'stories.tags' => 'குறிச்சொற்கள்',
-			'stories.failed_to_load' => 'Failed to load story',
-			'storyGenerator.title' => 'கதை உருவாக்கி',
-			'storyGenerator.subtitle' => 'உங்கள் சொந்த புராண கதையை உருவாக்குங்கள்',
-			'storyGenerator.quickStart' => 'விரைவு தொடக்கம்',
-			'storyGenerator.interactive' => 'ஊடாடும்',
-			'storyGenerator.rawPrompt' => 'மூல வரியுரு',
-			'storyGenerator.yourStoryPrompt' => 'உங்கள் கதை வரியுரு',
-			'storyGenerator.writeYourPrompt' => 'உங்கள் வரியுருவை எழுதுங்கள்',
-			'storyGenerator.selectScripture' => 'நூலைத் தேர்ந்தெடுக்கவும்',
-			'storyGenerator.selectStoryType' => 'கதை வகையைத் தேர்ந்தெடுக்கவும்',
-			'storyGenerator.selectCharacter' => 'பாத்திரத்தைத் தேர்ந்தெடுக்கவும்',
-			'storyGenerator.selectTheme' => 'தீம் தேர்ந்தெடுக்கவும்',
-			'storyGenerator.selectSetting' => 'அமைப்பைத் தேர்ந்தெடுக்கவும்',
-			'storyGenerator.selectLanguage' => 'மொழி தேர்ந்தெடுக்கவும்',
-			'storyGenerator.selectLength' => 'கதை நீளம்',
-			'storyGenerator.moreOptions' => 'மேலும் விருப்பங்கள்',
-			'storyGenerator.random' => 'சீரற்ற',
-			'storyGenerator.generate' => 'கதை உருவாக்கு',
-			'storyGenerator.generating' => 'உங்கள் கதை உருவாக்கப்படுகிறது...',
-			'storyGenerator.creatingYourStory' => 'உங்கள் கதை உருவாக்கப்படுகிறது',
-			'storyGenerator.consultingScriptures' => 'பழங்கால நூல்களை ஆலோசிக்கிறது...',
-			'storyGenerator.weavingTale' => 'உங்கள் கதையை நெய்கிறது...',
-			'storyGenerator.addingWisdom' => 'தெய்வீக ஞானம் சேர்க்கிறது...',
-			'storyGenerator.polishingNarrative' => 'கதையை மெருகேற்றுகிறது...',
-			'storyGenerator.almostThere' => 'கிட்டத்தட்ட முடிந்தது...',
-			'storyGenerator.generatedStory' => 'உங்கள் உருவாக்கிய கதை',
-			'storyGenerator.aiGenerated' => 'AI உருவாக்கியது',
-			'storyGenerator.regenerate' => 'மீண்டும் உருவாக்கு',
-			'storyGenerator.saveStory' => 'கதையைச் சேமி',
-			'storyGenerator.shareStory' => 'கதையைப் பகிர்',
-			'storyGenerator.newStory' => 'புதிய கதை',
-			'storyGenerator.saved' => 'சேமிக்கப்பட்டது',
-			'storyGenerator.storySaved' => 'கதை உங்கள் நூலகத்தில் சேமிக்கப்பட்டது',
-			'storyGenerator.story' => 'கதை',
-			'storyGenerator.lesson' => 'பாடம்',
-			'storyGenerator.didYouKnow' => 'உங்களுக்குத் தெரியுமா?',
-			'storyGenerator.activity' => 'செயல்பாடு',
-			'storyGenerator.optionalRefine' => 'விருப்பம்: விருப்பங்களுடன் செம்மைப்படுத்து',
-			'storyGenerator.applyOptions' => 'விருப்பங்களை பயன்படுத்து',
-			'storyGenerator.language' => 'மொழி',
-			'storyGenerator.storyFormat' => 'கதை வடிவம்',
-			'storyGenerator.storyLength.short' => 'குறுகிய',
-			'storyGenerator.storyLength.medium' => 'நடுத்தர',
-			'storyGenerator.storyLength.long' => 'நீண்ட',
-			'storyGenerator.storyLength.epic' => 'இதிகாசம்',
-			'storyGenerator.format.narrative' => 'கதை சொல்லல்',
-			'storyGenerator.format.dialogue' => 'உரையாடல் அடிப்படை',
-			'storyGenerator.format.poetic' => 'கவிதை',
-			'storyGenerator.format.scriptural' => 'வேத நூல்',
-			'storyGenerator.hints.krishnaTeaching' => 'கிருஷ்ணர் அர்ஜுனனுக்கு கற்பிக்கும் கதை...',
-			'storyGenerator.hints.warriorRedemption' => 'விடுதலை தேடும் வீரனின் இதிகாசம்...',
-			'storyGenerator.hints.sageWisdom' => 'முனிவர்களின் ஞானக் கதை...',
-			'storyGenerator.hints.devotedSeeker' => 'பக்தனின் பயணம்...',
-			'storyGenerator.hints.divineIntervention' => 'தெய்வீக தலையீட்டின் புராணம்...',
-			'storyGenerator.errors.incompletePrompt' => 'அனைத்து தேவையான விருப்பங்களையும் முடிக்கவும்',
-			'storyGenerator.errors.generationFailed' => 'கதை உருவாக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.',
-			'chat.title' => 'அரட்டைஇதிஹாஸ்',
-			'chat.subtitle' => 'புராணங்கள் பற்றி AI உடன் அரட்டையடிக்கவும்',
-			'chat.friendMode' => 'நண்பர் பயன்முறை',
-			'chat.philosophicalMode' => 'தத்துவ பயன்முறை',
-			'chat.typeMessage' => 'உங்கள் செய்தியை தட்டச்சு செய்யவும்...',
-			'chat.send' => 'அனுப்பு',
-			'chat.newChat' => 'புதிய அரட்டை',
-			'chat.chatHistory' => 'அரட்டை வரலாறு',
-			'chat.clearChat' => 'அரட்டையை அழி',
-			'chat.noMessages' => 'இன்னும் செய்திகள் இல்லை. உரையாடலைத் தொடங்குங்கள்!',
-			'chat.list_page' => 'Chat List Page',
-			'map.title' => 'அகண்ட பாரதம்',
-			'map.subtitle' => 'வரலாற்று இடங்களை ஆராயுங்கள்',
-			'map.searchLocation' => 'இடத்தைத் தேடு...',
-			'map.viewDetails' => 'விவரங்களைக் காண்க',
-			'map.showRoute' => 'பாதையைக் காட்டு',
-			'map.historicalInfo' => 'வரலாற்று தகவல்',
-			'map.nearbyPlaces' => 'அருகிலுள்ள இடங்கள்',
-			'community.title' => 'சமூகம்',
-			'community.trending' => 'டிரெண்டிங்',
-			'community.following' => 'பின்தொடர்தல்',
-			'community.followers' => 'பின்தொடர்பவர்கள்',
-			'community.posts' => 'இடுகைகள்',
-			'community.follow' => 'பின்தொடர்',
-			'community.unfollow' => 'பின்தொடர்வதை நிறுத்து',
-			'community.shareYourStory' => 'உங்கள் கதையைப் பகிர்ந்து கொள்ளுங்கள்...',
-			'community.post' => 'இடுகை',
-			'community.like' => 'விருப்பம்',
-			'community.comment' => 'கருத்து',
-			'community.comments' => 'கருத்துகள்',
-			'community.noPostsYet' => 'இன்னும் இடுகைகள் இல்லை',
-			'settings.title' => 'அமைப்புகள்',
-			'settings.language' => 'மொழி',
-			'settings.theme' => 'தீம்',
-			'settings.themeLight' => 'வெளிச்சம்',
-			'settings.themeDark' => 'இருள்',
-			'settings.themeSystem' => 'கணினி இயல்புநிலை',
-			'settings.notifications' => 'அறிவிப்புகள்',
-			'settings.account' => 'கணக்கு',
-			'settings.privacy' => 'தனியுரிமை',
-			'settings.about' => 'எங்களைப் பற்றி',
-			'settings.version' => 'பதிப்பு',
-			'settings.logout' => 'வெளியேறு',
-			'auth.login' => 'உள்நுழை',
-			'auth.signup' => 'பதிவு செய்யவும்',
-			'auth.email' => 'மின்னஞ்சல்',
-			'auth.password' => 'கடவுச்சொல்',
-			'auth.confirmPassword' => 'கடவுச்சொல்லை உறுதிப்படுத்தவும்',
-			'auth.forgotPassword' => 'கடவுச்சொல்லை மறந்துவிட்டீர்களா?',
-			'auth.resetPassword' => 'கடவுச்சொல்லை மீட்டமை',
-			'auth.dontHaveAccount' => 'கணக்கு இல்லையா?',
-			'auth.alreadyHaveAccount' => 'ஏற்கனவே கணக்கு உள்ளதா?',
-			'auth.loginSuccess' => 'உள்நுழைவு வெற்றிகரமாக',
-			'auth.signupSuccess' => 'பதிவு வெற்றிகரமாக',
-			'auth.loginError' => 'உள்நுழைவு தோல்வியடைந்தது',
-			'auth.signupError' => 'பதிவு தோல்வியடைந்தது',
-			'error.network' => 'இணைய இணைப்பு இல்லை',
-			'error.server' => 'சேவையக பிழை ஏற்பட்டது',
-			'error.cache' => 'கேச் செய்யப்பட்ட தரவை ஏற்ற முடியவில்லை',
-			'error.timeout' => 'கோரிக்கை காலாவதியானது',
-			'error.notFound' => 'வளம் கண்டுபிடிக்கப்படவில்லை',
-			'error.validation' => 'சரிபார்ப்பு தோல்வியடைந்தது',
-			'error.unexpected' => 'எதிர்பாராத பிழை ஏற்பட்டது',
-			'error.tryAgain' => 'மீண்டும் முயற்சிக்கவும்',
-			'subscription.free' => 'இலவசம்',
-			'subscription.plus' => 'பிளஸ்',
-			'subscription.pro' => 'ப்ரோ',
-			'subscription.upgradeToPro' => 'ப்ரோவிற்கு மேம்படுத்தவும்',
-			'subscription.features' => 'அம்சங்கள்',
-			'subscription.subscribe' => 'குழுசேர்',
-			'subscription.currentPlan' => 'தற்போதைய திட்டம்',
-			'subscription.managePlan' => 'திட்டத்தை நிர்வகிக்கவும்',
-			'notification.title' => 'அறிவிப்புகள்',
-			'notification.markAllRead' => 'அனைத்தையும் படித்ததாக குறிக்கவும்',
-			'notification.noNotifications' => 'இன்னும் அறிவிப்புகள் இல்லை',
-			'notification.errorPrefix' => 'பிழை:',
-			'notification.retry' => 'மீண்டும் முயற்சிக்கவும்',
-			'notification.likedYourStory' => '{{actorName}} உங்கள் கதையை விரும்பினார்',
-			'notification.commentedOnYourStory' => '{{actorName}} உங்கள் கதையில் கருத்து தெரிவித்தார்',
-			'notification.repliedToYourComment' => '{{actorName}} உங்கள் கருத்துக்கு பதிலளித்தார்',
-			'notification.startedFollowingYou' => '{{actorName}} உங்களை பின்தொடரத் தொடங்கினார்',
-			'notification.sentYouAMessage' => '{{actorName}} உங்களுக்கு ஒரு செய்தியை அனுப்பினார்',
-			'profile.followers' => 'பின்தொடர்பவர்கள்',
-			'profile.following' => 'பின்தொடர்பவர்கள்',
-			'profile.unfollow' => 'பின்தொடர்வதை நிறுத்து',
-			'profile.follow' => 'பின்தொடர்',
-			'profile.about' => 'பற்றி',
-			'profile.stories' => 'கதைகள்',
-			'feed.loading' => 'கதைகள் ஏற்றப்படுகிறது...',
-			'feed.errorTitle' => 'அப்பா! ஏதோ தவறு நடந்தது',
-			'feed.tryAgain' => 'மீண்டும் முயற்சிக்கவும்',
-			'feed.noStoriesAvailable' => 'கதைகள் எதுவும் இல்லை',
-			'feed.noImagesAvailable' => 'படப் பதிவுகள் எதுவும் இல்லை',
-			'feed.noTextPostsAvailable' => 'சிந்தனை பதிவுகள் எதுவும் இல்லை',
-			'feed.noContentAvailable' => 'உள்ளடக்கம் எதுவும் இல்லை',
-			'feed.refresh' => 'புதுப்பிக்க',
-			'feed.comments' => 'கருத்துகள்',
-			'feed.commentsComingSoon' => 'கருத்துகள் விரைவில் வருகிறது',
-			'feed.addCommentHint' => 'கருத்தைச் சேர்க்கவும்...',
-			'feed.shareStory' => 'கதையை பகிரவும்',
-			'feed.sharePost' => 'பதிவை பகிரவும்',
-			'feed.shareThought' => 'சிந்தனையை பகிரவும்',
-			'feed.shareAsImage' => 'படமாக பகிரவும்',
-			'feed.shareAsImageSubtitle' => 'அழகான முன்னோட்ட அட்டையை உருவாக்கவும்',
-			'feed.shareLink' => 'இணைப்பை பகிரவும்',
-			'feed.shareLinkSubtitle' => 'கதை இணைப்பை நகலெடுக்க அல்லது பகிரவும்',
-			'feed.shareImageLinkSubtitle' => 'பதிவு இணைப்பை நகலெடுக்க அல்லது பகிரவும்',
-			'feed.shareTextLinkSubtitle' => 'சிந்தனை இணைப்பை நகலெடுக்க அல்லது பகிரவும்',
-			'feed.shareAsText' => 'உரையாக பகிரவும்',
-			'feed.shareAsTextSubtitle' => 'கதையின் சுருக்கத்தை பகிரவும்',
-			'feed.shareQuote' => 'மேற்கோளை பகிரவும்',
-			'feed.shareQuoteSubtitle' => 'மேற்கோள் உரையாக பகிரவும்',
-			'feed.shareWithImage' => 'படத்துடன் பகிரவும்',
-			'feed.shareWithImageSubtitle' => 'தலைப்புடன் படத்தை பகிரவும்',
-			'feed.copyLink' => 'இணைப்பை நகலெடு',
-			'feed.copyLinkSubtitle' => 'கிளிப்போர்டுக்கு இணைப்பை நகலெடுக்கவும்',
-			'feed.copyText' => 'உரையை நகலெடு',
-			'feed.copyTextSubtitle' => 'கிளிப்போர்டுக்கு மேற்கோளை நகலெடுக்கவும்',
-			'feed.linkCopied' => 'இணைப்பு கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது',
-			'feed.textCopied' => 'உரை கிளிப்போர்டுக்கு நகலெடுக்கப்பட்டது',
-			'feed.sendToUser' => 'பயனருக்கு அனுப்பவும்',
-			'feed.sendToUserSubtitle' => 'நண்பருடன் நேரடியாக பகிரவும்',
-			'feed.chooseFormat' => 'வடிவத்தைத் தேர்ந்தெடுக்கவும்',
-			'feed.linkPreview' => 'இணைப்பு முன்னோட்டம்',
-			'feed.linkPreviewSize' => '1200 × 630',
-			'feed.storyFormat' => 'ஸ்டோரி வடிவம்',
-			'feed.storyFormatSize' => '1080 × 1920 (Instagram/Stories)',
-			'feed.generatingPreview' => 'முன்னோட்டம் உருவாக்கப்படுகிறது...',
-			'feed.bookmarked' => 'புக் மார்க் செய்யப்பட்டது',
-			'feed.removedFromBookmarks' => 'புக் மார்கிலிருந்து நீக்கப்பட்டது',
-			'feed.unlike' => 'Unlike, {{count}} likes',
-			'feed.like' => 'Like, {{count}} likes',
-			'feed.commentCount' => '{{count}} comments',
-			'feed.shareCount' => 'Share, {{count}} shares',
-			'feed.removeBookmark' => 'Remove bookmark',
-			'feed.addBookmark' => 'Bookmark',
-			'feed.quote' => 'Quote',
-			'feed.quoteCopied' => 'Quote copied to clipboard',
-			'feed.copy' => 'Copy',
-			'feed.tapToViewFullQuote' => 'Tap to view full quote',
-			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
-			'feed.tabs.all' => 'அனைத்தும்',
-			'feed.tabs.stories' => 'கதைகள்',
-			'feed.tabs.posts' => 'பதிவுகள்',
-			'feed.tabs.videos' => 'வீடியோக்கள்',
-			'feed.tabs.images' => 'படங்கள்',
-			'feed.tabs.text' => 'சிந்தனைகள்',
-			'feed.tapToShowCaption' => 'தலைப்பைக் காட்ட தட்டவும்',
-			'feed.noVideosAvailable' => 'வீடியோக்கள் எதுவும் இல்லை',
-			'homeScreen.greeting' => 'வணக்கம்',
-			'homeScreen.quoteOfTheDay' => 'இன்றைய மேற்கோள்',
-			'homeScreen.shareQuote' => 'மேற்கோளைப் பகிரவும்',
-			'homeScreen.copyQuote' => 'மேற்கோளை நகலெடுக்கவும்',
-			'homeScreen.quoteCopied' => 'மேற்கோள் கிளிப்போர்டில் நகலெடுக்கப்பட்டது',
-			'homeScreen.featuredStories' => 'சிறப்புக் கதைகள்',
-			'homeScreen.quickActions' => 'விரைவு செயல்கள்',
-			'homeScreen.generateStory' => 'கதை உருவாக்கு',
-			'homeScreen.chatWithKrishna' => 'கிருஷ்ணருடன் அரட்டை',
-			'homeScreen.myActivity' => 'என் செயல்பாடு',
-			'homeScreen.continueReading' => 'படிப்பைத் தொடரவும்',
-			'homeScreen.savedStories' => 'சேமித்த கதைகள்',
-			'homeScreen.seeAll' => 'அனைத்தையும் காண்க',
-			'homeScreen.startReading' => 'படிக்கத் தொடங்குங்கள்',
-			'homeScreen.exploreStories' => 'உங்கள் பயணத்தைத் தொடங்க கதைகளை ஆராயுங்கள்',
-			'homeScreen.saveForLater' => 'நீங்கள் விரும்பும் கதைகளை புக்மார்க் செய்யுங்கள்',
-			'homeScreen.noActivityYet' => 'இதுவரை செயல்பாடு இல்லை',
-			'homeScreen.minLeft' => '{{count}} நிமிடம் மீதம்',
-			'homeScreen.activityHistory' => 'செயல்பாட்டு வரலாறு',
-			'homeScreen.storyGenerated' => 'கதை உருவாக்கப்பட்டது',
-			'homeScreen.storyRead' => 'கதை படிக்கப்பட்டது',
-			'homeScreen.storyBookmarked' => 'கதை புக்மார்க் செய்யப்பட்டது',
-			'homeScreen.storyShared' => 'கதை பகிரப்பட்டது',
-			'homeScreen.storyCompleted' => 'கதை முடிக்கப்பட்டது',
-			'homeScreen.today' => 'இன்று',
-			'homeScreen.yesterday' => 'நேற்று',
-			'homeScreen.thisWeek' => 'இந்த வாரம்',
-			'homeScreen.earlier' => 'முன்னர்',
-			'homeScreen.noContinueReading' => 'படிக்க எதுவும் இல்லை',
-			'homeScreen.noSavedStories' => 'சேமித்த கதைகள் இல்லை',
-			'homeScreen.bookmarkStoriesToSave' => 'சேமிக்க கதைகளை புக்மார்க் செய்யவும்',
-			_ => null,
-		};
-	}
 }

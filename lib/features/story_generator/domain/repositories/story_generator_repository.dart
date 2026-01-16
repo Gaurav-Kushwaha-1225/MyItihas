@@ -14,6 +14,9 @@ abstract class StoryGeneratorRepository {
     required GeneratorOptions options,
   });
 
+  /// Get a single generated story by ID
+  Future<Either<Failure, Story>> getStoryById(String storyId);
+
   /// Get random options for story generation
   Future<Either<Failure, StoryPrompt>> getRandomOptions();
 

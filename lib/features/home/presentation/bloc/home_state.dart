@@ -39,6 +39,12 @@ abstract class HomeState with _$HomeState {
     /// Whether saved stories are loading
     @Default(false) bool isSavedStoriesLoading,
 
+    /// User's generated stories
+    @Default([]) List<Story> myGeneratedStories,
+
+    /// Whether generated stories are loading
+    @Default(false) bool isMyGeneratedStoriesLoading,
+
     /// Error message if any
     String? errorMessage,
 
@@ -56,12 +62,14 @@ abstract class HomeState with _$HomeState {
       isQuoteLoading ||
       isFeaturedLoading ||
       isContinueReadingLoading ||
-      isSavedStoriesLoading;
+      isSavedStoriesLoading ||
+      isMyGeneratedStoriesLoading;
 
   /// Whether the home screen has any content
   bool get hasContent =>
       quote != null ||
       featuredStories.isNotEmpty ||
       continueReading.isNotEmpty ||
-      savedStories.isNotEmpty;
+      savedStories.isNotEmpty ||
+      myGeneratedStories.isNotEmpty;
 }

@@ -23,6 +23,9 @@ sealed class HomeEvent with _$HomeEvent {
   /// Load saved/bookmarked stories
   const factory HomeEvent.loadSavedStories() = _LoadSavedStories;
 
+  /// Load user's generated stories
+  const factory HomeEvent.loadMyGeneratedStories() = _LoadMyGeneratedStories;
+
   /// Share quote
   const factory HomeEvent.shareQuote() = _ShareQuote;
 

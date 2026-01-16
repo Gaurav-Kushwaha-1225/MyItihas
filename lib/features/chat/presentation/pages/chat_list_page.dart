@@ -6,6 +6,6 @@ class ChatListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text(t.chat.list_page));
+    return Center(child: Text(t.chat.listPage));
   }
 }
