@@ -369,9 +369,8 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
                                 ),
                               ),
                               Text(
-                                t.homeScreen.minLeft.replaceAll(
-                                  '{{count}}',
-                                  '${progress.minutesLeft}',
+                                t.homeScreen.minLeft(
+                                  count: progress.minutesLeft,
                                 ),
                                 style: theme.textTheme.labelSmall?.copyWith(
                                   color: colorScheme.onSurfaceVariant,

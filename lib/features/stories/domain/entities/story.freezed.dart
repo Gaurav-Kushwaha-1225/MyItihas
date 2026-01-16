@@ -192,7 +192,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String scripture,  String story,  String quotes,  String trivia,  String activity,  String lesson,  StoryAttributes attributes,  String? imageUrl,  String? author,  DateTime? publishedAt,  DateTime? createdAt, DateTime? updatedAt, int likes,  int views,  bool isFavorite,  String? authorId,  User? authorUser,  int commentCount,  int shareCount,  bool isLikedByCurrentUser)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String scripture,  String story,  String quotes,  String trivia,  String activity,  String lesson,  StoryAttributes attributes,  String? imageUrl,  String? author,  DateTime? publishedAt,  DateTime? createdAt,  DateTime? updatedAt,  int likes,  int views,  bool isFavorite,  String? authorId,  User? authorUser,  int commentCount,  int shareCount,  bool isLikedByCurrentUser)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Story() when $default != null:
 return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_that.trivia,_that.activity,_that.lesson,_that.attributes,_that.imageUrl,_that.author,_that.publishedAt,_that.createdAt,_that.updatedAt,_that.likes,_that.views,_that.isFavorite,_that.authorId,_that.authorUser,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser);case _:
@@ -233,7 +233,7 @@ return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String scripture,  String story,  String quotes,  String trivia,  String activity,  String lesson,  StoryAttributes attributes,  String? imageUrl,  String? author,  DateTime? publishedAt,  DateTime? createdAt, DateTime? updatedAt, int likes,  int views,  bool isFavorite,  String? authorId,  User? authorUser,  int commentCount,  int shareCount,  bool isLikedByCurrentUser)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String scripture,  String story,  String quotes,  String trivia,  String activity,  String lesson,  StoryAttributes attributes,  String? imageUrl,  String? author,  DateTime? publishedAt,  DateTime? createdAt,  DateTime? updatedAt,  int likes,  int views,  bool isFavorite,  String? authorId,  User? authorUser,  int commentCount,  int shareCount,  bool isLikedByCurrentUser)?  $default,) {final _that = this;
 switch (_that) {
 case _Story() when $default != null:
 return $default(_that.id,_that.title,_that.scripture,_that.story,_that.quotes,_that.trivia,_that.activity,_that.lesson,_that.attributes,_that.imageUrl,_that.author,_that.publishedAt,_that.createdAt,_that.updatedAt,_that.likes,_that.views,_that.isFavorite,_that.authorId,_that.authorUser,_that.commentCount,_that.shareCount,_that.isLikedByCurrentUser);case _:
@@ -424,7 +424,7 @@ class _$StoryAttributesCopyWithImpl<$Res>
 
 /// Create a copy of StoryAttributes
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? storyType = null,Object? theme = null,Object? mainCharacterType = null,Object? storySetting = null,Object? timeEra = null,Object? narrativePerspective = null,Object? languageStyle = null,Object? emotionalTone = null,Object? narrativeStyle = null,Object? plotStructure = null,Object? storyLength = null,Object? references = null,Object? tags = null,Object? characters = null, Object? characterDetails = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? storyType = null,Object? theme = null,Object? mainCharacterType = null,Object? storySetting = null,Object? timeEra = null,Object? narrativePerspective = null,Object? languageStyle = null,Object? emotionalTone = null,Object? narrativeStyle = null,Object? plotStructure = null,Object? storyLength = null,Object? references = null,Object? tags = null,Object? characters = null,Object? characterDetails = null,}) {
   return _then(_self.copyWith(
 storyType: null == storyType ? _self.storyType : storyType // ignore: cast_nullable_to_non_nullable
 as String,theme: null == theme ? _self.theme : theme // ignore: cast_nullable_to_non_nullable
@@ -440,7 +440,7 @@ as String,storyLength: null == storyLength ? _self.storyLength : storyLength // 
 as String,references: null == references ? _self.references : references // ignore: cast_nullable_to_non_nullable
 as List<String>,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
 as List<String>,characters: null == characters ? _self.characters : characters // ignore: cast_nullable_to_non_nullable
-as List<String>, characterDetails: null == characterDetails ? _self.characterDetails : characterDetails // ignore: cast_nullable_to_non_nullable
+as List<String>,characterDetails: null == characterDetails ? _self.characterDetails : characterDetails // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>,
   ));
 }
@@ -582,7 +582,7 @@ return $default(_that.storyType,_that.theme,_that.mainCharacterType,_that.storyS
 
 
 class _StoryAttributes implements StoryAttributes {
-  const _StoryAttributes({required this.storyType, required this.theme, required this.mainCharacterType, required this.storySetting, required this.timeEra, required this.narrativePerspective, required this.languageStyle, required this.emotionalTone, required this.narrativeStyle, required this.plotStructure, required this.storyLength, final  List<String> references = const [], final  List<String> tags = const [], final  List<String> characters = const [], final Map<String, dynamic> characterDetails = const {} }): _references = references,_tags = tags,_characters = characters,_characterDetails = characterDetails;
+  const _StoryAttributes({required this.storyType, required this.theme, required this.mainCharacterType, required this.storySetting, required this.timeEra, required this.narrativePerspective, required this.languageStyle, required this.emotionalTone, required this.narrativeStyle, required this.plotStructure, required this.storyLength, final  List<String> references = const [], final  List<String> tags = const [], final  List<String> characters = const [], final  Map<String, dynamic> characterDetails = const {}}): _references = references,_tags = tags,_characters = characters,_characterDetails = characterDetails;
   
 
 @override final  String storyType;
@@ -617,9 +617,13 @@ class _StoryAttributes implements StoryAttributes {
   return EqualUnmodifiableListView(_characters);
 }
 
- final Map<String, dynamic> _characterDetails;
-  @override
-  Map<String, dynamic> get characterDetails => _characterDetails;
+ final  Map<String, dynamic> _characterDetails;
+@override@JsonKey() Map<String, dynamic> get characterDetails {
+  if (_characterDetails is EqualUnmodifiableMapView) return _characterDetails;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_characterDetails);
+}
+
 
 /// Create a copy of StoryAttributes
 /// with the given fields replaced by the non-null parameter values.
@@ -636,7 +640,7 @@ bool operator ==(Object other) {
 
 
 @override
-int get hashCode => Object.hash(runtimeType,storyType,theme,mainCharacterType,storySetting,timeEra,narrativePerspective,languageStyle,emotionalTone,narrativeStyle,plotStructure,storyLength,const DeepCollectionEquality().hash(_references),const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_characters));
+int get hashCode => Object.hash(runtimeType,storyType,theme,mainCharacterType,storySetting,timeEra,narrativePerspective,languageStyle,emotionalTone,narrativeStyle,plotStructure,storyLength,const DeepCollectionEquality().hash(_references),const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_characters),const DeepCollectionEquality().hash(_characterDetails));
 
 @override
 String toString() {

@@ -207,7 +207,7 @@ class SharePreviewCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                     ),
                     child: Text(
-                      t.common.read_full_story,
+                      t.common.readFullStory,
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: format == SharePreviewFormat.story ? 18 : 14,

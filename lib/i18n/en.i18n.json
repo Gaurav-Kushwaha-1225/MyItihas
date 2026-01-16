@@ -78,7 +78,16 @@
         "earlier": "Earlier",
         "noContinueReading": "Nothing to read yet",
         "noSavedStories": "No saved stories yet",
-        "bookmarkStoriesToSave": "Bookmark stories to save them"
+        "bookmarkStoriesToSave": "Bookmark stories to save them",
+        "myGeneratedStories": "My Stories",
+        "noGeneratedStoriesYet": "No stories created yet",
+        "createYourFirstStory": "Generate your first story using AI",
+        "shareToFeed": "Share to Feed",
+        "sharedToFeed": "Story shared to feed",
+        "shareStoryTitle": "Share Story",
+        "shareStoryMessage": "Add a caption for your story (optional)",
+        "shareStoryCaption": "Caption",
+        "shareStoryHint": "What would you like to say about this story?"
     },
     "stories": {
         "title": "Stories",

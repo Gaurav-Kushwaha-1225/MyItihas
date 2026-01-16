@@ -11,9 +11,12 @@ import 'package:myitihas/features/home/presentation/widgets/continue_reading_sec
 import 'package:myitihas/features/home/presentation/widgets/create_post_card.dart';
 import 'package:myitihas/features/home/presentation/widgets/featured_stories_section.dart';
 import 'package:myitihas/features/home/presentation/widgets/hero_generate_button.dart';
+import 'package:myitihas/features/home/presentation/widgets/my_generated_stories_section.dart';
 import 'package:myitihas/features/home/presentation/widgets/saved_stories_section.dart';
 import 'package:myitihas/features/home/presentation/widgets/secondary_actions_row.dart';
+import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/i18n/strings.g.dart';
+import 'package:myitihas/services/post_service.dart';
 
 /// Main HomeScreen page - the primary landing experience
 class HomeScreenPage extends StatelessWidget {
@@ -71,6 +74,204 @@ class _HomeScreenViewState extends State<_HomeScreenView>
   void dispose() {
     _greetingController.dispose();
     super.dispose();
+  }
+
+  void _showShareToFeedDialog(BuildContext context, Story story) {
+    final t = Translations.of(context);
+    final captionController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      builder: (bottomSheetContext) {
+        final theme = Theme.of(bottomSheetContext);
+        final colorScheme = theme.colorScheme;
+
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: EdgeInsets.all(16.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      t.homeScreen.shareStoryTitle,
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(bottomSheetContext),
+                      icon: const Icon(Icons.close),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 16.h),
+
+                // Story preview
+                Container(
+                  padding: EdgeInsets.all(12.w),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(12.r),
+                    border: Border.all(
+                      color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 60.w,
+                        height: 60.h,
+                        decoration: BoxDecoration(
+                          color: colorScheme.tertiary.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        child: story.imageUrl != null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(8.r),
+                                child: Image.network(
+                                  story.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Icon(
+                                    Icons.auto_stories,
+                                    color: colorScheme.tertiary,
+                                  ),
+                                ),
+                              )
+                            : Icon(
+                                Icons.auto_stories,
+                                color: colorScheme.tertiary,
+                              ),
+                      ),
+                      SizedBox(width: 12.w),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              story.title,
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            SizedBox(height: 4.h),
+                            Text(
+                              story.scripture,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                SizedBox(height: 16.h),
+
+                // Caption input
+                Text(
+                  t.homeScreen.shareStoryMessage,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                TextField(
+                  controller: captionController,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    hintText: t.homeScreen.shareStoryHint,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 24.h),
+
+                // Share button
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () async {
+                      Navigator.pop(bottomSheetContext);
+                      await _shareStoryToFeed(
+                        context,
+                        story,
+                        captionController.text,
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 4.h),
+                      child: Text(t.homeScreen.shareToFeed),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 8.h),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _shareStoryToFeed(
+    BuildContext context,
+    Story story,
+    String caption,
+  ) async {
+    final t = Translations.of(context);
+    final postService = getIt<PostService>();
+
+    try {
+      await postService.createPost(
+        postType: PostType.storyShare,
+        content: caption.isNotEmpty ? caption : story.lesson,
+        title: story.title,
+        sharedStoryId: story.id,
+        metadata: {
+          'story_title': story.title,
+          'story_scripture': story.scripture,
+          'story_image_url': story.imageUrl,
+          'story_lesson': story.lesson,
+        },
+      );
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(t.homeScreen.sharedToFeed),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to share: ${e.toString()}'),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
   }
 
   String _getGreeting(BuildContext context, String greetingKey) {
@@ -290,7 +491,7 @@ class _HomeScreenViewState extends State<_HomeScreenView>
                   padding: EdgeInsets.only(top: 12.h),
                   child: SecondaryActionsRow(
                     onChatWithKrishna: () {
-                      context.go('/chat-itihas');
+                      context.push('/chatbot');
                     },
                     onMyActivity: () {
                       context.push('/activity');
@@ -316,6 +517,29 @@ class _HomeScreenViewState extends State<_HomeScreenView>
                     onExplore: () {
                       // Navigate to stories or social feed
                       context.go('/home');
+                    },
+                  ),
+                ),
+              ),
+
+              // My Generated Stories
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 20.h),
+                  child: MyGeneratedStoriesSection(
+                    stories: state.myGeneratedStories,
+                    isLoading: state.isMyGeneratedStoriesLoading,
+                    onStoryTap: (story) {
+                      context.push('/story-generator/${story.id}');
+                    },
+                    onShareToFeed: (story) {
+                      _showShareToFeedDialog(context, story);
+                    },
+                    onSeeAll: () {
+                      context.push('/story-generator');
+                    },
+                    onCreateNew: () {
+                      context.push('/story-generator');
                     },
                   ),
                 ),

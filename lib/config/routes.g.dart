@@ -800,6 +800,10 @@ RouteBase get $storyGeneratorRoute => GoRouteData.$route(
       path: 'result',
       factory: $GeneratedStoryResultRoute._fromState,
     ),
+    GoRouteData.$route(
+      path: ':storyId',
+      factory: $GeneratedStoryByIdRoute._fromState,
+    ),
   ],
 );
 
@@ -847,6 +851,31 @@ mixin $GeneratedStoryResultRoute on GoRouteData {
   @override
   void replace(BuildContext context) =>
       context.replace(location, extra: _self.$extra);
+}
+
+mixin $GeneratedStoryByIdRoute on GoRouteData {
+  static GeneratedStoryByIdRoute _fromState(GoRouterState state) =>
+      GeneratedStoryByIdRoute(storyId: state.pathParameters['storyId']!);
+
+  GeneratedStoryByIdRoute get _self => this as GeneratedStoryByIdRoute;
+
+  @override
+  String get location => GoRouteData.$location(
+    '/story-generator/${Uri.encodeComponent(_self.storyId)}',
+  );
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
 }
 
 RouteBase get $activityHistoryRoute => GoRouteData.$route(

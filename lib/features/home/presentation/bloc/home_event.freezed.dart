@@ -55,7 +55,7 @@ extension HomeEventPatterns on HomeEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _LoadHome value)?  loadHome,TResult Function( _Refresh value)?  refresh,TResult Function( _LoadQuote value)?  loadQuote,TResult Function( _LoadFeaturedStories value)?  loadFeaturedStories,TResult Function( _LoadContinueReading value)?  loadContinueReading,TResult Function( _LoadSavedStories value)?  loadSavedStories,TResult Function( _ShareQuote value)?  shareQuote,TResult Function( _CopyQuote value)?  copyQuote,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _LoadHome value)?  loadHome,TResult Function( _Refresh value)?  refresh,TResult Function( _LoadQuote value)?  loadQuote,TResult Function( _LoadFeaturedStories value)?  loadFeaturedStories,TResult Function( _LoadContinueReading value)?  loadContinueReading,TResult Function( _LoadSavedStories value)?  loadSavedStories,TResult Function( _LoadMyGeneratedStories value)?  loadMyGeneratedStories,TResult Function( _ShareQuote value)?  shareQuote,TResult Function( _CopyQuote value)?  copyQuote,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _LoadHome() when loadHome != null:
@@ -64,7 +64,8 @@ return refresh(_that);case _LoadQuote() when loadQuote != null:
 return loadQuote(_that);case _LoadFeaturedStories() when loadFeaturedStories != null:
 return loadFeaturedStories(_that);case _LoadContinueReading() when loadContinueReading != null:
 return loadContinueReading(_that);case _LoadSavedStories() when loadSavedStories != null:
-return loadSavedStories(_that);case _ShareQuote() when shareQuote != null:
+return loadSavedStories(_that);case _LoadMyGeneratedStories() when loadMyGeneratedStories != null:
+return loadMyGeneratedStories(_that);case _ShareQuote() when shareQuote != null:
 return shareQuote(_that);case _CopyQuote() when copyQuote != null:
 return copyQuote(_that);case _:
   return orElse();
@@ -84,7 +85,7 @@ return copyQuote(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _LoadHome value)  loadHome,required TResult Function( _Refresh value)  refresh,required TResult Function( _LoadQuote value)  loadQuote,required TResult Function( _LoadFeaturedStories value)  loadFeaturedStories,required TResult Function( _LoadContinueReading value)  loadContinueReading,required TResult Function( _LoadSavedStories value)  loadSavedStories,required TResult Function( _ShareQuote value)  shareQuote,required TResult Function( _CopyQuote value)  copyQuote,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _LoadHome value)  loadHome,required TResult Function( _Refresh value)  refresh,required TResult Function( _LoadQuote value)  loadQuote,required TResult Function( _LoadFeaturedStories value)  loadFeaturedStories,required TResult Function( _LoadContinueReading value)  loadContinueReading,required TResult Function( _LoadSavedStories value)  loadSavedStories,required TResult Function( _LoadMyGeneratedStories value)  loadMyGeneratedStories,required TResult Function( _ShareQuote value)  shareQuote,required TResult Function( _CopyQuote value)  copyQuote,}){
 final _that = this;
 switch (_that) {
 case _LoadHome():
@@ -93,7 +94,8 @@ return refresh(_that);case _LoadQuote():
 return loadQuote(_that);case _LoadFeaturedStories():
 return loadFeaturedStories(_that);case _LoadContinueReading():
 return loadContinueReading(_that);case _LoadSavedStories():
-return loadSavedStories(_that);case _ShareQuote():
+return loadSavedStories(_that);case _LoadMyGeneratedStories():
+return loadMyGeneratedStories(_that);case _ShareQuote():
 return shareQuote(_that);case _CopyQuote():
 return copyQuote(_that);}
 }
@@ -109,7 +111,7 @@ return copyQuote(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _LoadHome value)?  loadHome,TResult? Function( _Refresh value)?  refresh,TResult? Function( _LoadQuote value)?  loadQuote,TResult? Function( _LoadFeaturedStories value)?  loadFeaturedStories,TResult? Function( _LoadContinueReading value)?  loadContinueReading,TResult? Function( _LoadSavedStories value)?  loadSavedStories,TResult? Function( _ShareQuote value)?  shareQuote,TResult? Function( _CopyQuote value)?  copyQuote,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _LoadHome value)?  loadHome,TResult? Function( _Refresh value)?  refresh,TResult? Function( _LoadQuote value)?  loadQuote,TResult? Function( _LoadFeaturedStories value)?  loadFeaturedStories,TResult? Function( _LoadContinueReading value)?  loadContinueReading,TResult? Function( _LoadSavedStories value)?  loadSavedStories,TResult? Function( _LoadMyGeneratedStories value)?  loadMyGeneratedStories,TResult? Function( _ShareQuote value)?  shareQuote,TResult? Function( _CopyQuote value)?  copyQuote,}){
 final _that = this;
 switch (_that) {
 case _LoadHome() when loadHome != null:
@@ -118,7 +120,8 @@ return refresh(_that);case _LoadQuote() when loadQuote != null:
 return loadQuote(_that);case _LoadFeaturedStories() when loadFeaturedStories != null:
 return loadFeaturedStories(_that);case _LoadContinueReading() when loadContinueReading != null:
 return loadContinueReading(_that);case _LoadSavedStories() when loadSavedStories != null:
-return loadSavedStories(_that);case _ShareQuote() when shareQuote != null:
+return loadSavedStories(_that);case _LoadMyGeneratedStories() when loadMyGeneratedStories != null:
+return loadMyGeneratedStories(_that);case _ShareQuote() when shareQuote != null:
 return shareQuote(_that);case _CopyQuote() when copyQuote != null:
 return copyQuote(_that);case _:
   return null;
@@ -137,7 +140,7 @@ return copyQuote(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadHome,TResult Function()?  refresh,TResult Function()?  loadQuote,TResult Function()?  loadFeaturedStories,TResult Function()?  loadContinueReading,TResult Function()?  loadSavedStories,TResult Function()?  shareQuote,TResult Function()?  copyQuote,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadHome,TResult Function()?  refresh,TResult Function()?  loadQuote,TResult Function()?  loadFeaturedStories,TResult Function()?  loadContinueReading,TResult Function()?  loadSavedStories,TResult Function()?  loadMyGeneratedStories,TResult Function()?  shareQuote,TResult Function()?  copyQuote,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LoadHome() when loadHome != null:
 return loadHome();case _Refresh() when refresh != null:
@@ -145,7 +148,8 @@ return refresh();case _LoadQuote() when loadQuote != null:
 return loadQuote();case _LoadFeaturedStories() when loadFeaturedStories != null:
 return loadFeaturedStories();case _LoadContinueReading() when loadContinueReading != null:
 return loadContinueReading();case _LoadSavedStories() when loadSavedStories != null:
-return loadSavedStories();case _ShareQuote() when shareQuote != null:
+return loadSavedStories();case _LoadMyGeneratedStories() when loadMyGeneratedStories != null:
+return loadMyGeneratedStories();case _ShareQuote() when shareQuote != null:
 return shareQuote();case _CopyQuote() when copyQuote != null:
 return copyQuote();case _:
   return orElse();
@@ -165,7 +169,7 @@ return copyQuote();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadHome,required TResult Function()  refresh,required TResult Function()  loadQuote,required TResult Function()  loadFeaturedStories,required TResult Function()  loadContinueReading,required TResult Function()  loadSavedStories,required TResult Function()  shareQuote,required TResult Function()  copyQuote,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadHome,required TResult Function()  refresh,required TResult Function()  loadQuote,required TResult Function()  loadFeaturedStories,required TResult Function()  loadContinueReading,required TResult Function()  loadSavedStories,required TResult Function()  loadMyGeneratedStories,required TResult Function()  shareQuote,required TResult Function()  copyQuote,}) {final _that = this;
 switch (_that) {
 case _LoadHome():
 return loadHome();case _Refresh():
@@ -173,7 +177,8 @@ return refresh();case _LoadQuote():
 return loadQuote();case _LoadFeaturedStories():
 return loadFeaturedStories();case _LoadContinueReading():
 return loadContinueReading();case _LoadSavedStories():
-return loadSavedStories();case _ShareQuote():
+return loadSavedStories();case _LoadMyGeneratedStories():
+return loadMyGeneratedStories();case _ShareQuote():
 return shareQuote();case _CopyQuote():
 return copyQuote();}
 }
@@ -189,7 +194,7 @@ return copyQuote();}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadHome,TResult? Function()?  refresh,TResult? Function()?  loadQuote,TResult? Function()?  loadFeaturedStories,TResult? Function()?  loadContinueReading,TResult? Function()?  loadSavedStories,TResult? Function()?  shareQuote,TResult? Function()?  copyQuote,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadHome,TResult? Function()?  refresh,TResult? Function()?  loadQuote,TResult? Function()?  loadFeaturedStories,TResult? Function()?  loadContinueReading,TResult? Function()?  loadSavedStories,TResult? Function()?  loadMyGeneratedStories,TResult? Function()?  shareQuote,TResult? Function()?  copyQuote,}) {final _that = this;
 switch (_that) {
 case _LoadHome() when loadHome != null:
 return loadHome();case _Refresh() when refresh != null:
@@ -197,7 +202,8 @@ return refresh();case _LoadQuote() when loadQuote != null:
 return loadQuote();case _LoadFeaturedStories() when loadFeaturedStories != null:
 return loadFeaturedStories();case _LoadContinueReading() when loadContinueReading != null:
 return loadContinueReading();case _LoadSavedStories() when loadSavedStories != null:
-return loadSavedStories();case _ShareQuote() when shareQuote != null:
+return loadSavedStories();case _LoadMyGeneratedStories() when loadMyGeneratedStories != null:
+return loadMyGeneratedStories();case _ShareQuote() when shareQuote != null:
 return shareQuote();case _CopyQuote() when copyQuote != null:
 return copyQuote();case _:
   return null;
@@ -391,6 +397,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'HomeEvent.loadSavedStories()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _LoadMyGeneratedStories implements HomeEvent {
+  const _LoadMyGeneratedStories();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadMyGeneratedStories);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'HomeEvent.loadMyGeneratedStories()';
 }
 
 

@@ -202,35 +202,22 @@ class _NotificationTile extends StatelessWidget {
     );
   }
 
-  String _getTitleForNotification(notif.Notification notification) {
+  String _getTitleForNotification(
+    notif.Notification notification,
+  ) {
     final actorName = notification.actorUser.displayName;
 
     switch (notification.type) {
       case notif.NotificationType.storyLike:
-        return t.notification.likedYourStory.replaceAll(
-          '{{actorName}}',
-          actorName,
-        );
+        return t.notification.likedYourStory(actorName: actorName);
       case notif.NotificationType.storyComment:
-        return t.notification.commentedOnYourStory.replaceAll(
-          '{{actorName}}',
-          actorName,
-        );
+        return t.notification.commentedOnYourStory(actorName: actorName);
       case notif.NotificationType.commentReply:
-        return t.notification.repliedToYourComment.replaceAll(
-          '{{actorName}}',
-          actorName,
-        );
+        return t.notification.repliedToYourComment(actorName: actorName);
       case notif.NotificationType.follow:
-        return t.notification.startedFollowingYou.replaceAll(
-          '{{actorName}}',
-          actorName,
-        );
+        return t.notification.startedFollowingYou(actorName: actorName);
       case notif.NotificationType.directMessage:
-        return t.notification.sentYouAMessage.replaceAll(
-          '{{actorName}}',
-          actorName,
-        );
+        return t.notification.sentYouAMessage(actorName: actorName);
     }
   }
 }

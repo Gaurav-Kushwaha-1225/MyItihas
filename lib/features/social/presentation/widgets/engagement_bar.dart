@@ -63,8 +63,8 @@ class EngagementBar extends StatelessWidget {
             onLike?.call();
           },
           semanticLabel: isLiked
-              ? t.feed.unlike.replaceAll('{{count}}', likeCount.toString())
-              : t.feed.like.replaceAll('{{count}}', likeCount.toString()),
+              ? t.feed.unlike(count: likeCount)
+              : t.feed.like(count: likeCount),
         ),
         const SizedBox(width: 16),
         _EngagementButton(
@@ -72,10 +72,7 @@ class EngagementBar extends StatelessWidget {
           label: _formatCount(commentCount),
           color: colorScheme.onSurface,
           onTap: onComment,
-          semanticLabel: t.feed.commentCount.replaceAll(
-            '{{count}}',
-            commentCount.toString(),
-          ),
+          semanticLabel: t.feed.commentCount(count: commentCount),
         ),
         const SizedBox(width: 16),
         _EngagementButton(
@@ -86,10 +83,7 @@ class EngagementBar extends StatelessWidget {
             HapticFeedback.lightImpact();
             onShare?.call();
           },
-          semanticLabel: t.feed.shareCount.replaceAll(
-            '{{count}}',
-            shareCount.toString(),
-          ),
+          semanticLabel: t.feed.shareCount(count: shareCount),
         ),
         const SizedBox(width: 16),
         _EngagementButton(
@@ -126,8 +120,8 @@ class EngagementBar extends StatelessWidget {
             onLike?.call();
           },
           semanticLabel: isLiked
-              ? t.feed.unlike.replaceAll('{{count}}', likeCount.toString())
-              : t.feed.like.replaceAll('{{count}}', likeCount.toString()),
+              ? t.feed.unlike(count: likeCount)
+              : t.feed.like(count: likeCount),
           vertical: true,
           iconSize: 32,
         ),
@@ -137,10 +131,7 @@ class EngagementBar extends StatelessWidget {
           label: _formatCount(commentCount),
           color: Colors.white,
           onTap: onComment,
-          semanticLabel: t.feed.commentCount.replaceAll(
-            '{{count}}',
-            commentCount.toString(),
-          ),
+          semanticLabel: t.feed.commentCount(count: commentCount),
           vertical: true,
           iconSize: 32,
         ),
@@ -153,10 +144,7 @@ class EngagementBar extends StatelessWidget {
             HapticFeedback.lightImpact();
             onShare?.call();
           },
-          semanticLabel: t.feed.shareCount.replaceAll(
-            '{{count}}',
-            shareCount.toString(),
-          ),
+          semanticLabel: t.feed.shareCount(count: shareCount),
           vertical: true,
           iconSize: 32,
         ),
@@ -263,7 +251,9 @@ class _EngagementButtonState extends State<_EngagementButton>
                       size: widget.iconSize,
                       shadows: [
                         BoxShadow(
-                          color: theme.brightness == Brightness.dark ? DarkColors.textPrimary.withOpacity(0.5) : LightColors.textPrimary.withOpacity(0.5),
+                          color: theme.brightness == Brightness.dark
+                              ? DarkColors.textPrimary.withValues(alpha: 0.5)
+                              : LightColors.textPrimary.withValues(alpha: 0.5),
                           blurRadius: 100,
                           spreadRadius: 20,
                           offset: const Offset(2, 2),

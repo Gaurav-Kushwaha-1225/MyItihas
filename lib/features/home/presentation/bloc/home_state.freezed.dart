@@ -24,7 +24,9 @@ mixin _$HomeState {
  List<ReadingProgress> get continueReading;/// Whether continue reading is loading
  bool get isContinueReadingLoading;/// Saved/bookmarked stories
  List<Story> get savedStories;/// Whether saved stories are loading
- bool get isSavedStoriesLoading;/// Error message if any
+ bool get isSavedStoriesLoading;/// User's generated stories
+ List<Story> get myGeneratedStories;/// Whether generated stories are loading
+ bool get isMyGeneratedStoriesLoading;/// Error message if any
  String? get errorMessage;/// Time-based greeting key
  String get greetingKey;/// User's display name
  String? get userName;
@@ -38,16 +40,16 @@ $HomeStateCopyWith<HomeState> get copyWith => _$HomeStateCopyWithImpl<HomeState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.isQuoteLoading, isQuoteLoading) || other.isQuoteLoading == isQuoteLoading)&&const DeepCollectionEquality().equals(other.featuredStories, featuredStories)&&(identical(other.isFeaturedLoading, isFeaturedLoading) || other.isFeaturedLoading == isFeaturedLoading)&&const DeepCollectionEquality().equals(other.continueReading, continueReading)&&(identical(other.isContinueReadingLoading, isContinueReadingLoading) || other.isContinueReadingLoading == isContinueReadingLoading)&&const DeepCollectionEquality().equals(other.savedStories, savedStories)&&(identical(other.isSavedStoriesLoading, isSavedStoriesLoading) || other.isSavedStoriesLoading == isSavedStoriesLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.greetingKey, greetingKey) || other.greetingKey == greetingKey)&&(identical(other.userName, userName) || other.userName == userName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.isQuoteLoading, isQuoteLoading) || other.isQuoteLoading == isQuoteLoading)&&const DeepCollectionEquality().equals(other.featuredStories, featuredStories)&&(identical(other.isFeaturedLoading, isFeaturedLoading) || other.isFeaturedLoading == isFeaturedLoading)&&const DeepCollectionEquality().equals(other.continueReading, continueReading)&&(identical(other.isContinueReadingLoading, isContinueReadingLoading) || other.isContinueReadingLoading == isContinueReadingLoading)&&const DeepCollectionEquality().equals(other.savedStories, savedStories)&&(identical(other.isSavedStoriesLoading, isSavedStoriesLoading) || other.isSavedStoriesLoading == isSavedStoriesLoading)&&const DeepCollectionEquality().equals(other.myGeneratedStories, myGeneratedStories)&&(identical(other.isMyGeneratedStoriesLoading, isMyGeneratedStoriesLoading) || other.isMyGeneratedStoriesLoading == isMyGeneratedStoriesLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.greetingKey, greetingKey) || other.greetingKey == greetingKey)&&(identical(other.userName, userName) || other.userName == userName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,isRefreshing,quote,isQuoteLoading,const DeepCollectionEquality().hash(featuredStories),isFeaturedLoading,const DeepCollectionEquality().hash(continueReading),isContinueReadingLoading,const DeepCollectionEquality().hash(savedStories),isSavedStoriesLoading,errorMessage,greetingKey,userName);
+int get hashCode => Object.hash(runtimeType,isLoading,isRefreshing,quote,isQuoteLoading,const DeepCollectionEquality().hash(featuredStories),isFeaturedLoading,const DeepCollectionEquality().hash(continueReading),isContinueReadingLoading,const DeepCollectionEquality().hash(savedStories),isSavedStoriesLoading,const DeepCollectionEquality().hash(myGeneratedStories),isMyGeneratedStoriesLoading,errorMessage,greetingKey,userName);
 
 @override
 String toString() {
-  return 'HomeState(isLoading: $isLoading, isRefreshing: $isRefreshing, quote: $quote, isQuoteLoading: $isQuoteLoading, featuredStories: $featuredStories, isFeaturedLoading: $isFeaturedLoading, continueReading: $continueReading, isContinueReadingLoading: $isContinueReadingLoading, savedStories: $savedStories, isSavedStoriesLoading: $isSavedStoriesLoading, errorMessage: $errorMessage, greetingKey: $greetingKey, userName: $userName)';
+  return 'HomeState(isLoading: $isLoading, isRefreshing: $isRefreshing, quote: $quote, isQuoteLoading: $isQuoteLoading, featuredStories: $featuredStories, isFeaturedLoading: $isFeaturedLoading, continueReading: $continueReading, isContinueReadingLoading: $isContinueReadingLoading, savedStories: $savedStories, isSavedStoriesLoading: $isSavedStoriesLoading, myGeneratedStories: $myGeneratedStories, isMyGeneratedStoriesLoading: $isMyGeneratedStoriesLoading, errorMessage: $errorMessage, greetingKey: $greetingKey, userName: $userName)';
 }
 
 
@@ -58,7 +60,7 @@ abstract mixin class $HomeStateCopyWith<$Res>  {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) _then) = _$HomeStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, bool isRefreshing, Quote? quote, bool isQuoteLoading, List<Story> featuredStories, bool isFeaturedLoading, List<ReadingProgress> continueReading, bool isContinueReadingLoading, List<Story> savedStories, bool isSavedStoriesLoading, String? errorMessage, String greetingKey, String? userName
+ bool isLoading, bool isRefreshing, Quote? quote, bool isQuoteLoading, List<Story> featuredStories, bool isFeaturedLoading, List<ReadingProgress> continueReading, bool isContinueReadingLoading, List<Story> savedStories, bool isSavedStoriesLoading, List<Story> myGeneratedStories, bool isMyGeneratedStoriesLoading, String? errorMessage, String greetingKey, String? userName
 });
 
 
@@ -75,7 +77,7 @@ class _$HomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? isRefreshing = null,Object? quote = freezed,Object? isQuoteLoading = null,Object? featuredStories = null,Object? isFeaturedLoading = null,Object? continueReading = null,Object? isContinueReadingLoading = null,Object? savedStories = null,Object? isSavedStoriesLoading = null,Object? errorMessage = freezed,Object? greetingKey = null,Object? userName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? isRefreshing = null,Object? quote = freezed,Object? isQuoteLoading = null,Object? featuredStories = null,Object? isFeaturedLoading = null,Object? continueReading = null,Object? isContinueReadingLoading = null,Object? savedStories = null,Object? isSavedStoriesLoading = null,Object? myGeneratedStories = null,Object? isMyGeneratedStoriesLoading = null,Object? errorMessage = freezed,Object? greetingKey = null,Object? userName = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isRefreshing: null == isRefreshing ? _self.isRefreshing : isRefreshing // ignore: cast_nullable_to_non_nullable
@@ -87,6 +89,8 @@ as bool,continueReading: null == continueReading ? _self.continueReading : conti
 as List<ReadingProgress>,isContinueReadingLoading: null == isContinueReadingLoading ? _self.isContinueReadingLoading : isContinueReadingLoading // ignore: cast_nullable_to_non_nullable
 as bool,savedStories: null == savedStories ? _self.savedStories : savedStories // ignore: cast_nullable_to_non_nullable
 as List<Story>,isSavedStoriesLoading: null == isSavedStoriesLoading ? _self.isSavedStoriesLoading : isSavedStoriesLoading // ignore: cast_nullable_to_non_nullable
+as bool,myGeneratedStories: null == myGeneratedStories ? _self.myGeneratedStories : myGeneratedStories // ignore: cast_nullable_to_non_nullable
+as List<Story>,isMyGeneratedStoriesLoading: null == isMyGeneratedStoriesLoading ? _self.isMyGeneratedStoriesLoading : isMyGeneratedStoriesLoading // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,greetingKey: null == greetingKey ? _self.greetingKey : greetingKey // ignore: cast_nullable_to_non_nullable
 as String,userName: freezed == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable
@@ -187,10 +191,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<ReadingProgress> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<ReadingProgress> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  List<Story> myGeneratedStories,  bool isMyGeneratedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
-return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoading,_that.featuredStories,_that.isFeaturedLoading,_that.continueReading,_that.isContinueReadingLoading,_that.savedStories,_that.isSavedStoriesLoading,_that.errorMessage,_that.greetingKey,_that.userName);case _:
+return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoading,_that.featuredStories,_that.isFeaturedLoading,_that.continueReading,_that.isContinueReadingLoading,_that.savedStories,_that.isSavedStoriesLoading,_that.myGeneratedStories,_that.isMyGeneratedStoriesLoading,_that.errorMessage,_that.greetingKey,_that.userName);case _:
   return orElse();
 
 }
@@ -208,10 +212,10 @@ return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoad
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<ReadingProgress> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<ReadingProgress> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  List<Story> myGeneratedStories,  bool isMyGeneratedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)  $default,) {final _that = this;
 switch (_that) {
 case _HomeState():
-return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoading,_that.featuredStories,_that.isFeaturedLoading,_that.continueReading,_that.isContinueReadingLoading,_that.savedStories,_that.isSavedStoriesLoading,_that.errorMessage,_that.greetingKey,_that.userName);case _:
+return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoading,_that.featuredStories,_that.isFeaturedLoading,_that.continueReading,_that.isContinueReadingLoading,_that.savedStories,_that.isSavedStoriesLoading,_that.myGeneratedStories,_that.isMyGeneratedStoriesLoading,_that.errorMessage,_that.greetingKey,_that.userName);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -228,10 +232,10 @@ return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoad
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<ReadingProgress> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<ReadingProgress> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  List<Story> myGeneratedStories,  bool isMyGeneratedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)?  $default,) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
-return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoading,_that.featuredStories,_that.isFeaturedLoading,_that.continueReading,_that.isContinueReadingLoading,_that.savedStories,_that.isSavedStoriesLoading,_that.errorMessage,_that.greetingKey,_that.userName);case _:
+return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoading,_that.featuredStories,_that.isFeaturedLoading,_that.continueReading,_that.isContinueReadingLoading,_that.savedStories,_that.isSavedStoriesLoading,_that.myGeneratedStories,_that.isMyGeneratedStoriesLoading,_that.errorMessage,_that.greetingKey,_that.userName);case _:
   return null;
 
 }
@@ -243,7 +247,7 @@ return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoad
 
 
 class _HomeState extends HomeState {
-  const _HomeState({this.isLoading = false, this.isRefreshing = false, this.quote, this.isQuoteLoading = false, final  List<Story> featuredStories = const [], this.isFeaturedLoading = false, final  List<ReadingProgress> continueReading = const [], this.isContinueReadingLoading = false, final  List<Story> savedStories = const [], this.isSavedStoriesLoading = false, this.errorMessage, this.greetingKey = 'morning', this.userName}): _featuredStories = featuredStories,_continueReading = continueReading,_savedStories = savedStories,super._();
+  const _HomeState({this.isLoading = false, this.isRefreshing = false, this.quote, this.isQuoteLoading = false, final  List<Story> featuredStories = const [], this.isFeaturedLoading = false, final  List<ReadingProgress> continueReading = const [], this.isContinueReadingLoading = false, final  List<Story> savedStories = const [], this.isSavedStoriesLoading = false, final  List<Story> myGeneratedStories = const [], this.isMyGeneratedStoriesLoading = false, this.errorMessage, this.greetingKey = 'morning', this.userName}): _featuredStories = featuredStories,_continueReading = continueReading,_savedStories = savedStories,_myGeneratedStories = myGeneratedStories,super._();
   
 
 /// Whether the home screen is loading
@@ -287,6 +291,17 @@ class _HomeState extends HomeState {
 
 /// Whether saved stories are loading
 @override@JsonKey() final  bool isSavedStoriesLoading;
+/// User's generated stories
+ final  List<Story> _myGeneratedStories;
+/// User's generated stories
+@override@JsonKey() List<Story> get myGeneratedStories {
+  if (_myGeneratedStories is EqualUnmodifiableListView) return _myGeneratedStories;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_myGeneratedStories);
+}
+
+/// Whether generated stories are loading
+@override@JsonKey() final  bool isMyGeneratedStoriesLoading;
 /// Error message if any
 @override final  String? errorMessage;
 /// Time-based greeting key
@@ -304,16 +319,16 @@ _$HomeStateCopyWith<_HomeState> get copyWith => __$HomeStateCopyWithImpl<_HomeSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.isQuoteLoading, isQuoteLoading) || other.isQuoteLoading == isQuoteLoading)&&const DeepCollectionEquality().equals(other._featuredStories, _featuredStories)&&(identical(other.isFeaturedLoading, isFeaturedLoading) || other.isFeaturedLoading == isFeaturedLoading)&&const DeepCollectionEquality().equals(other._continueReading, _continueReading)&&(identical(other.isContinueReadingLoading, isContinueReadingLoading) || other.isContinueReadingLoading == isContinueReadingLoading)&&const DeepCollectionEquality().equals(other._savedStories, _savedStories)&&(identical(other.isSavedStoriesLoading, isSavedStoriesLoading) || other.isSavedStoriesLoading == isSavedStoriesLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.greetingKey, greetingKey) || other.greetingKey == greetingKey)&&(identical(other.userName, userName) || other.userName == userName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.isRefreshing, isRefreshing) || other.isRefreshing == isRefreshing)&&(identical(other.quote, quote) || other.quote == quote)&&(identical(other.isQuoteLoading, isQuoteLoading) || other.isQuoteLoading == isQuoteLoading)&&const DeepCollectionEquality().equals(other._featuredStories, _featuredStories)&&(identical(other.isFeaturedLoading, isFeaturedLoading) || other.isFeaturedLoading == isFeaturedLoading)&&const DeepCollectionEquality().equals(other._continueReading, _continueReading)&&(identical(other.isContinueReadingLoading, isContinueReadingLoading) || other.isContinueReadingLoading == isContinueReadingLoading)&&const DeepCollectionEquality().equals(other._savedStories, _savedStories)&&(identical(other.isSavedStoriesLoading, isSavedStoriesLoading) || other.isSavedStoriesLoading == isSavedStoriesLoading)&&const DeepCollectionEquality().equals(other._myGeneratedStories, _myGeneratedStories)&&(identical(other.isMyGeneratedStoriesLoading, isMyGeneratedStoriesLoading) || other.isMyGeneratedStoriesLoading == isMyGeneratedStoriesLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.greetingKey, greetingKey) || other.greetingKey == greetingKey)&&(identical(other.userName, userName) || other.userName == userName));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,isRefreshing,quote,isQuoteLoading,const DeepCollectionEquality().hash(_featuredStories),isFeaturedLoading,const DeepCollectionEquality().hash(_continueReading),isContinueReadingLoading,const DeepCollectionEquality().hash(_savedStories),isSavedStoriesLoading,errorMessage,greetingKey,userName);
+int get hashCode => Object.hash(runtimeType,isLoading,isRefreshing,quote,isQuoteLoading,const DeepCollectionEquality().hash(_featuredStories),isFeaturedLoading,const DeepCollectionEquality().hash(_continueReading),isContinueReadingLoading,const DeepCollectionEquality().hash(_savedStories),isSavedStoriesLoading,const DeepCollectionEquality().hash(_myGeneratedStories),isMyGeneratedStoriesLoading,errorMessage,greetingKey,userName);
 
 @override
 String toString() {
-  return 'HomeState(isLoading: $isLoading, isRefreshing: $isRefreshing, quote: $quote, isQuoteLoading: $isQuoteLoading, featuredStories: $featuredStories, isFeaturedLoading: $isFeaturedLoading, continueReading: $continueReading, isContinueReadingLoading: $isContinueReadingLoading, savedStories: $savedStories, isSavedStoriesLoading: $isSavedStoriesLoading, errorMessage: $errorMessage, greetingKey: $greetingKey, userName: $userName)';
+  return 'HomeState(isLoading: $isLoading, isRefreshing: $isRefreshing, quote: $quote, isQuoteLoading: $isQuoteLoading, featuredStories: $featuredStories, isFeaturedLoading: $isFeaturedLoading, continueReading: $continueReading, isContinueReadingLoading: $isContinueReadingLoading, savedStories: $savedStories, isSavedStoriesLoading: $isSavedStoriesLoading, myGeneratedStories: $myGeneratedStories, isMyGeneratedStoriesLoading: $isMyGeneratedStoriesLoading, errorMessage: $errorMessage, greetingKey: $greetingKey, userName: $userName)';
 }
 
 
@@ -324,7 +339,7 @@ abstract mixin class _$HomeStateCopyWith<$Res> implements $HomeStateCopyWith<$Re
   factory _$HomeStateCopyWith(_HomeState value, $Res Function(_HomeState) _then) = __$HomeStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, bool isRefreshing, Quote? quote, bool isQuoteLoading, List<Story> featuredStories, bool isFeaturedLoading, List<ReadingProgress> continueReading, bool isContinueReadingLoading, List<Story> savedStories, bool isSavedStoriesLoading, String? errorMessage, String greetingKey, String? userName
+ bool isLoading, bool isRefreshing, Quote? quote, bool isQuoteLoading, List<Story> featuredStories, bool isFeaturedLoading, List<ReadingProgress> continueReading, bool isContinueReadingLoading, List<Story> savedStories, bool isSavedStoriesLoading, List<Story> myGeneratedStories, bool isMyGeneratedStoriesLoading, String? errorMessage, String greetingKey, String? userName
 });
 
 
@@ -341,7 +356,7 @@ class __$HomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? isRefreshing = null,Object? quote = freezed,Object? isQuoteLoading = null,Object? featuredStories = null,Object? isFeaturedLoading = null,Object? continueReading = null,Object? isContinueReadingLoading = null,Object? savedStories = null,Object? isSavedStoriesLoading = null,Object? errorMessage = freezed,Object? greetingKey = null,Object? userName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? isRefreshing = null,Object? quote = freezed,Object? isQuoteLoading = null,Object? featuredStories = null,Object? isFeaturedLoading = null,Object? continueReading = null,Object? isContinueReadingLoading = null,Object? savedStories = null,Object? isSavedStoriesLoading = null,Object? myGeneratedStories = null,Object? isMyGeneratedStoriesLoading = null,Object? errorMessage = freezed,Object? greetingKey = null,Object? userName = freezed,}) {
   return _then(_HomeState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,isRefreshing: null == isRefreshing ? _self.isRefreshing : isRefreshing // ignore: cast_nullable_to_non_nullable
@@ -353,6 +368,8 @@ as bool,continueReading: null == continueReading ? _self._continueReading : cont
 as List<ReadingProgress>,isContinueReadingLoading: null == isContinueReadingLoading ? _self.isContinueReadingLoading : isContinueReadingLoading // ignore: cast_nullable_to_non_nullable
 as bool,savedStories: null == savedStories ? _self._savedStories : savedStories // ignore: cast_nullable_to_non_nullable
 as List<Story>,isSavedStoriesLoading: null == isSavedStoriesLoading ? _self.isSavedStoriesLoading : isSavedStoriesLoading // ignore: cast_nullable_to_non_nullable
+as bool,myGeneratedStories: null == myGeneratedStories ? _self._myGeneratedStories : myGeneratedStories // ignore: cast_nullable_to_non_nullable
+as List<Story>,isMyGeneratedStoriesLoading: null == isMyGeneratedStoriesLoading ? _self.isMyGeneratedStoriesLoading : isMyGeneratedStoriesLoading // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,greetingKey: null == greetingKey ? _self.greetingKey : greetingKey // ignore: cast_nullable_to_non_nullable
 as String,userName: freezed == userName ? _self.userName : userName // ignore: cast_nullable_to_non_nullable

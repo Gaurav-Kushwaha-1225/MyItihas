@@ -45,7 +45,7 @@ class _StoryDetailRoutePageState extends State<StoryDetailRoutePage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(t.stories.failed_to_load),
+                  Text(t.stories.failedToLoad),
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () {

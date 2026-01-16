@@ -4,10 +4,9 @@
 /// To regenerate, run: `dart run slang`
 ///
 /// Locales: 4
-/// Strings: 1168 (292 per locale)
+/// Strings: 1177 (294 per locale)
 ///
-/// Built on 2026-01-04 at 04:08 UTC
-/// Built on 2025-12-27 at 19:22 UTC
+/// Built on 2026-01-16 at 08:35 UTC
 
 // coverage:ignore-file
 // ignore_for_file: type=lint, unused_import
@@ -19,9 +18,9 @@ import 'package:slang/generated.dart';
 import 'package:slang_flutter/slang_flutter.dart';
 export 'package:slang_flutter/slang_flutter.dart';
 
-import 'strings_hi.g.dart' deferred as l_hi;
-import 'strings_ta.g.dart' deferred as l_ta;
-import 'strings_te.g.dart' deferred as l_te;
+import 'strings_hi.g.dart' as l_hi;
+import 'strings_ta.g.dart' as l_ta;
+import 'strings_te.g.dart' as l_te;
 part 'strings_en.g.dart';
 
 /// Supported locales.
@@ -52,35 +51,11 @@ enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 		PluralResolver? cardinalResolver,
 		PluralResolver? ordinalResolver,
 	}) async {
-		switch (this) {
-			case AppLocale.en:
-				return TranslationsEn(
-					overrides: overrides,
-					cardinalResolver: cardinalResolver,
-					ordinalResolver: ordinalResolver,
-				);
-			case AppLocale.hi:
-				await l_hi.loadLibrary();
-				return l_hi.TranslationsHi(
-					overrides: overrides,
-					cardinalResolver: cardinalResolver,
-					ordinalResolver: ordinalResolver,
-				);
-			case AppLocale.ta:
-				await l_ta.loadLibrary();
-				return l_ta.TranslationsTa(
-					overrides: overrides,
-					cardinalResolver: cardinalResolver,
-					ordinalResolver: ordinalResolver,
-				);
-			case AppLocale.te:
-				await l_te.loadLibrary();
-				return l_te.TranslationsTe(
-					overrides: overrides,
-					cardinalResolver: cardinalResolver,
-					ordinalResolver: ordinalResolver,
-				);
-		}
+		return buildSync(
+			overrides: overrides,
+			cardinalResolver: cardinalResolver,
+			ordinalResolver: ordinalResolver,
+		);
 	}
 
 	@override
@@ -129,7 +104,6 @@ enum AppLocale with BaseAppLocale<AppLocale, Translations> {
 ///
 /// Usage:
 /// String a = t.someKey.anotherKey;
-/// String b = t['someKey.anotherKey']; // Only for edge cases!
 Translations get t => LocaleSettings.instance.currentTranslations;
 
 /// Method B: Advanced
@@ -146,7 +120,6 @@ Translations get t => LocaleSettings.instance.currentTranslations;
 /// Step 2:
 /// final t = Translations.of(context); // Get t variable.
 /// String a = t.someKey.anotherKey; // Use t variable.
-/// String b = t['someKey.anotherKey']; // Only for edge cases!
 class TranslationProvider extends BaseTranslationProvider<AppLocale, Translations> {
 	TranslationProvider({required super.child}) : super(settings: LocaleSettings.instance);
 
@@ -166,7 +139,7 @@ extension BuildContextTranslationsExtension on BuildContext {
 class LocaleSettings extends BaseFlutterLocaleSettings<AppLocale, Translations> {
 	LocaleSettings._() : super(
 		utils: AppLocaleUtils.instance,
-		lazy: true,
+		lazy: false,
 	);
 
 	static final instance = LocaleSettings._();

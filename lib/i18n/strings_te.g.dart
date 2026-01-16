@@ -11,7 +11,7 @@ import 'package:slang/generated.dart';
 import 'strings.g.dart';
 
 // Path: <root>
-class TranslationsTe with BaseTranslations<AppLocale, Translations> implements Translations {
+class TranslationsTe extends Translations with BaseTranslations<AppLocale, Translations> {
 	/// You can call this constructor and build your own translation instance of this locale.
 	/// Constructing via the enum [AppLocale.build] is preferred.
 	TranslationsTe({Map<String, Node>? overrides, PluralResolver? cardinalResolver, PluralResolver? ordinalResolver, TranslationMetadata<AppLocale, Translations>? meta})
@@ -21,15 +21,11 @@ class TranslationsTe with BaseTranslations<AppLocale, Translations> implements T
 		    overrides: overrides ?? {},
 		    cardinalResolver: cardinalResolver,
 		    ordinalResolver: ordinalResolver,
-		  ) {
-		$meta.setFlatMapFunction(_flatMapFunction);
-	}
+		  ),
+		  super(cardinalResolver: cardinalResolver, ordinalResolver: ordinalResolver);
 
 	/// Metadata for the translations of <te>.
 	@override final TranslationMetadata<AppLocale, Translations> $meta;
-
-	/// Access flat map
-	@override dynamic operator[](String key) => $meta.getTranslation(key);
 
 	late final TranslationsTe _root = this; // ignore: unused_field
 
@@ -57,8 +53,8 @@ class TranslationsTe with BaseTranslations<AppLocale, Translations> implements T
 }
 
 // Path: app
-class _TranslationsAppTe implements TranslationsAppEn {
-	_TranslationsAppTe._(this._root);
+class _TranslationsAppTe extends TranslationsAppEn {
+	_TranslationsAppTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -68,8 +64,8 @@ class _TranslationsAppTe implements TranslationsAppEn {
 }
 
 // Path: common
-class _TranslationsCommonTe implements TranslationsCommonEn {
-	_TranslationsCommonTe._(this._root);
+class _TranslationsCommonTe extends TranslationsCommonEn {
+	_TranslationsCommonTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -91,12 +87,12 @@ class _TranslationsCommonTe implements TranslationsCommonEn {
 	@override String get skip => 'దాటవేయి';
 	@override String get yes => 'అవును';
 	@override String get no => 'కాదు';
-	@override String get read_full_story => 'Read the full story';
+	@override String get readFullStory => 'Read the full story';
 }
 
 // Path: navigation
-class _TranslationsNavigationTe implements TranslationsNavigationEn {
-	_TranslationsNavigationTe._(this._root);
+class _TranslationsNavigationTe extends TranslationsNavigationEn {
+	_TranslationsNavigationTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -111,8 +107,8 @@ class _TranslationsNavigationTe implements TranslationsNavigationEn {
 }
 
 // Path: home
-class _TranslationsHomeTe implements TranslationsHomeEn {
-	_TranslationsHomeTe._(this._root);
+class _TranslationsHomeTe extends TranslationsHomeEn {
+	_TranslationsHomeTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -132,8 +128,8 @@ class _TranslationsHomeTe implements TranslationsHomeEn {
 }
 
 // Path: stories
-class _TranslationsStoriesTe implements TranslationsStoriesEn {
-	_TranslationsStoriesTe._(this._root);
+class _TranslationsStoriesTe extends TranslationsStoriesEn {
+	_TranslationsStoriesTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -155,12 +151,12 @@ class _TranslationsStoriesTe implements TranslationsStoriesEn {
 	@override String get publishedOn => 'ప్రచురించబడింది';
 	@override String get category => 'వర్గం';
 	@override String get tags => 'ట్యాగ్స్';
-	@override String get failed_to_load => 'Failed to load story';
+	@override String get failedToLoad => 'Failed to load story';
 }
 
 // Path: storyGenerator
-class _TranslationsStoryGeneratorTe implements TranslationsStoryGeneratorEn {
-	_TranslationsStoryGeneratorTe._(this._root);
+class _TranslationsStoryGeneratorTe extends TranslationsStoryGeneratorEn {
+	_TranslationsStoryGeneratorTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -212,8 +208,8 @@ class _TranslationsStoryGeneratorTe implements TranslationsStoryGeneratorEn {
 }
 
 // Path: chat
-class _TranslationsChatTe implements TranslationsChatEn {
-	_TranslationsChatTe._(this._root);
+class _TranslationsChatTe extends TranslationsChatEn {
+	_TranslationsChatTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -228,12 +224,12 @@ class _TranslationsChatTe implements TranslationsChatEn {
 	@override String get chatHistory => 'చాట్ చరిత్ర';
 	@override String get clearChat => 'చాట్ను తొలగించండి';
 	@override String get noMessages => 'ఇంకా సందేశాలు లేవు. సంభాషణ ప్రారంభించండి!';
-	@override String get list_page => 'Chat List Page';
+	@override String get listPage => 'Chat List Page';
 }
 
 // Path: map
-class _TranslationsMapTe implements TranslationsMapEn {
-	_TranslationsMapTe._(this._root);
+class _TranslationsMapTe extends TranslationsMapEn {
+	_TranslationsMapTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -248,8 +244,8 @@ class _TranslationsMapTe implements TranslationsMapEn {
 }
 
 // Path: community
-class _TranslationsCommunityTe implements TranslationsCommunityEn {
-	_TranslationsCommunityTe._(this._root);
+class _TranslationsCommunityTe extends TranslationsCommunityEn {
+	_TranslationsCommunityTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -270,8 +266,8 @@ class _TranslationsCommunityTe implements TranslationsCommunityEn {
 }
 
 // Path: settings
-class _TranslationsSettingsTe implements TranslationsSettingsEn {
-	_TranslationsSettingsTe._(this._root);
+class _TranslationsSettingsTe extends TranslationsSettingsEn {
+	_TranslationsSettingsTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -291,8 +287,8 @@ class _TranslationsSettingsTe implements TranslationsSettingsEn {
 }
 
 // Path: auth
-class _TranslationsAuthTe implements TranslationsAuthEn {
-	_TranslationsAuthTe._(this._root);
+class _TranslationsAuthTe extends TranslationsAuthEn {
+	_TranslationsAuthTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -313,8 +309,8 @@ class _TranslationsAuthTe implements TranslationsAuthEn {
 }
 
 // Path: error
-class _TranslationsErrorTe implements TranslationsErrorEn {
-	_TranslationsErrorTe._(this._root);
+class _TranslationsErrorTe extends TranslationsErrorEn {
+	_TranslationsErrorTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -330,8 +326,8 @@ class _TranslationsErrorTe implements TranslationsErrorEn {
 }
 
 // Path: subscription
-class _TranslationsSubscriptionTe implements TranslationsSubscriptionEn {
-	_TranslationsSubscriptionTe._(this._root);
+class _TranslationsSubscriptionTe extends TranslationsSubscriptionEn {
+	_TranslationsSubscriptionTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -347,8 +343,8 @@ class _TranslationsSubscriptionTe implements TranslationsSubscriptionEn {
 }
 
 // Path: notification
-class _TranslationsNotificationTe implements TranslationsNotificationEn {
-	_TranslationsNotificationTe._(this._root);
+class _TranslationsNotificationTe extends TranslationsNotificationEn {
+	_TranslationsNotificationTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -358,16 +354,16 @@ class _TranslationsNotificationTe implements TranslationsNotificationEn {
 	@override String get noNotifications => 'ఇంకా నోటిఫికేషన్స్ లేవు';
 	@override String get errorPrefix => 'లోపం:';
 	@override String get retry => 'మళ్లీ ప్రయత్నించు';
-	@override String get likedYourStory => '{{actorName}} మీ కథను ఇష్టపడ్డారు';
-	@override String get commentedOnYourStory => '{{actorName}} మీ కథను వ్యాఖ్యానించారు';
-	@override String get repliedToYourComment => '{{actorName}} మీ వ్యాఖ్యకు సమాధానం ఇచ్చారు';
-	@override String get startedFollowingYou => '{{actorName}} మిమ్మల్ని అనుసరించటం ప్రారంభించారు';
-	@override String get sentYouAMessage => '{{actorName}} మీకు సందేశం పంపారు';
+	@override String likedYourStory({required Object actorName}) => '${actorName} మీ కథను ఇష్టపడ్డారు';
+	@override String commentedOnYourStory({required Object actorName}) => '${actorName} మీ కథను వ్యాఖ్యానించారు';
+	@override String repliedToYourComment({required Object actorName}) => '${actorName} మీ వ్యాఖ్యకు సమాధానం ఇచ్చారు';
+	@override String startedFollowingYou({required Object actorName}) => '${actorName} మిమ్మల్ని అనుసరించటం ప్రారంభించారు';
+	@override String sentYouAMessage({required Object actorName}) => '${actorName} మీకు సందేశం పంపారు';
 }
 
 // Path: profile
-class _TranslationsProfileTe implements TranslationsProfileEn {
-	_TranslationsProfileTe._(this._root);
+class _TranslationsProfileTe extends TranslationsProfileEn {
+	_TranslationsProfileTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -381,8 +377,8 @@ class _TranslationsProfileTe implements TranslationsProfileEn {
 }
 
 // Path: feed
-class _TranslationsFeedTe implements TranslationsFeedEn {
-	_TranslationsFeedTe._(this._root);
+class _TranslationsFeedTe extends TranslationsFeedEn {
+	_TranslationsFeedTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -429,10 +425,10 @@ class _TranslationsFeedTe implements TranslationsFeedEn {
 	@override String get generatingPreview => 'ప్రివ్యూ రూపొందుతోంది...';
 	@override String get bookmarked => 'బుక్‌మార్క్ చేయబడింది';
 	@override String get removedFromBookmarks => 'బుక్‌మార్క్‌ల నుండి తీసివేయబడింది';
-	@override String get unlike => 'Unlike, {{count}} likes';
-	@override String get like => 'Like, {{count}} likes';
-	@override String get commentCount => '{{count}} comments';
-	@override String get shareCount => 'Share, {{count}} shares';
+	@override String unlike({required Object count}) => 'Unlike, ${count} likes';
+	@override String like({required Object count}) => 'Like, ${count} likes';
+	@override String commentCount({required Object count}) => '${count} comments';
+	@override String shareCount({required Object count}) => 'Share, ${count} shares';
 	@override String get removeBookmark => 'Remove bookmark';
 	@override String get addBookmark => 'Bookmark';
 	@override String get quote => 'Quote';
@@ -446,8 +442,8 @@ class _TranslationsFeedTe implements TranslationsFeedEn {
 }
 
 // Path: homeScreen
-class _TranslationsHomeScreenTe implements TranslationsHomeScreenEn {
-	_TranslationsHomeScreenTe._(this._root);
+class _TranslationsHomeScreenTe extends TranslationsHomeScreenEn {
+	_TranslationsHomeScreenTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -469,7 +465,7 @@ class _TranslationsHomeScreenTe implements TranslationsHomeScreenEn {
 	@override String get exploreStories => 'మీ ప్రయాణాన్ని ప్రారంభించడానికి కథలను అన్వేషించండి';
 	@override String get saveForLater => 'మీరు ఇష్టపడే కథలను బుక్‌మార్క్ చేయండి';
 	@override String get noActivityYet => 'ఇంకా కార్యకలాపం లేదు';
-	@override String get minLeft => '{{count}} నిమిషాలు మిగిలి ఉన్నాయి';
+	@override String minLeft({required Object count}) => '${count} నిమిషాలు మిగిలి ఉన్నాయి';
 	@override String get activityHistory => 'కార్యకలాప చరిత్ర';
 	@override String get storyGenerated => 'కథ రూపొందించబడింది';
 	@override String get storyRead => 'కథ చదివారు';
@@ -486,8 +482,8 @@ class _TranslationsHomeScreenTe implements TranslationsHomeScreenEn {
 }
 
 // Path: storyGenerator.storyLength
-class _TranslationsStoryGeneratorStoryLengthTe implements TranslationsStoryGeneratorStoryLengthEn {
-	_TranslationsStoryGeneratorStoryLengthTe._(this._root);
+class _TranslationsStoryGeneratorStoryLengthTe extends TranslationsStoryGeneratorStoryLengthEn {
+	_TranslationsStoryGeneratorStoryLengthTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -499,8 +495,8 @@ class _TranslationsStoryGeneratorStoryLengthTe implements TranslationsStoryGener
 }
 
 // Path: storyGenerator.format
-class _TranslationsStoryGeneratorFormatTe implements TranslationsStoryGeneratorFormatEn {
-	_TranslationsStoryGeneratorFormatTe._(this._root);
+class _TranslationsStoryGeneratorFormatTe extends TranslationsStoryGeneratorFormatEn {
+	_TranslationsStoryGeneratorFormatTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -512,8 +508,8 @@ class _TranslationsStoryGeneratorFormatTe implements TranslationsStoryGeneratorF
 }
 
 // Path: storyGenerator.hints
-class _TranslationsStoryGeneratorHintsTe implements TranslationsStoryGeneratorHintsEn {
-	_TranslationsStoryGeneratorHintsTe._(this._root);
+class _TranslationsStoryGeneratorHintsTe extends TranslationsStoryGeneratorHintsEn {
+	_TranslationsStoryGeneratorHintsTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -526,8 +522,8 @@ class _TranslationsStoryGeneratorHintsTe implements TranslationsStoryGeneratorHi
 }
 
 // Path: storyGenerator.errors
-class _TranslationsStoryGeneratorErrorsTe implements TranslationsStoryGeneratorErrorsEn {
-	_TranslationsStoryGeneratorErrorsTe._(this._root);
+class _TranslationsStoryGeneratorErrorsTe extends TranslationsStoryGeneratorErrorsEn {
+	_TranslationsStoryGeneratorErrorsTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -537,8 +533,8 @@ class _TranslationsStoryGeneratorErrorsTe implements TranslationsStoryGeneratorE
 }
 
 // Path: feed.tabs
-class _TranslationsFeedTabsTe implements TranslationsFeedTabsEn {
-	_TranslationsFeedTabsTe._(this._root);
+class _TranslationsFeedTabsTe extends TranslationsFeedTabsEn {
+	_TranslationsFeedTabsTe._(TranslationsTe root) : this._root = root, super.internal(root);
 
 	final TranslationsTe _root; // ignore: unused_field
 
@@ -549,309 +545,4 @@ class _TranslationsFeedTabsTe implements TranslationsFeedTabsEn {
 	@override String get videos => 'వీడియోలు';
 	@override String get images => 'చిత్రాలు';
 	@override String get text => 'ఆలోచనలు';
-}
-
-/// The flat map containing all translations for locale <te>.
-/// Only for edge cases! For simple maps, use the map function of this library.
-///
-/// The Dart AOT compiler has issues with very large switch statements,
-/// so the map is split into smaller functions (512 entries each).
-extension on TranslationsTe {
-	dynamic _flatMapFunction(String path) {
-		return switch (path) {
-			'app.name' => 'మైఇతిహాస్',
-			'app.tagline' => 'భారతీయ పురాణాలను కనుగొనండి',
-			'common.ok' => 'సరే',
-			'common.cancel' => 'రద్దు',
-			'common.confirm' => 'నిర్ధారించండి',
-			'common.delete' => 'తొలగించు',
-			'common.edit' => 'సవరించు',
-			'common.save' => 'సేవ్ చేయి',
-			'common.share' => 'పంచుకోండి',
-			'common.search' => 'వెతకండి',
-			'common.loading' => 'లోడ్ అవుతోంది...',
-			'common.error' => 'దోషం',
-			'common.retry' => 'మళ్లీ ప్రయత్నించండి',
-			'common.back' => 'వెనుకకు',
-			'common.next' => 'తదుపరి',
-			'common.finish' => 'ముగించు',
-			'common.skip' => 'దాటవేయి',
-			'common.yes' => 'అవును',
-			'common.no' => 'కాదు',
-			'common.read_full_story' => 'Read the full story',
-			'navigation.home' => 'హోమ్',
-			'navigation.stories' => 'కథలు',
-			'navigation.chat' => 'చాట్',
-			'navigation.map' => 'మ్యాప్',
-			'navigation.community' => 'సంఘం',
-			'navigation.settings' => 'సెట్టింగ్స్',
-			'navigation.profile' => 'ప్రొఫైల్',
-			'home.title' => 'మైఇతిహాస్',
-			'home.storyGenerator' => 'కథ జనరేటర్',
-			'home.chatItihas' => 'చాట్ఇతిహాస్',
-			'home.communityStories' => 'సంఘ కథలు',
-			'home.maps' => 'మ్యాప్స్',
-			'home.greetingMorning' => 'శుభోదయం',
-			'home.continueReading' => 'చదవడం కొనసాగించండి',
-			'home.greetingAfternoon' => 'శుభ మధ్యాహ్నం',
-			'home.greetingEvening' => 'శుభ సాయంత్రం',
-			'home.exploreStories' => 'కథలను అన్వేషించండి',
-			'home.generateStory' => 'కథ రూపొందించండి',
-			'home.content' => 'Home Content',
-			'stories.title' => 'కథలు',
-			'stories.searchHint' => 'శీర్షిక లేదా రచయిత ద్వారా వెతకండి...',
-			'stories.sortBy' => 'క్రమీకరించు',
-			'stories.sortNewest' => 'కొత్తవి మొదట',
-			'stories.sortOldest' => 'పాతవి మొదట',
-			'stories.sortPopular' => 'అత్యంత ప్రజాదరణ',
-			'stories.noStories' => 'కథలు కనుగొనబడలేదు',
-			'stories.loadingStories' => 'కథలు లోడ్ అవుతున్నాయి...',
-			'stories.errorLoadingStories' => 'కథలు లోడ్ చేయడంలో విఫలమైంది',
-			'stories.storyDetails' => 'కథ వివరాలు',
-			'stories.continueReading' => 'చదవడం కొనసాగించండి',
-			'stories.readMore' => 'మరింత చదవండి',
-			'stories.readLess' => 'తక్కువ చదవండి',
-			'stories.author' => 'రచయిత',
-			'stories.publishedOn' => 'ప్రచురించబడింది',
-			'stories.category' => 'వర్గం',
-			'stories.tags' => 'ట్యాగ్స్',
-			'stories.failed_to_load' => 'Failed to load story',
-			'storyGenerator.title' => 'కథ జనరేటర్',
-			'storyGenerator.subtitle' => 'మీ స్వంత పురాణ కథను సృష్టించండి',
-			'storyGenerator.quickStart' => 'త్వరిత ప్రారంభం',
-			'storyGenerator.interactive' => 'ఇంటరాక్టివ్',
-			'storyGenerator.rawPrompt' => 'రా ప్రాంప్ట్',
-			'storyGenerator.yourStoryPrompt' => 'మీ కథ ప్రాంప్ట్',
-			'storyGenerator.writeYourPrompt' => 'మీ ప్రాంప్ట్ రాయండి',
-			'storyGenerator.selectScripture' => 'గ్రంథాన్ని ఎంచుకోండి',
-			'storyGenerator.selectStoryType' => 'కథ రకాన్ని ఎంచుకోండి',
-			'storyGenerator.selectCharacter' => 'పాత్రను ఎంచుకోండి',
-			'storyGenerator.selectTheme' => 'థీమ్ను ఎంచుకోండి',
-			'storyGenerator.selectSetting' => 'సెట్టింగ్ను ఎంచుకోండి',
-			'storyGenerator.selectLanguage' => 'భాషను ఎంచుకోండి',
-			'storyGenerator.selectLength' => 'కథ పొడవు',
-			'storyGenerator.moreOptions' => 'మరిన్ని ఎంపికలు',
-			'storyGenerator.random' => 'యాదృచ్ఛిక',
-			'storyGenerator.generate' => 'కథను రూపొందించండి',
-			'storyGenerator.generating' => 'మీ కథ రూపొందించబడుతోంది...',
-			'storyGenerator.creatingYourStory' => 'మీ కథ సృష్టించబడుతోంది',
-			'storyGenerator.consultingScriptures' => 'పురాతన గ్రంథాలను సంప్రదిస్తోంది...',
-			'storyGenerator.weavingTale' => 'మీ కథను నేస్తోంది...',
-			'storyGenerator.addingWisdom' => 'దివ్య జ్ఞానాన్ని జోడిస్తోంది...',
-			'storyGenerator.polishingNarrative' => 'కథనాన్ని మెరుగుపరుస్తోంది...',
-			'storyGenerator.almostThere' => 'దాదాపు పూర్తయింది...',
-			'storyGenerator.generatedStory' => 'మీ రూపొందించిన కథ',
-			'storyGenerator.aiGenerated' => 'AI సృష్టించింది',
-			'storyGenerator.regenerate' => 'మళ్లీ రూపొందించండి',
-			'storyGenerator.saveStory' => 'కథను సేవ్ చేయండి',
-			'storyGenerator.shareStory' => 'కథను పంచుకోండి',
-			'storyGenerator.newStory' => 'కొత్త కథ',
-			'storyGenerator.saved' => 'సేవ్ చేయబడింది',
-			'storyGenerator.storySaved' => 'కథ మీ లైబ్రరీలో సేవ్ చేయబడింది',
-			'storyGenerator.story' => 'కథ',
-			'storyGenerator.lesson' => 'పాఠం',
-			'storyGenerator.didYouKnow' => 'మీకు తెలుసా?',
-			'storyGenerator.activity' => 'కార్యకలాపం',
-			'storyGenerator.optionalRefine' => 'ఐచ్ఛికం: ఎంపికలతో మెరుగుపరచండి',
-			'storyGenerator.applyOptions' => 'ఎంపికలను వర్తింపజేయండి',
-			'storyGenerator.language' => 'భాష',
-			'storyGenerator.storyFormat' => 'కథ ఫార్మాట్',
-			'storyGenerator.storyLength.short' => 'చిన్నది',
-			'storyGenerator.storyLength.medium' => 'మధ్యస్థం',
-			'storyGenerator.storyLength.long' => 'పొడవైనది',
-			'storyGenerator.storyLength.epic' => 'ఇతిహాసం',
-			'storyGenerator.format.narrative' => 'కథనం',
-			'storyGenerator.format.dialogue' => 'సంభాషణ ఆధారిత',
-			'storyGenerator.format.poetic' => 'కావ్య',
-			'storyGenerator.format.scriptural' => 'శాస్త్రీయ',
-			'storyGenerator.hints.krishnaTeaching' => 'కృష్ణుడు అర్జునుడికి బోధించే కథ...',
-			'storyGenerator.hints.warriorRedemption' => 'విముక్తి కోరుకునే యోధుడి ఇతిహాసం...',
-			'storyGenerator.hints.sageWisdom' => 'ఋషుల జ్ఞానం గురించి కథ...',
-			'storyGenerator.hints.devotedSeeker' => 'భక్తుని ప్రయాణం...',
-			'storyGenerator.hints.divineIntervention' => 'దైవ జోక్యం యొక్క గాథ...',
-			'storyGenerator.errors.incompletePrompt' => 'దయచేసి అన్ని అవసరమైన ఎంపికలను పూర్తి చేయండి',
-			'storyGenerator.errors.generationFailed' => 'కథను సృష్టించడంలో విఫలమైంది. దయచేసి మళ్లీ ప్రయత్నించండి.',
-			'chat.title' => 'చాట్ఇతిహాస్',
-			'chat.subtitle' => 'పురాణాల గురించి AI తో చాట్ చేయండి',
-			'chat.friendMode' => 'స్నేహితుడి మోడ్',
-			'chat.philosophicalMode' => 'తత్వశాస్త్ర మోడ్',
-			'chat.typeMessage' => 'మీ సందేశాన్ని టైప్ చేయండి...',
-			'chat.send' => 'పంపండి',
-			'chat.newChat' => 'కొత్త చాట్',
-			'chat.chatHistory' => 'చాట్ చరిత్ర',
-			'chat.clearChat' => 'చాట్ను తొలగించండి',
-			'chat.noMessages' => 'ఇంకా సందేశాలు లేవు. సంభాషణ ప్రారంభించండి!',
-			'chat.list_page' => 'Chat List Page',
-			'map.title' => 'అఖండ భారతం',
-			'map.subtitle' => 'చారిత్రక స్థలాలను అన్వేషించండి',
-			'map.searchLocation' => 'స్థలాన్ని వెతకండి...',
-			'map.viewDetails' => 'వివరాలను చూడండి',
-			'map.showRoute' => 'మార్గాన్ని చూపించు',
-			'map.historicalInfo' => 'చారిత్రక సమాచారం',
-			'map.nearbyPlaces' => 'సమీప ప్రదేశాలు',
-			'community.title' => 'సంఘం',
-			'community.trending' => 'ట్రెండింగ్',
-			'community.following' => 'ఫాలోయింగ్',
-			'community.followers' => 'ఫాలోవర్స్',
-			'community.posts' => 'పోస్ట్లు',
-			'community.follow' => 'ఫాలో చేయండి',
-			'community.unfollow' => 'అన్ఫాలో చేయండి',
-			'community.shareYourStory' => 'మీ కథను పంచుకోండి...',
-			'community.post' => 'పోస్ట్ చేయండి',
-			'community.like' => 'ఇష్టం',
-			'community.comment' => 'వ్యాఖ్య',
-			'community.comments' => 'వ్యాఖ్యలు',
-			'community.noPostsYet' => 'ఇంకా పోస్ట్లు లేవు',
-			'settings.title' => 'సెట్టింగ్స్',
-			'settings.language' => 'భాష',
-			'settings.theme' => 'థీమ్',
-			'settings.themeLight' => 'లైట్',
-			'settings.themeDark' => 'డార్క్',
-			'settings.themeSystem' => 'సిస్టమ్ డిఫాల్ట్',
-			'settings.notifications' => 'నోటిఫికేషన్స్',
-			'settings.account' => 'ఖాతా',
-			'settings.privacy' => 'గోప్యత',
-			'settings.about' => 'మా గురించి',
-			'settings.version' => 'వెర్షన్',
-			'settings.logout' => 'లాగ్అవుట్',
-			'auth.login' => 'లాగిన్',
-			'auth.signup' => 'సైన్అప్',
-			'auth.email' => 'ఇమెయిల్',
-			'auth.password' => 'పాస్వర్డ్',
-			'auth.confirmPassword' => 'పాస్వర్డ్ను నిర్ధారించండి',
-			'auth.forgotPassword' => 'పాస్వర్డ్ మర్చిపోయారా?',
-			'auth.resetPassword' => 'పాస్వర్డ్ రీసెట్',
-			'auth.dontHaveAccount' => 'ఖాతా లేదా?',
-			'auth.alreadyHaveAccount' => 'ఇప్పటికే ఖాతా ఉందా?',
-			'auth.loginSuccess' => 'లాగిన్ విజయవంతం',
-			'auth.signupSuccess' => 'సైన్అప్ విజయవంతం',
-			'auth.loginError' => 'లాగిన్ విఫలమైంది',
-			'auth.signupError' => 'సైన్అప్ విఫలమైంది',
-			'error.network' => 'ఇంటర్నెట్ కనెక్షన్ లేదు',
-			'error.server' => 'సర్వర్ లోపం సంభవించింది',
-			'error.cache' => 'కాష్ చేసిన డేటాను లోడ్ చేయడంలో విఫలమైంది',
-			'error.timeout' => 'అభ్యర్థన గడువు ముగిసింది',
-			'error.notFound' => 'వనరు కనుగొనబడలేదు',
-			'error.validation' => 'ధృవీకరణ విఫలమైంది',
-			'error.unexpected' => 'అనుకోని లోపం సంభవించింది',
-			'error.tryAgain' => 'దయచేసి మళ్లీ ప్రయత్నించండి',
-			'subscription.free' => 'ఉచితం',
-			'subscription.plus' => 'ప్లస్',
-			'subscription.pro' => 'ప్రో',
-			'subscription.upgradeToPro' => 'ప్రోకు అప్గ్రేడ్ చేయండి',
-			'subscription.features' => 'ఫీచర్లు',
-			'subscription.subscribe' => 'సబ్స్క్రైబ్ చేయండి',
-			'subscription.currentPlan' => 'ప్రస్తుత ప్లాన్',
-			'subscription.managePlan' => 'ప్లాన్ను నిర్వహించండి',
-			'notification.title' => 'నోటిఫికేషన్స్',
-			'notification.markAllRead' => 'అన్నింటినీ చదివినట్టు గుర్తించు',
-			'notification.noNotifications' => 'ఇంకా నోటిఫికేషన్స్ లేవు',
-			'notification.errorPrefix' => 'లోపం:',
-			'notification.retry' => 'మళ్లీ ప్రయత్నించు',
-			'notification.likedYourStory' => '{{actorName}} మీ కథను ఇష్టపడ్డారు',
-			'notification.commentedOnYourStory' => '{{actorName}} మీ కథను వ్యాఖ్యానించారు',
-			'notification.repliedToYourComment' => '{{actorName}} మీ వ్యాఖ్యకు సమాధానం ఇచ్చారు',
-			'notification.startedFollowingYou' => '{{actorName}} మిమ్మల్ని అనుసరించటం ప్రారంభించారు',
-			'notification.sentYouAMessage' => '{{actorName}} మీకు సందేశం పంపారు',
-			'profile.followers' => 'అనుసరించేవారు',
-			'profile.following' => 'అనుసరిస్తున్నారు',
-			'profile.unfollow' => 'అనుసరించవద్దు',
-			'profile.follow' => 'అనుసరించు',
-			'profile.about' => 'గురించి',
-			'profile.stories' => 'కథలు',
-			'feed.loading' => 'కథలు లోడ్ అవుతున్నాయి...',
-			'feed.errorTitle' => 'అయ్యో! ఏదో తప్పు జరిగింది',
-			'feed.tryAgain' => 'మళ్లీ ప్రయత్నించు',
-			'feed.noStoriesAvailable' => 'కథలు అందుబాటులో లేవు',
-			'feed.noImagesAvailable' => 'చిత్ర పోస్ట్‌లు అందుబాటులో లేవు',
-			'feed.noTextPostsAvailable' => 'ఆలోచన పోస్ట్‌లు అందుబాటులో లేవు',
-			'feed.noContentAvailable' => 'కంటెంట్ అందుబాటులో లేదు',
-			'feed.refresh' => 'రిఫ్రెష్',
-			'feed.comments' => 'వ్యాఖ్యలు',
-			'feed.commentsComingSoon' => 'వ్యాఖ్యలు త్వరలో వస్తాయి',
-			'feed.addCommentHint' => 'వ్యాఖ్యను జోడించండి...',
-			'feed.shareStory' => 'కథను పంచుకోండి',
-			'feed.sharePost' => 'పోస్ట్‌ను పంచుకోండి',
-			'feed.shareThought' => 'ఆలోచనను పంచుకోండి',
-			'feed.shareAsImage' => 'చిత్రంగా పంచుకోండి',
-			'feed.shareAsImageSubtitle' => 'అందమైన ప్రివ్యూ కార్డ్‌ను సృష్టించండి',
-			'feed.shareLink' => 'లింక్ పంచుకోండి',
-			'feed.shareLinkSubtitle' => 'కథ లింక్‌ను కాపీ చేయండి లేదా పంచుకోండి',
-			'feed.shareImageLinkSubtitle' => 'పోస్ట్ లింక్‌ను కాపీ చేయండి లేదా పంచుకోండి',
-			'feed.shareTextLinkSubtitle' => 'ఆలోచన లింక్‌ను కాపీ చేయండి లేదా పంచుకోండి',
-			'feed.shareAsText' => 'పాఠ్యంగా పంచుకోండి',
-			'feed.shareAsTextSubtitle' => 'కథ సారాంశాన్ని పంచుకోండి',
-			'feed.shareQuote' => 'ఉల్లేఖనాన్ని పంచుకోండి',
-			'feed.shareQuoteSubtitle' => 'ఉల్లేఖన పాఠ్యంగా పంచుకోండి',
-			'feed.shareWithImage' => 'చిత్రంతో పంచుకోండి',
-			'feed.shareWithImageSubtitle' => 'క్యాప్షన్‌తో చిత్రాన్ని పంచుకోండి',
-			'feed.copyLink' => 'లింక్ కాపీ చేయండి',
-			'feed.copyLinkSubtitle' => 'క్లిప్‌బోర్డ్‌కు లింక్ కాపీ చేయండి',
-			'feed.copyText' => 'పాఠ్యం కాపీ చేయండి',
-			'feed.copyTextSubtitle' => 'క్లిప్‌బోర్డ్‌కు ఉల్లేఖనాన్ని కాపీ చేయండి',
-			'feed.linkCopied' => 'లింక్ క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది',
-			'feed.textCopied' => 'పాఠ్యం క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది',
-			'feed.sendToUser' => 'వినియోగదారునికి పంపండి',
-			'feed.sendToUserSubtitle' => 'స్నేహితుడితో నేరుగా పంచుకోండి',
-			'feed.chooseFormat' => 'ఫార్మాట్ ఎంచుకోండి',
-			'feed.linkPreview' => 'లింక్ ప్రివ్యూ',
-			'feed.linkPreviewSize' => '1200 × 630',
-			'feed.storyFormat' => 'స్టోరీ ఫార్మాట్',
-			'feed.storyFormatSize' => '1080 × 1920 (Instagram/Stories)',
-			'feed.generatingPreview' => 'ప్రివ్యూ రూపొందుతోంది...',
-			'feed.bookmarked' => 'బుక్‌మార్క్ చేయబడింది',
-			'feed.removedFromBookmarks' => 'బుక్‌మార్క్‌ల నుండి తీసివేయబడింది',
-			'feed.unlike' => 'Unlike, {{count}} likes',
-			'feed.like' => 'Like, {{count}} likes',
-			'feed.commentCount' => '{{count}} comments',
-			'feed.shareCount' => 'Share, {{count}} shares',
-			'feed.removeBookmark' => 'Remove bookmark',
-			'feed.addBookmark' => 'Bookmark',
-			'feed.quote' => 'Quote',
-			'feed.quoteCopied' => 'Quote copied to clipboard',
-			'feed.copy' => 'Copy',
-			'feed.tapToViewFullQuote' => 'Tap to view full quote',
-			'feed.quoteFromMyitihas' => 'Quote from MyItihas',
-			'feed.tabs.all' => 'అన్నీ',
-			'feed.tabs.stories' => 'కథలు',
-			'feed.tabs.posts' => 'పోస్ట్‌లు',
-			'feed.tabs.videos' => 'వీడియోలు',
-			'feed.tabs.images' => 'చిత్రాలు',
-			'feed.tabs.text' => 'ఆలోచనలు',
-			'feed.tapToShowCaption' => 'క్యాప్షన్ చూడడానికి నొక్కండి',
-			'feed.noVideosAvailable' => 'వీడియోలు ఏవీ అందుబాటులో లేవు',
-			'homeScreen.greeting' => 'నమస్కారం',
-			'homeScreen.quoteOfTheDay' => 'రోజు యొక్క కోట్',
-			'homeScreen.shareQuote' => 'కోట్ షేర్ చేయండి',
-			'homeScreen.copyQuote' => 'కోట్ కాపీ చేయండి',
-			'homeScreen.quoteCopied' => 'కోట్ క్లిప్‌బోర్డ్‌కి కాపీ అయింది',
-			'homeScreen.featuredStories' => 'ఫీచర్డ్ కథలు',
-			'homeScreen.quickActions' => 'శీఘ్ర చర్యలు',
-			'homeScreen.generateStory' => 'కథ రూపొందించండి',
-			'homeScreen.chatWithKrishna' => 'కృష్ణుడితో చాట్',
-			'homeScreen.myActivity' => 'నా కార్యకలాపం',
-			'homeScreen.continueReading' => 'చదవడం కొనసాగించండి',
-			'homeScreen.savedStories' => 'సేవ్ చేసిన కథలు',
-			'homeScreen.seeAll' => 'అన్నీ చూడండి',
-			'homeScreen.startReading' => 'చదవడం ప్రారంభించండి',
-			'homeScreen.exploreStories' => 'మీ ప్రయాణాన్ని ప్రారంభించడానికి కథలను అన్వేషించండి',
-			'homeScreen.saveForLater' => 'మీరు ఇష్టపడే కథలను బుక్‌మార్క్ చేయండి',
-			'homeScreen.noActivityYet' => 'ఇంకా కార్యకలాపం లేదు',
-			'homeScreen.minLeft' => '{{count}} నిమిషాలు మిగిలి ఉన్నాయి',
-			'homeScreen.activityHistory' => 'కార్యకలాప చరిత్ర',
-			'homeScreen.storyGenerated' => 'కథ రూపొందించబడింది',
-			'homeScreen.storyRead' => 'కథ చదివారు',
-			'homeScreen.storyBookmarked' => 'కథ బుక్‌మార్క్ చేయబడింది',
-			'homeScreen.storyShared' => 'కథ షేర్ చేయబడింది',
-			'homeScreen.storyCompleted' => 'కథ పూర్తయింది',
-			'homeScreen.today' => 'ఈరోజు',
-			'homeScreen.yesterday' => 'నిన్న',
-			'homeScreen.thisWeek' => 'ఈ వారం',
-			'homeScreen.earlier' => 'ముందు',
-			'homeScreen.noContinueReading' => 'చదవడానికి ఏమీ లేదు',
-			'homeScreen.noSavedStories' => 'సేవ్ చేసిన కథలు లేవు',
-			'homeScreen.bookmarkStoriesToSave' => 'సేవ్ చేయడానికి కథలను బుక్‌మార్క్ చేయండి',
-			_ => null,
-		};
-	}
 }

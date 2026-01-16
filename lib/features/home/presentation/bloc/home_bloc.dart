@@ -6,6 +6,7 @@ import 'package:myitihas/features/home/data/datasources/quote_local_datasource.d
 import 'package:myitihas/features/home/presentation/bloc/home_event.dart';
 import 'package:myitihas/features/home/presentation/bloc/home_state.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
+import 'package:myitihas/features/story_generator/domain/repositories/story_generator_repository.dart';
 import 'package:myitihas/services/reading_progress_service.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -14,9 +15,13 @@ import 'package:share_plus/share_plus.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final QuoteLocalDataSource _quoteDataSource;
   final ReadingProgressService _readingProgressService;
+  final StoryGeneratorRepository _storyGeneratorRepository;
 
-  HomeBloc(this._quoteDataSource, this._readingProgressService)
-    : super(const HomeState()) {
+  HomeBloc(
+    this._quoteDataSource,
+    this._readingProgressService,
+    this._storyGeneratorRepository,
+  ) : super(const HomeState()) {
     on<HomeEvent>((event, emit) async {
       await event.when(
         loadHome: () => _onLoadHome(emit),
@@ -25,6 +30,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         loadFeaturedStories: () => _onLoadFeaturedStories(emit),
         loadContinueReading: () => _onLoadContinueReading(emit),
         loadSavedStories: () => _onLoadSavedStories(emit),
+        loadMyGeneratedStories: () => _onLoadMyGeneratedStories(emit),
         shareQuote: () => _onShareQuote(emit),
         copyQuote: () => _onCopyQuote(emit),
       );
@@ -41,6 +47,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       _loadContinueReading(emit),
       _loadFeaturedStories(emit),
       _loadSavedStories(emit),
+      _loadMyGeneratedStories(emit),
     ]);
 
     emit(state.copyWith(isLoading: false));
@@ -55,6 +62,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       _loadContinueReading(emit),
       _loadFeaturedStories(emit),
       _loadSavedStories(emit),
+      _loadMyGeneratedStories(emit),
     ]);
 
     emit(state.copyWith(isRefreshing: false));
@@ -124,6 +132,33 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(state.copyWith(savedStories: []));
     } catch (e, st) {
       talker.error('Failed to load saved stories', e, st);
+    }
+  }
+
+  /// Load user's generated stories
+  Future<void> _onLoadMyGeneratedStories(Emitter<HomeState> emit) async {
+    emit(state.copyWith(isMyGeneratedStoriesLoading: true));
+    await _loadMyGeneratedStories(emit);
+    emit(state.copyWith(isMyGeneratedStoriesLoading: false));
+  }
+
+  Future<void> _loadMyGeneratedStories(Emitter<HomeState> emit) async {
+    try {
+      final result = await _storyGeneratorRepository.getGeneratedStories();
+      result.fold(
+        (failure) {
+          talker.error('Failed to load generated stories: ${failure.message}');
+          emit(state.copyWith(myGeneratedStories: []));
+        },
+        (stories) {
+          // Limit to 10 most recent stories for home screen
+          final limitedStories = stories.take(10).toList();
+          emit(state.copyWith(myGeneratedStories: limitedStories));
+        },
+      );
+    } catch (e, st) {
+      talker.error('Failed to load generated stories', e, st);
+      emit(state.copyWith(myGeneratedStories: []));
     }
   }
 
