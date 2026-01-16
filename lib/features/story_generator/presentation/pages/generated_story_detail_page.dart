@@ -17,7 +17,7 @@ import 'package:myitihas/features/story_generator/presentation/bloc/story_tts_cu
 import 'package:myitihas/utils/functions.dart';
 import 'package:rich_readmore/rich_readmore.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:myitihas/services/post_service.dart';
+import 'package:myitihas/features/social/presentation/widgets/share_to_feed_dialog.dart';
 import 'package:myitihas/i18n/strings.g.dart';
 
 class GeneratedStoryDetailPage extends StatefulWidget {
@@ -193,7 +193,10 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                                 if (value == 'share') {
                                   _shareStory(story);
                                 } else if (value == 'share_to_feed') {
-                                  _showShareToFeedDialog(context, story);
+                                  showShareToFeedDialog(
+                                    context: context,
+                                    story: story,
+                                  );
                                 }
                               },
                               itemBuilder: (context) => [
@@ -1211,204 +1214,6 @@ Generated with MyItihas - Discover Indian Mythology
 ''';
 
     Share.share(shareText, subject: story.title);
-  }
-
-  void _showShareToFeedDialog(BuildContext context, Story story) {
-    final t = Translations.of(context);
-    final captionController = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      builder: (bottomSheetContext) {
-        final theme = Theme.of(bottomSheetContext);
-        final colorScheme = theme.colorScheme;
-
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(bottomSheetContext).viewInsets.bottom,
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      t.homeScreen.shareStoryTitle,
-                      style: theme.textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.pop(bottomSheetContext),
-                      icon: const Icon(Icons.close),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 16),
-
-                // Story preview
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerLow,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: colorScheme.outlineVariant.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: colorScheme.tertiary.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: story.imageUrl != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  story.imageUrl!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Icon(
-                                    Icons.auto_stories,
-                                    color: colorScheme.tertiary,
-                                  ),
-                                ),
-                              )
-                            : Icon(
-                                Icons.auto_stories,
-                                color: colorScheme.tertiary,
-                              ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              story.title,
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              story.scripture,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 16),
-
-                // Caption input
-                Text(
-                  t.homeScreen.shareStoryMessage,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                TextField(
-                  controller: captionController,
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                    hintText: t.homeScreen.shareStoryHint,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // Share button
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton(
-                    onPressed: () async {
-                      Navigator.pop(bottomSheetContext);
-                      await _shareStoryToFeed(
-                        context,
-                        story,
-                        captionController.text,
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Text(t.homeScreen.shareToFeed),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 8),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _shareStoryToFeed(
-    BuildContext context,
-    Story story,
-    String caption,
-  ) async {
-    final t = Translations.of(context);
-    final postService = getIt<PostService>();
-
-    try {
-      await postService.createPost(
-        postType: PostType.storyShare,
-        content: caption.isNotEmpty ? caption : story.lesson,
-        title: story.title,
-        sharedStoryId: story.id,
-        metadata: {
-          'story_title': story.title,
-          'story_scripture': story.scripture,
-          'story_image_url': story.imageUrl,
-          'story_lesson': story.lesson,
-        },
-      );
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(t.homeScreen.sharedToFeed),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to share: ${e.toString()}'),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-      }
-    }
   }
 }
 

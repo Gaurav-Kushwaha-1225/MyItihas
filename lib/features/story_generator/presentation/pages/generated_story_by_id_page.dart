@@ -26,17 +26,11 @@ class _GeneratedStoryByIdPageState extends State<GeneratedStoryByIdPage> {
 
   Future<Story?> _fetchStory() async {
     final repository = getIt<StoryGeneratorRepository>();
-    final result = await repository.getGeneratedStories();
+    final result = await repository.getStoryById(widget.storyId);
 
     return result.fold(
       (failure) => null,
-      (stories) {
-        try {
-          return stories.firstWhere((s) => s.id == widget.storyId);
-        } catch (_) {
-          return null;
-        }
-      },
+      (story) => story,
     );
   }
 
