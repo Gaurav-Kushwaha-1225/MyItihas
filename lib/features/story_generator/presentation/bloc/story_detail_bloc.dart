@@ -5,6 +5,7 @@ import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/domain/entities/generator_options.dart';
 import 'package:myitihas/features/story_generator/domain/entities/story_chat_message.dart';
 import 'package:myitihas/features/story_generator/domain/entities/story_prompt.dart';
+import 'package:myitihas/features/story_generator/domain/entities/story_translation.dart';
 import 'package:myitihas/features/story_generator/domain/repositories/story_generator_repository.dart';
 
 const Object _kUnset = Object();
@@ -116,6 +117,9 @@ class StoryDetailState {
   /// Display name shown in dropdown (e.g., "English")
   final String selectedLanguage;
 
+  final bool isTranslating;
+  final String? translationError;
+
   final String? errorMessage;
 
   const StoryDetailState({
@@ -135,6 +139,8 @@ class StoryDetailState {
     required this.chatConversation,
     required this.chatError,
     required this.selectedLanguage,
+    required this.isTranslating,
+    required this.translationError,
     required this.errorMessage,
   });
 
@@ -155,6 +161,8 @@ class StoryDetailState {
     chatConversation: null,
     chatError: null,
     selectedLanguage: 'English',
+    isTranslating: false,
+    translationError: null,
     errorMessage: null,
   );
 
@@ -176,6 +184,8 @@ class StoryDetailState {
     Object? chatConversation = _kUnset,
     Object? chatError = _kUnset,
     String? selectedLanguage,
+    bool? isTranslating,
+    String? translationError,
     Object? errorMessage = _kUnset,
   }) {
     return StoryDetailState(
@@ -201,6 +211,8 @@ class StoryDetailState {
           : chatConversation as StoryChatConversation?,
       chatError: chatError == _kUnset ? this.chatError : chatError as String?,
       selectedLanguage: selectedLanguage ?? this.selectedLanguage,
+      isTranslating: isTranslating ?? this.isTranslating,
+      translationError: translationError ?? this.translationError,
       errorMessage: errorMessage == _kUnset
           ? this.errorMessage
           : errorMessage as String?,
@@ -292,12 +304,90 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
     );
   }
 
+  String _languageNameToCode(String name) {
+    final lower = name.toLowerCase();
+    if (lower.contains('english')) return 'en';
+    if (lower.contains('hindi')) return 'hi';
+    if (lower.contains('tamil')) return 'ta';
+    if (lower.contains('telugu')) return 'te';
+    if (lower.contains('bengali')) return 'bn';
+    if (lower.contains('marathi')) return 'mr';
+    if (lower.contains('gujarati')) return 'gu';
+    return 'en';
+  }
+
   Future<void> _onLanguageChanged(
     StoryDetailLanguageChanged event,
     Emitter<StoryDetailState> emit,
   ) async {
+    final story = state.story;
+    if (story == null) return;
+
     emit(
       state.copyWith(selectedLanguage: event.languageName, errorMessage: null),
+    );
+
+    final langCode = _languageNameToCode(event.languageName);
+
+    // English = show original
+    if (langCode == 'en') {
+      emit(
+        state.copyWith(
+          chapters: _parseChapters(story.story),
+          visibleChapters: 1,
+        ),
+      );
+      return;
+    }
+
+    final cached = story.attributes.translations[langCode];
+    if (cached != null) {
+      emit(
+        state.copyWith(
+          chapters: _parseChapters(cached.story),
+          visibleChapters: 1,
+        ),
+      );
+      return;
+    }
+
+    emit(state.copyWith(isTranslating: true));
+
+    final res = await _repo.translateStory(story: story, targetLang: langCode);
+
+    await res.fold(
+      (failure) async {
+        emit(
+          state.copyWith(isTranslating: false, errorMessage: failure.message),
+        );
+      },
+      (translated) async {
+        final updatedTranslations = Map<String, TranslatedStory>.from(
+          story.attributes.translations,
+        )..[langCode] = translated;
+
+        final updatedStory = story.copyWith(
+          attributes: story.attributes.copyWith(
+            translations: updatedTranslations,
+          ),
+        );
+
+        final saved = await _repo.updateStory(updatedStory);
+
+        saved.fold(
+          (f) => emit(
+            state.copyWith(isTranslating: false, errorMessage: f.message),
+          ),
+          (savedStory) => emit(
+            state.copyWith(
+              story: savedStory,
+              isTranslating: false,
+              chapters: _parseChapters(translated.story),
+              visibleChapters: 1,
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -802,7 +892,9 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
     buffer.write(chapters.first.content.trim());
 
     for (final chapter in chapters.skip(1)) {
-      buffer.write('\n\n-----\nChapter ${chapter.number}\n${chapter.content.trim()}\n');
+      buffer.write(
+        '\n\n-----\nChapter ${chapter.number}\n${chapter.content.trim()}\n',
+      );
     }
     return buffer.toString().trim();
   }

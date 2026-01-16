@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:myitihas/core/errors/failures.dart';
@@ -6,6 +8,7 @@ import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/domain/entities/story_chat_message.dart';
 import 'package:myitihas/features/story_generator/domain/entities/story_prompt.dart';
 import 'package:myitihas/features/story_generator/domain/entities/generator_options.dart';
+import 'package:myitihas/features/story_generator/domain/entities/story_translation.dart';
 import 'package:myitihas/features/story_generator/domain/repositories/story_generator_repository.dart';
 import 'package:myitihas/services/supabase_service.dart';
 import '../datasources/remote_story_generator_datasource.dart';
@@ -73,6 +76,14 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
           'story_length':
               '${options.length.displayName} ${options.length.description}',
           'tags': <String>[],
+          'translations': {
+            languageNameToCode(options.language.displayName): TranslatedStory(
+              title: title,
+              story: storyContent,
+              moral: moral,
+              lang: languageNameToCode(options.language.displayName),
+            ),
+          },
         },
         'author_id': author.id,
         'comment_count': 0,
@@ -211,6 +222,7 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
       'activity': story.activity,
       'scripture': story.scripture,
       'moral': story.lesson,
+      'translations': a.translations,
     };
   }
 
@@ -261,6 +273,7 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
             .map((char) => char.toString())
             .toList(),
         characterDetails: characterDetails,
+        translations: _parseTranslations(attr['translations']),
       ),
       imageUrl: row['image_url']?.toString(),
       createdAt: row['created_at'] != null
@@ -283,6 +296,46 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
       commentCount: (row['comment_count'] as num?)?.toInt() ?? 0,
       shareCount: (row['share_count'] as num?)?.toInt() ?? 0,
     );
+  }
+
+  Map<String, TranslatedStory> _parseTranslations(dynamic raw) {
+    if (raw == null) return <String, TranslatedStory>{};
+
+    if (raw is Map) {
+      final out = <String, TranslatedStory>{};
+
+      for (final entry in raw.entries) {
+        final lang = entry.key.toString();
+        final val = entry.value;
+
+        if (val == null) continue;
+
+        if (val is Map<String, dynamic>) {
+          out[lang] = TranslatedStory.fromJson(val);
+          continue;
+        }
+        if (val is Map) {
+          out[lang] = TranslatedStory.fromJson(Map<String, dynamic>.from(val));
+          continue;
+        }
+
+        if (val is String) {
+          try {
+            final decoded = jsonDecode(val);
+            if (decoded is Map) {
+              out[lang] = TranslatedStory.fromJson(
+                Map<String, dynamic>.from(decoded),
+              );
+            }
+          } catch (_) {
+          }
+        }
+      }
+
+      return out;
+    }
+
+    return <String, TranslatedStory>{};
   }
 
   @override
@@ -368,6 +421,14 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
           'story_length':
               '${options.length.displayName} ${options.length.description}',
           'tags': <String>[],
+          'translations': {
+            languageNameToCode(options.language.displayName): TranslatedStory(
+              title: title,
+              story: storyContent,
+              moral: moral,
+              lang: languageNameToCode(options.language.displayName),
+            ),
+          },
         },
         'author_id': author.id,
         'author': author.displayName,
@@ -497,11 +558,7 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
           .limit(1);
 
       if (existing.isNotEmpty) {
-        return Right(
-          StoryChatConversation.fromSupabaseRow(
-            existing.first,
-          ),
-        );
+        return Right(StoryChatConversation.fromSupabaseRow(existing.first));
       }
 
       final now = DateTime.now();
@@ -560,7 +617,11 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
 
       final withBot = <StoryChatMessage>[
         ...updatedMessages,
-        StoryChatMessage(sender: 'bot', text: botText, timestamp: DateTime.now()),
+        StoryChatMessage(
+          sender: 'bot',
+          text: botText,
+          timestamp: DateTime.now(),
+        ),
       ];
 
       final updateBody = {
@@ -579,6 +640,77 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
     } catch (e) {
       return Left(ServerFailure('Failed to send message: ${e.toString()}'));
     }
+  }
+
+  @override
+  Future<Either<Failure, TranslatedStory>> translateStory({
+    required Story story,
+    required String targetLang,
+  }) async {
+    try {
+      final data = await _remoteDataSource.translateStory(
+        title: story.title,
+        content: story.story,
+        moral: story.lesson,
+        targetLang: targetLang,
+      );
+
+      // story.attributes.translations.addEntries([
+      //   MapEntry(
+      //     targetLang,
+      //     TranslatedStory(
+      //       title: data['title']?.toString() ?? 'Untitled Story',
+      //       story: data['story']?.toString() ?? '',
+      //       moral: data['moral']?.toString() ?? '',
+      //       lang: targetLang,
+      //     ),
+      //   ),
+      // ]);
+
+      // final updateBody = {
+      //   'attributes': {
+      //     'translations': story.attributes.translations.map(
+      //       (key, value) => MapEntry(key, value.toJson()),
+      //     ),
+      //   },
+      //   'updated_at': DateTime.now().toIso8601String(),
+      // };
+
+      // final response = await SupabaseService.client
+      //     .from('stories')
+      //     .update(updateBody)
+      //     .eq('id', story.id)
+      //     .select()
+      //     .single();
+
+      return Right(TranslatedStory.fromJson(data));
+    } catch (e) {
+      return Left(ServerFailure('Failed to translate: $e'));
+    }
+  }
+
+  String languageNameToCode(String name) {
+    final lower = name.toLowerCase();
+    if (lower.contains('english')) return 'en';
+    if (lower.contains('hindi')) return 'hi';
+    if (lower.contains('tamil')) return 'ta';
+    if (lower.contains('telugu')) return 'te';
+    if (lower.contains('bengali')) return 'bn';
+    if (lower.contains('marathi')) return 'mr';
+    if (lower.contains('gujarati')) return 'gu';
+    return 'en';
+  }
+
+  String languageCodeToName(String name) {
+    final lower = name.toLowerCase();
+    if (lower.contains('en')) return 'English';
+    if (lower.contains('hi')) return 'Hindi';
+    if (lower.contains('ta')) return 'Tamil';
+    if (lower.contains('te')) return 'Telugu';
+    if (lower.contains('bn')) return 'Bengali';
+    if (lower.contains('mr')) return 'Marathi';
+    if (lower.contains('gu')) return 'Gujarati';
+    return 'English';
   }
 
   Map<String, dynamic> _buildStoryContext(Story story) {
