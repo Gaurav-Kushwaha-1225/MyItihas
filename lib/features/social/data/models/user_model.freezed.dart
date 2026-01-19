@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String get id; String get username; String get displayName; String get avatarUrl; String get bio; int get followerCount; int get followingCount; bool get isFollowing; bool get isCurrentUser;
+ String get id; String get username; String get displayName; String get avatarUrl; String get bio; int get followerCount; int get followingCount; bool get isFollowing; bool get isCurrentUser; List<String> get savedStories;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.followerCount, followerCount) || other.followerCount == followerCount)&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.isFollowing, isFollowing) || other.isFollowing == isFollowing)&&(identical(other.isCurrentUser, isCurrentUser) || other.isCurrentUser == isCurrentUser));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.followerCount, followerCount) || other.followerCount == followerCount)&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.isFollowing, isFollowing) || other.isFollowing == isFollowing)&&(identical(other.isCurrentUser, isCurrentUser) || other.isCurrentUser == isCurrentUser)&&const DeepCollectionEquality().equals(other.savedStories, savedStories));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,displayName,avatarUrl,bio,followerCount,followingCount,isFollowing,isCurrentUser);
+int get hashCode => Object.hash(runtimeType,id,username,displayName,avatarUrl,bio,followerCount,followingCount,isFollowing,isCurrentUser,const DeepCollectionEquality().hash(savedStories));
 
 @override
 String toString() {
-  return 'UserModel(id: $id, username: $username, displayName: $displayName, avatarUrl: $avatarUrl, bio: $bio, followerCount: $followerCount, followingCount: $followingCount, isFollowing: $isFollowing, isCurrentUser: $isCurrentUser)';
+  return 'UserModel(id: $id, username: $username, displayName: $displayName, avatarUrl: $avatarUrl, bio: $bio, followerCount: $followerCount, followingCount: $followingCount, isFollowing: $isFollowing, isCurrentUser: $isCurrentUser, savedStories: $savedStories)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String username, String displayName, String avatarUrl, String bio, int followerCount, int followingCount, bool isFollowing, bool isCurrentUser
+ String id, String username, String displayName, String avatarUrl, String bio, int followerCount, int followingCount, bool isFollowing, bool isCurrentUser, List<String> savedStories
 });
 
 
@@ -65,7 +65,7 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? displayName = null,Object? avatarUrl = null,Object? bio = null,Object? followerCount = null,Object? followingCount = null,Object? isFollowing = null,Object? isCurrentUser = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? username = null,Object? displayName = null,Object? avatarUrl = null,Object? bio = null,Object? followerCount = null,Object? followingCount = null,Object? isFollowing = null,Object? isCurrentUser = null,Object? savedStories = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,8 @@ as String,followerCount: null == followerCount ? _self.followerCount : followerC
 as int,followingCount: null == followingCount ? _self.followingCount : followingCount // ignore: cast_nullable_to_non_nullable
 as int,isFollowing: null == isFollowing ? _self.isFollowing : isFollowing // ignore: cast_nullable_to_non_nullable
 as bool,isCurrentUser: null == isCurrentUser ? _self.isCurrentUser : isCurrentUser // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,savedStories: null == savedStories ? _self.savedStories : savedStories // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -161,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String username,  String displayName,  String avatarUrl,  String bio,  int followerCount,  int followingCount,  bool isFollowing,  bool isCurrentUser)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String username,  String displayName,  String avatarUrl,  String bio,  int followerCount,  int followingCount,  bool isFollowing,  bool isCurrentUser,  List<String> savedStories)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl,_that.bio,_that.followerCount,_that.followingCount,_that.isFollowing,_that.isCurrentUser);case _:
+return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl,_that.bio,_that.followerCount,_that.followingCount,_that.isFollowing,_that.isCurrentUser,_that.savedStories);case _:
   return orElse();
 
 }
@@ -182,10 +183,10 @@ return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String username,  String displayName,  String avatarUrl,  String bio,  int followerCount,  int followingCount,  bool isFollowing,  bool isCurrentUser)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String username,  String displayName,  String avatarUrl,  String bio,  int followerCount,  int followingCount,  bool isFollowing,  bool isCurrentUser,  List<String> savedStories)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
-return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl,_that.bio,_that.followerCount,_that.followingCount,_that.isFollowing,_that.isCurrentUser);case _:
+return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl,_that.bio,_that.followerCount,_that.followingCount,_that.isFollowing,_that.isCurrentUser,_that.savedStories);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +203,10 @@ return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String username,  String displayName,  String avatarUrl,  String bio,  int followerCount,  int followingCount,  bool isFollowing,  bool isCurrentUser)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String username,  String displayName,  String avatarUrl,  String bio,  int followerCount,  int followingCount,  bool isFollowing,  bool isCurrentUser,  List<String> savedStories)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl,_that.bio,_that.followerCount,_that.followingCount,_that.isFollowing,_that.isCurrentUser);case _:
+return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl,_that.bio,_that.followerCount,_that.followingCount,_that.isFollowing,_that.isCurrentUser,_that.savedStories);case _:
   return null;
 
 }
@@ -217,7 +218,7 @@ return $default(_that.id,_that.username,_that.displayName,_that.avatarUrl,_that.
 @JsonSerializable()
 
 class _UserModel extends UserModel {
-  const _UserModel({required this.id, required this.username, required this.displayName, required this.avatarUrl, required this.bio, this.followerCount = 0, this.followingCount = 0, this.isFollowing = false, this.isCurrentUser = false}): super._();
+  const _UserModel({required this.id, required this.username, required this.displayName, required this.avatarUrl, required this.bio, this.followerCount = 0, this.followingCount = 0, this.isFollowing = false, this.isCurrentUser = false, final  List<String> savedStories = const <String>[]}): _savedStories = savedStories,super._();
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String id;
@@ -229,6 +230,13 @@ class _UserModel extends UserModel {
 @override@JsonKey() final  int followingCount;
 @override@JsonKey() final  bool isFollowing;
 @override@JsonKey() final  bool isCurrentUser;
+ final  List<String> _savedStories;
+@override@JsonKey() List<String> get savedStories {
+  if (_savedStories is EqualUnmodifiableListView) return _savedStories;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_savedStories);
+}
+
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +251,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.followerCount, followerCount) || other.followerCount == followerCount)&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.isFollowing, isFollowing) || other.isFollowing == isFollowing)&&(identical(other.isCurrentUser, isCurrentUser) || other.isCurrentUser == isCurrentUser));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.username, username) || other.username == username)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.bio, bio) || other.bio == bio)&&(identical(other.followerCount, followerCount) || other.followerCount == followerCount)&&(identical(other.followingCount, followingCount) || other.followingCount == followingCount)&&(identical(other.isFollowing, isFollowing) || other.isFollowing == isFollowing)&&(identical(other.isCurrentUser, isCurrentUser) || other.isCurrentUser == isCurrentUser)&&const DeepCollectionEquality().equals(other._savedStories, _savedStories));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,username,displayName,avatarUrl,bio,followerCount,followingCount,isFollowing,isCurrentUser);
+int get hashCode => Object.hash(runtimeType,id,username,displayName,avatarUrl,bio,followerCount,followingCount,isFollowing,isCurrentUser,const DeepCollectionEquality().hash(_savedStories));
 
 @override
 String toString() {
-  return 'UserModel(id: $id, username: $username, displayName: $displayName, avatarUrl: $avatarUrl, bio: $bio, followerCount: $followerCount, followingCount: $followingCount, isFollowing: $isFollowing, isCurrentUser: $isCurrentUser)';
+  return 'UserModel(id: $id, username: $username, displayName: $displayName, avatarUrl: $avatarUrl, bio: $bio, followerCount: $followerCount, followingCount: $followingCount, isFollowing: $isFollowing, isCurrentUser: $isCurrentUser, savedStories: $savedStories)';
 }
 
 
@@ -263,7 +271,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String username, String displayName, String avatarUrl, String bio, int followerCount, int followingCount, bool isFollowing, bool isCurrentUser
+ String id, String username, String displayName, String avatarUrl, String bio, int followerCount, int followingCount, bool isFollowing, bool isCurrentUser, List<String> savedStories
 });
 
 
@@ -280,7 +288,7 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? displayName = null,Object? avatarUrl = null,Object? bio = null,Object? followerCount = null,Object? followingCount = null,Object? isFollowing = null,Object? isCurrentUser = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? username = null,Object? displayName = null,Object? avatarUrl = null,Object? bio = null,Object? followerCount = null,Object? followingCount = null,Object? isFollowing = null,Object? isCurrentUser = null,Object? savedStories = null,}) {
   return _then(_UserModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
@@ -291,7 +299,8 @@ as String,followerCount: null == followerCount ? _self.followerCount : followerC
 as int,followingCount: null == followingCount ? _self.followingCount : followingCount // ignore: cast_nullable_to_non_nullable
 as int,isFollowing: null == isFollowing ? _self.isFollowing : isFollowing // ignore: cast_nullable_to_non_nullable
 as bool,isCurrentUser: null == isCurrentUser ? _self.isCurrentUser : isCurrentUser // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,savedStories: null == savedStories ? _self._savedStories : savedStories // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

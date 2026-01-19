@@ -108,6 +108,7 @@ class ContinueReadingSection extends StatelessWidget {
         ),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
             padding: EdgeInsets.all(12.w),
@@ -158,17 +159,23 @@ class ContinueReadingSection extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Shimmer.fromColors(
-            baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-            highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
-            child: Container(
-              width: 150.w,
-              height: 24.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.r),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Shimmer.fromColors(
+                baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+                highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
+                child: Container(
+                  width: 150.w,
+                  height: 32.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
               ),
-            ),
+              // Simulating "See All" button space if needed, or keeping clean
+            ],
           ),
         ),
         SizedBox(height: 12.h),
@@ -177,6 +184,7 @@ class ContinueReadingSection extends StatelessWidget {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(horizontal: 16.w),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: 3,
             itemBuilder: (context, index) {
               return Padding(
@@ -188,6 +196,7 @@ class ContinueReadingSection extends StatelessWidget {
                       : Colors.grey[100]!,
                   child: Container(
                     width: 260.w,
+                    height: 140.h,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16.r),

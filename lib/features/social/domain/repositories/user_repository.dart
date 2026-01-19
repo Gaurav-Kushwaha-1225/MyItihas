@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:fpdart/fpdart.dart';
 import 'package:myitihas/core/errors/failures.dart';
+import 'package:myitihas/features/stories/domain/entities/story.dart';
 import '../entities/user.dart';
 
 /// Repository interface for user profile and social operations
@@ -47,4 +48,6 @@ abstract class UserRepository {
     required String userId,
     required File imageFile,
   });
+
+  Future<Either<Failure, List<Story>>> getSavedStories();
 }

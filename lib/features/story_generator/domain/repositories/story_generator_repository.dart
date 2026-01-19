@@ -30,6 +30,8 @@ abstract class StoryGeneratorRepository {
   /// Save the generated story to Supabase
   Future<Either<Failure, Story>> updateStory(Story story);
 
+  Future<Either<Failure, Story>> likeStory(Story story, bool isLiked);
+
   /// Get list of generated stories for the current user
   Future<Either<Failure, List<Story>>> getGeneratedStories();
 

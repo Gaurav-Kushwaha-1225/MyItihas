@@ -1,4 +1,11 @@
+import 'dart:convert';
+
+import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
+import 'package:myitihas/core/errors/failures.dart';
+import 'package:myitihas/features/stories/domain/entities/story.dart';
+import 'package:myitihas/features/story_generator/domain/entities/story_translation.dart';
+import 'package:myitihas/services/supabase_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:myitihas/core/errors/exceptions.dart';
@@ -16,6 +23,7 @@ abstract class UserRemoteDataSource {
     String? bio,
     String? avatarUrl,
   });
+  Future<Either<Failure, Story>> getStoryById(String storyId);
 }
 
 /// Implementation of user remote data source with Supabase
@@ -29,12 +37,12 @@ class UserRemoteDataSourceSupabase implements UserRemoteDataSource {
   Future<UserModel> getUserById(String userId) async {
     final logger = getIt<Talker>();
     logger.info('🔍 [DataSource] Fetching user by ID: $userId');
-    
+
     try {
       // Query profiles table - canonical source for profile data
       final response = await _supabase
           .from('profiles')
-          .select('id, username, full_name, avatar_url, bio')
+          .select('id, username, full_name, avatar_url, bio, saved_stories')
           .eq('id', userId)
           .single();
 
@@ -47,12 +55,17 @@ class UserRemoteDataSourceSupabase implements UserRemoteDataSource {
         displayName: response['full_name'] as String,
         avatarUrl: response['avatar_url'] as String? ?? '',
         bio: response['bio'] as String? ?? '',
+        savedStories:
+            (response['saved_stories'] as List<dynamic>?)
+                ?.map((e) => e as String)
+                .toList() ??
+            [],
         followerCount: 0,
         followingCount: 0,
         isFollowing: false,
         isCurrentUser: false,
       );
-      
+
       logger.info('✅ [DataSource] UserModel avatarUrl: ${userModel.avatarUrl}');
       return userModel;
     } catch (e) {
@@ -68,6 +81,132 @@ class UserRemoteDataSourceSupabase implements UserRemoteDataSource {
         'FETCH_USER_ERROR',
       );
     }
+  }
+
+  @override
+  Future<Either<Failure, Story>> getStoryById(String storyId) async {
+    try {
+      final response = await SupabaseService.client
+          .from('stories')
+          .select()
+          .eq('id', storyId)
+          .single();
+
+      return Right(_mapSupabaseRowToStory(response));
+    } catch (e) {
+      return Left(ServerFailure('Failed to fetch story: ${e.toString()}'));
+    }
+  }
+
+  Story _mapSupabaseRowToStory(Map<String, dynamic> row) {
+    final attr =
+        (row['attributes'] as Map?)?.cast<String, dynamic>() ??
+        <String, dynamic>{};
+    final characterDetails =
+        (attr['character_details'] as Map?)?.cast<String, dynamic>() ??
+        <String, dynamic>{};
+
+    return Story(
+      id: row['id']!.toString(),
+      authorId: row['user_id']?.toString(),
+      title: row['title']?.toString() ?? 'Untitled Story',
+      story: row['content']?.toString() ?? '',
+      scripture: attr['scripture']?.toString() ?? 'Scripture',
+      quotes: attr['quotes']?.toString() ?? '',
+      trivia: attr['trivia']?.toString() ?? '',
+      activity: attr['activity']?.toString() ?? '',
+      lesson: attr['moral']?.toString() ?? '',
+      attributes: StoryAttributes(
+        storyType: attr['story_type']?.toString() ?? 'General',
+        theme: attr['theme']?.toString() ?? 'Dharma (Duty)',
+        mainCharacterType:
+            attr['main_character_type']?.toString() ?? 'Protagonist',
+        storySetting: attr['story_setting']?.toString() ?? 'Ancient India',
+        timeEra: attr['time_era']?.toString() ?? 'Ancient',
+        narrativePerspective:
+            attr['narrative_perspective']?.toString() ?? 'Third Person',
+        languageStyle:
+            row['language']?.toString() ??
+            attr['language_style']?.toString() ??
+            'English',
+        emotionalTone: attr['emotional_tone']?.toString() ?? 'Inspirational',
+        narrativeStyle: attr['narrative_style']?.toString() ?? 'Narrative',
+        plotStructure: attr['plot_structure']?.toString() ?? 'Linear',
+        storyLength: attr['story_length']?.toString() ?? 'Medium ~1000 words',
+        tags: (attr['tags'] as List<dynamic>? ?? const [])
+            .map((tag) => tag.toString())
+            .toList(),
+        references: (attr['references'] is List)
+            ? (attr['references'] as List<dynamic>)
+                  .map((e) => e.toString())
+                  .toList()
+            : [attr['references']?.toString() ?? ''],
+        characters: (attr['characters'] as List<dynamic>? ?? const [])
+            .map((char) => char.toString())
+            .toList(),
+        characterDetails: characterDetails,
+        translations: _parseTranslations(attr['translations']),
+      ),
+      imageUrl: row['image_url']?.toString(),
+      createdAt: row['created_at'] != null
+          ? DateTime.tryParse(row['created_at'].toString())
+          : null,
+      updatedAt: row['updated_at'] != null
+          ? DateTime.tryParse(row['updated_at'].toString())
+          : null,
+      publishedAt: row['published_at'] != null
+          ? DateTime.tryParse(row['published_at'].toString())
+          : null,
+      author: row['author']?.toString(),
+      likes: (row['likes'] is int)
+          ? row['likes'] as int
+          : (row['likes'] as num?)?.toInt() ?? 0,
+      views: (row['views'] is int)
+          ? row['views'] as int
+          : (row['views'] as num?)?.toInt() ?? 0,
+      isFavorite: row['is_favourite'] as bool? ?? false,
+      commentCount: (row['comment_count'] as num?)?.toInt() ?? 0,
+      shareCount: (row['share_count'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  Map<String, TranslatedStory> _parseTranslations(dynamic raw) {
+    if (raw == null) return <String, TranslatedStory>{};
+
+    if (raw is Map) {
+      final out = <String, TranslatedStory>{};
+
+      for (final entry in raw.entries) {
+        final lang = entry.key.toString();
+        final val = entry.value;
+
+        if (val == null) continue;
+
+        if (val is Map<String, dynamic>) {
+          out[lang] = TranslatedStory.fromJson(val);
+          continue;
+        }
+        if (val is Map) {
+          out[lang] = TranslatedStory.fromJson(Map<String, dynamic>.from(val));
+          continue;
+        }
+
+        if (val is String) {
+          try {
+            final decoded = jsonDecode(val);
+            if (decoded is Map) {
+              out[lang] = TranslatedStory.fromJson(
+                Map<String, dynamic>.from(decoded),
+              );
+            }
+          } catch (_) {}
+        }
+      }
+
+      return out;
+    }
+
+    return <String, TranslatedStory>{};
   }
 
   @override
@@ -140,7 +279,7 @@ class UserRemoteDataSourceSupabase implements UserRemoteDataSource {
   }) async {
     try {
       final updates = <String, dynamic>{};
-      
+
       if (displayName != null) {
         updates['full_name'] = displayName;
       }
@@ -159,10 +298,7 @@ class UserRemoteDataSourceSupabase implements UserRemoteDataSource {
 
       // Update profiles table ONLY - canonical source for profile data
       // Do NOT update users table anymore
-      await _supabase
-          .from('profiles')
-          .update(updates)
-          .eq('id', userId);
+      await _supabase.from('profiles').update(updates).eq('id', userId);
     } catch (e) {
       throw ServerException(
         'Failed to update user: ${e.toString()}',

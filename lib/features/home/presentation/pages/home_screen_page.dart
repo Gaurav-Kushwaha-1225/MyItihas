@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/config/routes.dart';
 import 'package:myitihas/config/theme/gradient_extension.dart';
 import 'package:myitihas/core/di/injection_container.dart';
 import 'package:myitihas/features/home/presentation/bloc/home_bloc.dart';
@@ -353,12 +354,10 @@ class _HomeScreenViewState extends State<_HomeScreenView>
                   child: SavedStoriesSection(
                     stories: state.savedStories,
                     isLoading: state.isSavedStoriesLoading,
-                    onStoryTap: (story) {
-                      context.push('/home/stories/${story.id}');
-                    },
                     onSeeAll: () {
-                      // Navigate to saved stories list
-                      context.push('/saved-stories');
+                      SavedStoriesRoute(
+                        $extra: state.savedStories,
+                      ).push(context);
                     },
                   ),
                 ),

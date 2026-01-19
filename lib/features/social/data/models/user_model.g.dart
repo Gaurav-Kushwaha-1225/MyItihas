@@ -26,13 +26,14 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       followingCount: fields[6] == null ? 0 : (fields[6] as num).toInt(),
       isFollowing: fields[7] == null ? false : fields[7] as bool,
       isCurrentUser: fields[8] == null ? false : fields[8] as bool,
+      savedStories: fields[9] == null ? [] : (fields[9] as List).cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, UserModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class UserModelAdapter extends TypeAdapter<UserModel> {
       ..writeByte(7)
       ..write(obj.isFollowing)
       ..writeByte(8)
-      ..write(obj.isCurrentUser);
+      ..write(obj.isCurrentUser)
+      ..writeByte(9)
+      ..write(obj.savedStories);
   }
 
   @override
@@ -78,6 +81,11 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   followingCount: (json['followingCount'] as num?)?.toInt() ?? 0,
   isFollowing: json['isFollowing'] as bool? ?? false,
   isCurrentUser: json['isCurrentUser'] as bool? ?? false,
+  savedStories:
+      (json['savedStories'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const <String>[],
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -91,4 +99,5 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'followingCount': instance.followingCount,
       'isFollowing': instance.isFollowing,
       'isCurrentUser': instance.isCurrentUser,
+      'savedStories': instance.savedStories,
     };

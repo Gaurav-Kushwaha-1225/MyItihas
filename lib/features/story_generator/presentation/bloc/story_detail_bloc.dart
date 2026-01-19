@@ -279,7 +279,7 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
     // Optimistic update
     emit(state.copyWith(story: updated, errorMessage: null, isSaving: true));
 
-    final saved = await _repo.updateStory(updated);
+    final saved = await _repo.likeStory(updated, updated.isFavorite);
     saved.fold(
       (failure) {
         talker.error('Failed to update favorite: ${failure.message}');

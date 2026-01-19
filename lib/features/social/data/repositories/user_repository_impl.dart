@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
+import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:myitihas/core/errors/exceptions.dart';
 import 'package:myitihas/core/errors/failures.dart';
@@ -269,4 +270,37 @@ class UserRepositoryImpl implements UserRepository {
       return Left(UnexpectedFailure(e.toString()));
     }
   }
+  
+  @override
+  Future<Either<Failure, List<Story>>> getSavedStories() async {
+    try {
+      final user = SupabaseService.client.auth.currentUser;
+
+      if (user == null) {
+        return Left(AuthFailure('Not authenticated', 'NOT_AUTH'));
+      }
+
+      final userModel = await dataSource.getUserById(user.id);
+      List<Story> savedStories = [];
+      for (final storyId in userModel.savedStories) {
+        final storyResult = await dataSource.getStoryById(storyId);
+        storyResult.fold(
+          (failure) {
+            // Log and skip if story not found
+            final logger = getIt<Talker>();
+            logger.warning(
+              'Saved story $storyId not found for user: ${failure.message}',
+            );
+          },
+          (story) {
+            savedStories.add(story);
+          },
+        );
+      }
+      return Right(savedStories);
+    } catch (e) {
+      return Left(UnexpectedFailure(e.toString()));
+    }
+  }
+
 }

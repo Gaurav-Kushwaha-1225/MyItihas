@@ -14,6 +14,7 @@ abstract class User with _$User {
     @Default(0) int followingCount,
     @Default(false) bool isFollowing,
     @Default(false) bool isCurrentUser,
+    @Default(<String>[]) List<String> savedStories,
   }) = _User;
 
   const User._();

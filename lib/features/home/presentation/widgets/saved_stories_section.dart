@@ -1,8 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:myitihas/config/routes.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/i18n/strings.g.dart';
 import 'package:shimmer/shimmer.dart';
@@ -11,14 +13,12 @@ import 'package:shimmer/shimmer.dart';
 class SavedStoriesSection extends StatelessWidget {
   final List<Story> stories;
   final bool isLoading;
-  final void Function(Story story)? onStoryTap;
   final VoidCallback? onSeeAll;
 
   const SavedStoriesSection({
     super.key,
     required this.stories,
-    this.isLoading = false,
-    this.onStoryTap,
+    required this.isLoading,
     this.onSeeAll,
   });
 
@@ -42,22 +42,12 @@ class SavedStoriesSection extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  FaIcon(
-                    FontAwesomeIcons.solidBookmark,
-                    size: 20.sp,
-                    color: colorScheme.primary,
-                  ),
-                  SizedBox(width: 8.w),
-                  Text(
-                    t.homeScreen.savedStories,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                ],
+              Text(
+                t.homeScreen.savedStories,
+                style: theme.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
               ),
               if (stories.isNotEmpty)
                 TextButton(
@@ -76,7 +66,7 @@ class SavedStoriesSection extends StatelessWidget {
 
         SizedBox(height: 12.h),
 
-        if (stories.isEmpty)
+        if (stories.isEmpty && isLoading == false)
           _buildEmptyState(context)
         else
           SizedBox(
@@ -90,7 +80,9 @@ class SavedStoriesSection extends StatelessWidget {
                   padding: EdgeInsets.only(right: 12.w),
                   child: _SavedStoryCard(
                     story: stories[index],
-                    onTap: () => onStoryTap?.call(stories[index]),
+                    onTap: () => GeneratedStoryResultRoute(
+                      $extra: stories[index],
+                    ).push(context),
                   ),
                 );
               },
@@ -161,17 +153,22 @@ class SavedStoriesSection extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Shimmer.fromColors(
-            baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-            highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
-            child: Container(
-              width: 150.w,
-              height: 24.h,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.r),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Shimmer.fromColors(
+                baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+                highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
+                child: Container(
+                  width: 150.w,
+                  height: 32.h,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
         SizedBox(height: 12.h),
@@ -180,6 +177,7 @@ class SavedStoriesSection extends StatelessWidget {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(horizontal: 16.w),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: 4,
             itemBuilder: (context, index) {
               return Padding(
@@ -191,6 +189,7 @@ class SavedStoriesSection extends StatelessWidget {
                       : Colors.grey[100]!,
                   child: Container(
                     width: 120.w,
+                    height: 160.h,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16.r),
@@ -277,13 +276,19 @@ class _SavedStoryCardState extends State<_SavedStoryCard>
               children: [
                 // Background image
                 if (widget.story.imageUrl != null)
-                  CachedNetworkImage(
-                    imageUrl: widget.story.imageUrl!,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        Container(color: colorScheme.surfaceContainerHighest),
-                    errorWidget: (context, url, error) =>
-                        _buildPlaceholderImage(colorScheme),
+                  // CachedNetworkImage(
+                  //   imageUrl: widget.story.imageUrl!,
+                  //   fit: BoxFit.cover,
+                  //   placeholder: (context, url) =>
+                  //       Container(color: colorScheme.surfaceContainerHighest),
+                  //   errorWidget: (context, url, error) =>
+                  //       _buildPlaceholderImage(colorScheme),
+                  // )
+                  Image.memory(
+                    widget.story.imageUrl!.split(',').length > 1
+                        ? base64Decode(widget.story.imageUrl!.split(',')[1])
+                        : base64Decode(widget.story.imageUrl!),
+                    fit: BoxFit.fitHeight,
                   )
                 else
                   _buildPlaceholderImage(colorScheme),
@@ -296,7 +301,7 @@ class _SavedStoryCardState extends State<_SavedStoryCard>
                       end: Alignment.bottomCenter,
                       colors: [
                         Colors.transparent,
-                        Colors.black.withValues(alpha: 0.7),
+                        Colors.black.withValues(alpha: 0.9),
                       ],
                       stops: const [0.4, 1.0],
                     ),
@@ -308,14 +313,14 @@ class _SavedStoryCardState extends State<_SavedStoryCard>
                   top: 8.h,
                   right: 8.w,
                   child: Container(
-                    padding: EdgeInsets.all(4.w),
+                    padding: EdgeInsets.all(6.w),
                     decoration: BoxDecoration(
                       color: colorScheme.primary,
                       shape: BoxShape.circle,
                     ),
                     child: FaIcon(
                       FontAwesomeIcons.solidBookmark,
-                      size: 10.sp,
+                      size: 12.sp,
                       color: Colors.white,
                     ),
                   ),

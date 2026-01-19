@@ -99,7 +99,6 @@ class HistoryBottomSheet extends StatelessWidget {
                     final story = state.history[index];
                     return GestureDetector(
                       onTap: () {
-                        context.pop(); // Close sheet
                         context.pop();
                         GeneratedStoryResultRoute($extra: story).push(context);
                       },

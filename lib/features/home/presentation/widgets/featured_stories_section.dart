@@ -144,7 +144,7 @@ class _FeaturedStoriesSectionState extends State<FeaturedStoriesSection> {
             highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
             child: Container(
               width: 150.w,
-              height: 24.h,
+              height: 32.h,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(8.r),
@@ -158,6 +158,7 @@ class _FeaturedStoriesSectionState extends State<FeaturedStoriesSection> {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(horizontal: 16.w),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: 3,
             itemBuilder: (context, index) {
               return Padding(
@@ -169,6 +170,7 @@ class _FeaturedStoriesSectionState extends State<FeaturedStoriesSection> {
                       : Colors.grey[100]!,
                   child: Container(
                     width: 280.w,
+                    height: 220.h,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20.r),
@@ -177,6 +179,21 @@ class _FeaturedStoriesSectionState extends State<FeaturedStoriesSection> {
                 ),
               );
             },
+          ),
+        ),
+        SizedBox(height: 16.h),
+        Center(
+          child: Shimmer.fromColors(
+            baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+            highlightColor: isDark ? Colors.grey[700]! : Colors.grey[100]!,
+            child: Container(
+              width: 40.w,
+              height: 8.h,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+            ),
           ),
         ),
       ],

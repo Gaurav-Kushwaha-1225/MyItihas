@@ -90,6 +90,8 @@ import '../../features/story_generator/domain/usecases/get_character_details.dar
     as _i771;
 import '../../features/story_generator/domain/usecases/get_generated_stories.dart'
     as _i733;
+import '../../features/story_generator/domain/usecases/like_story.dart'
+    as _i961;
 import '../../features/story_generator/domain/usecases/randomize_options.dart'
     as _i445;
 import '../../features/story_generator/domain/usecases/update_generated_story.dart'
@@ -104,7 +106,7 @@ import '../../services/notification_service.dart' as _i85;
 import '../../services/post_service.dart' as _i90;
 import '../../services/profile_service.dart' as _i637;
 import '../../services/profile_storage_service.dart' as _i743;
-import '../../services/reading_progress_service.dart' as _i278;
+import '../../services/reading_progress_service.dart' as _i277;
 import '../../services/realtime_service.dart' as _i253;
 import '../../services/social_service.dart' as _i558;
 import '../network/api_client.dart' as _i557;
@@ -150,8 +152,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i625.MockStoryGeneratorDataSource>(
       () => storyGeneratorDataSourceModule.mockDataSource,
     );
-    gh.lazySingleton<_i278.ReadingProgressService>(
-      () => _i278.ReadingProgressService(),
+    gh.lazySingleton<_i277.ReadingProgressService>(
+      () => _i277.ReadingProgressService(),
     );
     gh.lazySingleton<_i1050.SocialDataSource>(
       () => _i744.SocialRemoteDataSource(gh<_i454.SupabaseClient>()),
@@ -259,8 +261,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i202.HomeBloc>(
       () => _i202.HomeBloc(
         gh<_i908.QuoteLocalDataSource>(),
-        gh<_i278.ReadingProgressService>(),
+        gh<_i277.ReadingProgressService>(),
         gh<_i277.StoryGeneratorRepository>(),
+        gh<_i721.UserRepository>(),
       ),
     );
     gh.lazySingleton<_i880.ExpandStory>(
@@ -277,6 +280,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i733.GetGeneratedStories>(
       () => _i733.GetGeneratedStories(gh<_i277.StoryGeneratorRepository>()),
+    );
+    gh.lazySingleton<_i961.LikeStory>(
+      () => _i961.LikeStory(gh<_i277.StoryGeneratorRepository>()),
     );
     gh.lazySingleton<_i445.RandomizeOptions>(
       () => _i445.RandomizeOptions(gh<_i277.StoryGeneratorRepository>()),

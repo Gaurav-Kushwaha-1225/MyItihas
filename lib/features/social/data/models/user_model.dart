@@ -55,6 +55,11 @@ abstract class UserModel with _$UserModel {
   @JsonKey(name: 'isCurrentUser')
   bool get isCurrentUser;
 
+  @override
+  @HiveField(9)
+  @JsonKey(name: 'savedStories')
+  List<String> get savedStories;
+
   const factory UserModel({
     required String id,
     required String username,
@@ -65,6 +70,7 @@ abstract class UserModel with _$UserModel {
     @Default(0) int followingCount,
     @Default(false) bool isFollowing,
     @Default(false) bool isCurrentUser,
+    @Default(<String>[]) List<String> savedStories,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -81,6 +87,7 @@ abstract class UserModel with _$UserModel {
       followingCount: followingCount,
       isFollowing: isFollowing,
       isCurrentUser: isCurrentUser,
+      savedStories: savedStories,
     );
   }
 
@@ -95,6 +102,7 @@ abstract class UserModel with _$UserModel {
       followingCount: user.followingCount,
       isFollowing: user.isFollowing,
       isCurrentUser: user.isCurrentUser,
+      savedStories: user.savedStories,
     );
   }
 }

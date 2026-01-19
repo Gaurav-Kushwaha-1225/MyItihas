@@ -196,6 +196,64 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
   }
 
   @override
+  Future<Either<Failure, Story>> likeStory(Story story, bool isLiked) async {
+    try {
+      final user = SupabaseService.client.auth.currentUser;
+      if (user == null) {
+        return Left(ServerFailure('User not authenticated'));
+      }
+
+      final data = {
+        'id': story.id,
+        'user_id': user.id,
+        'title': story.title,
+        'content': story.story,
+        'attributes': _attributesToMap(story),
+        'is_favourite': isLiked ? true : false,
+        'likes': isLiked ? story.likes + 1 : story.likes - 1,
+      };
+
+      final response = await SupabaseService.client
+          .from('stories')
+          .upsert(data, onConflict: 'id')
+          .select()
+          .single();
+
+      final users = await SupabaseService.client
+          .from('profiles')
+          .select('saved_stories, username')
+          .eq('id', user.id)
+          .single();
+
+      final profileData = {
+        'id': user.id,
+        'username': users['username'] ?? user.email?.split('@').first ?? '',
+        'saved_stories': users['saved_stories'] != null
+            ? isLiked
+                  ? [
+                      ...List<String>.from(users['saved_stories']),
+                      story.id,
+                    ]
+                  : [
+                      ...List<String>.from(users['saved_stories'])
+                        ..remove(story.id),
+                    ]
+            : [story.id],
+      };
+
+      await SupabaseService.client
+          .from('profiles')
+          .upsert(profileData, onConflict: 'id')
+          .select()
+          .single();
+
+      return Right(_mapSupabaseRowToStory(response));
+    } catch (e) {
+      return Left(ServerFailure('Failed to save story: ${e.toString()}'));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<Story>>> getGeneratedStories() async {
     try {
       final user = SupabaseService.client.auth.currentUser;
@@ -350,8 +408,7 @@ class StoryGeneratorRepositoryImpl implements StoryGeneratorRepository {
                 Map<String, dynamic>.from(decoded),
               );
             }
-          } catch (_) {
-          }
+          } catch (_) {}
         }
       }
 

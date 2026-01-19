@@ -5,6 +5,7 @@ import 'package:myitihas/core/logging/talker_setup.dart';
 import 'package:myitihas/features/home/data/datasources/quote_local_datasource.dart';
 import 'package:myitihas/features/home/presentation/bloc/home_event.dart';
 import 'package:myitihas/features/home/presentation/bloc/home_state.dart';
+import 'package:myitihas/features/social/domain/repositories/user_repository.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/domain/repositories/story_generator_repository.dart';
 import 'package:myitihas/services/reading_progress_service.dart';
@@ -16,11 +17,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final QuoteLocalDataSource _quoteDataSource;
   final ReadingProgressService _readingProgressService;
   final StoryGeneratorRepository _storyGeneratorRepository;
+  final UserRepository _userRepository;
 
   HomeBloc(
     this._quoteDataSource,
     this._readingProgressService,
     this._storyGeneratorRepository,
+    this._userRepository,
   ) : super(const HomeState()) {
     on<HomeEvent>((event, emit) async {
       await event.when(
@@ -39,7 +42,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   /// Load all home screen data
   Future<void> _onLoadHome(Emitter<HomeState> emit) async {
-    emit(state.copyWith(isLoading: true, greetingKey: _getGreetingKey()));
+    // Set ALL loading flags to true initially
+    emit(
+      state.copyWith(
+        isLoading: true,
+        isQuoteLoading: true,
+        isFeaturedLoading: true,
+        isContinueReadingLoading: true,
+        isSavedStoriesLoading: true,
+        isMyGeneratedStoriesLoading: true,
+        greetingKey: _getGreetingKey(),
+      ),
+    );
 
     // Load all sections in parallel
     await Future.wait([
@@ -50,12 +64,32 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       _loadMyGeneratedStories(emit),
     ]);
 
-    emit(state.copyWith(isLoading: false));
+    // Set ALL loading flags to false finally
+    emit(
+      state.copyWith(
+        isLoading: false,
+        isQuoteLoading: false,
+        isFeaturedLoading: false,
+        isContinueReadingLoading: false,
+        isSavedStoriesLoading: false,
+        isMyGeneratedStoriesLoading: false,
+      ),
+    );
   }
 
   /// Refresh home screen data
   Future<void> _onRefresh(Emitter<HomeState> emit) async {
-    emit(state.copyWith(isRefreshing: true));
+    emit(
+      state.copyWith(
+        isRefreshing: true,
+        // Also set loading flags for refresh to ensure UI updates if needed
+        isQuoteLoading: true,
+        isFeaturedLoading: true,
+        isContinueReadingLoading: true,
+        isSavedStoriesLoading: true,
+        isMyGeneratedStoriesLoading: true,
+      ),
+    );
 
     await Future.wait([
       _loadQuote(emit),
@@ -65,7 +99,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       _loadMyGeneratedStories(emit),
     ]);
 
-    emit(state.copyWith(isRefreshing: false));
+    emit(
+      state.copyWith(
+        isRefreshing: false,
+        isQuoteLoading: false,
+        isFeaturedLoading: false,
+        isContinueReadingLoading: false,
+        isSavedStoriesLoading: false,
+        isMyGeneratedStoriesLoading: false,
+      ),
+    );
   }
 
   /// Load quote of the day
@@ -127,11 +170,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _loadSavedStories(Emitter<HomeState> emit) async {
     try {
-      // TODO: Implement actual saved stories fetch from repository
-      // Filter stories where isFavorite == true
-      emit(state.copyWith(savedStories: []));
+      final result = await _userRepository.getSavedStories();
+      result.fold(
+        (failure) {
+          talker.error('Failed to load saved stories: ${failure.message}');
+          emit(state.copyWith(savedStories: []));
+        },
+        (stories) {
+          emit(state.copyWith(savedStories: stories));
+        },
+      );
     } catch (e, st) {
       talker.error('Failed to load saved stories', e, st);
+      emit(state.copyWith(savedStories: []));
     }
   }
 

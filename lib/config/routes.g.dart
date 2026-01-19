@@ -35,6 +35,7 @@ List<RouteBase> get $appRoutes => [
   $storyGeneratorRoute,
   $activityHistoryRoute,
   $shaktiPeethaRoute,
+  $savedStoriesRoute,
   $chatbotRoute,
 ];
 
@@ -928,6 +929,36 @@ mixin $ShaktiPeethaRoute on GoRouteData {
 
   @override
   void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $savedStoriesRoute => GoRouteData.$route(
+  path: '/saved-stories',
+  factory: $SavedStoriesRoute._fromState,
+);
+
+mixin $SavedStoriesRoute on GoRouteData {
+  static SavedStoriesRoute _fromState(GoRouterState state) =>
+      SavedStoriesRoute($extra: state.extra as List<Story>);
+
+  SavedStoriesRoute get _self => this as SavedStoriesRoute;
+
+  @override
+  String get location => GoRouteData.$location('/saved-stories');
+
+  @override
+  void go(BuildContext context) => context.go(location, extra: _self.$extra);
+
+  @override
+  Future<T?> push<T>(BuildContext context) =>
+      context.push<T>(location, extra: _self.$extra);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location, extra: _self.$extra);
+
+  @override
+  void replace(BuildContext context) =>
+      context.replace(location, extra: _self.$extra);
 }
 
 RouteBase get $chatbotRoute =>

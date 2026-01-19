@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -317,13 +319,19 @@ class _GeneratedStoryCardState extends State<_GeneratedStoryCard>
               children: [
                 // Background image
                 if (widget.story.imageUrl != null)
-                  CachedNetworkImage(
-                    imageUrl: widget.story.imageUrl!,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) =>
-                        Container(color: colorScheme.surfaceContainerHighest),
-                    errorWidget: (context, url, error) =>
-                        _buildPlaceholderImage(colorScheme),
+                  // CachedNetworkImage(
+                  //   imageUrl: widget.story.imageUrl!,
+                  //   fit: BoxFit.cover,
+                  //   placeholder: (context, url) =>
+                  //       Container(color: colorScheme.surfaceContainerHighest),
+                  //   errorWidget: (context, url, error) =>
+                  //       _buildPlaceholderImage(colorScheme),
+                  // )
+                  Image.memory(
+                    widget.story.imageUrl!.split(',').length > 1
+                        ? base64Decode(widget.story.imageUrl!.split(',')[1])
+                        : base64Decode(widget.story.imageUrl!),
+                    fit: BoxFit.fitHeight,
                   )
                 else
                   _buildPlaceholderImage(colorScheme),

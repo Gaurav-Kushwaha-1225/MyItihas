@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myitihas/features/home/presentation/pages/saved_stories_page.dart';
 import 'package:myitihas/pages/Chat/Widget/chatbot.dart';
 import 'package:myitihas/pages/Map/Widget/shaktipeetha_detail_page.dart';
 
@@ -518,6 +519,18 @@ class ShaktiPeethaRoute extends GoRouteData with $ShaktiPeethaRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const ShaktiPeethaDetailPage();
+  }
+}
+
+@TypedGoRoute<SavedStoriesRoute>(path: '/saved-stories')
+class SavedStoriesRoute extends GoRouteData with $SavedStoriesRoute {
+  final List<Story> $extra;
+
+  const SavedStoriesRoute({required this.$extra});
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return SavedStoriesPage(stories: $extra);
   }
 }
 
