@@ -24,8 +24,14 @@ import '../../features/chat/presentation/bloc/chat_detail_bloc.dart' as _i57;
 import '../../features/chat/presentation/bloc/chat_list_bloc.dart' as _i2;
 import '../../features/home/data/datasources/activity_local_datasource.dart'
     as _i922;
+import '../../features/home/data/datasources/continue_story_local_store.dart'
+    as _i503;
 import '../../features/home/data/datasources/quote_local_datasource.dart'
     as _i908;
+import '../../features/home/data/repositories/continue_reading_repository_impl.dart'
+    as _i516;
+import '../../features/home/domain/repositories/continue_reading_repository.dart'
+    as _i836;
 import '../../features/home/presentation/bloc/home_bloc.dart' as _i202;
 import '../../features/notifications/data/datasources/notification_data_source.dart'
     as _i691;
@@ -208,6 +214,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i746.StoryMockDataSource>(),
       ),
     );
+    gh.factory<_i503.ContinueStoryLocalStore>(
+      () => _i503.ContinueStoryLocalStore(gh<_i460.SharedPreferences>()),
+    );
     gh.factory<_i623.CreatePostBloc>(
       () => _i623.CreatePostBloc(gh<_i90.PostService>()),
     );
@@ -229,9 +238,6 @@ extension GetItInjectableX on _i174.GetIt {
         chatRepository: gh<_i420.ChatRepository>(),
         webSocketService: gh<_i436.WebSocketService>(),
       ),
-    );
-    gh.factory<_i324.StoryDetailBloc>(
-      () => _i324.StoryDetailBloc(gh<_i277.StoryGeneratorRepository>()),
     );
     gh.factory<_i2.ChatListBloc>(
       () => _i2.ChatListBloc(chatRepository: gh<_i420.ChatRepository>()),
@@ -257,14 +263,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i62.CommentBloc>(
       () => _i62.CommentBloc(socialRepository: gh<_i640.SocialRepository>()),
-    );
-    gh.factory<_i202.HomeBloc>(
-      () => _i202.HomeBloc(
-        gh<_i908.QuoteLocalDataSource>(),
-        gh<_i277.ReadingProgressService>(),
-        gh<_i277.StoryGeneratorRepository>(),
-        gh<_i721.UserRepository>(),
-      ),
     );
     gh.lazySingleton<_i880.ExpandStory>(
       () => _i880.ExpandStory(gh<_i277.StoryGeneratorRepository>()),
@@ -306,6 +304,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i909.StoryRepository>(),
       ),
     );
+    gh.lazySingleton<_i836.ContinueReadingRepository>(
+      () => _i516.ContinueReadingRepositoryImpl(
+        gh<_i503.ContinueStoryLocalStore>(),
+      ),
+    );
     gh.factory<_i177.StoryGeneratorBloc>(
       () => _i177.StoryGeneratorBloc(
         generateStory: gh<_i688.GenerateStory>(),
@@ -333,6 +336,20 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i506.NotificationBloc(
         notificationRepository: gh<_i367.NotificationRepository>(),
         userRepository: gh<_i721.UserRepository>(),
+      ),
+    );
+    gh.factory<_i202.HomeBloc>(
+      () => _i202.HomeBloc(
+        gh<_i908.QuoteLocalDataSource>(),
+        gh<_i277.StoryGeneratorRepository>(),
+        gh<_i721.UserRepository>(),
+        gh<_i836.ContinueReadingRepository>(),
+      ),
+    );
+    gh.factory<_i324.StoryDetailBloc>(
+      () => _i324.StoryDetailBloc(
+        gh<_i277.StoryGeneratorRepository>(),
+        gh<_i836.ContinueReadingRepository>(),
       ),
     );
     return this;

@@ -21,7 +21,7 @@ mixin _$HomeState {
  bool get isQuoteLoading;/// Featured stories
  List<Story> get featuredStories;/// Whether featured stories are loading
  bool get isFeaturedLoading;/// Stories in progress (continue reading)
- List<ReadingProgress> get continueReading;/// Whether continue reading is loading
+ List<Story> get continueReading;/// Whether continue reading is loading
  bool get isContinueReadingLoading;/// Saved/bookmarked stories
  List<Story> get savedStories;/// Whether saved stories are loading
  bool get isSavedStoriesLoading;/// User's generated stories
@@ -60,7 +60,7 @@ abstract mixin class $HomeStateCopyWith<$Res>  {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) _then) = _$HomeStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, bool isRefreshing, Quote? quote, bool isQuoteLoading, List<Story> featuredStories, bool isFeaturedLoading, List<ReadingProgress> continueReading, bool isContinueReadingLoading, List<Story> savedStories, bool isSavedStoriesLoading, List<Story> myGeneratedStories, bool isMyGeneratedStoriesLoading, String? errorMessage, String greetingKey, String? userName
+ bool isLoading, bool isRefreshing, Quote? quote, bool isQuoteLoading, List<Story> featuredStories, bool isFeaturedLoading, List<Story> continueReading, bool isContinueReadingLoading, List<Story> savedStories, bool isSavedStoriesLoading, List<Story> myGeneratedStories, bool isMyGeneratedStoriesLoading, String? errorMessage, String greetingKey, String? userName
 });
 
 
@@ -86,7 +86,7 @@ as Quote?,isQuoteLoading: null == isQuoteLoading ? _self.isQuoteLoading : isQuot
 as bool,featuredStories: null == featuredStories ? _self.featuredStories : featuredStories // ignore: cast_nullable_to_non_nullable
 as List<Story>,isFeaturedLoading: null == isFeaturedLoading ? _self.isFeaturedLoading : isFeaturedLoading // ignore: cast_nullable_to_non_nullable
 as bool,continueReading: null == continueReading ? _self.continueReading : continueReading // ignore: cast_nullable_to_non_nullable
-as List<ReadingProgress>,isContinueReadingLoading: null == isContinueReadingLoading ? _self.isContinueReadingLoading : isContinueReadingLoading // ignore: cast_nullable_to_non_nullable
+as List<Story>,isContinueReadingLoading: null == isContinueReadingLoading ? _self.isContinueReadingLoading : isContinueReadingLoading // ignore: cast_nullable_to_non_nullable
 as bool,savedStories: null == savedStories ? _self.savedStories : savedStories // ignore: cast_nullable_to_non_nullable
 as List<Story>,isSavedStoriesLoading: null == isSavedStoriesLoading ? _self.isSavedStoriesLoading : isSavedStoriesLoading // ignore: cast_nullable_to_non_nullable
 as bool,myGeneratedStories: null == myGeneratedStories ? _self.myGeneratedStories : myGeneratedStories // ignore: cast_nullable_to_non_nullable
@@ -191,7 +191,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<ReadingProgress> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  List<Story> myGeneratedStories,  bool isMyGeneratedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<Story> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  List<Story> myGeneratedStories,  bool isMyGeneratedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
 return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoading,_that.featuredStories,_that.isFeaturedLoading,_that.continueReading,_that.isContinueReadingLoading,_that.savedStories,_that.isSavedStoriesLoading,_that.myGeneratedStories,_that.isMyGeneratedStoriesLoading,_that.errorMessage,_that.greetingKey,_that.userName);case _:
@@ -212,7 +212,7 @@ return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoad
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<ReadingProgress> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  List<Story> myGeneratedStories,  bool isMyGeneratedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<Story> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  List<Story> myGeneratedStories,  bool isMyGeneratedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)  $default,) {final _that = this;
 switch (_that) {
 case _HomeState():
 return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoading,_that.featuredStories,_that.isFeaturedLoading,_that.continueReading,_that.isContinueReadingLoading,_that.savedStories,_that.isSavedStoriesLoading,_that.myGeneratedStories,_that.isMyGeneratedStoriesLoading,_that.errorMessage,_that.greetingKey,_that.userName);case _:
@@ -232,7 +232,7 @@ return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoad
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<ReadingProgress> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  List<Story> myGeneratedStories,  bool isMyGeneratedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  bool isRefreshing,  Quote? quote,  bool isQuoteLoading,  List<Story> featuredStories,  bool isFeaturedLoading,  List<Story> continueReading,  bool isContinueReadingLoading,  List<Story> savedStories,  bool isSavedStoriesLoading,  List<Story> myGeneratedStories,  bool isMyGeneratedStoriesLoading,  String? errorMessage,  String greetingKey,  String? userName)?  $default,) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
 return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoading,_that.featuredStories,_that.isFeaturedLoading,_that.continueReading,_that.isContinueReadingLoading,_that.savedStories,_that.isSavedStoriesLoading,_that.myGeneratedStories,_that.isMyGeneratedStoriesLoading,_that.errorMessage,_that.greetingKey,_that.userName);case _:
@@ -247,7 +247,7 @@ return $default(_that.isLoading,_that.isRefreshing,_that.quote,_that.isQuoteLoad
 
 
 class _HomeState extends HomeState {
-  const _HomeState({this.isLoading = false, this.isRefreshing = false, this.quote, this.isQuoteLoading = false, final  List<Story> featuredStories = const [], this.isFeaturedLoading = false, final  List<ReadingProgress> continueReading = const [], this.isContinueReadingLoading = false, final  List<Story> savedStories = const [], this.isSavedStoriesLoading = false, final  List<Story> myGeneratedStories = const [], this.isMyGeneratedStoriesLoading = false, this.errorMessage, this.greetingKey = 'morning', this.userName}): _featuredStories = featuredStories,_continueReading = continueReading,_savedStories = savedStories,_myGeneratedStories = myGeneratedStories,super._();
+  const _HomeState({this.isLoading = false, this.isRefreshing = false, this.quote, this.isQuoteLoading = false, final  List<Story> featuredStories = const [], this.isFeaturedLoading = false, final  List<Story> continueReading = const [], this.isContinueReadingLoading = false, final  List<Story> savedStories = const [], this.isSavedStoriesLoading = false, final  List<Story> myGeneratedStories = const [], this.isMyGeneratedStoriesLoading = false, this.errorMessage, this.greetingKey = 'morning', this.userName}): _featuredStories = featuredStories,_continueReading = continueReading,_savedStories = savedStories,_myGeneratedStories = myGeneratedStories,super._();
   
 
 /// Whether the home screen is loading
@@ -270,9 +270,9 @@ class _HomeState extends HomeState {
 /// Whether featured stories are loading
 @override@JsonKey() final  bool isFeaturedLoading;
 /// Stories in progress (continue reading)
- final  List<ReadingProgress> _continueReading;
+ final  List<Story> _continueReading;
 /// Stories in progress (continue reading)
-@override@JsonKey() List<ReadingProgress> get continueReading {
+@override@JsonKey() List<Story> get continueReading {
   if (_continueReading is EqualUnmodifiableListView) return _continueReading;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_continueReading);
@@ -339,7 +339,7 @@ abstract mixin class _$HomeStateCopyWith<$Res> implements $HomeStateCopyWith<$Re
   factory _$HomeStateCopyWith(_HomeState value, $Res Function(_HomeState) _then) = __$HomeStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, bool isRefreshing, Quote? quote, bool isQuoteLoading, List<Story> featuredStories, bool isFeaturedLoading, List<ReadingProgress> continueReading, bool isContinueReadingLoading, List<Story> savedStories, bool isSavedStoriesLoading, List<Story> myGeneratedStories, bool isMyGeneratedStoriesLoading, String? errorMessage, String greetingKey, String? userName
+ bool isLoading, bool isRefreshing, Quote? quote, bool isQuoteLoading, List<Story> featuredStories, bool isFeaturedLoading, List<Story> continueReading, bool isContinueReadingLoading, List<Story> savedStories, bool isSavedStoriesLoading, List<Story> myGeneratedStories, bool isMyGeneratedStoriesLoading, String? errorMessage, String greetingKey, String? userName
 });
 
 
@@ -365,7 +365,7 @@ as Quote?,isQuoteLoading: null == isQuoteLoading ? _self.isQuoteLoading : isQuot
 as bool,featuredStories: null == featuredStories ? _self._featuredStories : featuredStories // ignore: cast_nullable_to_non_nullable
 as List<Story>,isFeaturedLoading: null == isFeaturedLoading ? _self.isFeaturedLoading : isFeaturedLoading // ignore: cast_nullable_to_non_nullable
 as bool,continueReading: null == continueReading ? _self._continueReading : continueReading // ignore: cast_nullable_to_non_nullable
-as List<ReadingProgress>,isContinueReadingLoading: null == isContinueReadingLoading ? _self.isContinueReadingLoading : isContinueReadingLoading // ignore: cast_nullable_to_non_nullable
+as List<Story>,isContinueReadingLoading: null == isContinueReadingLoading ? _self.isContinueReadingLoading : isContinueReadingLoading // ignore: cast_nullable_to_non_nullable
 as bool,savedStories: null == savedStories ? _self._savedStories : savedStories // ignore: cast_nullable_to_non_nullable
 as List<Story>,isSavedStoriesLoading: null == isSavedStoriesLoading ? _self.isSavedStoriesLoading : isSavedStoriesLoading // ignore: cast_nullable_to_non_nullable
 as bool,myGeneratedStories: null == myGeneratedStories ? _self._myGeneratedStories : myGeneratedStories // ignore: cast_nullable_to_non_nullable

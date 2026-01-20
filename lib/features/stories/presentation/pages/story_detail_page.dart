@@ -13,6 +13,7 @@ import 'package:myitihas/features/social/presentation/bloc/comment_bloc.dart';
 import 'package:myitihas/features/social/presentation/bloc/comment_event.dart';
 import 'package:myitihas/features/social/presentation/bloc/comment_state.dart';
 import 'package:myitihas/features/social/presentation/widgets/svg_avatar.dart';
+import 'package:myitihas/features/home/domain/repositories/continue_reading_repository.dart';
 import 'package:myitihas/utils/constants.dart';
 
 class StoryDetailPage extends StatefulWidget {
@@ -43,6 +44,9 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
     _commentCount = widget.story.commentCount;
 
     _loadSocialStats();
+
+    // Add to continue reading list
+    getIt<ContinueReadingRepository>().addStoryToContinueReading(widget.story);
   }
 
   Future<void> _loadSocialStats() async {
@@ -382,7 +386,7 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
 
               // Quotes section
               if (widget.story.quotes.isNotEmpty)
-              SizedBox(height: screenSize.height * 0.02),
+                SizedBox(height: screenSize.height * 0.02),
               if (widget.story.quotes.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -410,7 +414,7 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
 
               // Trivia section
               if (widget.story.trivia.isNotEmpty)
-              SizedBox(height: screenSize.height * 0.02),
+                SizedBox(height: screenSize.height * 0.02),
               if (widget.story.trivia.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -438,7 +442,7 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
 
               // Lesson section
               if (widget.story.lesson.isNotEmpty)
-              SizedBox(height: screenSize.height * 0.02),
+                SizedBox(height: screenSize.height * 0.02),
               if (widget.story.lesson.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -466,7 +470,7 @@ class _StoryDetailPageState extends State<StoryDetailPage> {
 
               // Activity section
               if (widget.story.activity.isNotEmpty)
-              SizedBox(height: screenSize.height * 0.02),
+                SizedBox(height: screenSize.height * 0.02),
               if (widget.story.activity.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10),

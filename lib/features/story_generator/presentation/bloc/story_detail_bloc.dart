@@ -6,6 +6,7 @@ import 'package:myitihas/features/story_generator/domain/entities/generator_opti
 import 'package:myitihas/features/story_generator/domain/entities/story_chat_message.dart';
 import 'package:myitihas/features/story_generator/domain/entities/story_prompt.dart';
 import 'package:myitihas/features/story_generator/domain/entities/story_translation.dart';
+import 'package:myitihas/features/home/domain/repositories/continue_reading_repository.dart';
 import 'package:myitihas/features/story_generator/domain/repositories/story_generator_repository.dart';
 
 const Object _kUnset = Object();
@@ -223,8 +224,10 @@ class StoryDetailState {
 @injectable
 class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
   final StoryGeneratorRepository _repo;
+  final ContinueReadingRepository _continueReadingRepo;
 
-  StoryDetailBloc(this._repo) : super(StoryDetailState.initial()) {
+  StoryDetailBloc(this._repo, this._continueReadingRepo)
+    : super(StoryDetailState.initial()) {
     on<StoryDetailStarted>(_onStarted);
     on<StoryDetailToggleFavorite>(_onToggleFavorite);
     on<StoryDetailLanguageChanged>(_onLanguageChanged);
@@ -261,10 +264,13 @@ class StoryDetailBloc extends Bloc<StoryDetailEvent, StoryDetailState> {
       ),
     );
 
-    // Auto-generate image if absent (same behaviour as your current initState)
+    // Auto-generate image if absent
     if (story.imageUrl == null) {
       add(const StoryDetailGenerateImageRequested());
     }
+
+    // Add to continue reading list
+    _continueReadingRepo.addStoryToContinueReading(story);
   }
 
   Future<void> _onToggleFavorite(

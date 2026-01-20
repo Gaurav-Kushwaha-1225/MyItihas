@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:myitihas/features/home/domain/entities/quote.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
-import 'package:myitihas/services/reading_progress_service.dart';
 
 part 'home_state.freezed.dart';
 
@@ -28,7 +27,7 @@ abstract class HomeState with _$HomeState {
     @Default(false) bool isFeaturedLoading,
 
     /// Stories in progress (continue reading)
-    @Default([]) List<ReadingProgress> continueReading,
+    @Default([]) List<Story> continueReading,
 
     /// Whether continue reading is loading
     @Default(false) bool isContinueReadingLoading,

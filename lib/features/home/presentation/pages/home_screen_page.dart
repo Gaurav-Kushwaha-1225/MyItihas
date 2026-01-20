@@ -309,8 +309,8 @@ class _HomeScreenViewState extends State<_HomeScreenView>
                   child: ContinueReadingSection(
                     stories: state.continueReading,
                     isLoading: state.isContinueReadingLoading,
-                    onStoryTap: (progress) {
-                      context.push('/home/stories/${progress.storyId}');
+                    onStoryTap: (story) {
+                      context.push('/home/stories/${story.id}');
                     },
                     onSeeAll: () {
                       // Navigate to full continue reading list

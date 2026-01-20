@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -73,13 +72,14 @@ class MyGeneratedStoriesSection extends StatelessWidget {
                 ],
               ),
               if (stories.isNotEmpty)
-                TextButton.icon(
+                TextButton(
                   onPressed: onSeeAll,
-                  icon: Icon(Icons.arrow_forward_rounded, size: 18.sp),
-                  label: Text(t.homeScreen.seeAll),
-                  style: TextButton.styleFrom(
-                    foregroundColor: colorScheme.primary,
-                    padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  child: Text(
+                    t.homeScreen.seeAll,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
             ],
@@ -130,9 +130,7 @@ class MyGeneratedStoriesSection extends StatelessWidget {
           ],
         ),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: colorScheme.tertiary.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: colorScheme.tertiary.withValues(alpha: 0.2)),
       ),
       child: Row(
         children: [
@@ -175,10 +173,7 @@ class MyGeneratedStoriesSection extends StatelessWidget {
             onPressed: onCreateNew,
             style: FilledButton.styleFrom(
               backgroundColor: colorScheme.tertiary,
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-                vertical: 12.h,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -225,8 +220,9 @@ class MyGeneratedStoriesSection extends StatelessWidget {
                 padding: EdgeInsets.only(right: 12.w),
                 child: Shimmer.fromColors(
                   baseColor: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-                  highlightColor:
-                      isDark ? Colors.grey[700]! : Colors.grey[100]!,
+                  highlightColor: isDark
+                      ? Colors.grey[700]!
+                      : Colors.grey[100]!,
                   child: Container(
                     width: 150.w,
                     decoration: BoxDecoration(
@@ -249,10 +245,7 @@ class _GeneratedStoryCard extends StatefulWidget {
   final Story story;
   final VoidCallback? onTap;
 
-  const _GeneratedStoryCard({
-    required this.story,
-    this.onTap,
-  });
+  const _GeneratedStoryCard({required this.story, this.onTap});
 
   @override
   State<_GeneratedStoryCard> createState() => _GeneratedStoryCardState();

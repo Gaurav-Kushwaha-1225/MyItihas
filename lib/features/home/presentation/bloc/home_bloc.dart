@@ -8,22 +8,22 @@ import 'package:myitihas/features/home/presentation/bloc/home_state.dart';
 import 'package:myitihas/features/social/domain/repositories/user_repository.dart';
 import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/features/story_generator/domain/repositories/story_generator_repository.dart';
-import 'package:myitihas/services/reading_progress_service.dart';
+import 'package:myitihas/features/home/domain/repositories/continue_reading_repository.dart';
 import 'package:share_plus/share_plus.dart';
 
 /// BLoC for HomeScreen state management
 @injectable
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final QuoteLocalDataSource _quoteDataSource;
-  final ReadingProgressService _readingProgressService;
   final StoryGeneratorRepository _storyGeneratorRepository;
   final UserRepository _userRepository;
+  final ContinueReadingRepository _continueReadingRepository;
 
   HomeBloc(
     this._quoteDataSource,
-    this._readingProgressService,
     this._storyGeneratorRepository,
     this._userRepository,
+    this._continueReadingRepository,
   ) : super(const HomeState()) {
     on<HomeEvent>((event, emit) async {
       await event.when(
@@ -154,8 +154,45 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _loadContinueReading(Emitter<HomeState> emit) async {
     try {
-      final inProgress = await _readingProgressService.getAllInProgress();
-      emit(state.copyWith(continueReading: inProgress));
+      // 1. Fetch full Story objects from our new repository
+      final result = await _continueReadingRepository
+          .getContinueReadingStories();
+
+      final stories = result.fold((_) => <Story>[], (stories) => stories);
+
+      // 2. Fetch progress metadata from ReadingProgressService
+      // final progressList = <Story>[];
+
+      // for (final story in stories) {
+      //   final progress = await _readingProgressService.getProgress(story.id);
+
+      //   if (progress != null) {
+      //     // Update the metadata with the latest story info if needed,
+      //     // but mainly we want the scroll position and total length
+      //     progressList.add(
+      //       progress.copyWith(
+      //         storyTitle: story.title,
+      //         thumbnailUrl: story.imageUrl,
+      //         scripture: story.scripture,
+      //       ),
+      //     );
+      //   } else {
+      //     // If no progress found, create a 0% progress entry
+      //     progressList.add(
+      //       ReadingProgress(
+      //         storyId: story.id,
+      //         storyTitle: story.title,
+      //         scrollPosition: 0,
+      //         totalLength: 1000, // Placeholder
+      //         lastReadAt: story.updatedAt ?? story.createdAt ?? DateTime.now(),
+      //         thumbnailUrl: story.imageUrl,
+      //         scripture: story.scripture,
+      //       ),
+      //     );
+      //   }
+      // }
+
+      emit(state.copyWith(continueReading: stories));
     } catch (e, st) {
       talker.error('Failed to load continue reading', e, st);
     }

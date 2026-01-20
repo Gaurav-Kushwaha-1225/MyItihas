@@ -1,17 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:myitihas/features/stories/domain/entities/story.dart';
 import 'package:myitihas/i18n/strings.g.dart';
-import 'package:myitihas/services/reading_progress_service.dart';
 import 'package:shimmer/shimmer.dart';
 
 /// Section displaying stories the user has started reading
 class ContinueReadingSection extends StatelessWidget {
-  final List<ReadingProgress> stories;
+  final List<Story> stories;
   final bool isLoading;
-  final void Function(ReadingProgress progress)? onStoryTap;
+  final void Function(Story story)? onStoryTap;
   final VoidCallback? onSeeAll;
   final VoidCallback? onExplore;
 
@@ -72,7 +73,7 @@ class ContinueReadingSection extends StatelessWidget {
           _buildEmptyState(context)
         else
           SizedBox(
-            height: 140.h,
+            height: 120.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -81,7 +82,7 @@ class ContinueReadingSection extends StatelessWidget {
                 return Padding(
                   padding: EdgeInsets.only(right: 12.w),
                   child: _ContinueReadingCard(
-                    progress: stories[index],
+                    story: stories[index],
                     onTap: () => onStoryTap?.call(stories[index]),
                   ),
                 );
@@ -100,6 +101,7 @@ class ContinueReadingSection extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16.w),
       padding: EdgeInsets.all(24.w),
+      height: 140.h,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(16.r),
@@ -107,8 +109,10 @@ class ContinueReadingSection extends StatelessWidget {
           color: colorScheme.outlineVariant.withValues(alpha: 0.5),
         ),
       ),
+      alignment: Alignment.center,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             padding: EdgeInsets.all(12.w),
@@ -125,6 +129,7 @@ class ContinueReadingSection extends StatelessWidget {
           SizedBox(width: 16.w),
           Expanded(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -134,14 +139,12 @@ class ContinueReadingSection extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 8.h),
-                TextButton.icon(
-                  onPressed: onExplore,
-                  icon: FaIcon(FontAwesomeIcons.compass, size: 16.sp),
-                  label: Text(t.homeScreen.startReading),
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 12.w,
-                      vertical: 8.h,
+                GestureDetector(
+                  onTap: onExplore,
+                  child: Text(
+                    t.homeScreen.startReading,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.primary,
                     ),
                   ),
                 ),
@@ -214,10 +217,10 @@ class ContinueReadingSection extends StatelessWidget {
 
 /// Individual continue reading card
 class _ContinueReadingCard extends StatefulWidget {
-  final ReadingProgress progress;
+  final Story story;
   final VoidCallback? onTap;
 
-  const _ContinueReadingCard({required this.progress, this.onTap});
+  const _ContinueReadingCard({required this.story, this.onTap});
 
   @override
   State<_ContinueReadingCard> createState() => _ContinueReadingCardState();
@@ -251,9 +254,9 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final t = Translations.of(context);
-    final progress = widget.progress;
-
+    // final t = Translations.of(context);
+    final story = widget.story;
+    final width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTapDown: (_) {
         _controller.forward();
@@ -267,7 +270,7 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Container(
-          width: 260.w,
+          width: width - 32.w,
           decoration: BoxDecoration(
             color: colorScheme.surface,
             borderRadius: BorderRadius.circular(16.r),
@@ -291,17 +294,26 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
                   bottomLeft: Radius.circular(16.r),
                 ),
                 child: SizedBox(
-                  width: 90.w,
+                  width: width * 0.3,
                   height: double.infinity,
-                  child: progress.thumbnailUrl != null
-                      ? CachedNetworkImage(
-                          imageUrl: progress.thumbnailUrl!,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => Container(
-                            color: colorScheme.surfaceContainerHighest,
-                          ),
-                          errorWidget: (context, url, error) =>
-                              _buildPlaceholderImage(colorScheme),
+                  child: story.imageUrl != null
+                      ?
+                        // CachedNetworkImage(
+                        //     imageUrl: progress.thumbnailUrl!,
+                        //     fit: BoxFit.cover,
+                        //     placeholder: (context, url) => Container(
+                        //       color: colorScheme.surfaceContainerHighest,
+                        //     ),
+                        //     errorWidget: (context, url, error) =>
+                        //         _buildPlaceholderImage(colorScheme),
+                        //   )
+                        Image.memory(
+                          story.imageUrl!.split(',').length > 1
+                              ? base64Decode(
+                                  story.imageUrl!.split(',')[1],
+                                )
+                              : base64Decode(story.imageUrl!),
+                          fit: BoxFit.fitHeight,
                         )
                       : _buildPlaceholderImage(colorScheme),
                 ),
@@ -310,13 +322,12 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
               // Content
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.all(12.w),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Scripture chip
-                      if (progress.scripture != null)
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 6.w,
@@ -327,7 +338,7 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
                             borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: Text(
-                            progress.scripture!,
+                            story.scripture,
                             style: theme.textTheme.labelSmall?.copyWith(
                               color: colorScheme.primary,
                               fontWeight: FontWeight.w600,
@@ -339,8 +350,8 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
 
                       // Title
                       Text(
-                        progress.storyTitle,
-                        maxLines: 2,
+                        story.title,
+                        maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w600,
@@ -349,45 +360,13 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
                       ),
 
                       SizedBox(height: 8.h),
-
-                      // Progress bar
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(4.r),
-                            child: LinearProgressIndicator(
-                              value: progress.percentage,
-                              minHeight: 4.h,
-                              backgroundColor: colorScheme.primary.withValues(
-                                alpha: 0.1,
-                              ),
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                colorScheme.primary,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '${(progress.percentage * 100).toInt()}%',
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                              Text(
-                                t.homeScreen.minLeft(
-                                  count: progress.minutesLeft,
-                                ),
-                                style: theme.textTheme.labelSmall?.copyWith(
-                                  color: colorScheme.onSurfaceVariant,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
+                      Text(
+                        story.story,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.labelSmall!.copyWith(
+                          color: colorScheme.onSurfaceVariant.withValues(alpha: 1),
+                        ),
                       ),
                     ],
                   ),
