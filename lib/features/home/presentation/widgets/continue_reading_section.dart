@@ -52,17 +52,17 @@ class ContinueReadingSection extends StatelessWidget {
                   color: colorScheme.onSurface,
                 ),
               ),
-              if (stories.isNotEmpty)
-                TextButton(
-                  onPressed: onSeeAll,
-                  child: Text(
-                    t.homeScreen.seeAll,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: colorScheme.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
+              // if (stories.isNotEmpty)
+              //   TextButton(
+              //     onPressed: onSeeAll,
+              //     child: Text(
+              //       t.homeScreen.seeAll,
+              //       style: theme.textTheme.labelLarge?.copyWith(
+              //         color: colorScheme.primary,
+              //         fontWeight: FontWeight.w600,
+              //       ),
+              //     ),
+              //   ),
             ],
           ),
         ),
@@ -309,9 +309,7 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
                         //   )
                         Image.memory(
                           story.imageUrl!.split(',').length > 1
-                              ? base64Decode(
-                                  story.imageUrl!.split(',')[1],
-                                )
+                              ? base64Decode(story.imageUrl!.split(',')[1])
                               : base64Decode(story.imageUrl!),
                           fit: BoxFit.fitHeight,
                         )
@@ -328,23 +326,23 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       // Scripture chip
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 6.w,
-                            vertical: 2.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: colorScheme.primary.withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(6.r),
-                          ),
-                          child: Text(
-                            story.scripture,
-                            style: theme.textTheme.labelSmall?.copyWith(
-                              color: colorScheme.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        child: Text(
+                          story.scripture,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: colorScheme.primary,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
+                      ),
 
                       SizedBox(height: 6.h),
 
@@ -365,7 +363,9 @@ class _ContinueReadingCardState extends State<_ContinueReadingCard>
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.labelSmall!.copyWith(
-                          color: colorScheme.onSurfaceVariant.withValues(alpha: 1),
+                          color: colorScheme.onSurfaceVariant.withValues(
+                            alpha: 1,
+                          ),
                         ),
                       ),
                     ],

@@ -115,7 +115,6 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
         }
 
         return Scaffold(
-          backgroundColor: Colors.transparent,
           body: Stack(
             children: [
               SingleChildScrollView(
@@ -126,7 +125,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                       end: Alignment.topCenter,
                       colors: [
                         Theme.of(context).primaryColor.withAlpha(5),
-                        isDark
+                        Theme.of(context).brightness == Brightness.dark
                             ? const Color(0xFF1E293B)
                             : const Color(0xFFF1F5F9),
                       ],
@@ -154,7 +153,10 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.arrow_back_ios_rounded),
+                              icon: Icon(
+                                Icons.arrow_back_ios_rounded,
+                                color: theme.colorScheme.onSurface,
+                              ),
                               onPressed: () => context.pop(),
                             ),
                             const Spacer(),
@@ -171,6 +173,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                                           ? Icons.pause_circle_rounded
                                           : Icons.play_circle_rounded,
                                       size: 28,
+                                      color: theme.colorScheme.onSurface,
                                     ),
                                     onPressed: () => _toggleSpeech(),
                                   ),
@@ -182,13 +185,17 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                                 story.isFavorite
                                     ? Icons.bookmark
                                     : Icons.bookmark_border,
+                                color: theme.colorScheme.onSurface,
                               ),
                               onPressed: () => _detailBloc.add(
                                 const StoryDetailToggleFavorite(),
                               ),
                             ),
                             PopupMenuButton<String>(
-                              icon: const Icon(Icons.share),
+                              icon: Icon(
+                                Icons.share,
+                                color: theme.colorScheme.onSurface,
+                              ),
                               onSelected: (value) {
                                 if (value == 'share') {
                                   _shareStory(story);
@@ -206,7 +213,9 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                                     children: [
                                       const Icon(Icons.share_outlined),
                                       const SizedBox(width: 12),
-                                      Text(Translations.of(context).common.share),
+                                      Text(
+                                        Translations.of(context).common.share,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -216,7 +225,11 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                                     children: [
                                       const Icon(Icons.feed_outlined),
                                       const SizedBox(width: 12),
-                                      Text(Translations.of(context).homeScreen.shareToFeed),
+                                      Text(
+                                        Translations.of(
+                                          context,
+                                        ).homeScreen.shareToFeed,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -363,6 +376,16 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                   label: Text(story.attributes.storyType),
                   labelStyle: theme.textTheme.labelSmall,
                   visualDensity: VisualDensity.compact,
+                  color: WidgetStatePropertyAll(
+                    isDark
+                        ? const Color(0xFF1E293B).withValues(alpha: 0.3)
+                        : const Color.fromARGB(
+                            255,
+                            138,
+                            180,
+                            248,
+                          ).withValues(alpha: 0.3),
+                  ),
                 ),
               SizedBox(width: screenSize.width * 0.02),
               if (story.attributes.theme.isNotEmpty)
@@ -370,6 +393,16 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
                   label: Text(story.attributes.theme),
                   labelStyle: theme.textTheme.labelSmall,
                   visualDensity: VisualDensity.compact,
+                  color: WidgetStatePropertyAll(
+                    isDark
+                        ? const Color(0xFF1E293B).withValues(alpha: 0.3)
+                        : const Color.fromARGB(
+                            255,
+                            138,
+                            180,
+                            248,
+                          ).withValues(alpha: 0.3),
+                  ),
                 ),
             ],
           ),
@@ -387,6 +420,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             style: theme.textTheme.headlineMedium?.copyWith(
               fontWeight: FontWeight.bold,
               overflow: TextOverflow.ellipsis,
+              color: Colors.white,
             ),
           ),
           SizedBox(height: screenSize.height * 0.005),
@@ -395,6 +429,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             maxLines: 1,
             style: theme.textTheme.bodySmall?.copyWith(
               overflow: TextOverflow.ellipsis,
+              color: Colors.white,
             ),
           ),
           SizedBox(height: screenSize.height * 0.005),
@@ -402,7 +437,9 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             children: [
               Text(
                 "By ${story.authorUser?.displayName ?? story.author ?? 'MyItihas AI'}",
-                style: theme.textTheme.bodyMedium,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                ),
               ),
             ],
           ),
@@ -506,7 +543,7 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
 
         if (story.attributes.references.isNotEmpty) ...[
           SizedBox(height: screenSize.height * 0.01),
-          const Divider(),
+          Divider(color: theme.colorScheme.onSurface),
           SizedBox(height: screenSize.height * 0.01),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -592,10 +629,10 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
               trimCollapsedText: "read more",
               trimExpandedText: "read less",
               textAlign: TextAlign.justify,
-              moreStyle: theme.textTheme.bodyMedium?.copyWith(
+              moreStyle: theme.textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
-              lessStyle: theme.textTheme.bodyMedium?.copyWith(
+              lessStyle: theme.textTheme.bodyLarge?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -679,18 +716,20 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+        color: isDark
+            ? const Color(0xFF1E293B).withOpacity(0.5)
+            : Colors.white.withOpacity(0.5),
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black.withOpacity(0.2),
+        //     blurRadius: 20,
+        //     offset: const Offset(0, 10),
+        //   ),
+        // ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -760,12 +799,14 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B).withOpacity(0.3) : Colors.white,
+        color: isDark
+            ? const Color(0xFF1E293B).withOpacity(0.3)
+            : Color.fromARGB(255, 138, 180, 248).withOpacity(0.3),
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: isDark
               ? Colors.white.withOpacity(0.05)
-              : Colors.black.withOpacity(0.05),
+              : Colors.black.withOpacity(0.3),
         ),
       ),
       child: Column(
@@ -785,7 +826,9 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             description,
             textAlign: TextAlign.center,
             style: theme.textTheme.labelSmall?.copyWith(
-              color: theme.secondaryHeaderColor,
+              color: isDark
+                  ? Colors.white.withOpacity(0.5)
+                  : Colors.black.withOpacity(0.5),
             ),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
@@ -897,12 +940,14 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
       width: double.infinity,
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B).withOpacity(0.3) : Colors.white,
+        color: isDark
+            ? const Color(0xFF1E293B).withOpacity(0.3)
+            : Color.fromARGB(255, 138, 180, 248).withOpacity(0.3),
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
           color: isDark
               ? Colors.white.withOpacity(0.05)
-              : Colors.black.withOpacity(0.05),
+              : Colors.black.withOpacity(0.3),
         ),
       ),
       child: Column(
@@ -928,7 +973,9 @@ class _GeneratedStoryDetailPageState extends State<GeneratedStoryDetailPage> {
             'Explore the personalities and roles of story characters',
             textAlign: TextAlign.center,
             style: theme.textTheme.labelSmall?.copyWith(
-              color: theme.secondaryHeaderColor,
+              color: isDark
+                  ? Colors.white.withOpacity(0.5)
+                  : Colors.black.withOpacity(0.5),
             ),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
@@ -1187,7 +1234,7 @@ Generated with MyItihas - Discover Indian Mythology
           border: Border.all(
             color: isDark
                 ? Colors.white.withOpacity(0.1)
-                : Colors.black.withOpacity(0.05),
+                : Colors.black.withOpacity(0.3),
           ),
         ),
         child: Icon(

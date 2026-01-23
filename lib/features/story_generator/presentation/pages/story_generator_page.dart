@@ -110,7 +110,9 @@ class _StoryGeneratorViewState extends State<_StoryGeneratorView> {
                             SizedBox(height: 8.h),
                             // Quick prompts carousel
                             QuickPromptsCarousel(
-                              prompts: QuickPrompt.defaultPrompts,
+                              prompts: (List.of(
+                                QuickPrompt.defaultPrompts,
+                              )..shuffle()).take(5).toList(),
                               currentIndex: state.currentQuickPromptIndex,
                               onPromptSelected: (prompt) {
                                 context.read<StoryGeneratorBloc>().add(

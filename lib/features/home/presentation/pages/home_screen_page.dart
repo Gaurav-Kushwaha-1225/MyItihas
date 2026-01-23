@@ -310,7 +310,7 @@ class _HomeScreenViewState extends State<_HomeScreenView>
                     stories: state.continueReading,
                     isLoading: state.isContinueReadingLoading,
                     onStoryTap: (story) {
-                      context.push('/home/stories/${story.id}');
+                      GeneratedStoryResultRoute($extra: story).push(context);
                     },
                     onSeeAll: () {
                       // Navigate to full continue reading list
@@ -332,7 +332,7 @@ class _HomeScreenViewState extends State<_HomeScreenView>
                     stories: state.myGeneratedStories,
                     isLoading: state.isMyGeneratedStoriesLoading,
                     onStoryTap: (story) {
-                      context.push('/story-generator/${story.id}');
+                      GeneratedStoryResultRoute($extra: story).push(context);
                     },
                     onShareToFeed: (story) {
                       showShareToFeedDialog(context: context, story: story);
